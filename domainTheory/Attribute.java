@@ -3,8 +3,12 @@
  */
 package domainTheory;
 
+import java.util.List;
+
+import values.RangeDescriptor;
+import values.SingleDescriptor;
 import values.Value;
-import values.ValueDescriptor;
+import values.Descriptor;
 
 /**
  * @author Armando
@@ -70,9 +74,9 @@ public class Attribute {
 	 * @param taxon
 	 */
 	// Pendiente de traducir
-	public void copy(Attribute attribute, Taxon taxon) {
-		ValueDescriptor vList, nvd;
-		Double ovd;
+	public <T> void copy(Attribute attribute, Taxon taxon) {
+		List<Descriptor> vList;
+		Descriptor ovd, nvd;
 
 		if (values.size() < attribute.getValues().size())
 			return;
@@ -84,7 +88,17 @@ public class Attribute {
 			
 			for (int j = 1; j <= vList.size(); j++) {
 				ovd = vList.get(j);
-				nvd = new ValueDescriptor();
+				if (ovd.getClass().getName().equals("SingleDescriptor"))
+					nvd = new SingleDescriptor<T>();
+				else {
+					nvd = new RangeDescriptor();
+				}
+				
+				nvd.copyFrom(ovd, taxon);
+				if (this.getValues().size() == attribute.getValues().size())
+					this.getValues().addValueDescriptor(nvd, TaxonomicLevels.getNameByNumber(i));
+				else
+					this.getValues().addValueDescriptor(nvd, taxon.getLevel());
 				
 			}
 			

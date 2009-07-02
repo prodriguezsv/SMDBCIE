@@ -6,7 +6,7 @@ package domainTheory;
 import java.util.ArrayList;
 import java.util.List;
 
-import values.ValueDescriptor;
+import values.Descriptor;
 
 /**
  * @author Armando
@@ -299,7 +299,7 @@ public class Taxon {
 	//Pendiente de traducir
 	public boolean GHRangesConsistentWith(Taxon aParentTaxon) {
 		GroupingHeuristic gh;
-		ValueDescriptor vd;
+		Descriptor vd;
 		
 		if (predecessor.getLevel() == TaxonomicLevels.getLevels().get(0))
 			return true;

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import values.ValueDescriptor;
+import values.Descriptor;
 
 /**
  * @author Armando
@@ -91,7 +91,7 @@ public class Taxonomy {
 	 */
 	private void addGroupingHeuristicIndex(Taxon aNewTaxon) {
 		GroupingHeuristic ngh, gh;
-		ValueDescriptor nvd, vd;
+		Descriptor nvd, vd;
 
 		for (int i = 1; i <= aNewTaxon.getGHDescription().size(); i++) {
 			// Get the next grouping heuristic from the new taxon
