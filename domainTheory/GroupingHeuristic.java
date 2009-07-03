@@ -6,6 +6,9 @@ package domainTheory;
 import java.util.ArrayList;
 import java.util.List;
 
+import values.Descriptor;
+import values.RangeDescriptor;
+import values.SingleDescriptor;
 import values.Value;
 
 /**
@@ -92,8 +95,36 @@ public class GroupingHeuristic {
 	 * @param aTaxon
 	 */
 	// Pendiente de traducir
-	public void copy(GroupingHeuristic aGroupingHeuristic, Taxon aTaxon) {
+	public <T> void copy(GroupingHeuristic aGroupingHeuristic, Taxon aTaxon) {
+		List<Descriptor> vList;
+		Descriptor ovd, nvd;
+
+		if (values.size() < aGroupingHeuristic.getValues().size())
+			return;
+
+		name = aGroupingHeuristic.getName();
+		weight = aGroupingHeuristic.getWeight();
 		
+		for (int i = 1; i <= aGroupingHeuristic.getValues().size(); i++) {
+			vList = aGroupingHeuristic.getValues().get(i);
+			
+			for (int j = 1; j <= vList.size(); j++) {
+				ovd = vList.get(j);
+				if (ovd.getClass().getName().equals("SingleDescriptor"))
+					nvd = new SingleDescriptor<T>();
+				else {
+					nvd = new RangeDescriptor();
+				}
+				
+				nvd.copyFrom(ovd, aTaxon);
+				if (this.getValues().size() == aGroupingHeuristic.getValues().size())
+					this.getValues().addValueDescriptor(nvd, TaxonomicLevels.getNameByNumber(i));
+				else
+					this.getValues().addValueDescriptor(nvd, aTaxon.getLevel());
+				
+			}
+			
+		}
 	}
 	
 	/**
@@ -110,12 +141,29 @@ public class GroupingHeuristic {
 	 * @param aTaxonomicGroupName
 	 * @return
 	 */
-	// Pendiente de traducir
+	// Pendiente de traducir (Ojo)
 	public List<Structure> createSAVDescription(String aTaxonomicGroupName) {
 		List<Structure> description;
+		List<Descriptor> vdList;
+		Descriptor vd;
 		
 		// Check if its value has more than one value descriptor container
+		if (!(this.getValues().size() == GroupingHeuristic.oneLevel()))
+			return null;
+
+		// Create the description holder
+		description = new ArrayList<Structure>();
+
+		// Get the set of value descriptors
+		vdList = this.getValues().getValueDescriptorsIn(TaxonomicLevels.getNameByNumber(GroupingHeuristic.oneLevel()));
+
+		// Make sure that the value descriptor list only contains ONE item
+		if (!(vdList.size() == 1)) return null;
+
+		// Get the value descriptor and make sure it isn't a range descriptor
+		vd = vdList.get(1);
 		
-		return null;
+		
+		return description;
 	}
 }

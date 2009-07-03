@@ -1,7 +1,7 @@
 package main;
 
-import jade.util.leap.ArrayList;
-import jade.util.leap.List;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -12,19 +12,18 @@ import jade.util.leap.List;
  * @author Armando
  *
  */
-public class Case implements jade.content.Concept {
-	private static final long serialVersionUID = 5687089858125395496L;
+public class Case extends Node {
 	private String solution;
-	private Description description;
-	private Description justification;
-	private List predecesor;
+	private List<Descriptor> description;
+	private List<Descriptor> justification;
+	private List predecessors;
 	private Boolean state;
 	
 	public Case() {
 		solution = "";
-		description = new Description();
-		justification = new Description();
-		predecesor = new ArrayList();
+		description = new ArrayList<Descriptor>();
+		justification = new ArrayList<Descriptor>();
+		predecessors = new ArrayList();
 		state = null;
 	}
 	
@@ -36,28 +35,28 @@ public class Case implements jade.content.Concept {
 		return solution;
 	}
 	
-	public void setDescription(Description description) {
+	public void setDescription(List<Descriptor> description) {
 		this.description = description;
 	}
 	
-	public Description getDescription() {
+	public List<Descriptor> getDescription() {
 		return description;
 	}
 
-	public void setJustification(Description justification) {
+	public void setJustification(List<Descriptor> justification) {
 		this.justification = justification;
 	}
 
-	public Description getJustification() {
+	public List<Descriptor> getJustification() {
 		return justification;
 	}
 
 	public void setPredecesor(List predecesor) {
-		this.predecesor = predecesor;
+		this.predecessors = predecesor;
 	}
 
 	public List getPredecesor() {
-		return predecesor;
+		return predecessors;
 	}
 
 	public void setState(Boolean state) {

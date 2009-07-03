@@ -9,35 +9,69 @@ package main;
  * ya que ningún par attribute-value particular generaliza todos los casos bajo ellos.
  * 
 */
-public abstract class Descriptor implements jade.content.Concept {
-	private static final long serialVersionUID = 5687089858125395496L;
-	protected String _internalInstanceName = null;
+public class Descriptor<T> {
 	protected String attribute;
-	protected String structure;
+	protected T value;
 	
+	/**
+	 * Class instance invariant: self MUST always have exactly two values. The first
+	 * element corresponds to the descriptor's attribute, and the second one to the value.
+	 * Extreme care should be taken when using this method, as it assumes an empty self."
+	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
+	 */
 	public Descriptor() {
-		_internalInstanceName = "";
+		this.setAttribute(null);
+		this.setValue(null);
 	}
-
-    @Override
-    public String toString() {
-    	return _internalInstanceName;
-    }
+	
+	/**
+	 * Sets self to default values: self = (nil, nil)
+	 * @see "Método clear del protocolo initializing en SUKIA SmallTalk"
+	 */
+	public void clear() {
+		this.setAttribute(null);
+		this.setValue(null);
+	}
     
-    public void setAttribute(String attribute) {
+	/**
+	 * @see "Método addAttribute: del protocolo adding-private en SUKIA SmallTalk"
+	 * @param attribute
+	 */
+    private void setAttribute(String attribute) {
     	this.attribute = attribute;
     }
     
+    /**
+     * @see "Método attribute del protocolo accessing en SUKIA SmallTalk"
+     * @return
+     */
     public String getAttribute() {
     	return attribute;
     }
 
-   
-   
-   public void setStructure(String structure) {
-    this.structure = structure;
-   }
-   public String getStructure() {
-     return structure;
-   }
+    /**
+     * @see "Método value del protocolo accessing en SUKIA SmallTalk"
+     * @return
+     */
+	public T getValue() {
+		return value;
+	}
+
+	/**
+	 * @see "Método addValue: del protocolo adding-private en SUKIA SmallTalk"
+	 * @param value
+	 */
+	private void setValue(T value) {
+		this.value = value;
+	}
+	
+	/**
+	 * @see "Método addAttribute:withValue: del protocolo adding en SUKIA SmallTalk"
+	 * @param anAttribute
+	 * @param aValue
+	 */
+	public void add(String anAttribute, T aValue) {
+		this.setAttribute(anAttribute);
+		this.setValue(aValue);
+	}
 }

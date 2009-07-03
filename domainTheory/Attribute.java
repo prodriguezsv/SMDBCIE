@@ -73,7 +73,6 @@ public class Attribute {
 	 * @param attribute
 	 * @param taxon
 	 */
-	// Pendiente de traducir
 	public <T> void copy(Attribute attribute, Taxon taxon) {
 		List<Descriptor> vList;
 		Descriptor ovd, nvd;
@@ -102,7 +101,6 @@ public class Attribute {
 				
 			}
 			
-		}
-				
+		}			
 	}
 }
