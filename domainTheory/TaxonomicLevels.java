@@ -1,5 +1,5 @@
 /**
- * 
+ * @see "Categoría Sukia Domain Theory de SUKIA Smalltalk"
  */
 package domainTheory;
 
@@ -11,7 +11,7 @@ import java.util.List;
  *
  */
 public class TaxonomicLevels {
-	static List<String> levels;
+	private static List<String> levels;
 
 	/**
 	 * Adds taxonomic level names to the Levels list. The first level MUST always be #root. All other level names MUST be added
@@ -21,7 +21,6 @@ public class TaxonomicLevels {
 	 * @see "Método initialize del protocolo de clase class initialization en SUKIA SmallTalk"
 	 */
 	public TaxonomicLevels() {
-		// TODO Auto-generated constructor stub
 		initialize();
 	}
 	
@@ -78,33 +77,33 @@ public class TaxonomicLevels {
 	 * @param aNumber
 	 * @return
 	 */
-	public static String getNameByNumber(int aNumber) {
+	/*public static String getNameByNumber(int aNumber) {
 		if ((aNumber < 0) || (aNumber > (levels.size() - 1))) {
 			return null;
 		}
 
-		return levels.get(aNumber+1);
-	}
+		return levels.get(aNumber);
+	}*/
 	
 	/**
 	 * @see "Método getNumberByName: del protocolo de clase class messages en SUKIA SmallTalk"
 	 * @param aName
 	 * @return
 	 */
-	public static int getNumberByName(String aName) {
+	/*public static int getNumberByName(String aName) {
 		for (int i = 1; i <= levels.size(); i++) {
-			if (levels.get(i).equals(aName)) 
+			if (levels.get(i-1).equals(aName)) 
 				return (i - 1);
 		}
 		
 		return -1;
-	}
+	}*/
 	
 	/**
 	 * Three taxonomic levels for this implementation: 1 - family; 2 - genus; 3 - species
 	 * @see "Método nomenclaturalNumber del protocolo de clase class messages en SUKIA SmallTalk"
 	 */
-	public static int nomenclaturalNumber() {
+	public static int getNomenclaturalLevelsNumber() {
 		return (levels.size() - 1);
 	}
 	
@@ -112,7 +111,7 @@ public class TaxonomicLevels {
 	 * Four taxonomic levels for this implementation: 0 - #root; 1 - family; 2 - genus; 3 - species
 	 * @see "Método totalNumber del protocolo de clase class messages en SUKIA SmallTalk"
 	 */
-	public static int totalNumber() {
+	public static int getTotalLevelsNumber() {
 		return levels.size();
 	}
 	
@@ -121,13 +120,12 @@ public class TaxonomicLevels {
 	 * @param aLevel
 	 * @return
 	 */
-	//Pendiente de hacer método homónimo
-	public static int transformToIndex(String aLevel){
+	/*public static int transformToIndex(String aLevel){
 		int levelNumber = -1;
 
-		levelNumber = getNumberByName(aLevel);
+		levelNumber = levels.indexOf(aLevel);
 		
-		if ((levelNumber == -1) || (levelNumber < getNumberByName("family")) || (levelNumber > nomenclaturalNumber()))
+		if ((levelNumber == -1) || (levelNumber < levels.indexOf("family")) || (levelNumber > getNomenclaturalLevelsNumber()))
 			return -1;
 		else return levelNumber;
 	}
@@ -137,17 +135,7 @@ public class TaxonomicLevels {
 	 * @param aTaxonomicLevelName
 	 * @return
 	 */
-	public static boolean includes(String aTaxonomicLevelName) {
+	/*public static boolean includes(String aTaxonomicLevelName) {
 		return levels.contains(aTaxonomicLevelName);
-	}
-	
-	/**
-	 * @see "Método isLinkOKBetween:and: del protocolo de clase testing en SUKIA SmallTalk"
-	 * @param aParentTaxon
-	 * @param aSuccessorTaxon
-	 * @return
-	 */
-	public static boolean isLinkOKBetween(Taxon aParentTaxon, Taxon aSuccessorTaxon) {
-		return (((TaxonomicLevels.getNumberByName(aSuccessorTaxon.getLevel())) - (TaxonomicLevels.getNumberByName(aParentTaxon.getLevel()))) == 1);
-	}
+	}*/
 }

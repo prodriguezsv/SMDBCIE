@@ -1,5 +1,5 @@
 /**
- * 
+ * @see "Categoría Sukia Values de SUKIA Smalltalk"
  */
 package values;
 
@@ -9,17 +9,9 @@ import domainTheory.Taxon;
  * @author Armando
  *
  */
-public class SingleDescriptor<E> extends Descriptor{
+public class SingleDescriptor<E> extends ValueDescriptor{
 	private E value;
 	private double weight;
-	
-	/**
-	 * 
-	 */
-	public SingleDescriptor() {
-		// TODO Auto-generated constructor stub
-		super();
-	}
 		
 	/**
 	 * @see "Método value del protocolo accessing-weighted values en SUKIA SmallTalk"
@@ -58,7 +50,8 @@ public class SingleDescriptor<E> extends Descriptor{
 	 * @param aDescriptor
 	 * @param aTaxon
 	 */
-	public <T> void copyFrom(T aDescriptor, Taxon aTaxon) {
+	@SuppressWarnings("unchecked")
+	public <T> void addValues(T aDescriptor, Taxon aTaxon) {
 		SingleDescriptor<E> svd;
 		
 		svd = (SingleDescriptor<E>) aDescriptor;

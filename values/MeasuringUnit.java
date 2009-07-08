@@ -1,5 +1,5 @@
 /**
- * 
+ * @see "Categoría Sukia Values de SUKIA Smalltalk"
  */
 package values;
 
@@ -17,7 +17,6 @@ public class MeasuringUnit {
 	 * @see "Método initialize del protocolo de clase class initialization en SUKIA SmallTalk"
 	 */
 	public MeasuringUnit() {
-		// TODO Auto-generated constructor stub
 		initialize();
 	}
 	

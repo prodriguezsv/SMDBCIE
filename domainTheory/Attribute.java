@@ -1,5 +1,5 @@
 /**
- * 
+ * @see "Categoría Sukia Domain Theory de SUKIA Smalltalk"
  */
 package domainTheory;
 
@@ -8,13 +8,13 @@ import java.util.List;
 import values.RangeDescriptor;
 import values.SingleDescriptor;
 import values.Value;
-import values.Descriptor;
+import values.ValueDescriptor;
 
 /**
  * @author Armando
  *
  */
-public class Attribute {
+public class Attribute implements Comparable<Attribute>{
 	private String name;
 	private Value values;
 
@@ -23,7 +23,6 @@ public class Attribute {
 	 * @see "Método newWithOneLevel del protocolo instance creation en SUKIA SmallTalk"
 	 */
 	public Attribute() {
-		// TODO Auto-generated constructor stub
 		setName(null);
 		setValues(new Value());
 	}
@@ -33,7 +32,7 @@ public class Attribute {
 	 * @return
 	 */
 	public static int oneLevel() {
-		return 1;
+		return 0;
 	}
 	
 	/**
@@ -73,34 +72,44 @@ public class Attribute {
 	 * @param attribute
 	 * @param taxon
 	 */
-	public <T> void copy(Attribute attribute, Taxon taxon) {
-		List<Descriptor> vList;
-		Descriptor ovd, nvd;
+	public <T> boolean addValues(Attribute attribute, Taxon taxon) {
+		List<ValueDescriptor> vList;
+		ValueDescriptor ovd, nvd;
 
 		if (values.size() < attribute.getValues().size())
-			return;
+			return false;
 
 		name = attribute.getName();
 		
 		for (int i = 1; i <= attribute.getValues().size(); i++) {
-			vList = attribute.getValues().get(i);
+			vList = attribute.getValues().get(i-1);
 			
 			for (int j = 1; j <= vList.size(); j++) {
-				ovd = vList.get(j);
-				if (ovd.getClass().getName().equals("SingleDescriptor"))
+				ovd = vList.get(j-1);
+				if (ovd instanceof SingleDescriptor)
 					nvd = new SingleDescriptor<T>();
 				else {
 					nvd = new RangeDescriptor();
 				}
 				
-				nvd.copyFrom(ovd, taxon);
+				nvd.addValues(ovd, taxon);
 				if (this.getValues().size() == attribute.getValues().size())
-					this.getValues().addValueDescriptor(nvd, TaxonomicLevels.getNameByNumber(i));
+					// Ojo verificar índice
+					this.getValues().addValueDescriptor(nvd, TaxonomicLevels.getLevels().get(i+1));
 				else
 					this.getValues().addValueDescriptor(nvd, taxon.getLevel());
 				
 			}
 			
-		}			
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Método de instancia agregado
+	 */
+	public int compareTo(Attribute aAttribute) {
+		return this.getName().compareTo(aAttribute.getName());
 	}
 }

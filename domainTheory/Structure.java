@@ -1,18 +1,22 @@
 /**
- * 
+ * @see "Categoría Sukia Domain Theory de SUKIA Smalltalk"
  */
 package domainTheory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import values.Value;
+import redundantDiscriminantNet.SAVDescriptor;
+import values.RangeDescriptor;
+import values.SingleDescriptor;
+import values.ValueDescriptor;
 
 /**
  * @author Armando
  *
  */
-public class Structure {
+public class Structure implements Comparable<Structure> {
 	private String name;
 	private Double weight;
 	private List<Attribute> attributes;
@@ -22,10 +26,8 @@ public class Structure {
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
 	public Structure() {
-		// TODO Auto-generated constructor stub
 		setName(null);
 		setWeight(0.0);
-		// Pendiente el ordenamiento
 		setAttributes(new ArrayList<Attribute>());
 	}
 
@@ -69,17 +71,19 @@ public class Structure {
 	 */
 	private void setAttributes(List<Attribute> attributes) {
 		this.attributes = attributes;
+		Collections.sort(attributes);
 	}
 	
 	/**
 	 * @see "Método attribute: del protocolo adding en SUKIA SmallTalk"
 	 * @param anAttribute
 	 */
-	public void addAnAttribute(Attribute anAttribute) {
-		if (includes(anAttribute.getName()))
+	public void addAttribute(Attribute anAttribute) {
+		if (getAttribute(anAttribute.getName())==null)
 			return;
 		
 		attributes.add(anAttribute);
+		Collections.sort(attributes);
 	}
 
 	/**
@@ -94,10 +98,10 @@ public class Structure {
 	 * @param anAttributeName
 	 * @return
 	 */
-	public Attribute getAttributeWith(String anAttributeName) {
+	public Attribute getAttribute(String anAttributeName) {
 		for (int i = 1; i <= attributes.size(); i++) {
-			if (attributes.get(i).getName().equals(anAttributeName))
-				return attributes.get(i);
+			if (attributes.get(i-1).getName().equals(anAttributeName))
+				return attributes.get(i-1);
 		}
 		
 		return null;
@@ -108,18 +112,20 @@ public class Structure {
 	 * @param aStructure
 	 * @param aTaxon
 	 */
-	public void copy(Structure aStructure, Taxon aTaxon) {
+	public void addAtributes(Structure aStructure, Taxon aTaxon) {
 		Attribute oa, na;
 
 		this.setName(aStructure.getName());
 		this.setWeight(aStructure.getWeight());
 		
 		for (int i = 1; i <= aStructure.getAttributes().size(); i++) {
-			oa = aStructure.getAttributes().get(i);
+			oa = aStructure.getAttributes().get(i-1);
 			na = new Attribute();
-			na.copy(oa, aTaxon);
-			addAnAttribute(na);
+			na.addValues(oa, aTaxon);
+			addAttribute(na);
 		}
+		
+		Collections.sort(attributes);
 	}
 	
 	/**
@@ -139,30 +145,53 @@ public class Structure {
 	 * @param aTaxonomicGroupName
 	 * @return
 	 */
-	// Pendiente de traducir
-	public List<Structure> createSAVDescription(String aDummyName) {
-		List<Structure> description;
+	@SuppressWarnings("unchecked")
+	public List<SAVDescriptor> createSAVDescription(String aDummyName) {
+		List<SAVDescriptor> description;
 		Attribute a;
+		List<ValueDescriptor> vdList;
+		ValueDescriptor vd;
+		SAVDescriptor d;
 		
 		// Make sure there's at least one attribute
 		if (getAttributes().isEmpty())
 			return null;
 
 		// Check the first attribute, to see if its value has more than one value descriptor container
-		if (!(getAttributes().get(1).getValues().size() == Attribute.oneLevel()))
+		if (!(getAttributes().get(0).getValues().size() == 1))
 			return null;
 
 		// Create the description holder
-		description = new ArrayList<Structure>();
+		description = new ArrayList<SAVDescriptor>();
 
 		// Scan the receiver's attributes
 		for (int i = 1; i <= this.getAttributes().size(); i++) {
 			// Get the next attribute and set of value descriptors
-			a = this.getAttributes().get(i);
-			
+			a = this.getAttributes().get(i-1);
+			vdList = a.getValues().getValueDescriptors(TaxonomicLevels.getLevels().get(Attribute.oneLevel()));
+
+			// Make sure that the value descriptor list only contains ONE item
+			if ((vdList.size() == 1)) return null;
+
+			// Get the value descriptor and make sure it isn't a range descriptor
+			vd = vdList.get(0);
+			if (vd instanceof RangeDescriptor) return null;
+
+			// Create the new SAVDescriptor and assign its values
+			d = new SAVDescriptor();
+			d.add(this.getName(), a.getName(), ((SingleDescriptor)vd).getValue());
+					
+			description.add(d);
 		}
 		
-		return null;
+		return description;
+	}
+	
+	/**
+	 * Método de instancia agregado
+	 */
+	public int compareTo(Structure aStructure) {
+		return this.getName().compareTo(aStructure.getName());
 	}
 	
 	/**
@@ -170,12 +199,9 @@ public class Structure {
 	 * @param anAttributeName
 	 * @return
 	 */
-	public boolean includes(String anAttributeName) {
-		for (int i = 1; i <= this.getAttributes().size(); i++) {
-			if (this.getAttributes().get(i).getName().equals(anAttributeName))
-				return true;
-		}
-		
-		return false;
+	public boolean contains(String anAttributeName) {
+		if (getAttribute(anAttributeName) == null)
+			return false;
+		else return true;
 	}
 }

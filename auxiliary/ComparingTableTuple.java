@@ -1,14 +1,17 @@
 /**
- * 
+ * @see "Categoría Auxiliary de SUKIA Smalltalk"
  */
 package auxiliary;
 
-import java.util.ArrayList;
-
-import main.Case;
-import main.Descriptor;
-
 /**
+ * Purpose: Implements the tuples that will be added to a ComparingTable.  A ComparingTableTuple is a list (i.e., OrderedCollection) of three items
+ * that represent the following information:
+ * 1st element: a descriptor attribute (e.g., #color, #size, #shape);
+ * 2nd element: the case-to-insert value corresponding to the attribute, taken from a descriptor in the case's description .  If the case-to-insert description
+ * does not contain a descriptor with that attribute, then the corresponding value in the ComparingTableTuple is nil.
+ * 3rd element: the case-to-compare value corresponding to the attribute, taken from a descriptor in the case's description.  If the case-to-compare description
+ * does not contain a descriptor with that attribute, then the corresponding value in the ComparingTableTuple is nil.
+ * Thus, the form of a ComparingTableTuple is: ( #attribute ci-val cc-val ).
  * @author Armando
  *
  */
@@ -21,8 +24,7 @@ public class ComparingTableTuple<T> {
 	 * Método constructor agregado
 	 */
 	public ComparingTableTuple() {
-		// TODO Auto-generated constructor stub
-		this.setAttribute("");
+		this.setAttribute(null);
 		this.setACCValue(null);
 		this.setACIValue(null);
 	}
@@ -34,7 +36,6 @@ public class ComparingTableTuple<T> {
 	 * @param aCCValue
 	 */
 	public ComparingTableTuple(String anAttribute, T aCIValue, T aCCValue) {
-		// TODO Auto-generated constructor stub
 		this.setAttribute(anAttribute);
 		this.setACCValue(aCCValue);
 		this.setACIValue(aCIValue);

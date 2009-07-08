@@ -1,5 +1,5 @@
 /**
- * 
+ * @see "Categoría Sukia Values de SUKIA Smalltalk"
  */
 package values;
 
@@ -13,14 +13,13 @@ import domainTheory.Taxon;
  * @see "Clase ValueDescriptor"
  * @author Armando
  */
-public abstract class Descriptor {
+public abstract class ValueDescriptor {
 	private List<Taxon> taxonList;
 	
 	/**
 	 * 
 	 */
-	public Descriptor() {
-		// TODO Auto-generated constructor stub
+	public ValueDescriptor() {
 		setTaxonList(new ArrayList<Taxon>());
 	}
 		
@@ -48,5 +47,5 @@ public abstract class Descriptor {
 		this.getTaxonList().add(aTaxon);
 	}
 	
-	public abstract <T> void copyFrom(T aDescriptor, Taxon aTaxon);
+	public abstract <T> void addValues(T aDescriptor, Taxon aTaxon);
 }

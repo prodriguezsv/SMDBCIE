@@ -1,5 +1,5 @@
 /**
- * 
+ * @see "Categoría Auxiliary de SUKIA Smalltalk"
  */
 package auxiliary;
 
@@ -11,9 +11,8 @@ import java.util.Stack;
  * @author Armando
  *
  */
-public class CBRStack extends Stack {
-	public CBRStack() {
-		super();
-	}
+// Pendiente determinar el tipo exacto de los elementos de la pila
+@SuppressWarnings("serial")
+public class CBRStack<T> extends Stack<T>{
 
 }

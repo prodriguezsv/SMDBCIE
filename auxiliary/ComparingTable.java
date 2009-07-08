@@ -1,5 +1,5 @@
 /**
- * 
+ * @see "Categoría Auxiliary de SUKIA Smalltalk"
  */
 package auxiliary;
 
@@ -17,15 +17,8 @@ import main.Descriptor;
  * @author Armando
  *
  */
-public class ComparingTable extends ArrayList<ComparingTableTuple> {
-
-	/**
-	 * Método de instancia agregado
-	 */
-	public ComparingTable() {
-		// TODO Auto-generated constructor stub
-		super();
-	}
+@SuppressWarnings("serial")
+public class ComparingTable extends ArrayList<ComparingTableTuple<Object>> {
 	
 	/**
 	 * Takes the descriptors of aCase1 and aCase2 and:
@@ -35,36 +28,30 @@ public class ComparingTable extends ArrayList<ComparingTableTuple> {
 	 * @param aCase1
 	 * @param aCase2
 	 */
-	public void fillWith(Case aCase1, Case aCase2) {
-		List<Descriptor> desc1, desc2;
-		Descriptor d1, d2;
-		ComparingTableTuple tuple;
-
-		desc1 = new ArrayList<Descriptor>();
-		desc2 = new ArrayList<Descriptor>();
+	public void fill(Case aCase1, Case aCase2) {
+		List<Descriptor<Object>> desc1, desc2;
+		Descriptor<Object> d1, d2;
+		ComparingTableTuple<Object> tuple;
+		int increment;
 		
-		for (int i = 1; i <= 2; i++) {
-			if (i == 1) {
-				this.copyDescription(aCase1.getDescription(), desc1);
-				this.copyDescription(aCase2.getDescription(), desc2);
-			} else {
-				if (!(desc2.isEmpty())) {
-					this.copyDescription(desc2, desc1); 
-					while (!(desc2.isEmpty())) desc2.remove(0);
-				}					
-			}
-			
-			while (!(desc1.isEmpty())) {
-				d1 = desc1.remove(0);
-   				d2 = this.removeDescriptorIn(desc2, d1.getAttribute());
-   				if (i == 1) {
-   					tuple = new ComparingTableTuple(d1.getAttribute(), d1.getValue(), ((d2 == null)? null:d2.getValue()));
-   				} else {
-   		   			tuple = new ComparingTableTuple(d1.getAttribute(), null, d1.getValue());
-   				}
-   				this.add(tuple);
-			}
+		desc1 = aCase1.getDescription();
+		desc2 = aCase2.getDescription();
+		
+		if (desc1.size() > desc2.size()) increment = 0;
+		else increment = desc2.size() - desc1.size();
+		
+		for (int i = 0; i < desc1.size()+ increment; i++) {			
+			if  (i < desc1.size()) {
+				d1 = desc1.get(i);
+   				d2 = this.getDescriptor(desc2, d1.getAttribute());
    				
+   				tuple = new ComparingTableTuple<Object>(d1.getAttribute(), d1.getValue(), ((d2 == null)? null:d2.getValue()));
+   			} else {
+   				d2 = desc2.get(i);
+   		   		tuple = new ComparingTableTuple<Object>(d2.getAttribute(), null, d2.getValue());
+   			}
+   			
+			this.add(tuple);
 		}
 	}
 
@@ -73,16 +60,16 @@ public class ComparingTable extends ArrayList<ComparingTableTuple> {
 	 * @param anInputDescription
 	 * @param anOutputDescription
 	 */
-	public void copyDescription(List<Descriptor> anInputDescription, List<Descriptor> anOutputDescription) {
+	/*public void copyDescription(List<Descriptor<Object>> anInputDescription, List<Descriptor<Object>> anOutputDescription) {
 		for (int i = 1; i <= anInputDescription.size(); i++)
 			anOutputDescription.add(anInputDescription.get(i-1));
-	}
+	}*/
 	
 	/**
 	 * @see "Método extractTuple del protocolo removing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public ComparingTableTuple extractTuple() {
+	public ComparingTableTuple<Object> extractTuple() {
 		if (this.isEmpty()) return null;
 		
 		return this.remove(0);
@@ -94,12 +81,12 @@ public class ComparingTable extends ArrayList<ComparingTableTuple> {
 	 * @param anAttribute
 	 * @return
 	 */
-	public Descriptor removeDescriptorIn(List<Descriptor> aDescription, String anAttribute) {
+	public Descriptor<Object> getDescriptor(List<Descriptor<Object>> aDescription, String anAttribute) {
 		if (aDescription.isEmpty()) return null;
 
 		for (int i = 1; i <= aDescription.size(); i++) {
 			if (aDescription.get(i-1).getAttribute().equals(anAttribute))
-				return aDescription.remove(i-1);
+				return aDescription.get(i-1);
 		}
 		
 		return null;

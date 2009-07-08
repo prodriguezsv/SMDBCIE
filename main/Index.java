@@ -1,5 +1,5 @@
 /**
- * 
+ * @see "Categoría Main de SUKIA Smalltalk"
  */
 package main;
 
@@ -23,18 +23,16 @@ import auxiliary.IndexValue;
  *
  */
 public class Index extends Node {
-	String label; //A Symbol that represents an attribute.
-	List<IndexValue> successors; // List of IndexValues, each pointing to a case or a norm.
-	Norm predecessorNorm; // Pointer to the Index's predecessor norm.
+	private String label; //A Symbol that represents an attribute.
+	private List<IndexValue<Object>> successors; // List of IndexValues, each pointing to a case or a norm.
+	private Norm predecessorNorm; // Pointer to the Index's predecessor norm.
 
 	/**
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk" 
 	 */
 	public Index() {
-		// TODO Auto-generated constructor stub
-
-		label = "";
-		successors = new ArrayList<IndexValue>();
+		label = null;
+		successors = new ArrayList<IndexValue<Object>>();
 		predecessorNorm = null;
 	}
 	
@@ -43,8 +41,8 @@ public class Index extends Node {
 	 * @see "Método clear del protocolo initializing en SUKIA SmallTalk"
 	 */
 	public void clear() {
-		label = "";
-		while (!(successors.isEmpty())) successors.remove(0);
+		label = null;
+		successors.clear();
 		predecessorNorm = null;
 	}
 
@@ -85,7 +83,7 @@ public class Index extends Node {
 	 * @see "Método successors del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<IndexValue> getSuccessors() {
+	public List<IndexValue<Object>> getSuccessors() {
 		return successors;
 	}
 	
@@ -93,7 +91,7 @@ public class Index extends Node {
 	 * Método de instancia agregado
 	 * @param successors
 	 */
-	public void setSuccessors(List<IndexValue> successors) {
+	public void setSuccessors(List<IndexValue<Object>> successors) {
 		this.successors = successors;
 	}
 	
@@ -101,50 +99,92 @@ public class Index extends Node {
 	 * @see "Método addIndexValue: del protocolo adding en SUKIA SmallTalk"
 	 * @param anIndexValue
 	 */
-	// Pendiente de traducir
-	public void addIndexValue(IndexValue anIndexValue) {
+	public boolean addIndexValue(IndexValue<Object> anIndexValue) {
 		int i;
-		IndexValue ixv;
+		IndexValue<Object> iv;
 	
 		// If argument is not an IndexValue, or if argument contains invalid data, do not add
+		 if (!(anIndexValue.isValid())) return false;
+
+		// If argument is already included, do not add
+		if (this.isValueIncluded(anIndexValue.getValue()) || this.isSuccessorIncluded(anIndexValue.getSuccessors()))
+			return false;
+
+		iv = new IndexValue<Object>(anIndexValue.getValue(), anIndexValue.getSuccessors().get(0));
+		
+		i = 2;
+		while (i <= anIndexValue.getSuccessors().size()) {
+			iv.addSuccessor(anIndexValue.getSuccessors().get(i-1));
+			i = i + 1;
+		}
+
+		this.getSuccessors().add(iv);
+		
+		return true;
 	}
 	
 	/**
 	 * @see "Método successors: del protocolo navigating en SUKIA SmallTalk"
-	 * @param <T>
 	 * @param aValue
 	 */
-	// Pendiente de traducir
-	public <T> void successors(T aValue) {
-		return;
+	
+	public List<Node> getIndexValuesSuccessors(Object aValue) {
+		for (int i = 1; i <= this.getSuccessors().size(); i++) {
+			if (aValue == this.getSuccessors().get(i-1).getValue())
+				return this.getSuccessors().get(i-1).getSuccessors();
+		}
+		
+		return null;
 	}
 	
 	/**
-	 * @see "Método getIndexValueWithaValue: del protocolo searching en SUKIA SmallTalk"
-	 * @param <T>
+	 * @see "Método getIndexValueWith:aValue: del protocolo searching en SUKIA SmallTalk"
 	 * @return
 	 */
-	// Pendiente de traducir
-	public <T> IndexValue getIndexValueWith(T aValue) {
-		if (successors.isEmpty()) return null;
+	public IndexValue<Object> getIndexValue(Object aValue) {
+		if (this.getSuccessors().isEmpty()) return null;
 
-		for (int i = 1; i <= successors.size(); i++) {
+		for (int i = 1; i <= this.getSuccessors().size(); i++) {
+			if (this.getSuccessors().get(i-1).getValue() == aValue)
+				return this.getSuccessors().get(i-1);
 		}
 		
 		return null;
 	}
 
 	/**
+	 * All successors of an Index are represented by instances of IndexValue, which have the form: (val, succ ) | ( val, succ1, ..., succN ).
+	 * A successor succ may be a Norm, a Case, or a set of Cases. Since the number of successors for an IndexValue may vary (i.e., one or more),
+	 * then, IndexValue returns them in a collection.
+	 * Returns: true -  if there is at least ONE succesor, that belongs to any of the IndexValue successor lists, that matches an element in aSuccessorList;
+	 * false - if there is no match; i.e., ALL elements in aSuccessorList are new.
 	 * @see "Método getIndexValueWithaValue: del protocolo testing en SUKIA SmallTalk"
 	 * @param aSuccessorList
 	 * @return
 	 */
-	// Pendiente de traducir
-	public boolean isSuccessorIncluded(List aSuccessorList) {
+	public boolean isSuccessorIncluded(List<Node> aSuccessorList) {
+		List<Node> s;
+
+		for (int i = 1; i <= this.getSuccessors().size(); i++) { 
+			s = this.getSuccessors().get(i-1).getSuccessors();
+			for (int j = 1; j <= this.getSuccessors().size(); j++) {
+				if (s.contains(aSuccessorList.get(j-1))) return true;
+			}
+		}
+		
 		return false;
 	}
 	
-	public <T> boolean isValueIncluded(T aValue) {
+	/**
+	 * @see "Método isValueIncluded: del protocolo testing en SUKIA SmallTalk"
+	 * @param aValue
+	 * @return
+	 */
+	public boolean isValueIncluded(Object aValue) {
+		for (int i = 1; i <= this.getSuccessors().size(); i++) {
+			if (aValue == this.getSuccessors().get(i-1).getValue()) return true;
+		}
+		
 		return false;
 	}
 }

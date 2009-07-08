@@ -1,39 +1,37 @@
 /**
- * 
+ * @see "Categoría Sukia Domain Theory de SUKIA Smalltalk"
  */
 package domainTheory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
-import values.Descriptor;
 
 /**
  * @author Armando
  *
  */
-public class Taxon {
+public class Taxon implements Comparable<Taxon>{
 	private String level;
 	private String name;
 	private Taxon predecessor;
-	private List<Taxon> sucessors;
-	private List<Structure> SAVDescription;
-	private List<GroupingHeuristic> GHDescription;
+	private List<Taxon> successors;
+	private StructureIndex SAVDescription;
+	private GroupingHeuristicIndex GHDescription;
 
 	/**
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
 	public Taxon() {
-		// TODO Auto-generated constructor stub
 		setLevel(null);
 		setName(null);
 		setPredecessor(null);
 		//Pendiente ordenamiento
-		setSucessors(new ArrayList<Taxon>());
+		setSuccessors(new ArrayList<Taxon>());
 		//Pendiente ordenamiento
-		setGHDescription(new ArrayList<GroupingHeuristic>());
+		setGHDescription(new GroupingHeuristicIndex());
 		//Pendiente ordenamiento
-		setSAVDescription(new ArrayList<Structure>());
+		setSAVDescription(new StructureIndex());
 	}
 
 	/**
@@ -92,8 +90,9 @@ public class Taxon {
 	 * @see "Método predecessor: del protocolo adding-private en SUKIA SmallTalk"
 	 * @param predecessor
 	 */
-	private void setPredecessor(Taxon predecessor) {
+	public void setPredecessor(Taxon predecessor) {
 		this.predecessor = predecessor;
+		this.predecessor.addSuccessor(this);
 	}
 
 	/**
@@ -108,39 +107,42 @@ public class Taxon {
 	 * Método de instancia agregado
 	 * @param sucessor
 	 */
-	public void setSucessors(List<Taxon> sucessor) {
-		this.sucessors = sucessor;
+	public void setSuccessors(List<Taxon> sucessors) {
+		this.successors = sucessors;
+		Collections.sort(this.successors);
 	}
 
 	/**
 	 * @see "Método successors del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Taxon> getSucessors() {
-		return sucessors;
+	public List<Taxon> getSuccessors() {
+		return successors;
 	}
 	
 	/**
 	 * @see "Método sucessor: del protocolo adding-private en SUKIA SmallTalk"
 	 * @param sucessor
 	 */
-	public void addSucessor(Taxon sucessor) {
-		this.sucessors.add(sucessor);
+	public void addSuccessor(Taxon successor) {
+		successor.setPredecessor(successor);
+		this.successors.add(successor);
+		Collections.sort(this.successors);
 	}
 
 	/***
 	 * Método de instancia agregado
 	 * @param gHDescription
 	 */
-	public void setGHDescription(List<GroupingHeuristic> gHDescription) {
-		GHDescription = gHDescription;
+	public void setGHDescription(GroupingHeuristicIndex aGHDescription) {
+		GHDescription = aGHDescription;
 	}
 
 	/**
 	 * @see "Método GHdescription del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<GroupingHeuristic> getGHDescription() {
+	public GroupingHeuristicIndex getGHDescription() {
 		return GHDescription;
 	}
 	
@@ -148,26 +150,26 @@ public class Taxon {
 	 * @see "Método GHDescription: del protocolo adding en SUKIA SmallTalk"
 	 * @param aGroupingHeuristic
 	 */
-	public void addGHDescription(GroupingHeuristic aGroupingHeuristic) {
+	/*public void addGHDescription(GroupingHeuristic aGroupingHeuristic) {
 		if (includesGroupingHeuristic(aGroupingHeuristic.getName(), GHDescription))
 			return;
 		
 		GHDescription.add(aGroupingHeuristic);
-	}
+	}*/
 
 	/***
 	 * Método de instancia agregado
 	 * @param sAVDescription
 	 */
-	public void setSAVDescription(List<Structure> sAVDescription) {
-		SAVDescription = sAVDescription;
+	public void setSAVDescription(StructureIndex aSAVDescription) {
+		SAVDescription = aSAVDescription;
 	}
 
 	/**
 	 * @see "Método SAVdescription del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Structure> getSAVDescription() {
+	public StructureIndex getSAVDescription() {
 		return SAVDescription;
 	}
 
@@ -175,12 +177,12 @@ public class Taxon {
 	 * @see "Método SAVdescription: del protocolo adding en SUKIA SmallTalk"
 	 * @param aStructure
 	 */
-	public void addSAVDescription(Structure aStructure) {
+	/*public void addSAVDescription(Structure aStructure) {
 		if (includesStructure(aStructure.getName(), SAVDescription))
 			return;
 		
 		SAVDescription.add(aStructure);
-	}
+	}*/
 	
 	/**
 	 * @see "Método includes:in: del protocolo testing en SUKIA SmallTalk"
@@ -188,14 +190,14 @@ public class Taxon {
 	 * @param aDescription
 	 * @return
 	 */
-	public boolean includesStructure(String aName, List<Structure> aDescription) {
+	/*public boolean includesStructure(String aName, List<Structure> aDescription) {
 		for (int i = 1; i <= aDescription.size(); i++) {
-			if (aDescription.get(i).getName().equals(aName))
+			if (aDescription.get(i-1).getName().equals(aName))
 				return true;
 		}
 		
 		return false;
-	}
+	}*/
 	
 	/**
 	 * @see "Método includes:in: del protocolo testing en SUKIA SmallTalk"
@@ -203,14 +205,14 @@ public class Taxon {
 	 * @param aDescription
 	 * @return
 	 */
-	public boolean includesGroupingHeuristic(String aName, List<GroupingHeuristic> aDescription) {
+	/*public boolean includesGroupingHeuristic(String aName, List<GroupingHeuristic> aDescription) {
 		for (int i = 1; i <= aDescription.size(); i++) {
-			if (aDescription.get(i).getName().equals(aName))
+			if (aDescription.get(i-1).getName().equals(aName))
 				return true;
 		}
 		
 		return false;
-	}
+	}*/
 	
 	/**
 	 * @see "Método isSuccessorOf: del protocolo inhetitence en SUKIA SmallTalk"
@@ -218,8 +220,9 @@ public class Taxon {
 	public boolean isSuccessorOf(Taxon aTaxon) {
 		Taxon  predecessorTaxon;
 		
-		if (TaxonomicLevels.transformToIndex(level) <= TaxonomicLevels.transformToIndex(aTaxon.getLevel()))
+		if (TaxonomicLevels.getLevels().indexOf(level) <= TaxonomicLevels.getLevels().indexOf(aTaxon.getLevel()))
 			return false;
+		
 		predecessorTaxon = predecessor;
 		while (!(predecessorTaxon.getLevel() == TaxonomicLevels.getRoot())) {
 			if (predecessorTaxon.getName() == aTaxon.getName())
@@ -235,10 +238,10 @@ public class Taxon {
 	 * @see "Método linkTo: del protocolo linking en SUKIA SmallTalk"
 	 * @param aTaxon
 	 */
-	public void linkTo(Taxon aTaxon) {
+	/*public void linkTo(Taxon aTaxon) {
 		predecessor = aTaxon;
 		aTaxon.addSucessor(this);
-	}
+	}*/
 	
 	/**
 	 * @see "Método unlinkFromTheHierarchy del protocolo linking en SUKIA SmallTalk"
@@ -247,9 +250,9 @@ public class Taxon {
 		Taxon p;
 		
 		p = predecessor;
-		for (int i = 1; i <= p.getSucessors().size(); i++) {
-			if (p.getSucessors().get(i) == this) {
-				 p.getSucessors().remove(i);
+		for (int i = 1; i <= p.getSuccessors().size(); i++) {
+			if (p.getSuccessors().get(i-1) == this) {
+				 p.getSuccessors().remove(i-1);
 				 predecessor = null; 
 			}
 		}
@@ -260,83 +263,43 @@ public class Taxon {
 	 * @param aName
 	 * @param aDescription
 	 */
-	public Structure getAStructureWith(String aName, List<Structure> aDescription) {
+	/*public Structure getAStructureWith(String aName, List<Structure> aDescription) {
 		for (int i = 1; i <= aDescription.size(); i++) {
 			if (aDescription.get(i).getName().equals(aName)) 
-				return aDescription.get(i);
+				return aDescription.get(i-1);
 		}
 		
 		return null;
-	}
+	}*/
 	
 	/**
 	 * @see "Método getAnObjectWith:in: del protocolo searching en SUKIA SmallTalk"
 	 * @param aName
 	 * @param aDescription
 	 */
-	public GroupingHeuristic getAGroupingHeuristicWith(String aName, List<GroupingHeuristic> aDescription) {
+	/*public GroupingHeuristic getAGroupingHeuristicWith(String aName, List<GroupingHeuristic> aDescription) {
 		for (int i = 1; i <= aDescription.size(); i++) {
 			if (aDescription.get(i).getName().equals(aName)) 
 				return aDescription.get(i);
 		}
 		
 		return null;
+	}*/
+	
+	/**
+	 * @see "Método isLinkOKBetween:and: del protocolo de clase testing en SUKIA SmallTalk"
+	 * @param aParentTaxon
+	 * @param aSuccessorTaxon
+	 * @return
+	 */
+	public boolean isOKDirectLink(Taxon aParentTaxon) {
+		return (((TaxonomicLevels.getLevels().indexOf(this.getLevel())) - (TaxonomicLevels.getLevels().indexOf(aParentTaxon.getLevel()))) == 1);
 	}
 	
 	/**
-	 * If the receiver's GH description contains grouping heuristics with range values, then, for each one of those grouping heuristics:
-	 * seek a grouping heuristic in the receiver's predecessor's GH description whose name matches the (receiver's) grouping heuristic name;
-	 * if the grouping heuristic is found, seek a ValueDescriptor that is a range value;
-	 * if the ValueDescriptor is found, determine if the measuring units are the same, and if the receiver's range value lies within  the ValueDescriptor
-	 * range just found.
-	 * If the ranges are consistent, return true. Else, return false (i.e., inconsistent ranges).
-	 * f neither the first nor the second steps are satisfied, get the receiver's predecessor's predecessor, and start again.
-	 * This method will stop when the predecessor's level is ROOT
-	 * @see "Método GHRangesConsistentWith: del protocolo testing en SUKIA SmallTalk"
-	 * @param aParentTaxon
-	 * @return
+	 * Método de instancia agregado
 	 */
-	//Pendiente de traducir
-	public boolean GHRangesConsistentWith(Taxon aParentTaxon) {
-		GroupingHeuristic gh;
-		Descriptor vd;
-		
-		if (predecessor.getLevel() == TaxonomicLevels.getLevels().get(0))
-			return true;
-		// Parse the receiver's grouping heuristic (GH) description
-		for (int i = 1; i <= GHDescription.size(); i++) {
-			// Get the next grouping heuristic in the receiver's GH description
-			gh = GHDescription.get(i);
-			for (int j = 1; j <= gh.getValues().get(GroupingHeuristic.oneLevel()).size(); j++) {
-				// Get the next value descriptor, and test if it's a range value
-				
-					
-			}
-					
-		}	
-		
-		// The entire GH decription of the receiver was parsed and nothing was found in the GH description of all its
-		// predecessors. Thus, assume there are no inconsistencies
-		return true;
-	}
-	
-	/**
-	 * If the receiver's SAV description contains structures with attributes that have range values, then, for each one of those structures:
-	 * seek a structure in the receiver's predecessor's SAV description whose name matches the (receiver's) structure name;
-	 * if the structure is found, seek in the attributes of the found structure for an attribute that matches the (receiver's structure) attribute name;
-	 * if the attribute is found, seek a ValueDescriptor that is a range value;
-	 * if the ValueDescriptor is found, determine if the measuring units are the same, and if the receiver's range value lies within the ValueDescriptor
-	 * range just found.
-	 * If the ranges are consistent, return true. Else, return false (i.e., inconsistent ranges).
-	 * If neither the first nor the second steps are satisfied, get the receiver's predecessor's predecessor, and start again.
-	 * This method will stop when the predecessor's level is ROOT
-	 * @see "Método SAVRangesConsistentWith: del protocolo testing en SUKIA SmallTalk"
-	 * @param aParentTaxon
-	 * @return
-	 */
-	public boolean SAVRangesConsistentWith(Taxon aParentTaxon) {
-		// The entire SAV decription of the receiver was parsed and nothing was found in the SAV description of all its
-		// predecessors. Thus, assume there are no inconsistencies
-		return true;
+	public int compareTo(Taxon aTaxon) {
+		return this.getName().compareTo(aTaxon.getName());
 	}
 }

@@ -1,5 +1,5 @@
 /**
- * 
+ * @see "Categoría Main de SUKIA Smalltalk"
  */
 package main;
 
@@ -13,7 +13,7 @@ public abstract class Node {
 	 * 
 	 */
 	public Node() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 }

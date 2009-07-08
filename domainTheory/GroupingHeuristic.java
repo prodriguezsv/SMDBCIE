@@ -1,12 +1,14 @@
 /**
- * 
+ * @see "Categoría Sukia Domain Theory de SUKIA Smalltalk"
  */
 package domainTheory;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import values.Descriptor;
+import redundantDiscriminantNet.SAVDescriptor;
+
+import values.ValueDescriptor;
 import values.RangeDescriptor;
 import values.SingleDescriptor;
 import values.Value;
@@ -15,7 +17,7 @@ import values.Value;
  * @author Armando
  *
  */
-public class GroupingHeuristic {
+public class GroupingHeuristic implements Comparable<GroupingHeuristic> {
 	private String name;
 	private double weight;
 	private Value values;
@@ -26,7 +28,6 @@ public class GroupingHeuristic {
 	 * @see "Método newWithOneLevel del protocolo instance creation en SUKIA SmallTalk"
 	 */
 	public GroupingHeuristic() {
-		// TODO Auto-generated constructor stub
 		setName(null);
 		setWeight(0.0);
 		setValues(new Value());
@@ -37,7 +38,7 @@ public class GroupingHeuristic {
 	 * @return
 	 */
 	public static int oneLevel() {
-		return 1;
+		return 0;
 	}
 
 	/**
@@ -75,10 +76,10 @@ public class GroupingHeuristic {
 
 	/**
 	 * Método de intancia agregado
-	 * @param attributes
+	 * @param values
 	 */
-	private void setValues(Value attributes) {
-		this.values = attributes;
+	private void setValues(Value values) {
+		this.values = values;
 	}
 
 	/**
@@ -94,10 +95,9 @@ public class GroupingHeuristic {
 	 * @param aGroupingHeuristic
 	 * @param aTaxon
 	 */
-	// Pendiente de traducir
-	public <T> void copy(GroupingHeuristic aGroupingHeuristic, Taxon aTaxon) {
-		List<Descriptor> vList;
-		Descriptor ovd, nvd;
+	public <T> void addValues(GroupingHeuristic aGroupingHeuristic, Taxon aTaxon) {
+		List<ValueDescriptor> vList;
+		ValueDescriptor ovd, nvd;
 
 		if (values.size() < aGroupingHeuristic.getValues().size())
 			return;
@@ -106,19 +106,19 @@ public class GroupingHeuristic {
 		weight = aGroupingHeuristic.getWeight();
 		
 		for (int i = 1; i <= aGroupingHeuristic.getValues().size(); i++) {
-			vList = aGroupingHeuristic.getValues().get(i);
+			vList = aGroupingHeuristic.getValues().get(i-1);
 			
 			for (int j = 1; j <= vList.size(); j++) {
-				ovd = vList.get(j);
-				if (ovd.getClass().getName().equals("SingleDescriptor"))
+				ovd = vList.get(j-1);
+				if (ovd instanceof SingleDescriptor)
 					nvd = new SingleDescriptor<T>();
 				else {
 					nvd = new RangeDescriptor();
 				}
 				
-				nvd.copyFrom(ovd, aTaxon);
+				nvd.addValues(ovd, aTaxon);
 				if (this.getValues().size() == aGroupingHeuristic.getValues().size())
-					this.getValues().addValueDescriptor(nvd, TaxonomicLevels.getNameByNumber(i));
+					this.getValues().addValueDescriptor(nvd, TaxonomicLevels.getLevels().get(i+1));
 				else
 					this.getValues().addValueDescriptor(nvd, aTaxon.getLevel());
 				
@@ -141,29 +141,44 @@ public class GroupingHeuristic {
 	 * @param aTaxonomicGroupName
 	 * @return
 	 */
-	// Pendiente de traducir (Ojo)
-	public List<Structure> createSAVDescription(String aTaxonomicGroupName) {
-		List<Structure> description;
-		List<Descriptor> vdList;
-		Descriptor vd;
+	@SuppressWarnings("unchecked")
+	public List<SAVDescriptor> createSAVDescription(String aTaxonomicGroupName) {
+		List<SAVDescriptor> description;
+		List<ValueDescriptor> vdList;
+		ValueDescriptor vd;
+		SAVDescriptor d;
 		
 		// Check if its value has more than one value descriptor container
-		if (!(this.getValues().size() == GroupingHeuristic.oneLevel()))
+		if (!(this.getValues().size() == 1))
 			return null;
 
 		// Create the description holder
-		description = new ArrayList<Structure>();
+		description = new ArrayList<SAVDescriptor>();
 
 		// Get the set of value descriptors
-		vdList = this.getValues().getValueDescriptorsIn(TaxonomicLevels.getNameByNumber(GroupingHeuristic.oneLevel()));
+		vdList = this.getValues().getValueDescriptors(TaxonomicLevels.getLevels().get(GroupingHeuristic.oneLevel()));
 
 		// Make sure that the value descriptor list only contains ONE item
 		if (!(vdList.size() == 1)) return null;
 
 		// Get the value descriptor and make sure it isn't a range descriptor
-		vd = vdList.get(1);
+		vd = vdList.get(0);
 		
+		if (vd instanceof RangeDescriptor) return null;
+		
+		// Create the new SAVDescriptor and assign its values
+		d = new SAVDescriptor();
+		d.add(aTaxonomicGroupName, this.getName(), ((SingleDescriptor)vd).getValue());
+					
+		description.add(d);
 		
 		return description;
+	}
+	
+	/**
+	 * Método de instancia agregado
+	 */
+	public int compareTo(GroupingHeuristic aGroupingHeuristic) {
+		return this.getName().compareTo(aGroupingHeuristic.getName());
 	}
 }

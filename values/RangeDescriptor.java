@@ -1,5 +1,5 @@
 /**
- * 
+ * @see "Categoría Sukia Values de SUKIA Smalltalk"
  */
 package values;
 
@@ -10,7 +10,7 @@ import domainTheory.Taxon;
  * @author Armando
  *
  */
-public class RangeDescriptor extends Descriptor {
+public class RangeDescriptor extends ValueDescriptor {
 	private double lowerBound;
 	private double upperBound;
 	private String measuringUnit;
@@ -82,7 +82,7 @@ public class RangeDescriptor extends Descriptor {
 	 * @param aDescriptor
 	 * @param aTaxon
 	 */
-	public <T> void copyFrom(T aDescriptor, Taxon aTaxon) {
+	public <T> void addValues(T aDescriptor, Taxon aTaxon) {
 		RangeDescriptor rvd;
 		
 		rvd = (RangeDescriptor) aDescriptor;
@@ -91,7 +91,7 @@ public class RangeDescriptor extends Descriptor {
 		this.getTaxonList().add(aTaxon);
 	}
 	
-	public boolean rangeWIthin(double aLowerBound, double anUpperBound) {
+	public boolean isRangeWithin(double aLowerBound, double anUpperBound) {
 		if (aLowerBound > anUpperBound) return false;
 
 		return ((this.getLowerBound() >= aLowerBound) && (this.getUpperBound() <= anUpperBound));

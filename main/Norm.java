@@ -1,10 +1,12 @@
 /**
- * 
+ * @see "Categoría Main de SUKIA Smalltalk"
  */
 package main;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import redundantDiscriminantNet.SAVCase;
 
 /**
  * Purpose: Structure that groups (generalizes) a set of cases that share a common Descriptor.  Such cases may be
@@ -18,7 +20,7 @@ import java.util.List;
  *
  */
 public class Norm extends Node {
-	private Descriptor descriptor; //depicting the grouping (generalizing) concept
+	private Descriptor<Object> descriptor; //depicting the grouping (generalizing) concept
 	private List<Node> successors; // A list of items directly linked to the Norm, i.e, cases or indices
 	private Index predecessorIndex; // Pointer to the Norm's parent Index .
 	private int numCases; // Number of cases grouped by the Norm, whether linked directly or located levels below.
@@ -27,8 +29,7 @@ public class Norm extends Node {
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
 	public Norm() {
-		// TODO Auto-generated constructor stub
-		descriptor = new Descriptor();
+		descriptor = new Descriptor<Object>();
 		successors = new ArrayList<Node>();
 		predecessorIndex = null;
 		numCases = 0;
@@ -38,7 +39,7 @@ public class Norm extends Node {
 	 * @see "Método descriptor del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public Descriptor getDescriptor() {
+	public Descriptor<Object> getDescriptor() {
 		return descriptor;
 	}
 
@@ -47,10 +48,8 @@ public class Norm extends Node {
 	 * @see "Método descriptor: del protocolo adding en SUKIA SmallTalk"
 	 * @param descriptor
 	 */
-	// Pendiente de traducir
-	public void setDescriptor(Descriptor descriptor) {
-
-		this.descriptor = descriptor;
+	public void setDescriptor(Descriptor<Object> descriptor) {
+		this.getDescriptor().add(descriptor.getAttribute(), descriptor.getValue());
 	}
 
 	/**
@@ -70,12 +69,39 @@ public class Norm extends Node {
 	}
 
 	/**
-	 * @see "Método successors: del protocolo adding en SUKIA SmallTalk"
+	 * Método de instancia agregado 
 	 * @param successors
 	 */
-	// Pendiente de traducir
 	public void setSuccessors(List<Node> successors) {
 		this.successors = successors;
+	}
+	
+	/**
+	 * @see "Método addSuccessor: del protocolo adding en SUKIA SmallTalk"
+	 */
+	public boolean addSuccessor(Node aSuccessor) {
+		int i;
+		
+		// Make sure that an identical object hasn't already been included
+		if (this.getSuccessors().contains(aSuccessor)) return false;
+
+		// If aSuccessor is an Index, make sure that all Index-labels are unique
+		if (aSuccessor instanceof Index) {
+			i = 1;
+			while (i <= this.getSuccessors().size()) {
+				if (!(this.getSuccessors().get(i-1) instanceof Index))
+					i = i + 1 ;
+				else {
+					 if (((Index)this.getSuccessors().get(i-1)).getLabel().equals(((Index) aSuccessor).getLabel()))
+						 return false;
+					 else i = i + 1;
+				}
+			}
+		}
+		
+		this.getSuccessors().add(aSuccessor);
+		
+		return true;
 	}
 
 	/**
@@ -98,11 +124,10 @@ public class Norm extends Node {
 	 * @see "Método predecessor del protocolo navigating en SUKIA SmallTalk"
 	 * @return
 	 */
-	// Pendiente de traducir (ojo)
-	public Norm predecessor() {
-		if (predecessorIndex == null) return this;
+	public Norm getPredecessorNorm() {
+		if (predecessorIndex == null) return null;
 		
-		return null;
+		return this.predecessorIndex.getPredecessorNorm();
 	}
 
 	/**
@@ -119,14 +144,35 @@ public class Norm extends Node {
 
 		i = 1;
 		while (i <= successors.size()) {
-			if (successors.get(i).getClass().getName().equals("Case") || successors.get(i).getClass().getName().equals("SAVCase"))
-				s.add((Case)successors.get(i));
+			if ((successors.get(i-1) instanceof Case) || (successors.get(i-1) instanceof SAVCase))
+				s.add((Case)successors.get(i-1));
 			i = i + 1;
 		}
 		
 		return s;
 	}
 
+	/**
+	 * This method returns a collection of cases that are immediate successors of this Norm.  That is, all retrieved cases
+	 * are generalized by the Norm's Descriptor
+	 * @see "Método successorCases del protocolo navigating en SUKIA SmallTalk"
+	 * @return
+	 */
+	public List<Index> successorIndexes() {
+		int i;
+		List<Index> s;
+		
+		s = new ArrayList<Index>();
+
+		i = 1;
+		while (i <= successors.size()) {
+			if ((successors.get(i-1) instanceof Index))
+				s.add((Index)successors.get(i-1));
+			i = i + 1;
+		}
+		
+		return s;
+	}
 	/**
 	 * Given a Descriptor, this method searches for an Index that matches the attribute-value parameters, and returns:
 	 * - the successor Norm, or
@@ -135,8 +181,14 @@ public class Norm extends Node {
 	 * @param aDescriptor
 	 * @return
 	 */
-	// Pendiente de traducir
-	public Norm successorNormWith(Descriptor aDescriptor) {
+	public Norm successorNormWith(Descriptor<Object> aDescriptor) {
+		Index index;
+
+		index = this.getIndex(aDescriptor.getAttribute());
+		if (!(index == null)) {
+			return this.getSuccessorNorm(index, aDescriptor.getValue());
+		}
+
 		return null;
 	}
 	
@@ -145,15 +197,14 @@ public class Norm extends Node {
 	 * @param aLabel
 	 * @return
 	 */
-	// Pendiente de traducir (ojo)
-	public Index getIndexWith(String aLabel) {
+	public Index getIndex(String aLabel) {
 		int i;
 		
 		i = 1;
 		while (i <= successors.size()) {
-			if (successors.get(i).getClass().getName().equals("Index"))
-				// if (aLabel.equals(successors.get(i).getLabel()))
-					return ((Index)successors.get(i));
+			if (successors.get(i) instanceof Index)
+				if (aLabel.equals(((Index)successors.get(i-1)).getLabel()))
+					return ((Index)successors.get(i-1));
 			i = i + 1;
 		}
 			
@@ -162,20 +213,19 @@ public class Norm extends Node {
 
 	/**
 	 * @see "Método getIndexWith:and: del protocolo searching en SUKIA SmallTalk"
-	 * @param <T>
 	 * @param anAttribute
 	 * @param aValue
 	 * @return
 	 */
-	// pendiente de traducir (ojo)
-	public <T> Index getIndexWith(String anAttribute, T aValue) {
+	public Index getIndex(String anAttribute, Object aValue) {
 		int i;
 		
 		i = 1;
 		while (i <= successors.size()) {
-			if (successors.get(i).getClass().getName().equals("Index"))
-				//if (anAttribute.equals(successors.get(i).getLabel() && !(successors.get(i).getIndexValueWith(aValue)) == null)) 
-						return ((Index)successors.get(i));
+			if (successors.get(i-1) instanceof Index)
+				if (anAttribute.equals(((Index)successors.get(i-1)).getLabel()) 
+						&& !(((Index)successors.get(i-1)).getIndexValue(aValue) == null)) 
+						return ((Index)successors.get(i-1));
 			i = i + 1;
 		}
 				
@@ -184,25 +234,28 @@ public class Norm extends Node {
 	
 	/**
 	 * @see "Método getSuccessorFor:with del protocolo searching en SUKIA SmallTalk"
-	 * @param <T>
 	 * @param anIndex
 	 * @param aValue
 	 * @return
 	 */
-	// Pendiente de traducir
-	public <T> Node getSuccessorFor(Index anIndex, T aValue) {
-		return null;
+	public  List<Node> getIndexValuesSuccessors(Index anIndex, Object aValue) {
+		return anIndex.getIndexValuesSuccessors(aValue);
 	}
 
 	/**
 	 * @see "Método getSuccessorNormFor:with del protocolo searching en SUKIA SmallTalk"
-	 * @param <T>
 	 * @param anIndex
 	 * @param aValue
 	 * @return
 	 */
-	// Pendiente de traducir
-	public <T> Norm getSuccessorNormFor(Index anIndex, T aValue) {
-		return null;
+	public Norm getSuccessorNorm(Index anIndex, Object aValue) {
+		List<Node> succ;
+
+		succ = anIndex.getIndexValuesSuccessors(aValue);
+		if (!(succ.size() == 1)) return null;
+
+		if (!(succ.get(0) instanceof Norm)) return null;
+		
+		return (Norm) succ.get(0);
 	}
 }

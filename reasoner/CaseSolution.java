@@ -38,7 +38,7 @@ public class CaseSolution {
 	 */
 	public void setTaxonLevel(String taxonLevel) {
 		// Search in the element list for the given name
-		if (!(TaxonomicLevels.includes(taxonLevel)))
+		if (!(TaxonomicLevels.getLevels().contains(taxonLevel)))
 			return;
 
 		this.taxonLevel = taxonLevel;

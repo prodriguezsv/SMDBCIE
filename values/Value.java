@@ -12,17 +12,29 @@ import domainTheory.TaxonomicLevels;
  * @author Armando
  *
  */
-public class Value extends ArrayList<List<Descriptor>> {
+@SuppressWarnings("serial")
+public class Value extends ArrayList<List<ValueDescriptor>> {
 	
 	/**
 	 * @see "Método init del protocolo initializing en SUKIA SmallTalk"
 	 */
 	public Value() {
-		List<Descriptor> level;
+		List<ValueDescriptor> level;
 
-		for (int i = 1; i <= TaxonomicLevels.nomenclaturalNumber(); i++) {
-			level = new ArrayList<Descriptor>();
-			//Pendiente el ordenamiento
+		for (int i = 1; i <= TaxonomicLevels.getNomenclaturalLevelsNumber(); i++) {
+			level = new ArrayList<ValueDescriptor>();
+			this.add(level);
+		}
+	}
+	
+	/**
+	 * @see "Método newWithOneLevel del protocolo initializing en SUKIA SmallTalk"
+	 */
+	public Value(boolean oneLevel) {
+		List<ValueDescriptor> level;
+
+		if (oneLevel) {
+			level = new ArrayList<ValueDescriptor>();
 			this.add(level);
 		}
 	}
@@ -32,34 +44,22 @@ public class Value extends ArrayList<List<Descriptor>> {
 	 * @param aDescriptor
 	 * @param aLevel
 	 */
-	public <T> Descriptor getMatchingValueDescriptorFor(SingleDescriptor<T> aDescriptor, String aLevel) {
-		List<Descriptor> vdList;
+	@SuppressWarnings("unchecked")
+	public <T extends ValueDescriptor> ValueDescriptor getValueDescriptors(T aDescriptor, String aLevel) {
+		List<ValueDescriptor> vdList;
 		
-		vdList = this.value(aDescriptor.getValue(), aDescriptor.getWeight(), aLevel, "=");
+		if (aDescriptor instanceof SingleDescriptor)			
+			vdList = this.getSingleDescriptors(((SingleDescriptor)aDescriptor).getValue(),
+					((SingleDescriptor)aDescriptor).getWeight(), aLevel, "=");
+		else
+			vdList = this.getRangeDescriptorsWithRange(((RangeDescriptor)aDescriptor).getLowerBound(), 
+					((RangeDescriptor)aDescriptor).getUpperBound(), aLevel);
 
 		if (vdList == null) return null;
 		
 		if (vdList.isEmpty() || vdList.size() > 1) return null;
 		
-		return vdList.get(1);
-	}
-	
-	/**
-	 * @see "Método getMatchingValueDescriptorFor:in: del protocolo accessing-general en SUKIA SmallTalk"
-	 * @param aDescriptor
-	 * @param aLevel
-	 */
-	public Descriptor getMatchingValueDescriptorFor(RangeDescriptor aDescriptor, String aLevel) {
-		List<Descriptor> vdList;
-		
-		
-		vdList = this.rangeMatching(aDescriptor.getLowerBound(), aDescriptor.getUpperBound(), aLevel);
-
-		if (vdList == null) return null;
-		
-		if (vdList.isEmpty() || vdList.size() > 1) return null;
-		
-		return vdList.get(1);
+		return vdList.get(0);
 	}
 	
 	/**
@@ -76,15 +76,15 @@ public class Value extends ArrayList<List<Descriptor>> {
 	 * @param aLevel
 	 * @return
 	 */
-	public List<Descriptor> getValueDescriptorsIn(String aLevel) {
+	public List<ValueDescriptor> getValueDescriptors(String aLevel) {
 		int levelNumber;
 		
 		// Get the level-list index (in self) corresponding to aLevel
-		levelNumber = TaxonomicLevels.transformToIndex(aLevel);
-		if (levelNumber == -1) return null;
+		levelNumber = TaxonomicLevels.getLevels().indexOf(aLevel);
+		if (levelNumber == -1 || levelNumber == 0) return null;
 
 		// Return the level-list indexed in self (i.e, Value) by levelNumber
-		return (this.get(levelNumber));
+		return (this.get(levelNumber-1));
 	}
 
 	/**
@@ -96,22 +96,22 @@ public class Value extends ArrayList<List<Descriptor>> {
 	 * @param aNumber
 	 * @param aLevel
 	 */
-	public List<Descriptor> numberInRange(double aNumber, String aLevel) {
+	public List<ValueDescriptor> getRangeDescriptorsWithNumber(double aNumber, String aLevel) {
 		int levelNumber;
-		List<Descriptor> vdList;
-		Descriptor vd;
+		List<ValueDescriptor> vdList;
+		ValueDescriptor vd;
 		RangeDescriptor rvd;
 		double n;
 		
 		//Get the level-list index (in self) corresponding to aLevel
-		levelNumber = TaxonomicLevels.transformToIndex(aLevel);
-		if (levelNumber == -1) return null;
+		levelNumber = TaxonomicLevels.getLevels().indexOf(aLevel);
+		if (levelNumber == -1 || levelNumber == 0) return null;
 	
 		n = aNumber;
-		vdList = new ArrayList<Descriptor>();
-		for (int i = 1; i <=  this.get(levelNumber).size(); i++) {
-			vd = this.get(levelNumber).get(i);
-			if (vd.getClass().getName().equals("RangeDescriptor")) {
+		vdList = new ArrayList<ValueDescriptor>();
+		for (int i = 1; i <=  this.get(levelNumber-1).size(); i++) {
+			vd = this.get(levelNumber-1).get(i-1);
+			if (vd instanceof RangeDescriptor) {
 				rvd = (RangeDescriptor)vd;
 				if (n >= rvd.getLowerBound() && n <= rvd.getUpperBound())
 					vdList.add(vd);
@@ -135,25 +135,25 @@ public class Value extends ArrayList<List<Descriptor>> {
 	 * @param aLevel
 	 * @return
 	 */
-	public List<Descriptor> rangeMatching(double aLowerBound, double anUpperBound, String aLevel) {
+	public List<ValueDescriptor> getRangeDescriptorsWithRange(double aLowerBound, double anUpperBound, String aLevel) {
 		int levelNumber;
-		List<Descriptor> vdList;
-		Descriptor vd;
+		List<ValueDescriptor> vdList;
+		ValueDescriptor vd;
 		RangeDescriptor rvd;
 		double lb, ub;
 		
 		// Get the level-list index (in self) corresponding to aLevel
-		levelNumber = TaxonomicLevels.transformToIndex(aLevel);
-		if (levelNumber == -1) return null;
+		levelNumber = TaxonomicLevels.getLevels().indexOf(aLevel);
+		if (levelNumber == -1  || levelNumber == 0) return null;
 		
 		lb = aLowerBound;
 		ub = anUpperBound;
 		
-		vdList = new ArrayList<Descriptor>();
+		vdList = new ArrayList<ValueDescriptor>();
 
-		for (int i = 1; i <= this.get(levelNumber).size(); i++) {
-			vd = this.get(levelNumber).get(i);
-			if (vd.getClass().getName().equals("RangeDescriptor")) {
+		for (int i = 1; i <= this.get(levelNumber-1).size(); i++) {
+			vd = this.get(levelNumber-1).get(i-1);
+			if (vd instanceof RangeDescriptor) {
 				rvd = (RangeDescriptor) vd;
 				if (lb == rvd.getLowerBound() && ub == rvd.getUpperBound()) {
 					vdList.add(vd);
@@ -174,24 +174,25 @@ public class Value extends ArrayList<List<Descriptor>> {
 	 * @param aLevel
 	 * @return
 	 */
-	public <T> List<Descriptor> value(T aValue, String aLevel) {
+	@SuppressWarnings("unchecked")
+	public <T> List<ValueDescriptor> getSingleDescriptors(T aValue, String aLevel) {
 		int levelNumber;
-		Descriptor vd;
+		ValueDescriptor vd;
 		SingleDescriptor<T> svd;
-		List<Descriptor> vdList;
+		List<ValueDescriptor> vdList;
 
 		// Get the level-list index (in self) corresponding to aLevel
-		levelNumber = TaxonomicLevels.transformToIndex(aLevel);
-		if (levelNumber == -1) return null;
+		levelNumber = TaxonomicLevels.getLevels().indexOf(aLevel);
+		if (levelNumber == -1  || levelNumber == 0) return null;
 
 		// Create the output ValueDescriptor list (vdList)
-		vdList = new ArrayList<Descriptor>();
+		vdList = new ArrayList<ValueDescriptor>();
 
 		// Parse all ValueDescriptors in the level-list
-		for (int i = 1; i <= this.get(levelNumber).size(); i++) {
-			vd = this.get(levelNumber).get(i);
-			if (!(vd.getClass().getName().equals("RangeDescriptor"))) {
-				svd = (SingleDescriptor<T>)vd;
+		for (int i = 1; i <= this.get(levelNumber-1).size(); i++) {
+			vd = this.get(levelNumber-1).get(i-1);
+			if (!(vd instanceof RangeDescriptor)) {
+				svd = (SingleDescriptor)vd;
 				if (svd.getValue() == aValue)
 					vdList.add(vd);
 			}
@@ -213,30 +214,31 @@ public class Value extends ArrayList<List<Descriptor>> {
 	 * @param anUpperBound
 	 * @return
 	 */
-	public <T> List<Descriptor> value(T aValue, String aLevel, double aLowerBound, double anUpperBound) {
+	@SuppressWarnings("unchecked")
+	public <T> List<ValueDescriptor> getSingleDescriptorsWithWeightInRange(T aValue, String aLevel, double aLowerBound, double anUpperBound) {
 		int levelNumber;
-		Descriptor vd;
+		ValueDescriptor vd;
 		SingleDescriptor<T> svd;
-		List<Descriptor> vdList;
+		List<ValueDescriptor> vdList;
 		double lb, ub;
 
 		// Get the level-list index (in self) corresponding to aLevel
-		levelNumber = TaxonomicLevels.transformToIndex(aLevel);
-		if (levelNumber == -1) return null;
+		levelNumber = TaxonomicLevels.getLevels().indexOf(aLevel);
+		if (levelNumber == -1  || levelNumber == 0) return null;
 
 		// Make a copy of the lower and upper bound arguments
 		lb = aLowerBound;
 		ub = anUpperBound;
 		
 		// Create the output ValueDescriptor list (vdList)
-		vdList = new ArrayList<Descriptor>();
+		vdList = new ArrayList<ValueDescriptor>();
 
 		// Parse all ValueDescriptors in the level-list and copy, into vwList, all those whose value matches aValue and their
 		// weight is between the range given by lb and ub
-		for (int i = 1; i <= this.get(levelNumber).size(); i++) {
-			vd = this.get(levelNumber).get(i);
-			if (!(vd.getClass().getName().equals("RangeDescriptor"))) {
-				svd = (SingleDescriptor<T>)vd;
+		for (int i = 1; i <= this.get(levelNumber-1).size(); i++) {
+			vd = this.get(levelNumber-1).get(i-1);
+			if (!(vd instanceof RangeDescriptor)) {
+				svd = (SingleDescriptor)vd;
 				if (svd.getValue() == aValue)
 					if (svd.getWeight() >= lb && svd.getWeight() <= ub)
 						vdList.add(vd);
@@ -259,23 +261,24 @@ public class Value extends ArrayList<List<Descriptor>> {
 	 * @param anOperator
 	 * @return
 	 */
-	public <T> List<Descriptor> value(T aValue, double aWeight, String aLevel, String anOperator) {
+	@SuppressWarnings("unchecked")
+	public <T> List<ValueDescriptor> getSingleDescriptors(T aValue, double aWeight, String aLevel, String anOperator) {
 		int levelNumber, i;
-		Descriptor vd;
+		ValueDescriptor vd;
 		SingleDescriptor<T> svd;
-		List<Descriptor> vdList;
+		List<ValueDescriptor> vdList;
 		double w;
 		boolean stop, flag;
 
 		// Get the level-list index (in self) corresponding to aLevel
-		levelNumber = TaxonomicLevels.transformToIndex(aLevel);
-		if (levelNumber == -1) return null;
+		levelNumber = TaxonomicLevels.getLevels().indexOf(aLevel);
+		if (levelNumber == -1  || levelNumber == 0) return null;
 
 		// Make a copy of the argument aWeight and make sure that it is a Float
 		w = aWeight;
 		
 		// Create the output ValueDescriptor list (vdList)
-		vdList = new ArrayList<Descriptor>();
+		vdList = new ArrayList<ValueDescriptor>();
 
 		/* Parse the level-list and copy, into vdList, all those ValueDescriptors whose value matches aValue and their 
 		 weight compares to true according to the given binary operator.  NOTE: It is assumed that for any given 
@@ -286,28 +289,30 @@ public class Value extends ArrayList<List<Descriptor>> {
 		
 		i = 1;
 		stop = false;
-	 	while (i <= this.get(levelNumber).size()) {
-	 		vd = this.get(levelNumber).get(i);
-			if (!(vd.getClass().getName().equals("RangeDescriptor"))) {
-				svd = (SingleDescriptor<T>)vd;
-				flag = false;
-				if (anOperator.equals("=")) {
-					flag = (svd.getWeight() == w);
-					stop = true;
+	 	while (i <= this.get(levelNumber-1).size()) {
+	 		vd = this.get(levelNumber-1).get(i-1);
+			if (!(vd instanceof RangeDescriptor)) {
+				svd = (SingleDescriptor)vd;
+				if (svd.getValue() == aValue) {
+					flag = false;
+					if (anOperator.equals("=")) {
+						flag = (svd.getWeight() == w);
+						stop = true;
+					}
+					if (anOperator.equals("~="))
+						flag = (svd.getWeight() != w);
+					if (anOperator.equals("<"))
+						flag = (svd.getWeight() < w);
+					if (anOperator.equals("<="))
+						flag = (svd.getWeight() <= w);
+					if (anOperator.equals(">"))
+						flag = (svd.getWeight() > w);
+					if (anOperator.equals(">="))
+						flag = (svd.getWeight() >= w);
+	
+					if (flag == true) vdList.add(vd);
+					if (stop == true) i = this.get(levelNumber-1).size();
 				}
-				if (anOperator.equals("~="))
-					flag = (svd.getWeight() != w);
-				if (anOperator.equals("<"))
-					flag = (svd.getWeight() < w);
-				if (anOperator.equals("<="))
-					flag = (svd.getWeight() <= w);
-				if (anOperator.equals(">"))
-					flag = (svd.getWeight() > w);
-				if (anOperator.equals(">="))
-					flag = (svd.getWeight() >= w);
-
-				if (flag == true) vdList.add(vd);
-				if (stop == true) i = this.get(levelNumber).size();
 			}
 
 			i = i + 1;
@@ -329,30 +334,32 @@ public class Value extends ArrayList<List<Descriptor>> {
 	 * @param anUpperBound
 	 * @return
 	 */
-	public <T> List<Descriptor> weight(double aWeight, String aLevel, double aLowerBound, double anUpperBound) {
+	@SuppressWarnings("unchecked")
+	public <T> List<ValueDescriptor> getSingleDescriptors(double aWeight, String aLevel, double aLowerBound, double anUpperBound) {
 		int levelNumber;
-		Descriptor vd;
+		ValueDescriptor vd;
 		SingleDescriptor<T> svd;
-		List<Descriptor> vdList;
+		List<ValueDescriptor> vdList;
 		double lb, ub;
 
 		// Get the level-list index (in self) corresponding to aLevel
-		levelNumber = TaxonomicLevels.transformToIndex(aLevel);
-		if (levelNumber == -1) return null;
+		// Get the level-list index (in self) corresponding to aLevel
+		levelNumber = TaxonomicLevels.getLevels().indexOf(aLevel);
+		if (levelNumber == -1  || levelNumber == 0) return null;
 
 		// Make a copy of the lower and upper bound arguments
 		lb = aLowerBound;
 		ub = anUpperBound;
 		
 		// Create the output ValueDescriptor list (vdList)
-		vdList = new ArrayList<Descriptor>();
+		vdList = new ArrayList<ValueDescriptor>();
 
 		// Parse all ValueDescriptors in the level-list and copy, into vwList, all those whose value matches aValue and their
 		// weight is between the range given by lb and ub
-		for (int i = 1; i <= this.get(levelNumber).size(); i++) {
-			vd = this.get(levelNumber).get(i);
-			if (!(vd.getClass().getName().equals("RangeDescriptor"))) {
-				svd = (SingleDescriptor<T>)vd;
+		for (int i = 1; i <= this.get(levelNumber-1).size(); i++) {
+			vd = this.get(levelNumber-1).get(i-1);
+			if (!(vd instanceof RangeDescriptor)) {
+				svd = (SingleDescriptor)vd;
 				if (svd.getWeight() == aWeight)
 					if (svd.getWeight() >= lb && svd.getWeight() <= ub)
 						vdList.add(vd);
@@ -373,33 +380,34 @@ public class Value extends ArrayList<List<Descriptor>> {
 	 * @param anOperator
 	 * @return
 	 */
-	public <T> List<Descriptor> weight(double aWeight, String aLevel, String anOperator) {
+	@SuppressWarnings("unchecked")
+	public <T> List<ValueDescriptor> getSingleDescriptors(double aWeight, String aLevel, String anOperator) {
 		int levelNumber, i;
-		Descriptor vd;
+		ValueDescriptor vd;
 		SingleDescriptor<T> svd;
-		List<Descriptor> vdList;
+		List<ValueDescriptor> vdList;
 		double w;
 		boolean stop, flag;
 
 		// Get the level-list index (in self) corresponding to aLevel
-		levelNumber = TaxonomicLevels.transformToIndex(aLevel);
-		if (levelNumber == -1) return null;
+		levelNumber = TaxonomicLevels.getLevels().indexOf(aLevel);
+		if (levelNumber == -1  || levelNumber == 0) return null;
 
 		// Make a copy of the argument aWeight and make sure that it is a Float
 		w = aWeight;
 		
 		// Create the output ValueDescriptor list (vdList)
-		vdList = new ArrayList<Descriptor>();
+		vdList = new ArrayList<ValueDescriptor>();
 
 		// Parse the level-list and copy, into vdList, all those ValueDescriptors whose weight compares 
 		// to true according to the given binary operator
 		
 		i = 1;
 		stop = false;
-	 	while (i <= this.get(levelNumber).size()) {
-	 		vd = this.get(levelNumber).get(i);
-			if (!(vd.getClass().getName().equals("RangeDescriptor"))) {
-				svd = (SingleDescriptor<T>)vd;
+	 	while (i <= this.get(levelNumber-1).size()) {
+	 		vd = this.get(levelNumber-1).get(i);
+	 		if (!(vd instanceof RangeDescriptor)) {
+				svd = (SingleDescriptor)vd;
 				flag = false;
 				if (anOperator.equals("=")) {
 					flag = (svd.getWeight() == w);
@@ -417,7 +425,7 @@ public class Value extends ArrayList<List<Descriptor>> {
 					flag = (svd.getWeight() >= w);
 
 				if (flag == true) vdList.add(vd);
-				if (stop == true) i = this.get(levelNumber).size();
+				if (stop == true) i = this.get(levelNumber-1).size();
 			}
 
 			i = i + 1;
@@ -433,7 +441,7 @@ public class Value extends ArrayList<List<Descriptor>> {
 	 * @param aValueDescriptor
 	 * @param aLevel
 	 */
-	public void addValueDescriptor(Descriptor aValueDescriptor, String aLevel) {
+	public void addValueDescriptor(ValueDescriptor aValueDescriptor, String aLevel) {
 		int levelNumber;
 
 		/* Adds a ValueDescriptor to a level-list in self.  This method makes sure that: a) if aDescriptor is not a range,
@@ -443,16 +451,16 @@ public class Value extends ArrayList<List<Descriptor>> {
 					self - Process OK.
 		NOTE: This method should be used when creating the StructureIndex for Taxonomy */
 	
-		levelNumber = TaxonomicLevels.transformToIndex(aLevel);
-		if (levelNumber == -1) return;
+		levelNumber = TaxonomicLevels.getLevels().indexOf(aLevel);
+		if (levelNumber == -1  || levelNumber == 0) return;
 
 		/* IMPORTANT ACTION TO ENSURE THE ADDITION OF DESCRIPTORS WITH UNIQUE VALUE-WEIGHTS OR RANGES:
 		 Make sure that aDescriptor DOES NOT exist in aLevel.  NOTE: Since the argument for includes: is levelNumber, the return 
 		 value (in this case) from includes:in: will always be either true or false */
 			
-		if (this.includes(aValueDescriptor, levelNumber)) return;
+		if (this.includes(aValueDescriptor, levelNumber-1)) return;
 		
-		this.get(levelNumber).add(aValueDescriptor);
+		this.get(levelNumber-1).add(aValueDescriptor);
 	}
 	
 	/**
@@ -460,7 +468,7 @@ public class Value extends ArrayList<List<Descriptor>> {
 	 * @param aValueDescriptor
 	 * @param aLevel
 	 */
-	public void addValueDescriptorWithUniqueValue(Descriptor aValueDescriptor, String aLevel) {
+	public void addValueDescriptorWithUniqueValue(ValueDescriptor aValueDescriptor, String aLevel) {
 		int levelNumber;
 		
 		/* Adds a ValueDescriptor to a level-list in self.  This method makes sure that: a) if aDescriptor is not a range,
@@ -470,15 +478,15 @@ public class Value extends ArrayList<List<Descriptor>> {
 					self - Process OK.
 		NOTE: This method should be used when creating a Taxon's SAV or GH description */
 		
-		levelNumber = TaxonomicLevels.transformToIndex(aLevel);
-		if (levelNumber == -1) return;
+		levelNumber = TaxonomicLevels.getLevels().indexOf(aLevel);
+		if (levelNumber == -1  || levelNumber == 0) return;
 		
 		/* IMPORTANT ACTION TO ENSURE THE ADDITION OF DESCRIPTORS WITH UNIQUE VALUES OR RANGES:
 		 Make sure that the value of aDescriptor DOES NOT exist in aLevel.  NOTE: Since the argument for the method
 		 includesUniqueValue:in: is levelNumber, the return value (in this case) from includes: will always be either true or false */
 		
-		if (this.includesUniqueValue(aValueDescriptor, levelNumber)) return;
-		this.get(levelNumber).add(aValueDescriptor);
+		if (this.includesUniqueValue(aValueDescriptor, levelNumber-1)) return;
+		this.get(levelNumber-1).add(aValueDescriptor);
 	}
 	
 	/**
@@ -491,11 +499,12 @@ public class Value extends ArrayList<List<Descriptor>> {
 	 * @param aLevel
 	 * @return
 	 */
-	public boolean includes(Descriptor aDescriptor, int aNumberLevel) {
+	@SuppressWarnings("unchecked")
+	public boolean includes(ValueDescriptor aDescriptor, int aNumberLevel) {
 		int levelNumber;
-		Descriptor vd;
+		ValueDescriptor vd;
 		RangeDescriptor nrvd, rvd;
-		SingleDescriptor nsvd, svd;
+		SingleDescriptor<Object> nsvd, svd;
 		
 		levelNumber = aNumberLevel;
 		if (levelNumber == -1) return false;
@@ -503,16 +512,16 @@ public class Value extends ArrayList<List<Descriptor>> {
 		for (int i = 1; i <= this.get(levelNumber).size(); i++) {
 			vd = this.get(levelNumber).get(i);
 			
-			if (aDescriptor.getClass().getName().equals("RangeDescriptor")) {
+			if (aDescriptor instanceof RangeDescriptor) {
 				rvd = (RangeDescriptor) aDescriptor;
-				if (vd.getClass().getName().equals("RangeDescriptor")) {
+				if (vd instanceof RangeDescriptor) {
 					nrvd = (RangeDescriptor) vd;
 					if (nrvd.getLowerBound() == rvd.getLowerBound() && nrvd.getUpperBound() == rvd.getUpperBound())
 						return true;
 				}
 			} else {
 				svd = (SingleDescriptor) aDescriptor;
-				if (!(vd.getClass().getName().equals("RangeDescriptor"))) {
+				if (!(vd instanceof RangeDescriptor)) {
 					nsvd = (SingleDescriptor) vd;
 					if (nsvd.getValue() == svd.getValue() && nsvd.getWeight() == svd.getWeight())
 						return true;
@@ -533,11 +542,12 @@ public class Value extends ArrayList<List<Descriptor>> {
 	 * @param aLevel
 	 * @return
 	 */
-	public boolean includesUniqueValue(Descriptor aDescriptor, int aNumberLevel) {
+	@SuppressWarnings("unchecked")
+	public boolean includesUniqueValue(ValueDescriptor aDescriptor, int aNumberLevel) {
 		int levelNumber;
-		Descriptor vd;
+		ValueDescriptor vd;
 		RangeDescriptor nrvd, rvd;
-		SingleDescriptor nsvd, svd;
+		SingleDescriptor<Object> nsvd, svd;
 		
 		levelNumber = aNumberLevel;
 		if (levelNumber == -1) return false;
@@ -545,16 +555,16 @@ public class Value extends ArrayList<List<Descriptor>> {
 		for (int i = 1; i <= this.get(levelNumber).size(); i++) {
 			vd = this.get(levelNumber).get(i);
 			
-			if (aDescriptor.getClass().getName().equals("RangeDescriptor")) {
+			if (aDescriptor instanceof RangeDescriptor) {
 				rvd = (RangeDescriptor) aDescriptor;
-				if (vd.getClass().getName().equals("RangeDescriptor")) {
+				if (vd instanceof RangeDescriptor) {
 					nrvd = (RangeDescriptor) vd;
 					if (nrvd.getLowerBound() == rvd.getLowerBound() && nrvd.getUpperBound() == rvd.getUpperBound())
 						return true;
 				}
 			} else {
 				svd = (SingleDescriptor) aDescriptor;
-				if (!(vd.getClass().getName().equals("RangeDescriptor"))) {
+				if (!(vd instanceof RangeDescriptor)) {
 					nsvd = (SingleDescriptor) vd;
 					// Disregard the weight in this comparison					
 					if (nsvd.getValue() == svd.getValue())

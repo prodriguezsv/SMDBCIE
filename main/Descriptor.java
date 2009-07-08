@@ -1,6 +1,7 @@
+/**
+ * @see "Categoría Main de SUKIA Smalltalk"
+ */
 package main;
-
-
 
 /**
  * Descriptor es un elemento descriptivo de una descripción de un caso: el par attribute-value.
