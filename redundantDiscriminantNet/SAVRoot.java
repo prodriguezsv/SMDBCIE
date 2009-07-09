@@ -1,5 +1,5 @@
 /**
- * 
+ * @see "Categoría Sukia Redundant Discriminant Net de SUKIA Smalltalk"
  */
 package redundantDiscriminantNet;
 
@@ -12,12 +12,31 @@ import main.RootNorm;
  *
  */
 public class SAVRoot extends RootNorm {
+	private String structure;
 
 	/**
-	 * 
+	 * Initializes the local variables for this sublcass.  The predecessor's variables have already been initialized when method new was executed.
+	 * @see "Método initializeWith: del protocolo initializing en SUKIA SmallTalk"
+	 * @param aStructureName
 	 */
-	public SAVRoot() {
-		// TODO Auto-generated constructor stub
+	public SAVRoot(String aStructureName) {
+		this.setStructure(aStructureName);
+	}
+
+	/**
+	 * Método de instancia agregado
+	 * @param aStructureName
+	 */
+	public void setStructure(String  aStructureName) {
+		this.structure = aStructureName;
+	}
+
+	/**
+	 * @see "Método structure del protocolo accessing en SUKIA SmallTalk"
+	 * @return
+	 */
+	public String getStructure() {
+		return structure;
 	}
 
 }

@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import auxiliary.IndexValue;
+import auxiliary.MultipleIndexValue;
+import auxiliary.SingleIndexValue;
 
 /**
  * Purpose: Structure that points to one or more Case's or Norm's, according to:
@@ -100,25 +102,21 @@ public class Index extends Node {
 	 * @param anIndexValue
 	 */
 	public boolean addIndexValue(IndexValue<Object> anIndexValue) {
-		int i;
-		IndexValue<Object> iv;
 	
 		// If argument is not an IndexValue, or if argument contains invalid data, do not add
 		 if (!(anIndexValue.isValid())) return false;
 
 		// If argument is already included, do not add
-		if (this.isValueIncluded(anIndexValue.getValue()) || this.isSuccessorIncluded(anIndexValue.getSuccessors()))
-			return false;
-
-		iv = new IndexValue<Object>(anIndexValue.getValue(), anIndexValue.getSuccessors().get(0));
-		
-		i = 2;
-		while (i <= anIndexValue.getSuccessors().size()) {
-			iv.addSuccessor(anIndexValue.getSuccessors().get(i-1));
-			i = i + 1;
+		if (this.isValueIncluded(anIndexValue.getValue())) return false;
+		if (anIndexValue instanceof MultipleIndexValue) {
+			if (this.isSuccessorIncluded(((MultipleIndexValue)anIndexValue).getSuccessors()))
+				return false;
+		} else {
+			if (this.isSuccessorIncluded(((SingleIndexValue<Norm>)anIndexValue).getSuccessor()))
+				return false;
 		}
-
-		this.getSuccessors().add(iv);
+		
+		this.getSuccessors().add(anIndexValue);
 		
 		return true;
 	}
@@ -128,10 +126,12 @@ public class Index extends Node {
 	 * @param aValue
 	 */
 	
-	public List<Node> getIndexValuesSuccessors(Object aValue) {
+	public Object getIndexValueSuccessors(Object aValue) {
 		for (int i = 1; i <= this.getSuccessors().size(); i++) {
-			if (aValue == this.getSuccessors().get(i-1).getValue())
-				return this.getSuccessors().get(i-1).getSuccessors();
+			if (aValue.equals(this.getSuccessors().get(i-1).getValue()))
+				if (this.getSuccessors().get(i-1) instanceof MultipleIndexValue)
+					return ((MultipleIndexValue)this.getSuccessors().get(i-1)).getSuccessors();
+				else return ((SingleIndexValue<Norm>)this.getSuccessors().get(i-1)).getSuccessor();
 		}
 		
 		return null;
@@ -145,7 +145,7 @@ public class Index extends Node {
 		if (this.getSuccessors().isEmpty()) return null;
 
 		for (int i = 1; i <= this.getSuccessors().size(); i++) {
-			if (this.getSuccessors().get(i-1).getValue() == aValue)
+			if (this.getSuccessors().get(i-1).getValue().equals(aValue))
 				return this.getSuccessors().get(i-1);
 		}
 		
@@ -162,13 +162,26 @@ public class Index extends Node {
 	 * @param aSuccessorList
 	 * @return
 	 */
-	public boolean isSuccessorIncluded(List<Node> aSuccessorList) {
-		List<Node> s;
+	public boolean isSuccessorIncluded(List<Case> aSuccessorList) {
+		List<Case> s;
 
-		for (int i = 1; i <= this.getSuccessors().size(); i++) { 
-			s = this.getSuccessors().get(i-1).getSuccessors();
-			for (int j = 1; j <= this.getSuccessors().size(); j++) {
-				if (s.contains(aSuccessorList.get(j-1))) return true;
+		for (int i = 1; i <= this.getSuccessors().size(); i++) {
+			if (this.getSuccessors().get(i-1) instanceof MultipleIndexValue) {
+				s = ((MultipleIndexValue)this.getSuccessors().get(i-1)).getSuccessors();
+				for (int j = 1; j <= this.getSuccessors().size(); j++) {
+					if (s.contains(aSuccessorList.get(j-1))) return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean isSuccessorIncluded(Norm aSuccessor) {
+
+		for (int i = 1; i <= this.getSuccessors().size(); i++) {
+			if (this.getSuccessors().get(i-1) instanceof SingleIndexValue) {
+				return aSuccessor.equals(((SingleIndexValue<Norm>)this.getSuccessors().get(i-1)).getSuccessor());
 			}
 		}
 		
@@ -182,7 +195,7 @@ public class Index extends Node {
 	 */
 	public boolean isValueIncluded(Object aValue) {
 		for (int i = 1; i <= this.getSuccessors().size(); i++) {
-			if (aValue == this.getSuccessors().get(i-1).getValue()) return true;
+			if (aValue.equals(this.getSuccessors().get(i-1).getValue())) return true;
 		}
 		
 		return false;

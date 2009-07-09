@@ -6,7 +6,7 @@ package main;
 import java.util.ArrayList;
 import java.util.List;
 
-import domainTheory.Structure;
+import auxiliary.SingleIndexValue;
 
 
 /**
@@ -19,11 +19,11 @@ import domainTheory.Structure;
  *
  */
 public class Case extends Node {
-	private String solution;
-	private Description<Descriptor<Object>> description;
-	private Description<Descriptor<Object>> justification;
-	private List<PredecessorNode> predecessors;
-	private boolean state;
+	private String solution; // An object that represents the solution to the case.  Such object may be a text string, or a compund object with more associated information.
+	private Description<Descriptor<Object>> description; // A list containing a set of Descriptor's (a description of the problem)
+	private Description<Descriptor<Object>> justification; // A list containing a set of Descriptor's (the solution path of the case, i.e., the result of the traversal across the net and other reference structures). 
+	private List<SingleIndexValue<Node>> predecessors; // A list containing links to the case's predecessor norms and/or indices within the net. 
+	private boolean state; // A case may be "positive" (i.e., the given solution is correct) or "negative" (i.e., the given solution is incorrect)
 	
 	/**
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
@@ -32,7 +32,7 @@ public class Case extends Node {
 		solution = null;
 		description = new Description<Descriptor<Object>>();
 		justification = new Description<Descriptor<Object>>();
-		predecessors = new ArrayList<PredecessorNode>();
+		predecessors = new ArrayList<SingleIndexValue<Node>>();
 		state = false;
 	}
 	
@@ -52,6 +52,10 @@ public class Case extends Node {
 		return solution;
 	}
 	
+	/**
+	 * Método de instancia agregado
+	 * @param description
+	 */
 	public void setDescription(Description<Descriptor<Object>> description) {
 		this.description = description;
 	}
@@ -64,6 +68,10 @@ public class Case extends Node {
 		return description;
 	}
 
+	/**
+	 * Método de instancia agregado
+	 * @param justification
+	 */
 	public void setJustification(Description<Descriptor<Object>> justification) {
 		this.justification = justification;
 	}
@@ -76,7 +84,7 @@ public class Case extends Node {
 		return justification;
 	}
 
-	public void setPredecesor(List<PredecessorNode> predecesor) {
+	public void setPredecesor(List<SingleIndexValue<Node>> predecesor) {
 		this.predecessors = predecesor;
 	}
 
@@ -84,7 +92,7 @@ public class Case extends Node {
 	 * @see "Método predecessor del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<PredecessorNode> getPredecesors() {
+	public List<SingleIndexValue<Node>> getPredecessors() {
 		return predecessors;
 	}
 
@@ -109,10 +117,45 @@ public class Case extends Node {
 	 * @see "Método addPredecessorWith:and: del protocolo adding en SUKIA SmallTalk"
 	 * @param aPredecessor
 	 */
-	public void addPredecessor(Node aPredecessor, Object aValue) {
-		PredecessorNode pn;
-		pn = new PredecessorNode(aPredecessor, aValue); 
-		predecessors.add(pn);
+	public boolean addPredecessor(Node aPredecessor, Object aValue) {
+		SingleIndexValue<Node> pn;
+		
+		pn = new SingleIndexValue<Node>();
+		pn.setValue(aValue);
+		pn.setSuccessor(aPredecessor);
+		
+		if (!(this.getPredecessors().contains(pn)))
+			predecessors.add(pn);
+		
+		return true;
+	}
+	
+	/**
+	 * Appends aDescriptor to the variable description
+	 * @see "Método addToDescription: del protocolo adding en SUKIA SmallTalk"
+	 * @param aDescriptor
+	 * @return
+	 */
+	public boolean addToDescription(Descriptor<Object> aDescriptor) {
+		if (this.getDescription().contains(aDescriptor))
+			return false;
+		this.getDescription().add(aDescriptor);
+		
+		return true;
+	}
+	
+	/**
+	 * Appends aDescriptor to the variable description
+	 * @see "Método addToJustification: del protocolo adding en SUKIA SmallTalk"
+	 * @param aDescriptor
+	 * @return
+	 */
+	public boolean addToJustification(Descriptor<Object> aDescriptor) {
+		if (this.getDescription().contains(aDescriptor))
+			return false;
+		this.getJustification().add(aDescriptor);
+		
+		return true;
 	}
 	
 	/**
@@ -121,13 +164,14 @@ public class Case extends Node {
 	 * @param aValue
 	 * @return
 	 */
-	public PredecessorNode removePredecessor(Node aPredecessor, Object aValue) {
+	public boolean removePredecessor(Node aPredecessor, Object aValue) {
 		for( int i = 1; i <= predecessors.size(); i++) {
-			if (predecessors.get(i-1).getValue().equals(aValue) && predecessors.get(i-1).getNode().equals(aPredecessor))
-				return predecessors.remove(i-1);
+			if (predecessors.get(i-1).getValue().equals(aValue) && predecessors.get(i-1).getSuccessor().equals(aPredecessor))
+				predecessors.remove(i-1);
+				return true;
 		}
 		
-		return null;
+		return false;
 	}
 	
 	/**
@@ -138,7 +182,7 @@ public class Case extends Node {
 		this.getDescription().clear();
 		solution = null;
 		this.getJustification().clear();
-		this.getPredecesors().clear();
+		this.getPredecessors().clear();
 		this.setState(false);
 	}
 	
@@ -147,24 +191,26 @@ public class Case extends Node {
 	 * @see "Método currentStructure del protocolo special en SUKIA SmallTalk"
 	 * @return
 	 */
-	public String currentStructure() {
+	public String getCurrentStructure() {
 		return null;
 	}
-
+	
 	/**
 	 * Implemented by SAVCase.  For polymorphism reasons, this method is needed by Case, since a net may be composed of Case's or SAVCase's
 	 * @see "Método flushDescriptionCopy del protocolo special en SUKIA SmallTalk"
+	 * @return
 	 */
 	public void flushDescriptionCopy() {
-		
+
 	}
 	
 	/**
 	 * Implemented by SAVCase.  For polymorphism reasons, this method is needed by Case, since a net may be composed of Case's or SAVCase's
 	 * @see "Método flushStructureCopy del protocolo special en SUKIA SmallTalk"
+	 * @return
 	 */
 	public void flushStructureCopy() {
-		
+
 	}
 	
 	/**
@@ -172,7 +218,7 @@ public class Case extends Node {
 	 * @see "Método prepareDescriptionWith del protocolo special en SUKIA SmallTalk"
 	 * @param aStructure
 	 */
-	public void prepareDescriptionWith(Structure aStructure) {
+	public void prepareDescriptionWith(String aStructure) {
 
 	}
 	

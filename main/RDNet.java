@@ -9,11 +9,12 @@ import javax.swing.JOptionPane;
 
 import patternMatching.ProblemCase;
 import patternMatching.Solution;
-import redundantDiscriminantNet.SAVCase;
 import auxiliary.CBRStack;
 import auxiliary.ComparingTable;
 import auxiliary.ComparingTableTuple;
 import auxiliary.IndexValue;
+import auxiliary.MultipleIndexValue;
+import auxiliary.SingleIndexValue;
 
 /**
  * Purpose: Entry access structure to a redundant discrimination net.  This class implements all necessary methods to establish a net root,
@@ -237,10 +238,11 @@ public class RDNet {
 	 * Calcula los pesos correspondientes a cada (atributo, valor) del caso problema en la norma actual.
 	 * @see "Método computeWeights del protocolo matching en SUKIA SmallTalk"
 	 */
+	@SuppressWarnings("unchecked")
 	public void computeWeights() {
 		Descriptor<Object> descriptorAct;
 		Index indiceAct;
-		Node sucesor;
+		Object sucesor;
 		
 		// Para cada par (atributo, valor) del caso problema
 		for( int i = 1; i <= this.getProblemCase().getDescription().size(); i++) {
@@ -254,15 +256,14 @@ public class RDNet {
 	  				this.getProblemCase().weightsAt(i-1, -1); 
 	  			} else {
 					// OJO: HAY QUE ARREGLAR ESTA PARTE
-					sucesor = indiceAct.getIndexValuesSuccessors(descriptorAct.getValue()).get(0);
+					sucesor = indiceAct.getIndexValueSuccessors(descriptorAct.getValue());
 					if (sucesor == null) {
 						this.getProblemCase().weightsAt(i-1, -1);
 					} else {
-						if ((sucesor instanceof Case) || (sucesor instanceof SAVCase) ) {
-							this.getProblemCase().weightsAt(i-1, 1);
-						} else {
+						if (sucesor instanceof List) 
+							this.getProblemCase().weightsAt(i-1, ((List<Case>)sucesor).size());
+						else
 							this.getProblemCase().weightsAt(i-1, ((Norm)sucesor).getNumCases());
-						}
 					}
 				}	  					
 	  		}
@@ -288,12 +289,11 @@ public class RDNet {
 			if (this.getProblemCase().valueOf( indexes.get(i-1).getLabel()) == null ) {
 				sucesoresIndice = indexes.get(i-1).getSuccessors();
 				for( int j = 1; j <= sucesoresIndice.size(); j++) {
-					// Verificar el índice
-					if ((sucesoresIndice.get(j-1).getSuccessors().get(0) instanceof Case) || 
-							(sucesoresIndice.get(j-1).getSuccessors().get(0) instanceof SAVCase)) {
-						this.getSolution().add((Case)sucesoresIndice.get(i-1).getSuccessors().get(0), this.getProblemCase());
+					if (sucesoresIndice.get(j-1) instanceof MultipleIndexValue) {
+						for( int k = 1; k <= ((MultipleIndexValue)sucesoresIndice.get(j-1)).getSuccessors().size(); k++)
+							this.getSolution().add((Case)((MultipleIndexValue)sucesoresIndice.get(j-1)).getSuccessors().get(k-1), this.getProblemCase());
 					} else {
-						this.gotDeadEnd((Norm)sucesoresIndice.get(i-1).getSuccessors().get(0));
+						this.gotDeadEnd(((SingleIndexValue<Norm>)sucesoresIndice.get(i-1)).getSuccessor());
 					}
 				}
 			}
@@ -330,12 +330,12 @@ public class RDNet {
 	 * Busca el siguiente mejor caso para solucionar el problema
 	 * @see "Método nextBestMatch del protocolo matching en SUKIA SmallTalk"
 	 */
-	// Pendiente de traducir (ojo)
+	@SuppressWarnings("unchecked")
 	public void nextBestMatch() {
 		int posMasPredictivo;
 		Descriptor<Object> descriptorMasPredictivo;
 		Index indicePredictivo;
-		Node sucesorIndice; // Ojo verificar
+		Object sucesorIndice;
 		
 		this.computeWeights();
 		posMasPredictivo =  this.lowestWeight();
@@ -346,13 +346,30 @@ public class RDNet {
   		 	indicePredictivo = this.getCurrNorm().getIndex(descriptorMasPredictivo.getAttribute(), descriptorMasPredictivo.getValue());
   		 	
   		 	// OJO: HAY QUE ARREGLAR ESTA PARTE
-			sucesorIndice = indicePredictivo.getIndexValuesSuccessors(descriptorMasPredictivo.getValue()).get(0);
-			if (( sucesorIndice instanceof Case) || (sucesorIndice instanceof SAVCase)) {
+			sucesorIndice = indicePredictivo.getIndexValueSuccessors(descriptorMasPredictivo.getValue());
+			if (sucesorIndice instanceof MultipleIndexValue) {
+				this.getRoute().push(descriptorMasPredictivo.getAttribute());
+
+				/* Como la red es redundantisima no es necesario utilizar mas de una vez un atributo
+				self problemCase weightsAt: posMasPredictivo  modifiedWith: -1.*/
+				for( int k = 1; k <= ((MultipleIndexValue)sucesorIndice).getSuccessors().size(); k++)
+					this.getSolution().add((Case)((MultipleIndexValue)sucesorIndice).getSuccessors().get(k-1), this.getProblemCase());
+				
+				posMasPredictivo =  this.lowestWeight();
+				if (!(posMasPredictivo == -1)) {
+					// self route flush.
+					this.setCurrNorm(root);
+					this.nextBestMatch();
+				}
+			} else {
+				// El indice me lleva a una norma
 				this.getRoute().push(descriptorMasPredictivo.getAttribute());
 
 				// Como la red es redundantisima no es necesario utilizar mas de una vez un atributo
-			} else {
-				
+			 	this.getProblemCase().weightsAt(posMasPredictivo, -1);
+
+			 	this.setCurrNorm(((SingleIndexValue<Norm>)sucesorIndice).getSuccessor());
+			 	this.nextBestMatch();																															
 			}
 		}		
 	}
@@ -415,7 +432,7 @@ public class RDNet {
 		Description<Descriptor<Object>> tmpDesc;
 		boolean retVal;
 		
-		this.setCurrNorm(this.getCurrNorm().successorNormWith(aDescriptor));
+		this.setCurrNorm(this.getCurrNorm().getSuccessorNorm(aDescriptor));
 		this.getCurrNorm().incrementNumCasesBy(aNumber);
 		this.getRoute().push(this.getCurrNorm().getDescriptor().getAttribute());
 
@@ -452,8 +469,7 @@ public class RDNet {
 		Descriptor<Object> d;
 		Index ix;
 		IndexValue<Object> ixv;
-		List<Node> ixvSuccessors;
-		Node succ;
+		Case succ;
 		
 		// Discard from the case's description all descriptors whose attribute is already in the route
 		if (this.removeMatchingElementsInTheRouteFrom(this.getCiDesc()).isEmpty())
@@ -471,43 +487,33 @@ public class RDNet {
 				ix.setLabel(d.getAttribute());
 				ix.setPredecessorNorm(this.getCurrNorm());
 				this.getCurrNorm().addSuccessor(ix);
-				ixv = new IndexValue<Object>();
-				if (ixv.add(d.getValue(), this.getCaseInsert()) == false) return false;
-				ix.addIndexValue(ixv);
-				this.getCaseInsert().addPredecessor(ix, d.getValue()); 
+				ixv = new MultipleIndexValue();
+				((MultipleIndexValue)ixv).setValue(d.getValue());
+				((MultipleIndexValue)ixv).addSuccessor(this.getCaseInsert());
+				if (ix.addIndexValue(ixv))
+					this.getCaseInsert().addPredecessor(ix, d.getValue()); 
 			} else {
 				// An index with d's attribute was found. Find an index value with d's value
 				ixv = ix.getIndexValue(d.getValue());
 				if (ixv == null) {
 					// An index value was not found.  Create a new IndexValue and append the caseToInsert as successor
-					ixv = new IndexValue<Object>();
-					if (ixv.add(d.getValue(), this.getCaseInsert()) == false) return false;
-					ix.addIndexValue(ixv);
-					this.getCaseInsert().addPredecessor(ix, d.getValue());
+					ixv = new MultipleIndexValue();
+					((MultipleIndexValue)ixv).setValue(d.getValue());
+					((MultipleIndexValue)ixv).addSuccessor(this.getCaseInsert());
+					if (ix.addIndexValue(ixv))
+						this.getCaseInsert().addPredecessor(ix, d.getValue());
 				} else {
 					// Get the list of successors of the current IndexValue
-					ixvSuccessors =  ixv.getSuccessors();
-
-					/* Each IndexValue MUST point to only one successor. If it doesn't, rais
-					 an exception and get the hell out*/
-					if (!(ixvSuccessors.size() == 1)) return false;
-
-					// Get the ONLY successor from the successors' list
-					succ = ixvSuccessors.get(0);
-
-					// If successor is a NORM, set it as the new current norm and continue
-					if (succ instanceof Norm) {
-						if (this.moveToNormWith(d, 1) == false) return false; 
+					if (ixv instanceof SingleIndexValue) {
+						return this.moveToNormWith(d, 1);
 					} else {
-						/* If the successor is NOT a CASE, raise an exception and get the hell out. Else,
-						 process the case-to-insert and case-to-compare accordingly*/
-						if (!(succ instanceof Case)) {
-							return false;
-						} else {
+						if (((MultipleIndexValue)ixv).getSuccessors().size() == 1) {
+							succ = ((MultipleIndexValue)ixv).getSuccessors().get(0);
+							
 							if (this.getCiDesc().isEmpty()) {
-								if (this.processCICCWithCIDescEmpty(d, ix, ixv, (Case)succ) == false) return false;
+								return this.processCICCWithCIDescEmpty(d, ix, (MultipleIndexValue)ixv, succ);
 							} else {
-								if (this.processCICCWithCIDescNotEmpty(d, ix, ixv, (Case)succ) == false) return false;
+								return this.processCICCWithCIDescNotEmpty(d, ix, (MultipleIndexValue)ixv, succ);
 							}
 						}
 					}
@@ -525,10 +531,11 @@ public class RDNet {
 	 * @param anIndexValue
 	 * @param aSuccessor
 	 */
-	private boolean processCICCWithCIDescEmpty(Descriptor<Object> aDescriptor, Index anIndex, IndexValue<Object> anIndexValue, Case aSuccessor) {
+	private boolean processCICCWithCIDescEmpty(Descriptor<Object> aDescriptor, Index anIndex, MultipleIndexValue anIndexValue, Case aSuccessor) {
 		boolean CIInserted;
 		boolean CCInserted;
 		Norm norm;
+		SingleIndexValue<Norm> anIndexNewValue;
 		
 		if (this.areDescriptionsEqualFor(this.getCaseInsert(), aSuccessor)) {
 			return this.processCICCWithCIDescNotEmpty(aDescriptor, anIndex, anIndexValue, aSuccessor);
@@ -544,13 +551,16 @@ public class RDNet {
 		
 		anIndexValue.getSuccessors().remove(aSuccessor);
 		this.getCaseCompare().push(aSuccessor);
-		this.getCaseToCompare().prepareDescriptionWith(this.getCaseInsert().currentStructure());
+		this.getCaseToCompare().prepareDescriptionWith(this.getCaseInsert().getCurrentStructure());
 		this.getCaseToCompare().removePredecessor(anIndex, aDescriptor.getValue());
-
-		anIndexValue .addSuccessor(norm);
+		
+		// Verificar está parte
+		anIndexNewValue = new SingleIndexValue<Norm>(anIndexValue.getValue(), norm);
+		anIndex.getSuccessors().remove(anIndexValue);
+		anIndex.getSuccessors().add(anIndexNewValue);
 
 		this.getRoute().push(norm.getDescriptor().getAttribute());
-		this.setCurrNorm(this.getCurrNorm().successorNormWith(aDescriptor));
+		this.setCurrNorm(this.getCurrNorm().getSuccessorNorm(aDescriptor));
 
 		if (this.isCaseToInsertDescUsedUp()) {
 			this.getCurrNorm().addSuccessor(this.getCaseInsert());
@@ -588,8 +598,9 @@ public class RDNet {
 	 * @param anIndexValue
 	 * @param aSuccessor
 	 */
-	private boolean processCICCWithCIDescNotEmpty(Descriptor<Object> aDescriptor, Index anIndex, IndexValue<Object> anIndexValue, Case aSuccessor) {
+	private boolean processCICCWithCIDescNotEmpty(Descriptor<Object> aDescriptor, Index anIndex, MultipleIndexValue anIndexValue, Case aSuccessor) {
 		Norm norm;
+		SingleIndexValue<Norm> anIndexNewValue;
 		
 		norm = new Norm();
 		norm.setDescriptor(aDescriptor);
@@ -602,15 +613,18 @@ public class RDNet {
 		anIndexValue.getSuccessors().remove(aSuccessor);
 		this.getCaseCompare().push(aSuccessor);
 		// Remove old index reference in the case-to-compare's index list
-		this.getCaseToCompare().prepareDescriptionWith(this.getCaseInsert().currentStructure());
+		this.getCaseToCompare().prepareDescriptionWith(this.getCaseInsert().getCurrentStructure());
 		this.getCaseToCompare().removePredecessor(anIndex, aDescriptor.getValue());
 
-		anIndexValue .addSuccessor(norm);
+		// Verificar está parte
+		anIndexNewValue = new SingleIndexValue<Norm>(anIndexValue.getValue(), norm);
+		anIndex.getSuccessors().remove(anIndexValue);
+		anIndex.getSuccessors().add(anIndexNewValue);
 
 		this.getRoute().push(norm.getDescriptor().getAttribute());
 		norm.setPredecessorIndex(anIndex);
 		this.getRoute().push(anIndex.getLabel());
-		this.setCurrNorm(this.getCurrNorm().successorNormWith(aDescriptor));
+		this.setCurrNorm(this.getCurrNorm().getSuccessorNorm(aDescriptor));
 		
 		if (this.isCaseToCompareDescUsedUp()) {
 			this.getCurrNorm().addSuccessor(this.getCaseToCompare());
@@ -714,7 +728,9 @@ public class RDNet {
 			if (!(tuple.getACIValue() == tuple.getACCValue())) {
 				// If the case-to-insert value is non-nil, attach it to the index
 				if (!(tuple.getACIValue() == null)) {
-					ixv = new IndexValue<Object>(tuple.getACIValue(), this.getCaseInsert());
+					ixv = new MultipleIndexValue();
+					((MultipleIndexValue)ixv).setValue(tuple.getACIValue());
+					((MultipleIndexValue)ixv).addSuccessor(this.getCaseInsert());
 					ix.addIndexValue(ixv);
 
 					// Add the index-and-value to the case's index list
@@ -723,7 +739,9 @@ public class RDNet {
 				
 				// If the case-to-compare value is non-nil, attach it to the index"
 				if (!(tuple.getACCValue() == null)) {
-					ixv = new IndexValue<Object>(tuple.getACCValue(), this.getCaseToCompare());
+					ixv = new MultipleIndexValue();
+					((MultipleIndexValue)ixv).setValue(tuple.getACCValue());
+					((MultipleIndexValue)ixv).addSuccessor(this.getCaseToCompare());
 					ix.addIndexValue(ixv);
 
 					// Add the index-and-value to the case's index list"
@@ -739,8 +757,10 @@ public class RDNet {
 
 				// Link the recently created index to this new norm
 				norm.setPredecessorIndex(ix);
-				ixv = new IndexValue<Object>();
-				ixv.add(tuple.getACIValue(), norm);
+				ixv = new SingleIndexValue<Norm>();
+				((SingleIndexValue<Norm>)ixv).setValue(tuple.getACIValue());
+				((SingleIndexValue<Norm>)ixv).setSuccessor(norm);
+				
 				ix.addIndexValue(ixv);
 
 				// Add the tuple's attribute to the route
@@ -750,7 +770,7 @@ public class RDNet {
 				this.getCaseCompare().push(this.getCaseToCompare());
 
 				// Move to the new norm
-				this.setCurrNorm(this.getCurrNorm().successorNormWith(d));
+				this.setCurrNorm(this.getCurrNorm().getSuccessorNorm(d));
 
 				// Repeat the procedure for the new case to compare
 				this.whenCCExists();

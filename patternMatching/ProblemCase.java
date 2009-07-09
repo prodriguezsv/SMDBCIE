@@ -92,9 +92,11 @@ public class ProblemCase extends Case{
 	 * @see "Método addToDescription: del protocolo adding en SUKIA SmallTalk"
 	 * @param aDescriptor
 	 */
-	public void addToDescription(Descriptor<Object> aDescriptor) {
+	public boolean addToDescription(Descriptor<Object> aDescriptor) {
 		super.getDescription().add(aDescriptor);
 		this.getWeights().add(0);
+		
+		return true;
 	}
 	
 	/**

@@ -6,6 +6,8 @@ package main;
 import java.util.ArrayList;
 import java.util.List;
 
+import auxiliary.MultipleIndexValue;
+
 import redundantDiscriminantNet.SAVCase;
 
 /**
@@ -181,7 +183,7 @@ public class Norm extends Node {
 	 * @param aDescriptor
 	 * @return
 	 */
-	public Norm successorNormWith(Descriptor<Object> aDescriptor) {
+	public Norm getSuccessorNorm(Descriptor<Object> aDescriptor) {
 		Index index;
 
 		index = this.getIndex(aDescriptor.getAttribute());
@@ -202,7 +204,7 @@ public class Norm extends Node {
 		
 		i = 1;
 		while (i <= successors.size()) {
-			if (successors.get(i) instanceof Index)
+			if (successors.get(i-1) instanceof Index)
 				if (aLabel.equals(((Index)successors.get(i-1)).getLabel()))
 					return ((Index)successors.get(i-1));
 			i = i + 1;
@@ -233,29 +235,17 @@ public class Norm extends Node {
 	}
 	
 	/**
-	 * @see "Método getSuccessorFor:with del protocolo searching en SUKIA SmallTalk"
-	 * @param anIndex
-	 * @param aValue
-	 * @return
-	 */
-	public  List<Node> getIndexValuesSuccessors(Index anIndex, Object aValue) {
-		return anIndex.getIndexValuesSuccessors(aValue);
-	}
-
-	/**
 	 * @see "Método getSuccessorNormFor:with del protocolo searching en SUKIA SmallTalk"
 	 * @param anIndex
 	 * @param aValue
 	 * @return
 	 */
 	public Norm getSuccessorNorm(Index anIndex, Object aValue) {
-		List<Node> succ;
+		Object succ;
 
-		succ = anIndex.getIndexValuesSuccessors(aValue);
-		if (!(succ.size() == 1)) return null;
-
-		if (!(succ.get(0) instanceof Norm)) return null;
+		succ = anIndex.getIndexValueSuccessors(aValue);
+		if (succ instanceof MultipleIndexValue) return null;
 		
-		return (Norm) succ.get(0);
+		return (Norm) succ;
 	}
 }

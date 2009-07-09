@@ -10,8 +10,6 @@ import main.Description;
 import main.Descriptor;
 import main.RDNet;
 
-import domainTheory.Structure;
-
 /**
  * Purpose: Implements the entry structure for a set of redundant discrimination networks, all linked by a common root.
  * The reasons for having several redundant nets are:
@@ -113,21 +111,21 @@ public class RDMultiNet {
 
 		/* Step 3: For every (structure-defined) list: a) Copy the segregated description list to the case's description. 
 		             b) Create a new NetRoot. c) Add the case to the structure-defined network.*/
-		aCase.flushStructureCopy();
+		aCase.getStructureCopy().clear();
 		aCase.copyStructureListWith(structureList);
 		for( int i = 1; i <= structureList.size(); i++) {
 			// Verificar
-			aCase.flushDescriptionCopy(); 
+			aCase.getDescription().clear(); 
 			while (!(descriptorLists.get(i-1).isEmpty())) {
-				aCase.addToSuperClassDescription(descriptorLists.get(i-1).get(0)); 
+				aCase.addToDescription(descriptorLists.get(i-1).get(0)); 
 				descriptorLists.get(i-1).remove(0);
 			}
 
-			if (!(this.getRoot().contains(structureList.get(i-1)))) {
-				anRDNet = this.getRoot().addNewRDNetWith(structureList.get(i-1));
-			} else {
-				anRDNet = this.getRoot().getNetWith(structureList.get(i-1));
-			}
+			if (!(this.getRoot().contains(structureList.get(i-1))))
+				this.getRoot().addRDNet(structureList.get(i-1));
+			
+			anRDNet = this.getRoot().getRDNet(structureList.get(i-1));
+			
 			
 			anRDNet.add(aCase);
 			aCase.removeCurrentStructure();
@@ -135,8 +133,8 @@ public class RDMultiNet {
 				
 		// Step 4: Restore the case's original description
 		aCase.restoreDescription();
-		aCase.flushDescriptionCopy();
-		aCase.flushStructureCopy();
+		aCase.getStructureCopy().clear();
+		aCase.getDescriptionCopy().clear();
 		
 	}
 }

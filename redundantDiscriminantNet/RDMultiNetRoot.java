@@ -47,7 +47,7 @@ public class RDMultiNetRoot {
 	 */
 	public RDNet getRDNet(String NetRootStructure) {
 		for( int i = 1; i <= this.getNets().size(); i++) {
-			if (this.getNets().get(i-1).getRoot().getStructure().equals(NetRootStructure))
+			if (((SAVRoot)this.getNets().get(i-1).getRoot()).getStructure().equals(NetRootStructure))
 				return this.getNets().get(i-1);
 		}
 			
@@ -67,7 +67,7 @@ public class RDMultiNetRoot {
 		anRDNet = new RDNet();
 		aSAVRoot = new SAVRoot(aStructure);
 
-		anRDNet.resetRootTo(aSAVRoot);
+		anRDNet.setRoot(aSAVRoot);
 		this.getNets().add(anRDNet);
 	}
 
@@ -78,7 +78,7 @@ public class RDMultiNetRoot {
 	 */
 	public boolean contains(String aStructure) {
 		for( int i = 1; i <= this.getNets().size(); i++) {
-			if (this.getNets().get(i-1).getRoot().getStructure().equals(aStructure))
+			if (((SAVRoot)this.getNets().get(i-1).getRoot()).getStructure().equals(aStructure))
 				return true;
 		}
 		

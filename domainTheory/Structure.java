@@ -171,7 +171,7 @@ public class Structure implements Comparable<Structure> {
 			vdList = a.getValues().getValueDescriptors(TaxonomicLevels.getLevels().get(Attribute.oneLevel()));
 
 			// Make sure that the value descriptor list only contains ONE item
-			if ((vdList.size() == 1)) return null;
+			if (!(vdList.size() == 1)) return null;
 
 			// Get the value descriptor and make sure it isn't a range descriptor
 			vd = vdList.get(0);
