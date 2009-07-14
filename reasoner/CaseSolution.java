@@ -17,7 +17,6 @@ public class CaseSolution {
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
 	public CaseSolution() {
-		// TODO Auto-generated constructor stub
 		taxonLevel = null;
 		taxonName = null;
 	}

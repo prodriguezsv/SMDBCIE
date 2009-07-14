@@ -11,7 +11,7 @@ import main.Descriptor;
  * @author Armando
  *
  */
-public class SAVDescriptor extends Descriptor<Object> {
+public class SAVDescriptor extends Descriptor<Object> implements Comparable<SAVDescriptor> {
 	private String structure;
 	
 	/**
@@ -59,5 +59,12 @@ public class SAVDescriptor extends Descriptor<Object> {
 	public void clear() {
 		this.setStructure(null);
 		super.clear();
+	}
+	
+	/**
+	 * Método de instancia agregado
+	 */
+	public int compareTo(SAVDescriptor aSAVDescriptor) {
+		return this.getStructure().concat(this.getAttribute()).compareTo(aSAVDescriptor.getStructure().concat(aSAVDescriptor.getAttribute()));
 	}
 }

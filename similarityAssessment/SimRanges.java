@@ -111,17 +111,17 @@ public class SimRanges {
 	 * @param aValueWeightList
 	 * @return
 	 */
-	public static List<ValuedRanges> assignValuesUsing(List<WeightedValue> aValueWeightList) {
+	public static List<ValuedRange> assignValuesUsing(List<WeightedValue> aValueWeightList) {
 		List<String> rCopy;
-		List<ValuedRanges> valuedRangesList;
-		ValuedRanges vrInstance;
+		List<ValuedRange> valuedRangesList;
+		ValuedRange vrInstance;
 		int p1, p2;
 		
 		// This algorithm will not work if self has less than 3 ranges defined
 		if (getRanges().size() < 3) return null;
 
 		// Create the output list and make a copy of the ranges defines in self.
-		valuedRangesList = new ArrayList<ValuedRanges>();
+		valuedRangesList = new ArrayList<ValuedRange>();
 		rCopy = copy();
 
 		// Compute the upper value for the #diferente range name
@@ -134,7 +134,7 @@ public class SimRanges {
 		/* Start with range name: #diferente.  This should always be the first range. The range values 
 		will go from 0 to p1. Once the range values have been established, increment p1 to be the 
 		start of the next range*/
-		vrInstance = new ValuedRanges();
+		vrInstance = new ValuedRange();
 		vrInstance.setLowerBound(0);
 		vrInstance.setLowerBound(p1);
 		vrInstance.setCategoria(rCopy.remove(0));
@@ -143,7 +143,7 @@ public class SimRanges {
 		
 		// So long as there are more than two range names, compute their associated range values
 		while (rCopy.size() > 2 ) {
-			vrInstance = new ValuedRanges();
+			vrInstance = new ValuedRange();
 			vrInstance.setLowerBound(p1);
 			vrInstance.setLowerBound(p1+p2);
 			vrInstance.setCategoria(rCopy.remove(0));
@@ -152,14 +152,14 @@ public class SimRanges {
 		}
 		
 		// Compute the range values for the before-last range. Its upper bound will always be 99
-		vrInstance = new ValuedRanges();
+		vrInstance = new ValuedRange();
 		vrInstance.setLowerBound(p1);
 		vrInstance.setLowerBound(99);
 		vrInstance.setCategoria(rCopy.remove(0));
 		valuedRangesList.add(vrInstance);
 		
 		// The last range name is always #igual.  Its values will always be the defaults 1.0 and 1.0
-		vrInstance = new ValuedRanges();
+		vrInstance = new ValuedRange();
 		vrInstance.setLowerBound(100);
 		vrInstance.setLowerBound(100);
 		vrInstance.setCategoria(rCopy.remove(0));

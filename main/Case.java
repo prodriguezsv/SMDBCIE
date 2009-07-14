@@ -6,6 +6,8 @@ package main;
 import java.util.ArrayList;
 import java.util.List;
 
+import reasoner.CaseSolution;
+
 import auxiliary.SingleIndexValue;
 
 
@@ -19,7 +21,7 @@ import auxiliary.SingleIndexValue;
  *
  */
 public class Case extends Node {
-	private String solution; // An object that represents the solution to the case.  Such object may be a text string, or a compund object with more associated information.
+	private CaseSolution solution; // An object that represents the solution to the case.  Such object may be a text string, or a compund object with more associated information.
 	private Description<Descriptor<Object>> description; // A list containing a set of Descriptor's (a description of the problem)
 	private Description<Descriptor<Object>> justification; // A list containing a set of Descriptor's (the solution path of the case, i.e., the result of the traversal across the net and other reference structures). 
 	private List<SingleIndexValue<Node>> predecessors; // A list containing links to the case's predecessor norms and/or indices within the net. 
@@ -40,7 +42,7 @@ public class Case extends Node {
 	 * @see "Método solution del protocolo adding en SUKIA SmallTalk"
 	 * @param solution
 	 */
-	public void setSolution(String solution) {
+	public void setSolution(CaseSolution solution) {
 		this.solution = solution;
 	}
 	
@@ -48,7 +50,7 @@ public class Case extends Node {
 	 * @see "Método solution del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public String getSolution() {
+	public CaseSolution getSolution() {
 		return solution;
 	}
 	

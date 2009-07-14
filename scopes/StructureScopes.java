@@ -3,6 +3,11 @@
  */
 package scopes;
 
+import java.util.List;
+
+import domainTheory.Attribute;
+import domainTheory.Structure;
+
 /**
  * This class contains all structures defined in the system. Each structure MUST contain all the attributes that define it.
  * Each attribute is determined by its name; values are not important here because they don't desscribe any particular taxon.
@@ -15,11 +20,13 @@ package scopes;
  */
 public class StructureScopes extends Scopes {
 
-	/**
-	 * 
-	 */
-	public StructureScopes() {
-		// TODO Auto-generated constructor stub
+	public static List<Attribute> attributesFor(String aStructureName) {
+		if (getScopeItem(aStructureName) == null)
+				return null;
+
+		return ((Structure)getScopeItem(aStructureName)).getAttributes();
 	}
+
+	
 
 }

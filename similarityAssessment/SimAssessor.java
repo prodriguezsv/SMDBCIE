@@ -74,8 +74,8 @@ public class SimAssessor {
 	 */
 	public static String similarityRangeOf(Object aValue, List<WeightedValue> aValueWeightList) {
 		double sd, lb, ub;
-		List<ValuedRanges> sr;
-		ValuedRanges r;
+		List<ValuedRange> sr;
+		ValuedRange r;
 		
 		sd = similarityDegreeOf(aValue, aValueWeightList);
 		if (sd < 0) return SimRanges.nonComparable();
