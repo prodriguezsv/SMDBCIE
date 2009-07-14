@@ -7,10 +7,11 @@ package searchAutomata;
 
 import redundantDiscriminantNet.SAVDescriptor;
 import domainTheory.Taxon;
+import domainTheory.Structure;
 import domainTheory.Attribute;
 import java.util.ArrayList;
 import java.util.List;
-
+import values.Value;
 
 /*
  *
@@ -22,8 +23,8 @@ import java.util.List;
 
 public class TaxonSISAutomaton extends TaxonSearchAutomaton{
 
-    private Object attribute;
-    private Object structure;
+    private Attribute attribute;
+    private Structure structure;
     private Object similarityRanges;
     private Object structureIndex;
     private String status;
@@ -109,7 +110,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
  * @param my parameters list
  * @return my return values
  */
-    public void structure(Object aStructure){
+    public void structure(Structure aStructure){
 /*structure: aStructure
 
 	structure := aStructure.
@@ -150,7 +151,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
  * @param my parameters list
  * @return my return values
  */
-    public Object structure(){
+    public Structure structure(){
 /*structure
 
 	^structure.*/
@@ -236,7 +237,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
  * @param my parameters list
  * @return my return values
  */
-    public void determineSimilarityFor(SAVDescriptor aSAVDescriptor,Taxon aTaxon){
+    public Taxon determineSimilarityFor(SAVDescriptor aSAVDescriptor,Taxon aTaxon){
 /*determineSimilarityFor: aSAVDescriptor context: aTaxon
 
 	"Determines the similarity range between aSAVDescriptor's value and aTaxon's value
@@ -260,6 +261,8 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
 	^aTaxon.*/
         Object weightedValues = (aTaxon.getAnObjectWith(aSAVDescriptor.getStructure(),aTaxon.getSAVDescription())).attributeWith(aSAVDescriptor.getAttribute(),Attribute.oneLevel());
         similarity = SimAssessor.similarityRangeOf(aSAVDescriptor.getValue(),weightedValues);
+        if similarityRanges.includes(similarity){return null;}
+        return aTaxon;
 }
 
 /**
@@ -267,7 +270,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
  * @param my parameters list
  * @return my return values
  */
-    public void retrieveTaxa(){
+    public boolean retrieveTaxa(SAVDescriptor aSAVDescriptor){
 /*retrieveTaxa: aSAVDescriptor
 
 	"This method extracts all taxa from the value descriptors located in the instance list variable
@@ -309,6 +312,29 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
 	self resetList: (self tSolutionDescription).
 
 	^self.*/
+        List<Taxon> taxa;
+
+        List<Taxon> tempList = new ArrayList<Taxon>();
+        for (SAVDescriptor vd: valueDescriptors()){
+            taxa = (List<Taxon>)vd.getValue();
+            if (taxa.size()<1){return false;}
+            while (taxa.size()>0){
+                Taxon taxon = determineSimilarityFor(aSAVDescriptor,taxa.remove(0));
+                if (taxon != null){
+                    tempList.add(taxon);
+                }
+            }
+
+        }
+        if (tempList.size() < 1) {return false;}
+        tSolutionDescription(aSAVDescriptor);
+        taxa = associateTaxaToPossibleSolutions(tempList);
+        while (taxa.size()>0){
+            taxa.remove(0);
+            taxonList(taxa);
+            resetList(tSolutionDescription());
+        }
+        return true;
 }
 
 /**
@@ -316,7 +342,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
  * @param my parameters list
  * @return my return values
  */
-    public void searchAttribute(){
+    public String searchAttribute(SAVDescriptor aSAVDescriptor){
 /*searchAttribute: aSAVDescriptor
 
 	"Automaton reference: SA"
@@ -326,6 +352,13 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
 	ifTrue: [ self tUnmatchedDescription: aSAVDescriptor. ^nil ].
 
 	^(self searchValueDescriptors: aSAVDescriptor).*/
+        attribute = structure().getAttribute(aSAVDescriptor.getAttribute());
+        if (attribute == null) {
+            tUnmatchedDescription(aSAVDescriptor);
+            return null;
+        }
+        return searchValueDescriptors(aSAVDescriptor);
+
 }
 
 /**
@@ -333,7 +366,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
  * @param my parameters list
  * @return my return values
  */
-    public void searchValueDescriptors(){
+    public boolean searchValueDescriptors(SAVDescriptor aSAVDescriptor){
 /*searchValueDescriptors: aSAVDescriptor
 
 	"This method searches for value descriptors that that do an exact match with aSAVDescriptor's values,
@@ -416,6 +449,57 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
 	 list, and continue processing"
 	self valueDescriptors: tempList.
 	^(self retrieveTaxa: aSAVDescriptor).*/
+        int i = 0;
+        Value attrValues = attribute.getValues();
+        while (attrValues.size()>0){
+            //TODO check the real instance that it should be.
+            List<SAVDescriptor> vd;
+            if ((aSAVDescriptor.getValue() instanceof Object)!=true){
+
+			vd = attrValues.numberInRange(aSAVDescriptor.getValue(),i);
+                        if (vd == null) {return false;}
+                        if (vd.isEmpty()) {vd = null;}
+                
+            }
+            if (vd != null){
+                valueDescriptors(vd);
+            }else{
+                vd = attrValues(aSAVDescriptor.getValue(),i);
+                if (vd == null) {return false;}
+                if (vd.isEmpty()!=true){valueDescriptors(vd);}
+            }
+            i += 1;
+        }
+        if (valueDescriptors().isEmpty()){
+            tUnmatchedDescription(aSAVDescriptor);
+            return false;
+        }
+	List<SAVDescriptor> tempList = new ArrayList<SAVDescriptor>();
+        while (valueDescriptors().isEmpty()!=true){
+
+		SAVDescriptor vd = valueDescriptors().remove(0);
+                if (vd.asRange()){
+                    List<Taxon> taxa = vd.taxonList();
+                    tSolutionDescription(aSAVDescriptor);
+                    taxa = associateTaxaToPossibleSolutions(taxa);
+                    resetList(tSolutionDescription());
+                    while(taxa.isEmpty() != true){
+                        taxonList(taxa.remove(0));
+                    }
+                }else{
+                    tempList.add(vd);
+                }
+
+
+
+		"Value descriptor is not a range. Place it in a temporary list"
+		ifFalse: [ tempList add: vd ]
+
+        }
+        if (tempList.isEmpty()){return false;}
+
+        valueDescriptors(tempList);
+        return retrieveTaxa(aSAVDescriptor);
 }
 
 

@@ -24,8 +24,8 @@ public class TaxonSearchAutomaton {
     private List<SAVDescriptor> tUnmatchedDesc;
     private List<Object> justification;
     private List<Taxon> taxonList;
-    private Description tSolutionDescription;
-    private Description tUnmatchedDescription;
+    private SAVDescriptor tSolutionDescription;
+    private SAVDescriptor tUnmatchedDescription;
     private Object searchIndex;
 
 
@@ -330,7 +330,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    private List<PossibleSolution> associateTaxaToPossibleSolutions(List<Taxon> aTaxonList){
+    public List<Taxon> associateTaxaToPossibleSolutions(List<Taxon> aTaxonList){
 /**associateTaxaToPossibleSolutions: aTaxonList
 
 	"This method is used in conjuntion with prepareSuccessfulOutput.  The purpose
@@ -355,9 +355,9 @@ public class TaxonSearchAutomaton {
 
 	^psList.*/
 
-        List<PossibleSolution> psList = new ArrayList<PossibleSolution>();
+        List<Taxon> psList = new ArrayList<Taxon>();
         for (Taxon tx : aTaxonList){
-            ps = new PossibleSolution();
+            PossibleSolution ps = new PossibleSolution();
             ps.solution(tx);
             ps.copy(tSolutionDescription,solutionDescription);
             psList.add(ps);
@@ -477,7 +477,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    private void resetList(List<Object> anOrderedCollection){
+    public void resetList(List<SAVDescriptor> anOrderedCollection){
 /**resetList: anOrderedCollection
 
 	[ anOrderedCollection isEmpty ]
@@ -512,7 +512,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public SAVDescriptor includes(SAVDescriptor aSAVDescriptor,Description aDescription) {
+    public SAVDescriptor includes(SAVDescriptor aSAVDescriptor,SAVDescriptor aDescription) {
 /**includes: aSAVDescriptor in: aDescription
 
 	"Determines if aSAVDescriptor is already a member of aDescriptionList. The argument aSAVDescriptor is a member of
