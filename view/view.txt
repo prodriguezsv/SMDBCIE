@@ -1,0 +1,1098 @@
+<?xml version="1.0"?>
+
+<st-source>
+
+
+
+<class>
+<name>IndexValueFigure</name>
+<environment>Smalltalk</environment>
+<super>Refactory.HotDraw.CompositeFigure</super>
+<private>false</private>
+<indexed-type>none</indexed-type>
+<inst-vars>constraints </inst-vars>
+<class-inst-vars></class-inst-vars>
+<imports></imports>
+<category>CBR - View</category>
+</class>
+
+<!-- -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -   -->
+
+
+<methods>
+<class-id>IndexValueFigure class</class-id> <category>instance creation</category>
+
+<body>createAt: aIniPoint stop: aFinPoint with: aIndexValue drawing: aDrawing
+
+	^( self new initializeAt: aIniPoint  stop: aFinPoint with: aIndexValue drawing: aDrawing).</body>
+</methods>
+
+<!-- -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -   -->
+
+
+<comment>
+<class-id>IndexValueFigure</class-id>
+<body>IndexValueFigure es una especializacion de CompositeFigure y permite desplegar una liga de un í®€ice a caso en la Vista.  La liga debe llevar en un lugar visible el valor del í®©dce que lleva al caso apuntado.  La liga se despliega en forma de una lí®¥a.  Por el momento no se utiliza toda la funcionalidad de CompositeFigure.
+
+Variable de instacia.
+	constraints : vector de restriciones utilizadas por HotDraw.</body>
+</comment>
+
+<methods>
+<class-id>IndexValueFigure</class-id> <category>accessing</category>
+
+<body>handles
+
+	"Definicion del los handles laterales para una instancia de IndexValueFigure"
+
+	| aBlock |
+
+	aBlock := [:source :dest :aFigure |
+
+				dest addSource: source.
+				aFigure addDependent: dest.
+				aFigure metaFigure: (Array with: source).
+				source addDependent: aFigure.
+				dest addDependent: aFigure].
+
+	^(super handles)
+
+    		add: (CommandHandle
+				connectionFor: self
+				at: #topCenter:
+				class: SplineFigure
+				action: aBlock);
+
+		add: (CommandHandle
+				connectionFor: self
+				at: #bottomCenter:
+				class: SplineFigure
+				action: aBlock);
+
+		yourself</body>
+
+<body>metaFigure
+
+^self model.</body>
+
+<body>metaFigure: aCase
+
+self model: aCase.
+^self.</body>
+</methods>
+
+<methods>
+<class-id>IndexValueFigure</class-id> <category>resources</category>
+
+<body>menu
+
+	^PopUpMenu
+
+		labels: 'Inspeccionar' withCRs
+
+		values: #(#inspect).</body>
+</methods>
+
+<methods>
+<class-id>IndexValueFigure</class-id> <category>constraints</category>
+
+<body>constraintsCollect: aBlock
+
+	constraints := constraints collect: aBlock.
+	^super constraintsCollect: aBlock</body>
+
+<body>constraintsDo: aBlock
+
+	constraints do: aBlock.
+	^super constraintsDo: aBlock</body>
+</methods>
+
+<methods>
+<class-id>IndexValueFigure</class-id> <category>transforming</category>
+
+<body>constrainCorner: aMouseVariable
+
+	^OrderedCollection with: (self constraintClass xyMouseConstraint: aMouseVariable on: corner).</body>
+</methods>
+
+<methods>
+<class-id>IndexValueFigure</class-id> <category>copy</category>
+
+<body>postCopy
+
+	constraints := constraints copy.</body>
+</methods>
+
+<methods>
+<class-id>IndexValueFigure</class-id> <category>initializing</category>
+
+<body>initializeAt: aIniPoint stop: aStopPoint  with: aIndexValue drawing: aDrawing
+
+	"Asume que recibe aIndexValue una metafigura instancia de la clase IndexValue."
+
+	| aFiguraIV labelText aIndexValueLabel |
+	self metaFigure: aIndexValue.
+
+	"Creacion de la figura del indexValue"
+	aFiguraIV :=  Refactory.HotDraw.LineFigure start: aIniPoint stop: aStopPoint.
+	aFiguraIV lineColor: (ColorValue black).
+
+	"Creacion del afigura de texto y sus atributos"
+	( ( ( ( self metaFigure) value )  class) name = #ByteSymbol)
+	ifFalse: [ labelText := ( ( ( self metaFigure) value ) printString ) asParagraph ]
+	ifTrue:[ labelText := ( ( self metaFigure) value )  asParagraph ].
+
+	aIndexValueLabel := Refactory.HotDraw.TextFigure new.
+	aIndexValueLabel setParagraph: labelText origin: (aFiguraIV center).
+
+	self add: aFiguraIV.
+	self add: aIndexValueLabel.
+
+	aDrawing add: self.
+	^self</body>
+</methods>
+<new-page/>
+
+
+<class>
+<name>NormFigure</name>
+<environment>Smalltalk</environment>
+<super>Refactory.HotDraw.CompositeFigure</super>
+<private>false</private>
+<indexed-type>none</indexed-type>
+<inst-vars>constraints </inst-vars>
+<class-inst-vars></class-inst-vars>
+<imports></imports>
+<category>CBR - View</category>
+</class>
+
+<!-- -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -   -->
+
+
+<methods>
+<class-id>NormFigure class</class-id> <category>instance creation</category>
+
+<body>createAt: aPoint with: aNorm
+
+	^(self new initializeAt: aPoint with: aNorm).</body>
+</methods>
+
+<!-- -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -   -->
+
+
+<comment>
+<class-id>NormFigure</class-id>
+<body>NormFigure es una especializacion de CompositeFigure y permite desplegar una norma en la Vista.  La norma se despliega en forma de rectangulo con el descriptor en forma de hilera (Norm descriptor) en el centro.
+
+Variable de instacia.
+	constraints : vector de restriciones utilizadas por HotDraw.</body>
+</comment>
+
+<methods>
+<class-id>NormFigure</class-id> <category>initializing</category>
+
+<body>initializeAt: aPoint  with: aNewNorm
+
+	"Crea una instancia de la figura para la norma.  Las normas se representan con un rectangulo blanco con bordes.
+		Donde:
+			aNewNorm es una instancia que modela una norma (instancia de Norm).
+			aPoint es el punto origen del rectangulo."
+
+	| aNorm coords labelText normLabel |
+
+	self metaFigure: aNewNorm.
+
+	"Creacion de la figura de la norma"
+	aNorm := Refactory.HotDraw.RectangleFigure createAt: aPoint.
+	aNorm corner: ((aPoint x) + 90) @ ((aPoint y) + 30); lineColor: ColorValue blue.
+
+	coords := Point x: (aNorm bottomLeft x) + 5
+         	                y: (aNorm bottomLeft y) - 20.
+
+	"Creacion del afigura de texto y sus atributos, verificando antes si la norma es la de la raiz"
+	(self metaFigure isRoot)
+	ifTrue: [ labelText := ('(nil, nil): ' , (self metaFigure numCases printString)) asParagraph ]
+
+	ifFalse: [
+		( ( ( self metaFigure descriptor value)  class) name = #ByteSymbol)
+			ifFalse: [
+				labelText := ( '(' , ( self metaFigure descriptor attribute) , ',' ,
+								(  ( self metaFigure descriptor value) printString  ) , '): ' ,
+								(  ( self metaFigure numCases) printString ) ) asParagraph ]
+
+			ifTrue:[
+				labelText := ( '(',  ( self metaFigure descriptor attribute) , ',' ,
+								(  ( self metaFigure descriptor value)   ) , '): ' ,
+								(  ( self metaFigure numCases) printString ) ) asParagraph ].
+	].
+
+	normLabel := Refactory.HotDraw.TextFigure new.
+	normLabel setParagraph: labelText origin: coords.
+
+	self add: aNorm.
+	self add: normLabel.
+
+	^self.</body>
+</methods>
+
+<methods>
+<class-id>NormFigure</class-id> <category>copy</category>
+
+<body>postCopy
+
+	constraints := constraints copy.</body>
+</methods>
+
+<methods>
+<class-id>NormFigure</class-id> <category>transforming</category>
+
+<body>constrainCorner: aMouseVariable
+
+	^OrderedCollection with: (self constraintClass xyMouseConstraint: aMouseVariable on: corner).</body>
+</methods>
+
+<methods>
+<class-id>NormFigure</class-id> <category>constraints</category>
+
+<body>constraintsCollect: aBlock
+
+	constraints := constraints collect: aBlock.
+	^super constraintsCollect: aBlock</body>
+
+<body>constraintsDo: aBlock
+
+	constraints do: aBlock.
+	^super constraintsDo: aBlock</body>
+</methods>
+
+<methods>
+<class-id>NormFigure</class-id> <category>resources</category>
+
+<body>menu
+
+	"Define las opciones de menï¿¿ para la instancia de la figura (NormFigure)."
+
+	^PopUpMenu
+
+		labels: 'Inspeccionar' withCRs
+
+		values: #(#inspect).</body>
+</methods>
+
+<methods>
+<class-id>NormFigure</class-id> <category>accessing</category>
+
+<body>handles
+
+	"Definicion del los handles laterales para una instancia de NormFigure"
+
+	| aBlock |
+
+	aBlock := [:source :dest :aFigure |
+
+				dest addSource: source.
+				aFigure addDependent: dest.
+				aFigure metaFigure: (Array with: source).
+				source addDependent: aFigure.
+				dest addDependent: aFigure].
+
+	^(super handles)
+
+    		add: (CommandHandle
+				connectionFor: self
+				at: #topCenter:
+				class: SplineFigure
+				action: aBlock);
+
+		add: (CommandHandle
+				connectionFor: self
+				at: #bottomCenter:
+				class: SplineFigure
+				action: aBlock);
+
+		yourself</body>
+
+<body>metaFigure
+
+^self model.</body>
+
+<body>metaFigure: aNorm
+
+self model: aNorm.
+^self.</body>
+</methods>
+<new-page/>
+
+
+<class>
+<name>IndexFigure</name>
+<environment>Smalltalk</environment>
+<super>Refactory.HotDraw.CompositeFigure</super>
+<private>false</private>
+<indexed-type>none</indexed-type>
+<inst-vars>constraints </inst-vars>
+<class-inst-vars></class-inst-vars>
+<imports></imports>
+<category>CBR - View</category>
+</class>
+
+<!-- -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -   -->
+
+
+<methods>
+<class-id>IndexFigure class</class-id> <category>instance creation</category>
+
+<body>createAt: aPoint with: aIndex
+
+	^( self new initializeAt: aPoint with: aIndex ).</body>
+</methods>
+
+<!-- -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -   -->
+
+
+<comment>
+<class-id>IndexFigure</class-id>
+<body>IndexFigure es una especializacion de CompositeFigure y permite desplegar un í®€ice en la Vista.  El í®€ice se despliega en forma de rectá®§ulo con la hilera etiqueta (Index label) en el centro.
+
+Variable de instacia.
+	constraints : vector de restriciones utilizadas por HotDraw.</body>
+</comment>
+
+<methods>
+<class-id>IndexFigure</class-id> <category>initializing</category>
+
+<body>initializeAt: aPoint  with: aNewIndex
+
+	"Crea una instancia de la figura para el indice.   Los indices se representan con un rectangulo relleno.
+		Donde:
+			aNewIndex es una instancia que modela un indice (instancia de Index).
+			aPoint es el origen del rectangulo."
+
+	| aIndex coords labelText indexLabel |
+
+	self metaFigure: aNewIndex.
+
+	"Creacion de la figura del indice"
+	aIndex := Refactory.HotDraw.RectangleFigure createAt: aPoint.
+	aIndex corner: ((aPoint x) + 60) @ ((aPoint y) + 30); lineColor: ColorValue blue; fillColor: ColorValue yellow.
+
+	coords := Point x: (aIndex bottomLeft x) + 5
+         	                y: (aIndex bottomLeft y) - 20.
+
+	"Creacion del afigura de texto y sus atributos"
+	labelText := self metaFigure label asParagraph.
+
+	indexLabel := Refactory.HotDraw.TextFigure new.
+	indexLabel setParagraph: labelText origin: coords.
+
+	self add: aIndex.
+	self add: indexLabel.
+
+	^self.</body>
+</methods>
+
+<methods>
+<class-id>IndexFigure</class-id> <category>copy</category>
+
+<body>postCopy
+
+	constraints := constraints copy.</body>
+</methods>
+
+<methods>
+<class-id>IndexFigure</class-id> <category>transforming</category>
+
+<body>constrainCorner: aMouseVariable
+
+	^OrderedCollection with: (self constraintClass xyMouseConstraint: aMouseVariable on: corner).</body>
+</methods>
+
+<methods>
+<class-id>IndexFigure</class-id> <category>constraints</category>
+
+<body>constraintsCollect: aBlock
+
+	constraints := constraints collect: aBlock.
+	^super constraintsCollect: aBlock</body>
+
+<body>constraintsDo: aBlock
+
+	constraints do: aBlock.
+	^super constraintsDo: aBlock</body>
+</methods>
+
+<methods>
+<class-id>IndexFigure</class-id> <category>resources</category>
+
+<body>menu
+
+	"Define las opciones de menï¿¿ para la instancia de la figura (IndexFigure)."
+
+	^PopUpMenu
+
+		labels: 'Inspeccionar' withCRs
+
+		values: #(#inspect).</body>
+</methods>
+
+<methods>
+<class-id>IndexFigure</class-id> <category>accessing</category>
+
+<body>handles
+
+	"Definicion del los handles laterales para una instancia de IndexFigure"
+
+	| aBlock |
+
+	aBlock := [:source :dest :aFigure |
+
+				dest addSource: source.
+				aFigure addDependent: dest.
+				aFigure metaFigure: (Array with: source).
+				source addDependent: aFigure.
+				dest addDependent: aFigure].
+
+	^(super handles)
+
+    		add: (CommandHandle
+				connectionFor: self
+				at: #topCenter:
+				class: SplineFigure
+				action: aBlock);
+
+		add: (CommandHandle
+				connectionFor: self
+				at: #bottomCenter:
+				class: SplineFigure
+				action: aBlock);
+
+		yourself</body>
+
+<body>metaFigure
+
+^self model.</body>
+
+<body>metaFigure: aCase
+
+self model: aCase.
+^self.</body>
+</methods>
+<new-page/>
+
+
+<class>
+<name>RDNetView</name>
+<environment>Smalltalk</environment>
+<super>Refactory.HotDraw.DrawingEditor</super>
+<private>false</private>
+<indexed-type>none</indexed-type>
+<inst-vars>lastXUsed </inst-vars>
+<class-inst-vars></class-inst-vars>
+<imports></imports>
+<category>CBR - View</category>
+</class>
+
+<!-- -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -   -->
+
+
+<methods>
+<class-id>RDNetView class</class-id> <category>defaults</category>
+
+<body>defaultTools
+
+	"Conjunto de herramientas mostradas en el palette. Las herramientas son:
+	 1. Un seleccionador de objetos graficos, representado por una flecha"
+
+	^(OrderedCollection new)
+		add: Tool selectionTool;
+		yourself</body>
+</methods>
+
+<methods>
+<class-id>RDNetView class</class-id> <category>instance creation</category>
+
+<body>example
+	"Ejemplo de memeoria de casos, construido con 4 casos ."
+
+| c1 c2 c3 c4 d r |
+
+"self halt."
+
+c1 := Case new.
+c2 := Case new.
+c3 := Case new.
+c4 := Case new.
+d := Descriptor new.
+r := RDNet new.
+
+c1 setSolutionWith: ((CaseSolution new) name: #SS1).
+d addAttribute: #Temp withValue: 40.
+c1 addToDescription: d.
+d addAttribute: #Tos withValue: #si.
+c1 addToDescription: d.
+d addAttribute: #DP withValue: #si.
+c1 addToDescription: d.
+d addAttribute: #SN withValue: #si.
+c1 addToDescription: d.
+c1 setStatusWith: #+.
+
+c2 setSolutionWith: ((CaseSolution new) name: #SS2).
+d addAttribute: #Temp withValue: 38.
+c2 addToDescription: d.
+d addAttribute: #Tos withValue: #si.
+c2 addToDescription: d.
+d addAttribute: #SN withValue: #si.
+c2 addToDescription: d.
+c2 setStatusWith: #+.
+
+c3 setSolutionWith: ((CaseSolution new) name: #SS3).
+d addAttribute: #Tos withValue: #si.
+c3 addToDescription: d.
+d addAttribute: #DP withValue: #si.
+c3 addToDescription: d.
+d addAttribute: #Torax withValue: #muestra_oscura.
+c3 addToDescription: d.
+d addAttribute: #Fumador withValue: #si.
+c3 addToDescription: d.
+c3 setStatusWith: #+.
+
+c4 setSolutionWith: ((CaseSolution new) name: #C4).
+d addAttribute: #Temp withValue: 39.
+c4 addToDescription: d.
+d addAttribute: #Tos withValue: #si.
+c4 addToDescription: d.
+d addAttribute: #DP withValue: #si.
+c4 addToDescription: d.
+d addAttribute: #SN withValue: #no.
+c4 addToDescription: d.
+d addAttribute: #Fumador withValue: #si.
+c4 addToDescription: d.
+c4 setStatusWith: #+.
+
+"El caso problema"
+r problemCase setSolutionWith: ((CaseSolution new) name: #CP).
+"d addAttribute: #SN withValue: #no.
+r  problemCase addToDescription: d.
+d addAttribute: #Tos withValue: #si.
+r  problemCase addToDescription: d.
+d addAttribute: #DP withValue: #si.
+r problemCase addToDescription: d."
+
+r add: c1.
+r add: c2.
+r add: c3.
+r add: c4.
+
+self halt.
+(RDNetView openWith: r) inspect.</body>
+
+<body>openWith: anRDNet
+
+	"Asigna a la metafigura de la vista una instacia construida del modelo RDNet.  Es decir el modelo de la red completa a desplegar.
+	 anRDNet debe contener una instacia del modelo."
+
+	| editor |
+
+	editor := self new.
+	editor drawing: Refactory.HotDraw.Drawing new.
+      editor drawing model: anRDNet.
+	editor open.
+      editor initializeNetView.
+      ^editor.</body>
+
+<body>windowSpec
+	"UIPainter new openOnClass: self andSelector: #windowSpec"
+
+	&lt;resource: #canvas&gt;
+	^#(#{UI.FullSpec}
+		#window:
+		#(#{UI.WindowSpec}
+			#label: 'Red de Discriminacion Redundante'
+			#bounds: #(#{Graphics.Rectangle} 800 600 1355 1080 )
+			#isEventDriven: true )
+		#component:
+		#(#{UI.SpecCollection}
+			#collection: #(
+				#(#{UI.ArbitraryComponentSpec}
+					#layout: #(#{Graphics.LayoutFrame} 0 0 28 0 0 1 0 1 )
+					#flags: 11
+					#colors:
+					#(#{UI.LookPreferences}
+						#setBackgroundColor: #(#{Graphics.ColorValue} #white ) )
+					#component: #drawing )
+
+"#(#{UI.ArbitraryComponentSpec}
+					#layout: #(#{Graphics.LayoutFrame} 0 0 0 0 0 1 28 0 )
+					#flags: 0
+					#component: #toolbar )"
+) ) )</body>
+</methods>
+
+<!-- -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -   -->
+
+
+<comment>
+<class-id>RDNetView</class-id>
+<body>RDNetView es una especializacion de DrawingEditor que sirve de vista para el modelo RDNet.  En esta vista se construye una memoria de discriminació® ²edundate que almacena casos resueltos para problemas dados.  Los casos en el modelo son descritos por medio de tuplas que contienen pares atributo valor.  Los casos almacenados son utilizados para la resolució® €e nuevos casos.
+
+Nomenclatura del RDNetView:
+
+Los rectangulos sin relleno representan las normas de la red.
+Los rectangulos rellenos representan los indices.
+Los circulos representan los casos almacenados.
+
+
+Varibles de instancia:
+
+lastXUsed : almacena la ï¿¿ltima coordenada X utilizada.  Se utiliza durante  el despliegue de la red de casos,  para crear una cuadricula imaginaria de forma que ningï¿¿n componente de la red se encuentre en la misma coordenada X, excepto el primer hijo derecho de una norma o un indice.
+
+
+Utiliza instancias de las clases:
+	CaseFigure
+	IndexFigure
+	IndexValueFigure
+	NormFigure
+para desplegar todos los componentes de la red.</body>
+</comment>
+
+<methods>
+<class-id>RDNetView</class-id> <category>initializing</category>
+
+<body>initialize
+
+	^self.</body>
+
+<body>initializeNetView
+
+	"Inicializa la metafigura de la raiz e invoca al metodo de despliege de la norma raiz y sus indices suscesores.  Luego de que se despliega  toda la red,
+	despliega en la esquina superior derecha el caso problema y las mejores posibles soluciones."
+
+	| aRoot |
+
+	aRoot := (self drawing) model root.
+
+	"Despliegue de la norma raiz y sus hijos"
+	self lastXUsed: 10.
+	self displayNormAt: 20 with: aRoot startLine: 0@0 .
+
+	^self.</body>
+</methods>
+
+<methods>
+<class-id>RDNetView</class-id> <category>displaying</category>
+
+<body>displayCaseAt:  aY  with: aCase startLine: aPosCenterFather  indexValue: aIndexValue
+
+	"Despliega un caso.
+	 Donde:
+		aY: es un entero que contiene la coordenada Y en donde se va a desplegar el caso.
+			Recuerde que la coordenada X es una variable de instancia.
+		aCase: debe contener la metafigura del caso a desplegar (un caso del modelo).
+		aPosCenterFather: debe contener la coordenada central inferior de la figura padre (coordenada de la forma x@y).
+		 aIndexValue: 	es parte del modelo y contiene una Instancia de IndexValue de la forma (value, successor),
+						donde value representa el valor del indice que me lleva a este caso."
+
+	| aFiguraCaso linea |
+
+	aFiguraCaso := CaseFigure createAt: ( lastXUsed@aY ) with: aCase.
+	(self drawing) add: aFiguraCaso.
+
+	(aIndexValue = nil )
+	ifTrue: [		linea :=  Refactory.HotDraw.LineFigure start: aPosCenterFather stop: (((aFiguraCaso components) at: 1) topCenter).
+				(self drawing) add: linea. ]
+
+	ifFalse: [	IndexValueFigure createAt: aPosCenterFather
+					stop: (((aFiguraCaso components) at: 1) topCenter)
+					with:aIndexValue drawing:(self drawing). ].
+	^ self.</body>
+
+<body>displayIndexAt: aY with: aIndex  startLine: aPosCenterFather
+
+	"Despliega el indice y realiza las gestiones requeridas para que se despliegen sus indices suscesores..
+	 	Donde:
+		aY: es un entero que contiene la coordenada Y en donde se va a desplegar el caso.
+			Recuerde que la coordenada X es una variable de instancia.
+		aIndex: debe contener la metafigura del indice a desplegar (un indice del modelo).
+		aPosCenterFather: debe contener la coordenada central inferior de la figura padre (coordenada de la forma x@y). "
+
+	| aFiguraIndice aCaso linea sucesores x |
+
+	aFiguraIndice := IndexFigure createAt: ( (self  lastXUsed) @aY )  with: aIndex.
+	linea :=  Refactory.HotDraw.LineFigure start: aPosCenterFather stop: (((aFiguraIndice components) at: 1) topCenter).
+
+	(self drawing) add: aFiguraIndice.
+	(self drawing) add: linea.
+
+	1 to: ( aIndex successors size ) do:
+		[ :indice |
+				sucesores := ((aIndex successors) at: indice) successors.
+				x := 1.
+				[ x &lt;= sucesores size ]
+				whileTrue: [
+
+					((((sucesores at: x) class name) = (Case getClassName)) |
+					 (((sucesores at: x) class name) = (SAVCase getClassName)))
+					ifTrue: [
+						aCaso := sucesores at: x.
+						self displayCaseAt: (aY + 70 )
+							with: aCaso
+							startLine: (((aFiguraIndice components) at: 1) bottomCenter)
+							indexValue: ((aIndex successors) at: indice). ]
+
+					ifFalse: [
+						self displayNormAt: ( aY + 70 )
+							with: (sucesores at: x)
+							startLine: (((aFiguraIndice components) at: 1) bottomCenter) ].
+
+					self lastXUsed: (lastXUsed + 45).
+					x := x + 1.
+				].
+		].
+
+	^self.</body>
+
+<body>displayNormAt: aY with:  aNorm  startLine: aPosCenterFather
+
+	"Despliega la norma y realiza las gestiones requeridas para que se despliegen sus indices suscesores.
+	 	Donde:
+		aY: es un entero que contiene la coordenada Y en donde se va a desplegar el caso.
+			Recuerde que la coordenada X es una variable de instancia.
+		aNorm: debe contener la metafigura de la norma a desplegar (una norma del modelo).
+		aPosCenterFather: debe contener la coordenada central inferior de la figura padre (coordenada de la forma x@y)."
+
+	| aFiguraNorma linea sucesor |
+
+	(aNorm isRoot)
+	ifTrue: [
+		aFiguraNorma := NormFigure createAt: ( 430@aY ) with: aNorm.
+		(self drawing) add: aFiguraNorma. ]
+
+	ifFalse:[
+		aFiguraNorma := NormFigure createAt: ( (self  lastXUsed)@aY ) with: aNorm.
+		linea :=  Refactory.HotDraw.LineFigure start: aPosCenterFather stop: (((aFiguraNorma components) at: 1) topCenter).
+		(self drawing) add: aFiguraNorma.
+		(self drawing) add: linea. ].
+
+	1 to: ( aNorm successors size) do:
+	[ :indice |
+
+		sucesor := (aNorm successors) at: indice.
+
+		(((sucesor class name) = (Case getClassName)) |
+		 ((sucesor class name) = (SAVCase getClassName)))
+		ifTrue: [ self displayCaseAt:  (aY + 100) with: sucesor startLine: (((aFiguraNorma components) at: 1) bottomCenter) indexValue: nil ].
+
+		((sucesor class name) = (Index getClassName))
+		ifTrue: [ self displayIndexAt:  (aY + 100) with: sucesor startLine: (((aFiguraNorma components) at: 1) bottomCenter) ].
+
+		self lastXUsed: ( lastXUsed + 30 ).
+	].
+
+	^self.</body>
+</methods>
+
+<methods>
+<class-id>RDNetView</class-id> <category>accessing</category>
+
+<body>lastXUsed
+
+	"Retorna la ï¿¿ltima posició® µtilizada en el eje X. "
+
+	^lastXUsed.</body>
+
+<body>lastXUsed: aX
+
+	"Actualiza la ï¿¿ltima posició® µtilizada en el eje X. "
+
+	lastXUsed := aX .
+	^lastXUsed.</body>
+</methods>
+
+<methods>
+<class-id>RDNetView</class-id> <category>resource</category>
+
+<body>menu
+
+	"Retorna el menï¿¿ para el editor."
+
+		^PopUpMenu
+
+			labels: 'Caso a resolver' withCRs
+			values: #(#caseResolving).</body>
+</methods>
+
+<methods>
+<class-id>RDNetView</class-id> <category>installing</category>
+
+<body>caseResolving
+
+	"Permite leer y buscar la solucuó® °ara un nuevo caso problema."
+
+	"Busca la mejor solucion para el caso problema"
+	( (self drawing) metaFigure)  betterMatch.
+
+	^self.</body>
+</methods>
+<new-page/>
+
+
+<class>
+<name>RDNetController</name>
+<environment>Smalltalk</environment>
+<super>UI.ControllerWithMenu</super>
+<private>false</private>
+<indexed-type>none</indexed-type>
+<inst-vars></inst-vars>
+<class-inst-vars></class-inst-vars>
+<imports></imports>
+<category>CBR - View</category>
+</class>
+
+<comment>
+<class-id>RDNetController</class-id>
+<body>RDNetController implementa el uso de dispositivos perifericos (teclado y mouse).</body>
+</comment>
+
+<methods>
+<class-id>RDNetController</class-id> <category>menu</category>
+
+<body>makeMenu
+
+	| mb |
+
+	mb := MenuBuilder new.
+	mb  add: 'Sucesores      s' -&gt; #display.
+	^mb.</body>
+
+<body>menu
+
+	| mb |
+
+	mb := self makeMenu.
+	^mb menu.</body>
+
+<body>menu: aMenu
+
+        menuHolder :=  ValueHolder with: aMenu</body>
+</methods>
+
+<methods>
+<class-id>RDNetController</class-id> <category>control defaults</category>
+
+<body>controlActivity
+
+	"Controlar la actividad del teclado"
+
+	self sensor keyboardPressed ifTrue:[self readKeyboard].
+	^super controlActivity</body>
+
+<body>readKeyboard
+
+	"Lee el valor del teclado. En esta aplicacion no se utilizara el teclado para generar comandos.  Por esa razon, este metodo solamente leera
+	 el contenido del teclado y no tomara accion alguna (i.e., no invocara ningun metodo del modelo)"
+
+	| char |
+
+	char := self sensor keyboardEvent keyCharacter.
+	char asLowercase.
+	^char.</body>
+</methods>
+<new-page/>
+
+
+<class>
+<name>CaseFigure</name>
+<environment>Smalltalk</environment>
+<super>Refactory.HotDraw.CompositeFigure</super>
+<private>false</private>
+<indexed-type>none</indexed-type>
+<inst-vars>constraints </inst-vars>
+<class-inst-vars></class-inst-vars>
+<imports></imports>
+<category>CBR - View</category>
+</class>
+
+<!-- -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -   -->
+
+
+<methods>
+<class-id>CaseFigure class</class-id> <category>instance creation</category>
+
+<body>createAt: aPoint with: aNorm
+
+	^( self new initializeAt: aPoint with: aNorm).</body>
+</methods>
+
+<!-- -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -   -->
+
+
+<comment>
+<class-id>CaseFigure</class-id>
+<body>CaseFigure es una especializacion de CompositeFigure y permite desplegar un caso en la Vista.  El caso se despliega en forma de circulo con la hilera solucion
+(Case solution) en el centro.
+
+Variable de instancia.
+	constraints : vector de restriciones utilizadas por HotDraw.</body>
+</comment>
+
+<methods>
+<class-id>CaseFigure</class-id> <category>initializing</category>
+
+<body>initializeAt: aPoint  with: aNewCase
+
+	"Crea una instancia de la figura para el caso.
+		Donde:
+			aNewCase es una instancia que modela un caso (instancia de Case).
+			aPoint es el punto central del circulo."
+
+	| aCase coords labelText solution caseLabel |
+	self metaFigure: aNewCase.
+
+	"Creacion de la figura del caso"
+	aCase :=  Refactory.HotDraw.EllipseFigure createAt: aPoint.
+	aCase corner: ((aPoint x) + 30) @ ((aPoint y) + 30); lineColor: ColorValue red.
+
+	coords := Point x: (aCase bottomLeft x) + 5
+         	                y: (aCase bottomLeft y) - 20.
+
+	labelText := ''.
+	solution := self metaFigure solution name.
+	(solution isNil) ifFalse: [ labelText := solution asParagraph ].
+
+	caseLabel := Refactory.HotDraw.TextFigure new.
+	caseLabel setParagraph: (labelText asParagraph) origin: coords.
+
+	self add: aCase.
+	self add: caseLabel.
+
+	^self.</body>
+</methods>
+
+<methods>
+<class-id>CaseFigure</class-id> <category>copy</category>
+
+<body>postCopy
+
+	constraints := constraints copy.</body>
+</methods>
+
+<methods>
+<class-id>CaseFigure</class-id> <category>transforming</category>
+
+<body>constrainCorner: aMouseVariable
+
+	^OrderedCollection with: (self constraintClass xyMouseConstraint: aMouseVariable on: corner).</body>
+</methods>
+
+<methods>
+<class-id>CaseFigure</class-id> <category>constraints</category>
+
+<body>constraintsCollect: aBlock
+
+	constraints := constraints collect: aBlock.
+	^super constraintsCollect: aBlock</body>
+
+<body>constraintsDo: aBlock
+
+	constraints do: aBlock.
+	^super constraintsDo: aBlock</body>
+</methods>
+
+<methods>
+<class-id>CaseFigure</class-id> <category>resources</category>
+
+<body>menu
+
+	"Define las opciones de menï¿¿ para la instancia de la figura (CaseFigure)."
+
+	^PopUpMenu
+
+		labels: 'Inspeccionar' withCRs
+
+		values: #(#inspect).</body>
+</methods>
+
+<methods>
+<class-id>CaseFigure</class-id> <category>accessing</category>
+
+<body>handles
+
+	"Definicion del los handles laterales para una instancia de CaseFigure"
+
+	| aBlock |
+
+	aBlock := [:source :dest :aFigure |
+
+				dest addSource: source.
+				aFigure addDependent: dest.
+				aFigure metaFigure: (Array with: source).
+				source addDependent: aFigure.
+				dest addDependent: aFigure].
+
+	^(super handles)
+
+    		add: (CommandHandle
+				connectionFor: self
+				at: #topCenter:
+				class: SplineFigure
+				action: aBlock);
+
+		add: (CommandHandle
+				connectionFor: self
+				at: #bottomCenter:
+				class: SplineFigure
+				action: aBlock);
+
+		yourself</body>
+
+<body>metaFigure
+
+^self model.</body>
+
+<body>metaFigure: aCase
+
+self model: aCase.
+^self.</body>
+</methods>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</st-source>
