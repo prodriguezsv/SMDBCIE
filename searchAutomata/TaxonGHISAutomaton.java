@@ -4,6 +4,12 @@
  */
 
 package searchAutomata;
+import domainTheory.GroupingHeuristicIndex;
+import domainTheory.GroupingHeuristic;
+import redundantDiscriminantNet.SAVDescriptor;
+import main.Description;
+import main.Index;
+
 
 /**
  * Taxon GroupingHeuristic-Index Search Automaton.
@@ -16,7 +22,10 @@ package searchAutomata;
  * 3. The search strategy is to use the GroupingHeuristicIndex defined in the class Taxonomy.
  * @author pabloq
  */
-    public class TaxonGHISAutomaton {
+    public class TaxonGHISAutomaton extends TaxonSearchAutomaton{
+
+        GroupingHeuristicIndex searchIndex;
+        GroupingHeuristic groupingHeuristic;
 
 /*
 <name>TaxonGHISAutomaton</name>
@@ -39,7 +48,7 @@ package searchAutomata;
  * @param my parameters list
  * @return my return values
  */
-    public void newWith(){
+    public TaxonGHISAutomaton(GroupingHeuristicIndex aGroupingHeuristicIndex) {
 /*newWith: aGroupingHeuristicIndex
 
 	| searchAutomaton |
@@ -47,29 +56,26 @@ package searchAutomata;
 	searchAutomaton := super new.
 	searchAutomaton initializeWithIndex: aGroupingHeuristicIndex.
 	^searchAutomaton.*/
+        super();
+        initializeWithIndex(aGroupingHeuristicIndex);
 }
-
-
-
-
-
-
  /*
  *Category initializing
  */
-
 
 /**
  * @see Define method name.
  * @param my parameters list
  * @return my return values
  */
-    public void initializeWithIndex(){
+    public void initializeWithIndex(GroupingHeuristicIndex aGroupingHeuristicIndex){
 /*initializeWithIndex: aGroupingHeuristicIndex
 
 	self searchIndex: aGroupingHeuristicIndex.
 	self resetGroupingHeuristic.
 	^self.*/
+        searchIndex =  aGroupingHeuristicIndex;
+        resetGroupingHeuristic();
 }
 
 /**
@@ -82,9 +88,8 @@ package searchAutomata;
 
 	groupingHeuristic := nil.
 	^nil.*/
+        groupingHeuristic = null;
 }
-
-
 
  /*
  *Category adding
@@ -95,14 +100,13 @@ package searchAutomata;
  * @param my parameters list
  * @return my return values
  */
-    public void groupingHeuristic(){
+    public void setGroupingHeuristic(GroupingHeuristic aGroupingHeuristic){
 /*groupingHeuristic: aGroupingHeuristic
 
 	groupingHeuristic := aGroupingHeuristic.
 	^self.*/
+        groupingHeuristic = aGroupingHeuristic;
 }
-
-
 
  /*
  *Category accessing
@@ -113,10 +117,11 @@ package searchAutomata;
  * @param my parameters list
  * @return my return values
  */
-    public void groupingHeuristic(Object c){
+    public GroupingHeuristic getGroupingHeuristic(){
 /*groupingHeuristic
 
 	^groupingHeuristic.*/
+        return groupingHeuristic;
 }
 
 /**
@@ -124,10 +129,11 @@ package searchAutomata;
  * @param my parameters list
  * @return my return values
  */
-    public void groupingHeuristicIndex(){
+    public GroupingHeuristicIndex GetGroupingHeuristicIndex(){
 /*groupingHeuristicIndex
 
 	^self searchIndex.*/
+        return searchIndex;
 }
 
 
@@ -141,7 +147,7 @@ package searchAutomata;
  * @param my parameters list
  * @return my return values
  */
-    public void beginWith(){
+    public void beginWith(Description<SAVDescriptor> aProblemDescription){
 /*beginWith: aProblemDescription
 
 	"The argument aProblemDescription MUST consist of one SAVDescriptor of the form:

@@ -67,7 +67,7 @@ public class SAVCaseDFSAutomaton {
         netRoot = aSAVRoot;
         currentNorm = null;
         resetLevel();
-        stopLevel(currentLevel);
+        SetStopLevel(currentLevel);
         tSolutionDesc = new ArrayList<SAVDescriptor>();
         tConfirmedDesc = new ArrayList<SAVDescriptor>();
         tUnconfirmedDesc = new ArrayList<SAVDescriptor>();
@@ -93,7 +93,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public void currentNorm(Norm aNorm){
+    public void SetCurrentNorm(Norm aNorm){
         //<body>currentNorm: aNorm
         //
         //	"Automaton reference: CN"
@@ -107,7 +107,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public void justification(Object aJustificationElement){
+    public void SetJustification(Object aJustificationElement){
         //<body>justification: aJustificationElement
         //
         //	justification add: aJustificationElement.
@@ -119,7 +119,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public void nextLevel(){
+    public void SetNextLevel(){
         //<body>nextLevel
         //
         //	currentLevel := currentLevel + 1.
@@ -131,7 +131,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public void previousLevel(){
+    public void SetPreviousLevel(){
         //<body>previousLevel
         //
         //	currentLevel := currentLevel - 1.
@@ -155,7 +155,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public void status(String aStatusValue){
+    public void SetStatus(String aStatusValue){
         //<body>status: aStatusValue
         //
         //	"The possible values for the argument aStatusValue are:
@@ -173,7 +173,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public void stopLevel(int aLevelNumber){
+    public void SetStopLevel(int aLevelNumber){
         //<body>stopLevel: aLevelNumber
         //
         //	stopLevel := aLevelNumber.
@@ -185,7 +185,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public void tConfirmedDescription(SAVDescriptor aSAVDescriptor){
+    public void SetTConfirmedDescription(SAVDescriptor aSAVDescriptor){
         //<body>tConfirmedDescription: aSAVDescriptor
         //
         //	"Automaton reference: AtCD"
@@ -199,7 +199,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public void tDoubtfulDescription(SAVDescriptor aSAVDescriptor){
+    public void SetTDoubtfulDescription(SAVDescriptor aSAVDescriptor){
         //<body>tDoubtfulDescription: aSAVDescriptor
         //
         //	"Automaton reference: AtDD"
@@ -213,7 +213,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public void tSolutionDescription(SAVDescriptor aSAVDescriptor){
+    public void SetTSolutionDescription(SAVDescriptor aSAVDescriptor){
         //<body>tSolutionDescription: aSAVDescriptor
         //
         //	"Automaton reference: AtSD"
@@ -227,7 +227,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public void tUnconfirmedDescription(SAVDescriptor aSAVDescriptor){
+    public void SetTUnconfirmedDescription(SAVDescriptor aSAVDescriptor){
         //<body>tUnconfirmedDescription: aSAVDescriptor
         //
         //	"Automaton reference: AtUD"
@@ -241,7 +241,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public void tUnmatchedDescription(SAVDescriptor aSAVDescriptor){
+    public void SetTUnmatchedDescription(SAVDescriptor aSAVDescriptor){
         //<body>tUnmatchedDescription: aSAVDescriptor
         //
         //	"Automaton reference: AtUMD"
@@ -259,7 +259,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public int currentLevel(){
+    public int GetCurrentLevel(){
         //<body>currentLevel
         //
         //	^currentLevel.</body>
@@ -271,7 +271,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public Object currentNorm(){
+    public Object GetCurrentNorm(){
         //<body>currentNorm
         //
         //	^currentNorm.</body>
@@ -282,7 +282,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public List<Object> justification(){
+    public List<Object> GetJustification(){
         //<body>justification
         //
         //	^justification.</body>
@@ -293,7 +293,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public SAVRoot netRoot(){
+    public SAVRoot GetNetRoot(){
         //<body>netRoot
         //
         //	^netRoot.</body>
@@ -304,7 +304,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public int rootLevel(){
+    public int GetRootLevel(){
         //<body>rootLevel
         //
         //	^1.</body>
@@ -315,7 +315,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public DFSAutomatonOutput searchOutput(){
+    public DFSAutomatonOutput GetSearchOutput(){
         //<body>searchOutput
         //
         //	^searchOutput.</body>
@@ -327,7 +327,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public String status(){
+    public String GetStatus(){
         //<body>status
         //
         //	^status.</body>
@@ -338,7 +338,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public int stopLevel(){
+    public int GetStopLevel(){
         //<body>stopLevel
         //
         //	^stopLevel.</body>
@@ -349,7 +349,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public List<SAVDescriptor> tConfirmedDescription(){
+    public List<SAVDescriptor> GetTConfirmedDescription(){
         //<body>tConfirmedDescription
         //
         //	^tConfirmedDesc.</body>
@@ -360,7 +360,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public List<SAVDescriptor> tDoubtfulDescription(){
+    public List<SAVDescriptor> GetTDoubtfulDescription(){
         //<body>tDoubtfulDescription
         //
         //	^tDoubtfulDesc.</body>
@@ -371,7 +371,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public List<SAVDescriptor> tSolutionDescription(){
+    public List<SAVDescriptor> GetTSolutionDescription(){
         //<body>tSolutionDescription
         //
         //	^tSolutionDesc.</body>
@@ -382,7 +382,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public List<SAVDescriptor> tUnconfirmedDescription(){
+    public List<SAVDescriptor> GetTUnconfirmedDescription(){
         //<body>tUnconfirmedDescription
         //
         //	^tUnconfirmedDesc.</body>
@@ -393,7 +393,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public List<SAVDescriptor> tUnmatchedDescription(){
+    public List<SAVDescriptor> GetTUnmatchedDescription(){
         //<body>tUnmatchedDescription
         //
         //	^tUnmatchedDesc.</body>
@@ -468,7 +468,7 @@ public class SAVCaseDFSAutomaton {
         //
         //	^self.</body>
         currentNorm = currentNorm.getPredecessorNorm();
-        previousLevel();
+        SetPreviousLevel();
         if ((currentLevel < stopLevel) || (currentNorm == netRoot)){
             return null;
         }
@@ -509,11 +509,11 @@ public class SAVCaseDFSAutomaton {
         //	^nil.</body>
         if (currentLevel <= stopLevel){return null;}
          int idx = 0;
-        for (SAVDescriptor tcd : tConfirmedDescription()) {
+        for (SAVDescriptor tcd : GetTConfirmedDescription()) {
 
             if (tcd.getAttribute().equals(aNorm.getDescriptor().getAttribute()) &&
                     (tcd.getValue().equals(aNorm.getDescriptor().getValue()))){
-                tUnconfirmedDescription(tConfirmedDescription().remove(++idx));
+                SetTUnconfirmedDescription(GetTConfirmedDescription().remove(++idx));
                 return true;
             }
 

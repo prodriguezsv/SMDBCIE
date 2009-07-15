@@ -4,7 +4,10 @@
  */
 
 package searchAutomata;
-
+import reasoner.Hypothesis;
+import domainTheory.Taxonomy;
+import domainTheory.Structure;
+import similarityAssessment.SimRanges;
 /**
  * Instances of this class are invoked when the search automatas have performed successfully (i.e., with at least one possible solution), but the taxonomic level of all the possible solutions is more general than the stated identification goal.  The purpose of this class is then, for each qualifying possible solution, establish a dialog with the user asking him/her questions about successor taxa of each solution, *all related to the descriptive element*.  As questions are positively answered, the corresponding taxon moves "one level down", approaching the stated goal.
  * This dialog stopswhen the user cancels, when all possible solutions have been processed but no positive "down-movement" was done, or when at least ONE taxon reaches the stated goal.
@@ -12,6 +15,39 @@ package searchAutomata;
  */
 
 public class GoalApproachingDialog {
+
+    private Hypothesis hypothesis;
+
+ /**
+ *Category instance creation
+ */
+/**
+ * @see Define method name.
+ * @param my parameters list
+ * @return my return values
+ */
+
+    public GoalApproachingDialog(){
+    }
+    public GoalApproachingDialog(Object aGoal,Hypothesis aHypothesis,Taxonomy aTaxonomy,SimRanges simRangesList){
+    /**newWithGoal: aGoal hypothesis: aHypothesis taxonomy: aTaxonomy similarityRanges: simRangesList
+
+	| gad |
+
+	"Make sure the hypothesis descriptive element is a structure"
+	((aHypothesis descriptiveElement) class name = (Structure getClassName))
+	ifFalse: [ ^nil ].
+
+	gad := super new.
+	gad initializeGoal: aGoal hypothesis: aHypothesis taxonomy: aTaxonomy similarityRanges: simRangesList.
+	^gad.*/
+        super();
+        if ((aHypothesis.getDescriptiveElement() instanceof Structure) == true){
+            initializeGoal(aGoal,aHypothesis,aTaxonomy,simRangesList);
+        }
+    }
+
+
 /**<class>
 <name>GoalApproachingDialog</name>
 <environment>Smalltalk</environment>
@@ -25,27 +61,6 @@ public class GoalApproachingDialog {
 </class>*/
 
  /**
- *Category instance creation
- */
-/**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
-    public void newWithGoal(){
-/**newWithGoal: aGoal hypothesis: aHypothesis taxonomy: aTaxonomy similarityRanges: simRangesList
-
-	| gad |
-
-	"Make sure the hypothesis descriptive element is a structure"
-	((aHypothesis descriptiveElement) class name = (Structure getClassName))
-	ifFalse: [ ^nil ].
-
-	gad := super new.
-	gad initializeGoal: aGoal hypothesis: aHypothesis taxonomy: aTaxonomy similarityRanges: simRangesList.
-	^gad.*/
-}
- /**
  *Category accessing
  */
 
@@ -54,7 +69,7 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void goal(){
+    public void GetGoal(){
 /**goal
 
 	^goal.*/
@@ -65,7 +80,7 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void hypothesis(){
+    public void GetHypothesis(){
 /**hypothesis
 
 	^hypothesis.*/
@@ -76,7 +91,7 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void OKList(){
+    public void GetOKList(){
 /**OKList
 
 	^OKList.*/
@@ -87,7 +102,7 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void processList(){
+    public void GetProcessList(){
 /**processList
 
 	^processList.*/
@@ -98,7 +113,7 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void similarityRanges(){
+    public void GetSimilarityRanges(){
 /**similarityRanges
 
 	^similarityRanges.*/
@@ -109,7 +124,7 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void status(){
+    public void GetStatus(){
 /**status
 
 	^status.*/
@@ -120,7 +135,7 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void taxonomy(){
+    public void GetTaxonomy(){
 /**taxonomy
 
 	^taxonomy.*/
@@ -137,7 +152,7 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void chat(){
+    public Object chat(){
 /**chat
 
 	"The purpose of this method is to initially do all the administrative work necessary to select
@@ -213,6 +228,16 @@ public class GoalApproachingDialog {
 	self selectPossibleSolutionsNearestToGoal.
 
 	^(self doDialog).*/
+
+        //Check precondition
+        if (hypothesis.getPossibleSolutions().isEmpty()){return null;}
+	//Transform the stated identification goal to a numeric value
+        
+	goalAsIndex := (TaxonomicLevels transformToIndex: (self goal)).
+
+	"Scan the associated hypothesis possible solutions list"
+
+        
 }
 
 /**

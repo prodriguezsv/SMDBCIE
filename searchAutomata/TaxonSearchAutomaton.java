@@ -4,13 +4,16 @@ package searchAutomata;
 import output.TaxonAutomatonOutput;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Collections;
-import java.util.Comparator;
+//import java.util.Collections;
+//import java.util.Comparator;
 
 import domainTheory.Taxon;
-import domainTheory.TaxonomicLevels;
+//import domainTheory.TaxonomicLevels;
+import reasoner.PossibleSolution;
+
 import redundantDiscriminantNet.SAVDescriptor;
 import main.Description;
+import main.Index;
 
 /**
  *
@@ -22,11 +25,14 @@ public class TaxonSearchAutomaton {
     private List<SAVDescriptor> valueDescriptors;
     private List<SAVDescriptor> tSolutionDesc;
     private List<SAVDescriptor> tUnmatchedDesc;
-    private List<Object> justification;
+    private Description<SAVDescriptor> justification;
     private List<Taxon> taxonList;
-    private SAVDescriptor tSolutionDescription;
-    private SAVDescriptor tUnmatchedDescription;
-    private Object searchIndex;
+    private Description<SAVDescriptor> tSolutionDescription;
+    private Description<SAVDescriptor> tUnmatchedDescription;
+
+
+
+    private Index searchIndex;
 
 
     private String status;
@@ -84,26 +90,28 @@ public class TaxonSearchAutomaton {
         newOutput();
         taxonList = new ArrayList<Taxon>();
 
-        Comparator  comparator = new Comparator<String>() {
-            /**
-            * @see Define method name.
-            * @param my parameters list
-            * @return my return values
-            */
-                public int compare(String o1, String o2) {
-                    if (TaxonomicLevels.transformToIndex(o1) >= TaxonomicLevels.transformToIndex(o2)) {
-                        return 1;
-                    } else {
-                        return 0;
-                    }
-                }
-            };
-        //processList.addAll(super.possibleSolutions());
-        Collections.sort(taxonList,comparator);
+//        Comparator  comparator = new Comparator<String>() {
+//            /**
+//            * @see Define method name.
+//            * @param my parameters list
+//            * @return my return values
+//            */
+//                public int compare(String o1, String o2) {
+//                    if (TaxonomicLevels.transformToIndex(o1) >= TaxonomicLevels.transformToIndex(o2)) {
+//                        return 1;
+//                    } else {
+//                        return 0;
+//                    }
+//                }
+//            };
+//        //processList.addAll(super.possibleSolutions());
+//        Collections.sort(taxonList,comparator);
+
+        
         valueDescriptors = new ArrayList<SAVDescriptor>();
         tSolutionDesc = new ArrayList<SAVDescriptor>();
         tUnmatchedDesc = new ArrayList<SAVDescriptor>();
-        justification = new ArrayList<Object>();
+        //justification = new ArrayList<SAVDescriptor>();
         status = "fail";
 }
 
@@ -131,7 +139,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public void status(String aStatusValue){
+    public void setStatus(String aStatusValue){
 /**status: aStatusValue
 
 	"The possible values for the argument aStatusValue are:
@@ -150,7 +158,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public void taxonList(List<Taxon> taxonList){
+    public void setTaxonList(List<Taxon> taxonList){
 /**taxonList: aTaxon
 
 	taxonList add: aTaxon.
@@ -163,7 +171,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public boolean tSolutionDescription(SAVDescriptor aSAVDescriptor){
+    public boolean setTSolutionDescription(SAVDescriptor aSAVDescriptor){
 /**tSolutionDescription: aSAVDescriptor
 
 	"Automaton reference: AtS"
@@ -173,7 +181,7 @@ public class TaxonSearchAutomaton {
 
 	tSolutionDesc add: aSAVDescriptor.
 	^self.*/
-        if (includes(aSAVDescriptor,tSolutionDescription)){
+        if (includes(aSAVDescriptor,tSolutionDescription) != null){
             return true;
         };
         tSolutionDesc.add(aSAVDescriptor);
@@ -185,7 +193,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public boolean tUnmatchedDescription(SAVDescriptor aSAVDescriptor){
+    public boolean setTUnmatchedDescription(SAVDescriptor aSAVDescriptor){
 /**tUnmatchedDescription: aSAVDescriptor
 
 	"Automaton reference: AtUMD"
@@ -195,7 +203,7 @@ public class TaxonSearchAutomaton {
 
 	tUnmatchedDesc add: aSAVDescriptor.
 	^self.*/
-        if (includes(aSAVDescriptor,tUnmatchedDescription)){
+        if (includes(aSAVDescriptor,tUnmatchedDescription) != null){
         return true;
         }
         tUnmatchedDesc.add(aSAVDescriptor);
@@ -207,7 +215,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public boolean valueDescriptors(List<SAVDescriptor> aValueDescriptorList){
+    public boolean setValueDescriptors(List<SAVDescriptor> aValueDescriptorList){
 /**valueDescriptors: aValueDescriptorList
 
 	[ aValueDescriptorList isEmpty ]
@@ -228,7 +236,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public List<Object> justification(){
+    public Description<SAVDescriptor> getJustification(){
 /**justification
 
 	^justification.*/
@@ -240,7 +248,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public Object searchIndex(){
+    public Object getSearchIndex(){
 /**searchIndex
 
 	^searchIndex.*/
@@ -252,7 +260,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public TaxonAutomatonOutput searchOutput(){
+    public TaxonAutomatonOutput getSearchOutput(){
 /**searchOutput
 
 	^searchOutput.*/
@@ -264,7 +272,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public String status(){
+    public String getStatus(){
 /**status
 
 	^status.*/
@@ -276,7 +284,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public List<Taxon> taxonList(){
+    public List<Taxon> getTaxonList(){
 /**taxonList
 
 	^taxonList.*/
@@ -288,7 +296,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public List<SAVDescriptor> tSolutionDescription(){
+    public List<SAVDescriptor> getTSolutionDescription(){
 /**tSolutionDescription
 
 	^tSolutionDesc.*/
@@ -300,7 +308,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public List<SAVDescriptor>  tUnmatchedDescription(){
+    public List<SAVDescriptor>  getTUnmatchedDescription(){
 /**tUnmatchedDescription
 
 	^tUnmatchedDesc.*/
@@ -312,7 +320,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public List<SAVDescriptor> valueDescriptors(){
+    public List<SAVDescriptor> getValueDescriptors(){
 /**valueDescriptors
 
 	^valueDescriptors.*/
@@ -330,7 +338,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public List<Taxon> associateTaxaToPossibleSolutions(List<Taxon> aTaxonList){
+    public List<PossibleSolution> associateTaxaToPossibleSolutions(List<Taxon> aTaxonList){
 /**associateTaxaToPossibleSolutions: aTaxonList
 
 	"This method is used in conjuntion with prepareSuccessfulOutput.  The purpose
@@ -355,11 +363,11 @@ public class TaxonSearchAutomaton {
 
 	^psList.*/
 
-        List<Taxon> psList = new ArrayList<Taxon>();
+        List<PossibleSolution> psList = new ArrayList<PossibleSolution>();
         for (Taxon tx : aTaxonList){
             PossibleSolution ps = new PossibleSolution();
-            ps.solution(tx);
-            ps.copy(tSolutionDescription,solutionDescription);
+            ps.setSolution(tx);
+            ps.copy(tSolutionDescription, ps.getSolutionDescription());
             psList.add(ps);
 
         }
@@ -371,7 +379,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    private boolean checkPrecondition(List<SAVDescriptor> aProblemDescription){
+    public boolean checkPrecondition(List<SAVDescriptor> aProblemDescription){
 /**checkPrecondition: aProblemDescription
 
 	"beginWith Check:
@@ -391,7 +399,7 @@ public class TaxonSearchAutomaton {
 	(aProblemDescription at: 1) class name = (SAVDescriptor getClassName)
 	ifFalse: [ ^nil ].
 
-	"Get the structure name of the first descriptor"
+	"get the structure name of the first descriptor"
 	sName := (aProblemDescription at: 1) structure.
 
 	"Check the precondition for the rest of the elements"
@@ -440,9 +448,9 @@ public class TaxonSearchAutomaton {
 	(self searchOutput) unmatchedDescription: (self tUnmatchedDescription).
 	^self.*/
 
-        if (searchOutput.justification() != null) {return true;}
-        searchOutput.justification(justification);
-        searchOutput.unmatchedDescription(tUnmatchedDescription);
+        if (searchOutput.getJustification() != null) {return true;}
+        searchOutput.setJustification(justification);
+        searchOutput.setUnmatchedDescription(tSolutionDescription);
         return false;
 }
 
@@ -451,7 +459,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    private boolean prepareSuccessfulOutputWith(aPossibleSolutionsList){
+    private boolean prepareSuccessfulOutputWith(List<PossibleSolution> aPossibleSolutionsList){
 /**prepareSuccessfulOutputWith: aPossibleSolutionsList
 
 	"Automaton reference: PSO"
@@ -464,10 +472,10 @@ public class TaxonSearchAutomaton {
 	(self searchOutput) unmatchedDescription: (self tUnmatchedDescription).
 	self status: #success.
 	^self.*/
-        if (searchOutput.possibleSolutions() != null) {return true;}
-        searchOutput.possibleSolutions(aPossibleSolutionsList);
-        searchOutput.justification(justification);
-        searchOutput.unmatchedDescription(tUnmatchedDescription);
+        if (searchOutput.getPossibleSolutions() != null) {return true;}
+        searchOutput.setPossibleSolutions(aPossibleSolutionsList);
+        searchOutput.setJustification(justification);
+        searchOutput.setUnmatchedDescription(tUnmatchedDescription);
         status = "success";
         return true;
 }
@@ -492,7 +500,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    private void searchIndex(SearchIndex aSearchIndex){
+    public void setSearchIndex(Index aSearchIndex){
 /**searchIndex: aSearchIndex
 
 	searchIndex := aSearchIndex.
@@ -512,7 +520,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public SAVDescriptor includes(SAVDescriptor aSAVDescriptor,SAVDescriptor aDescription) {
+    public SAVDescriptor includes(SAVDescriptor aSAVDescriptor,Description<SAVDescriptor> aDescription) {
 /**includes: aSAVDescriptor in: aDescription
 
 	"Determines if aSAVDescriptor is already a member of aDescriptionList. The argument aSAVDescriptor is a member of
