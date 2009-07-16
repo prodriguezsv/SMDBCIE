@@ -6,8 +6,9 @@ package domainTheory;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import values.ValueDescriptor;
-import values.RangeDescriptor;
+import domainTheory.values.RangeDescriptor;
+import domainTheory.values.ValueDescriptor;
+
 
 /**
  * @author Armando

@@ -6,10 +6,11 @@ package domainTheory;
 import java.util.ArrayList;
 import java.util.List;
 
-import values.ValueDescriptor;
-import values.MeasuringUnit;
-import values.RangeDescriptor;
-import values.SingleDescriptor;
+import domainTheory.values.MeasuringUnit;
+import domainTheory.values.RangeDescriptor;
+import domainTheory.values.SingleDescriptor;
+import domainTheory.values.ValueDescriptor;
+
 
 /**
  * @author Armando

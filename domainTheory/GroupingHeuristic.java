@@ -3,15 +3,15 @@
  */
 package domainTheory;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import redundantDiscriminantNet.SAVDescriptor;
+import main.Description;
+import main.Descriptor;
+import domainTheory.values.RangeDescriptor;
+import domainTheory.values.SingleDescriptor;
+import domainTheory.values.Value;
+import domainTheory.values.ValueDescriptor;
 
-import values.ValueDescriptor;
-import values.RangeDescriptor;
-import values.SingleDescriptor;
-import values.Value;
 
 /**
  * @author Armando
@@ -142,18 +142,18 @@ public class GroupingHeuristic implements Comparable<GroupingHeuristic> {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public List<SAVDescriptor> createSAVDescription(String aTaxonomicGroupName) {
-		List<SAVDescriptor> description;
+	public Description<Descriptor<Object>> createSAVDescription(String aTaxonomicGroupName) {
+		Description<Descriptor<Object>> description;
 		List<ValueDescriptor> vdList;
 		ValueDescriptor vd;
-		SAVDescriptor d;
+		Descriptor<Object> d;
 		
 		// Check if its value has more than one value descriptor container
 		if (!(this.getValues().size() == 1))
 			return null;
 
 		// Create the description holder
-		description = new ArrayList<SAVDescriptor>();
+		description = new Description<Descriptor<Object>>();
 
 		// Get the set of value descriptors
 		vdList = this.getValues().getValueDescriptors(TaxonomicLevels.getLevels().get(GroupingHeuristic.oneLevel()));
@@ -167,8 +167,8 @@ public class GroupingHeuristic implements Comparable<GroupingHeuristic> {
 		if (vd instanceof RangeDescriptor) return null;
 		
 		// Create the new SAVDescriptor and assign its values
-		d = new SAVDescriptor();
-		d.add(aTaxonomicGroupName, this.getName(), ((SingleDescriptor)vd).getValue());
+		d = new Descriptor<Object>();
+		d.add(aTaxonomicGroupName, this.getName(), ((SingleDescriptor<Object>)vd).getValue());
 					
 		description.add(d);
 		

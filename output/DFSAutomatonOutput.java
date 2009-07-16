@@ -6,6 +6,7 @@
 package output;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import domainTheory.Taxonomy;
@@ -47,8 +48,10 @@ public class DFSAutomatonOutput extends SearchAutomatonOutput {
     	processList = new ArrayList<PossibleSolution>();
 
     	// Empty all possible solutions into the sorted-by-taxonomic-level list
-    	while (!(this.getPossibleSolutions().isEmpty()))
+    	while (!(this.getPossibleSolutions().isEmpty())) {
     			processList.add(this.getPossibleSolutions().remove(0));
+    			Collections.sort(processList);
+    	}
 
     	tempList = new ArrayList<PossibleSolution>();
 

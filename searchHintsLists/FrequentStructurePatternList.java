@@ -8,14 +8,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import main.Description;
 import main.Descriptor;
 
 import searchHintsElements.FrequentDescriptorPattern;
 import searchHintsElements.FrequentStructurePatternElt;
-import values.SingleDescriptor;
-import values.Value;
 import domainTheory.Attribute;
 import domainTheory.Structure;
+import domainTheory.values.SingleDescriptor;
+import domainTheory.values.Value;
 
 /**
  * @author Armando
@@ -210,13 +211,13 @@ public class FrequentStructurePatternList extends HintsList<FrequentStructurePat
 	}
 	
 	@SuppressWarnings("unchecked")
-	private List<Descriptor<Object>> convertAttributesToDescriptorsOf(Structure aStructure) {
-		List<Descriptor<Object>> aDescriptorList;
+	private Description<Descriptor<Object>> convertAttributesToDescriptorsOf(Structure aStructure) {
+		Description<Descriptor<Object>> aDescriptorList;
 		Attribute a;
 		Value vdList;
 		Descriptor<Object> d;
 		
-		aDescriptorList = new ArrayList<Descriptor<Object>>();
+		aDescriptorList = new Description<Descriptor<Object>>();
 
 		for (int i = 1; i <= aStructure.getAttributes().size(); i++) {
 			a = aStructure.getAttributes().get(i-1);
@@ -226,7 +227,7 @@ public class FrequentStructurePatternList extends HintsList<FrequentStructurePat
 				vdList.get(Attribute.oneLevel()).get(Attribute.oneLevel()) instanceof SingleDescriptor) {
 				d = new Descriptor<Object>();
 				
-				d.add(a.getName(), ((SingleDescriptor<Object>)vdList.get(Attribute.oneLevel()).get(Attribute.oneLevel())).getValue());
+				d.add(aStructure.getName(), a.getName(), ((SingleDescriptor<Object>)vdList.get(Attribute.oneLevel()).get(Attribute.oneLevel())).getValue());
 				aDescriptorList.add(d);
 			} else return null;
 		}

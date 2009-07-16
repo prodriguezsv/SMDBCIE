@@ -3,12 +3,12 @@
  */
 package main;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
 import reasoner.CaseSolution;
 
-import auxiliary.SingleIndexValue;
 
 
 /**
@@ -20,11 +20,10 @@ import auxiliary.SingleIndexValue;
  * @author Armando
  *
  */
-public class Case extends Node {
+public class Case {
 	private CaseSolution solution; // An object that represents the solution to the case.  Such object may be a text string, or a compund object with more associated information.
 	private Description<Descriptor<Object>> description; // A list containing a set of Descriptor's (a description of the problem)
-	private Description<Descriptor<Object>> justification; // A list containing a set of Descriptor's (the solution path of the case, i.e., the result of the traversal across the net and other reference structures). 
-	private List<SingleIndexValue<Node>> predecessors; // A list containing links to the case's predecessor norms and/or indices within the net. 
+	private Description<Descriptor<Object>> justification; // A list containing a set of Descriptor's (the solution path of the case, i.e., the result of the traversal across the net and other reference structures).  
 	private boolean state; // A case may be "positive" (i.e., the given solution is correct) or "negative" (i.e., the given solution is incorrect)
 	
 	/**
@@ -34,7 +33,6 @@ public class Case extends Node {
 		solution = null;
 		description = new Description<Descriptor<Object>>();
 		justification = new Description<Descriptor<Object>>();
-		predecessors = new ArrayList<SingleIndexValue<Node>>();
 		state = false;
 	}
 	
@@ -86,18 +84,6 @@ public class Case extends Node {
 		return justification;
 	}
 
-	public void setPredecesor(List<SingleIndexValue<Node>> predecesor) {
-		this.predecessors = predecesor;
-	}
-
-	/**
-	 * @see "Método predecessor del protocolo accessing en SUKIA SmallTalk"
-	 * @return
-	 */
-	public List<SingleIndexValue<Node>> getPredecessors() {
-		return predecessors;
-	}
-
 	/**
 	 * @see "Método state del protocolo adding en SUKIA SmallTalk"
 	 * @param state
@@ -112,24 +98,6 @@ public class Case extends Node {
 	 */
 	public boolean getState() {
 		return state;
-	}
-	
-	/**
-	 * Argument aPredecessor can be an Index or a Norm
-	 * @see "Método addPredecessorWith:and: del protocolo adding en SUKIA SmallTalk"
-	 * @param aPredecessor
-	 */
-	public boolean addPredecessor(Node aPredecessor, Object aValue) {
-		SingleIndexValue<Node> pn;
-		
-		pn = new SingleIndexValue<Node>();
-		pn.setValue(aValue);
-		pn.setSuccessor(aPredecessor);
-		
-		if (!(this.getPredecessors().contains(pn)))
-			predecessors.add(pn);
-		
-		return true;
 	}
 	
 	/**
@@ -161,74 +129,53 @@ public class Case extends Node {
 	}
 	
 	/**
-	 * @see "Método removePredecessorWith:and: del protocolo removing en SUKIA SmallTalk"
-	 * @param aPredecessor
-	 * @param aValue
-	 * @return
-	 */
-	public boolean removePredecessor(Node aPredecessor, Object aValue) {
-		for( int i = 1; i <= predecessors.size(); i++) {
-			if (predecessors.get(i-1).getValue().equals(aValue) && predecessors.get(i-1).getSuccessor().equals(aPredecessor))
-				predecessors.remove(i-1);
-				return true;
-		}
-		
-		return false;
-	}
-	
-	/**
 	 * Clears and resets all of the case's instance variables
 	 * @see "Método flush del protocolo resetting en SUKIA SmallTalk"
 	 */
 	public void clear() {
 		this.getDescription().clear();
-		solution = null;
+		this.setSolution(null);
 		this.getJustification().clear();
-		this.getPredecessors().clear();
 		this.setState(false);
 	}
 	
 	/**
-	 * Implemented by SAVCase.  For polymorphism reasons, this method is needed by Case, since a net may be composed of Case's or SAVCase's
-	 * @see "Método currentStructure del protocolo special en SUKIA SmallTalk"
+	 * Método de instancia agregado
 	 * @return
 	 */
-	public String getCurrentStructure() {
-		return null;
+	public List<String> getStructuresList() {
+		List<String> structuresList;
+		
+		structuresList = new ArrayList<String>();
+		
+		for(Descriptor<Object> d: this.getDescription()) {
+			// Determine if the structure name in Deescriptor has already been included in structureList
+			if (!(structuresList.contains(d.getStructure()))) {
+				// The structure name was not found in structureList. Append it to structureList
+				structuresList.add(d.getStructure());
+			} else continue;
+		}
+		
+		return structuresList;
 	}
 	
 	/**
-	 * Implemented by SAVCase.  For polymorphism reasons, this method is needed by Case, since a net may be composed of Case's or SAVCase's
-	 * @see "Método flushDescriptionCopy del protocolo special en SUKIA SmallTalk"
+	 * Método de instancia agregado
 	 * @return
 	 */
-	public void flushDescriptionCopy() {
-
-	}
-	
-	/**
-	 * Implemented by SAVCase.  For polymorphism reasons, this method is needed by Case, since a net may be composed of Case's or SAVCase's
-	 * @see "Método flushStructureCopy del protocolo special en SUKIA SmallTalk"
-	 * @return
-	 */
-	public void flushStructureCopy() {
-
-	}
-	
-	/**
-	 * Implemented by SAVCase.  For polymorphism reasons, this method is needed by Case, since a net may be composed of Case's or SAVCase's
-	 * @see "Método prepareDescriptionWith del protocolo special en SUKIA SmallTalk"
-	 * @param aStructure
-	 */
-	public void prepareDescriptionWith(String aStructure) {
-
-	}
-	
-	/**
-	 * Implemented by SAVCase.  For polymorphism reasons, this method is needed by Case, since a net may be composed of Case's or SAVCase's
-	 * @see "Método restoreDescription del protocolo special en SUKIA SmallTalk"
-	 */
-	public void restoreDescription() {
-
+	public Description<Descriptor<Object>> getDescription(String aStructureName) {
+		Description<Descriptor<Object>> description;
+		
+		description = new Description<Descriptor<Object>>();
+		
+		for(Descriptor<Object> d: this.getDescription()) {
+			// Determine if the structure name in Deescriptor has already been included in structureList
+			if (!(description.contains(d.getStructure()))) {
+				// The structure name was not found in structureList. Append it to structureList
+				description.add(d);
+			} else continue;
+		}
+		
+		return description;
 	}
 }

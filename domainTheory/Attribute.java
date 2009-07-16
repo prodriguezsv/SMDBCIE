@@ -5,10 +5,11 @@ package domainTheory;
 
 import java.util.List;
 
-import values.RangeDescriptor;
-import values.SingleDescriptor;
-import values.Value;
-import values.ValueDescriptor;
+import domainTheory.values.RangeDescriptor;
+import domainTheory.values.SingleDescriptor;
+import domainTheory.values.Value;
+import domainTheory.values.ValueDescriptor;
+
 
 /**
  * @author Armando
