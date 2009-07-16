@@ -536,8 +536,8 @@ public class GoalApproachingDialog {
                             if (valueList == null){status= "error"; return false;}
 
                             List<SAVDescriptor> OKSAVDescriptorList = new ArrayList<SAVDescriptor>();
-                            List<Value> displayValues = new ArrayList<Value>();
-                            List<Value> returnValues = new ArrayList<Value>();
+                            List<String> displayValues = new ArrayList<String>();
+                            List<String> returnValues = new ArrayList<String>();
                             //Scan the value descriptor list: valueList with range value descriptors: only ONE element.
                             //valueList with non-range value descriptors: at least one element
 
@@ -549,7 +549,7 @@ public class GoalApproachingDialog {
                                         OKSAVDescriptorList.remove(0);
                                     }
 
-                                    List<Object> result = rangeValueDescriptorDialogWith(vd,attribute);
+                                    SAVDescriptor result = rangeValueDescriptorDialogWith(vd,attribute);
                                     if (result.get(0).equals("cancel") || result.get(0).equals("error")){
                                         status = (String)result.get(0);
                                         return null;
@@ -582,113 +582,81 @@ public class GoalApproachingDialog {
                                         //the attribute's typical value) is acceptable. If it isn't, ignore it"
                                         if (determineSimilarityFor(savDescriptor,nextLevelTaxon) != null){
                                             //Place the SAV descriptor value in the Array that will be displayed
+                                            String v = null;
+                                            if (savDescriptor.getValue() instanceof Integer){
+                                                v = ((Integer)savDescriptor.getValue()).toString();
+                                            }else{
+                                                v = ((Integer)savDescriptor.getValue()).toString();
+                                            }
                                             
-                                            savDescriptor.getValue()
+                                            displayValues.add(v);
+                                            returnValues.add((String)savDescriptor.getValue());
+
+                                            //Place the descriptor is a separate descriptor list. Process the next value
+                                            OKSAVDescriptorList.add(savDescriptor);
                                         }
-
-
                                     }
+                                }
+                            }
+                            //Once all of the attribute's values have been processed, the number of items in the
+                            //display array MUST be equal to the number of descriptors in the descriptor list. If
+                            //such number is greater than zero, display the dialog
+                            if (OKSAVDescriptorList.isEmpty() != true){
+                                Object result = valueDescriptorDialogWith(displayValues,returnValues,attribute);
 
+                                //User rejects. Flush the descriptor list by placing all SAVDescriptors in the unconfirmed
+                                //description. Continue processing the next attribute
+                                String tmp = (String)result;
+
+
+                                if (tmp.equals("reject")){
+                                    while (OKSAVDescriptorList.isEmpty() != true){
+                                        ps.setUnconfirmedDescription(OKSAVDescriptorList.remove(0));
+                                    }
                                 }
 
-
+                                //User is in doubt. Flush the descriptor list by placing all SAVDescriptors in the doubtful
+                                //description. Continue processing the next attribute
+                                if (tmp.equals("doubt")){
+                                    while (OKSAVDescriptorList.isEmpty() != true){
+                                        ps.setDoubtfulDescription(OKSAVDescriptorList.remove(0));
+                                    }
+                                }
+                                
+                                //User cancels. Cancel the process and exit.
+                                if (tmp.equals("cancel")){
+                                    status = "cancel";
+                                    return null;
+                                }
+                                //User selects one item. The dialog method returns the value included in a SAVDescriptor.
+                                //Assign nextLevelTaxon to ps solution. Place ps in the OKList. Call doDialog recursively
+                                if (result instanceof SAVDescriptor){
+                                    ps.setSolution(nextLevelTaxon);
+                                    ps.setConfirmedDescription(result);
+                                    OKList = ps;
+                                    return doDialog();
+                                }
                             }
-
                         }
                     }
-
-
                 }
-//                                                        "Place the SAV descriptor value in the Array that will be displayed"
-//                                                        ((savDescriptor value) respondsToArithmetic)
-//                                                        ifTrue: [ v := (savDescriptor value) printString ]
-//                                                        ifFalse: [ v := (savDescriptor value) asString ].
-//                                                        displayValues add: v.
-//                                                        returnValues add: (savDescriptor value).
-//
-//                                                        "Place the descriptor is a separate descriptor list. Process the next value"
-//                                                        OKSAVDescriptorList add: savDescriptor.
-//
-//                                                ].    "END ((self determineSimilarityFor: ...) = nil) ifFalse:"
-//
-//                                        ].    "END (self isDescriptorAlreadyProcessed: savDescriptor) ifFalse:"
-//
-//                                ].    "END (vd asRange) ifFalse:"
-//
-//						].    "END 1 to: (valueList size) do:"
-//
-//						"Once all of the attribute's values have been processed, the number of items in the
-//						 display array MUST be equal to the number of descriptors in the descriptor list. If
-//						 such number is greater than zero, display the dialog"
-//						(OKSAVDescriptorList isEmpty)
-//						ifFalse: [
-//
-//							result := (self valueDescriptorDialogWith: displayValues
-//										returnValueList: returnValues
-//										attribute: attribute).
-//
-//							"User rejects. Flush the descriptor list by placing all SAVDescriptors in the unconfirmed
-//							 description. Continue processing the next attribute"
-//							(result = #reject)
-//							ifTrue: [
-//								[OKSAVDescriptorList isEmpty]
-//								whileFalse: [ ps unconfirmedDescription: (OKSAVDescriptorList removeFirst) ]
-//							].
-//
-//							"User is in doubt. Flush the descriptor list by placing all SAVDescriptors in the doubtful
-//							 description. Continue processing the next attribute"
-//							(result = #doubt)
-//							ifTrue: [
-//								[OKSAVDescriptorList isEmpty]
-//								whileFalse: [ ps doubtfulDescription: (OKSAVDescriptorList removeFirst) ]
-//							].
-//
-//							"User cancels. Cancel the process and exit."
-//							(result = #cancel) ifTrue: [ self status: #cancel. ^nil ].
-//
-//							"User selects one item. The dialog method returns the value included in a SAVDescriptor.
-//							 Assign nextLevelTaxon to ps solution. Place ps in the OKList. Call doDialog recursively"
-//							(result class name = SAVDescriptor getClassName)
-//							ifTrue: [
-//								ps solution: nextLevelTaxon.
-//								ps confirmedDescription: result.
-//								self OKList: ps.
-//								^(self doDialog)
-//							].
-//
-//						].    "END (OKSAVDescriptorList isEmpty) ifFalse:"
-//
-//					].    "END (self isAttributeAlreadyProcessed: attribute) ifFalse:"
-//
-//				].    "END 1 to: (attributeList size) do:"
-//
-//			].    "END (structure = nil) ifFalse:"
-//
-//		].    "END 1 to (taxon successors) do:"
-
             }
         }
-
-//
-//	].    "END [ self processList isEmpty ] whileFalse:"
-//
-//	"At this point, all of the possible solutions have been processed. If the OKList is NOT empty, all the elements now
-//	 included in it have advanced one level with respect to the original ps solution. If the If the FIRST possible solution's
-//	 level meets the goal, exit successfully. Else, copy everything back to the processList and call doDialog again. The
-//	 return value is whatever this new call returns"
-//	(self OKList isEmpty)
-//	ifFalse: [
-//
-//		((self goal) = (self OKList first) level)
-//		ifTrue: [ self status: #success. ^self ].
-//
-//		[ self OKList isEmpty ]
-//		whileFalse: [ self processList: (self OKList) removeFirst ].
-//		^(self doDialog).
-//
-//	].    "END (self OKList isEmpty) ifFalse:"
-//
-//	^nil.
+        //At this point, all of the possible solutions have been processed. If the OKList is NOT empty, all the elements now
+        //included in it have advanced one level with respect to the original ps solution. If the If the FIRST possible solution's
+        //level meets the goal, exit successfully. Else, copy everything back to the processList and call doDialog again. The
+        //return value is whatever this new call returns
+        if (OKList.isEmpty() != true){
+            if (goal.equals(OKList.get(0).getLevel())){
+                status = "success";
+                return true;
+            }
+            while (OKList.isEmpty() != true){
+                addProcessList(OKList.remove(0));
+            }
+            return doDialog();
+        }
+        return null;
 
 }
 
@@ -697,7 +665,7 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void selectPossibleSolutionsNearestToGoal(){
+    public Object selectPossibleSolutionsNearestToGoal(){
 /**selectPossibleSolutionsNearestToGoal
 
 	"The instance list variable processList contains possible solutions ordered by level. Furthermore, only
@@ -722,7 +690,7 @@ public class GoalApproachingDialog {
 
 	"Starting with the second element, process the list"
 	i := 2.
-	[ i &lt;= (self processList size) ]
+	[ i <= (self processList size) ]
 	whileTrue: [
 
 		(level = ((self processList) at: i) level)
@@ -732,6 +700,25 @@ public class GoalApproachingDialog {
 	].    "END [ i &lt;= (self processList size) ] whileTrue:"
 
 	^self.*/
+        //Check precondition
+        if (processList.isEmpty()){return null;}
+
+        //If the processList contains only one element, there's nothing to do
+        if (processList.size() == 0){return true;}
+
+        //get the level of the first element
+        String level = processList.get(0).getLevel();
+
+        //Starting with the second element, process the list
+        int i = 1;
+        while (i<processList.size()){
+            if (level.equals(processList.get(i).getLevel())){
+                i += 1;
+            }else{
+                processList.remove(i);
+            }
+        }
+        return true;
 }
 
 
@@ -745,7 +732,7 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public List<Object> rangeValueDescriptorDialogWith(ValueDescriptor vd,Attribute anAttribute){
+    public SAVDescriptor rangeValueDescriptorDialogWith(ValueDescriptor vd,Attribute anAttribute){
 /**rangeValueDescriptorDialogWith: vd attribute: anAttribute
 
 	| msg suggestedValue result d value returnValues |
@@ -803,7 +790,7 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void valueDescriptorDialogWith(){
+    public Object valueDescriptorDialogWith(List<String> displayValues,List<String>returnValues,Attribute anAttribute){
 /**valueDescriptorDialogWith: displayValues returnValueList: returnValues attribute: anAttribute
 
 	| msg result d |
@@ -830,7 +817,7 @@ public class GoalApproachingDialog {
 	   Value: result.
 	^d.*/
 
-        
+        return null;
 }
 
 
