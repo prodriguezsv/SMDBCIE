@@ -479,25 +479,25 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
                 }
             //If the list of possible value descriptors is not nil, a successful range-based descriptor search was done. Place the value descriptor in the valueDescriptors instance variable
             if (vd != null){
-                valueDescriptors(vd);
+                setValueDescriptors(vd);
             }else{
                 //At this point, either: a) the argument's value is a ByteSymbol, or a range search was unsuccessful. Do then an exact match search
                 vd = attrValues.getValue(aSAVDescriptor.getValue(),i);
                 if (vd == null) {return -1;}
-                if (vd.isEmpty()!=true){valueDescriptors(vd);}
+                if (vd.isEmpty()!=true){setValueDescriptors(vd);}
             }
             i += 1;
         }
 
-        if (valueDescriptors().isEmpty()){
-            tUnmatchedDescription(aSAVDescriptor);
+        if (getValueDescriptors().isEmpty()){
+            setTUnmatchedDescription(aSAVDescriptor);
             return null;
         }
         //Separate the range descriptors from the exact-match descriptors
 	List<SAVDescriptor> tempList = new ArrayList<SAVDescriptor>();
         
-        while (valueDescriptors().isEmpty()!=true){
-		SAVDescriptor vd = valueDescriptors().remove(0);
+        while (getValueDescriptors().isEmpty()!=true){
+		vd = getValueDescriptors().remove(0);
                 if (vd.asRange()){
                     //Value desscriptor is a range. Associate all taxa to possible solutions, place them in the taxon list
                     List<Taxon> taxa = vd.getValue().taxonList();
@@ -505,7 +505,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
                     taxa = associateTaxaToPossibleSolutions(taxa);
                     resetList(tSolutionDescription());
                     while(taxa.isEmpty() != true){
-                        taxonList(taxa.remove(0));
+                        taxonList.add(taxa.remove(0));
                     }
                 }else{//Value descriptor is not a range. Place it in a temporary list
                     tempList.add(vd);
@@ -518,7 +518,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
         //At this point, all descriptors have been verified and processed. If there are no exact-match value descriptors left, return
         if (tempList.isEmpty()){return true;}
         //Remove all exact-match value descriptors from the temporary list, put them back in the valueDescriptos list, and continue processing
-        valueDescriptors(tempList);
+        setValueDescriptors(tempList);
         return retrieveTaxa(aSAVDescriptor);
 }
 

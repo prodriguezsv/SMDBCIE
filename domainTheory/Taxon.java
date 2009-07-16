@@ -1,5 +1,5 @@
 /**
- * @see "Categoría Sukia Domain Theory de SUKIA Smalltalk"
+ * @see "Categorï¿½a Sukia Domain Theory de SUKIA Smalltalk"
  */
 package domainTheory;
 
@@ -20,7 +20,7 @@ public class Taxon implements Comparable<Taxon>{
 	private GroupingHeuristicIndex GHDescription;
 
 	/**
-	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
+	 * @see "Mï¿½todo initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
 	public Taxon() {
 		setLevel(null);
@@ -35,7 +35,7 @@ public class Taxon implements Comparable<Taxon>{
 	}
 
 	/**
-	 * @see "Método level: del protocolo adding en SUKIA SmallTalk"
+	 * @see "Mï¿½todo level: del protocolo adding en SUKIA SmallTalk"
 	 * @param level
 	 */
 	public void setLevel(String level) {
@@ -47,7 +47,7 @@ public class Taxon implements Comparable<Taxon>{
 	 * be included in the class TaxonomicLevels (i.e., TaxonomicLevels includes: aLevel must be TRUE
 	 * before the argument can be assigned to the instance variable 'level'.
 	 * NOTE: This program assumes that the argument has been previously verified by the View-related objects.
-	 * @see "Método level del protocolo accessing en SUKIA SmallTalk"
+	 * @see "Mï¿½todo level del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
 	public String getLevel() {
@@ -71,7 +71,7 @@ public class Taxon implements Comparable<Taxon>{
 	 * 	For a genus: #lantana.
 	 * 	For a species, the name MUST be composed of the corresponding genus name plus the epithet,
 	 * 	separated by an undersore: #lantana_camara.
-	 * @see "Método name: del protocolo adding en SUKIA SmallTalk"
+	 * @see "Mï¿½todo name: del protocolo adding en SUKIA SmallTalk"
 	 * @param name
 	 */
 	public void setName(String name) {
@@ -79,7 +79,7 @@ public class Taxon implements Comparable<Taxon>{
 	}
 
 	/**
-	 * @see "Método name del protocolo accessing en SUKIA SmallTalk"
+	 * @see "Mï¿½todo name del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
 	public String getName() {
@@ -87,7 +87,7 @@ public class Taxon implements Comparable<Taxon>{
 	}
 
 	/**
-	 * @see "Método predecessor: del protocolo adding-private en SUKIA SmallTalk"
+	 * @see "Mï¿½todo predecessor: del protocolo adding-private en SUKIA SmallTalk"
 	 * @param predecessor
 	 */
 	public void setPredecessor(Taxon predecessor) {
@@ -96,7 +96,7 @@ public class Taxon implements Comparable<Taxon>{
 	}
 
 	/**
-	 * @see "Método predecessor del protocolo accessing en SUKIA SmallTalk"
+	 * @see "Mï¿½todo predecessor del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
 	public Taxon getPredecessor() {
@@ -104,7 +104,7 @@ public class Taxon implements Comparable<Taxon>{
 	}
 
 	/**
-	 * Método de instancia agregado
+	 * Mï¿½todo de instancia agregado
 	 * @param sucessor
 	 */
 	public void setSuccessors(List<Taxon> sucessors) {
@@ -113,7 +113,7 @@ public class Taxon implements Comparable<Taxon>{
 	}
 
 	/**
-	 * @see "Método successors del protocolo accessing en SUKIA SmallTalk"
+	 * @see "Mï¿½todo successors del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
 	public List<Taxon> getSuccessors() {
@@ -121,7 +121,7 @@ public class Taxon implements Comparable<Taxon>{
 	}
 	
 	/**
-	 * @see "Método sucessor: del protocolo adding-private en SUKIA SmallTalk"
+	 * @see "Mï¿½todo sucessor: del protocolo adding-private en SUKIA SmallTalk"
 	 * @param sucessor
 	 */
 	public void addSuccessor(Taxon successor) {
@@ -131,7 +131,7 @@ public class Taxon implements Comparable<Taxon>{
 	}
 
 	/***
-	 * Método de instancia agregado
+	 * Mï¿½todo de instancia agregado
 	 * @param gHDescription
 	 */
 	public void setGHDescription(GroupingHeuristicIndex aGHDescription) {
@@ -139,7 +139,7 @@ public class Taxon implements Comparable<Taxon>{
 	}
 
 	/**
-	 * @see "Método GHdescription del protocolo accessing en SUKIA SmallTalk"
+	 * @see "Mï¿½todo GHdescription del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
 	public GroupingHeuristicIndex getGHDescription() {
@@ -147,7 +147,7 @@ public class Taxon implements Comparable<Taxon>{
 	}
 	
 	/**
-	 * @see "Método GHDescription: del protocolo adding en SUKIA SmallTalk"
+	 * @see "Mï¿½todo GHDescription: del protocolo adding en SUKIA SmallTalk"
 	 * @param aGroupingHeuristic
 	 */
 	/*public void addGHDescription(GroupingHeuristic aGroupingHeuristic) {
@@ -158,7 +158,7 @@ public class Taxon implements Comparable<Taxon>{
 	}*/
 
 	/***
-	 * Método de instancia agregado
+	 * Mï¿½todo de instancia agregado
 	 * @param sAVDescription
 	 */
 	public void setSAVDescription(StructureIndex aSAVDescription) {
@@ -166,7 +166,7 @@ public class Taxon implements Comparable<Taxon>{
 	}
 
 	/**
-	 * @see "Método SAVdescription del protocolo accessing en SUKIA SmallTalk"
+	 * @see "Mï¿½todo SAVdescription del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
 	public StructureIndex getSAVDescription() {
@@ -174,7 +174,7 @@ public class Taxon implements Comparable<Taxon>{
 	}
 
 	/**
-	 * @see "Método SAVdescription: del protocolo adding en SUKIA SmallTalk"
+	 * @see "Mï¿½todo SAVdescription: del protocolo adding en SUKIA SmallTalk"
 	 * @param aStructure
 	 */
 	/*public void addSAVDescription(Structure aStructure) {
@@ -185,7 +185,7 @@ public class Taxon implements Comparable<Taxon>{
 	}*/
 	
 	/**
-	 * @see "Método includes:in: del protocolo testing en SUKIA SmallTalk"
+	 * @see "Mï¿½todo includes:in: del protocolo testing en SUKIA SmallTalk"
 	 * @param aName
 	 * @param aDescription
 	 * @return
@@ -200,7 +200,7 @@ public class Taxon implements Comparable<Taxon>{
 	}*/
 	
 	/**
-	 * @see "Método includes:in: del protocolo testing en SUKIA SmallTalk"
+	 * @see "Mï¿½todo includes:in: del protocolo testing en SUKIA SmallTalk"
 	 * @param aName
 	 * @param aDescription
 	 * @return
@@ -215,7 +215,7 @@ public class Taxon implements Comparable<Taxon>{
 	}*/
 	
 	/**
-	 * @see "Método isSuccessorOf: del protocolo inhetitence en SUKIA SmallTalk"
+	 * @see "Mï¿½todo isSuccessorOf: del protocolo inhetitence en SUKIA SmallTalk"
 	 */
 	public boolean isSuccessorOf(Taxon aTaxon) {
 		Taxon  predecessorTaxon;
@@ -235,7 +235,7 @@ public class Taxon implements Comparable<Taxon>{
 	}
 	
 	/**
-	 * @see "Método linkTo: del protocolo linking en SUKIA SmallTalk"
+	 * @see "Mï¿½todo linkTo: del protocolo linking en SUKIA SmallTalk"
 	 * @param aTaxon
 	 */
 	/*public void linkTo(Taxon aTaxon) {
@@ -244,7 +244,7 @@ public class Taxon implements Comparable<Taxon>{
 	}*/
 	
 	/**
-	 * @see "Método unlinkFromTheHierarchy del protocolo linking en SUKIA SmallTalk"
+	 * @see "Mï¿½todo unlinkFromTheHierarchy del protocolo linking en SUKIA SmallTalk"
 	 */
 	public void unlinkFromTheHierarchy() {
 		Taxon p;
@@ -259,21 +259,21 @@ public class Taxon implements Comparable<Taxon>{
 	}
 	
 	/**
-	 * @see "Método getAnObjectWith:in: del protocolo searching en SUKIA SmallTalk"
+	 * @see "Mï¿½todo getAnObjectWith:in: del protocolo searching en SUKIA SmallTalk"
 	 * @param aName
 	 * @param aDescription
 	 */
-	/*public Structure getAStructureWith(String aName, List<Structure> aDescription) {
+	public Structure getAStructureWith(String aName, List<Structure> aDescription) {
 		for (int i = 1; i <= aDescription.size(); i++) {
 			if (aDescription.get(i).getName().equals(aName)) 
 				return aDescription.get(i-1);
 		}
 		
 		return null;
-	}*/
+	}
 	
 	/**
-	 * @see "Método getAnObjectWith:in: del protocolo searching en SUKIA SmallTalk"
+	 * @see "Mï¿½todo getAnObjectWith:in: del protocolo searching en SUKIA SmallTalk"
 	 * @param aName
 	 * @param aDescription
 	 */
@@ -287,7 +287,7 @@ public class Taxon implements Comparable<Taxon>{
 	}*/
 	
 	/**
-	 * @see "Método isLinkOKBetween:and: del protocolo de clase testing en SUKIA SmallTalk"
+	 * @see "Mï¿½todo isLinkOKBetween:and: del protocolo de clase testing en SUKIA SmallTalk"
 	 * @param aParentTaxon
 	 * @param aSuccessorTaxon
 	 * @return
@@ -297,7 +297,7 @@ public class Taxon implements Comparable<Taxon>{
 	}
 	
 	/**
-	 * Método de instancia agregado
+	 * Mï¿½todo de instancia agregado
 	 */
 	public int compareTo(Taxon aTaxon) {
 		return this.getName().compareTo(aTaxon.getName());

@@ -4,12 +4,24 @@
  */
 
 package searchAutomata;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import reasoner.PossibleSolution;
+
+
+
 import domainTheory.GroupingHeuristicIndex;
+import domainTheory.Taxon;
 import domainTheory.GroupingHeuristic;
 import redundantDiscriminantNet.SAVDescriptor;
+
 import main.Description;
 import main.Index;
 
+import values.Value;
+import values.ValueDescriptor;
 
 /**
  * Taxon GroupingHeuristic-Index Search Automaton.
@@ -26,6 +38,7 @@ import main.Index;
 
         GroupingHeuristicIndex searchIndex;
         GroupingHeuristic groupingHeuristic;
+        GroupingHeuristicIndex groupingHeuristicIndex;
 
 /*
 <name>TaxonGHISAutomaton</name>
@@ -147,7 +160,7 @@ import main.Index;
  * @param my parameters list
  * @return my return values
  */
-    public void beginWith(Description<SAVDescriptor> aProblemDescription){
+    public Object beginWith(Description<SAVDescriptor> aProblemDescription){
 /*beginWith: aProblemDescription
 
 	"The argument aProblemDescription MUST consist of one SAVDescriptor of the form:
@@ -181,6 +194,25 @@ import main.Index;
 	ifTrue: [ self prepareFailedOutput. ^nil. ].
 
 	^(self prepareSuccessfulOutputWith: (self taxonList)).*/
+
+	//Check general description precondition
+        if (checkPrecondition(aProblemDescription) == false){setStatus("error"); return null;}
+        
+        //Local precondition: Make sure that aProblemDescription consists of only ONE element
+        if (aProblemDescription.size()>0){setStatus("error"); return null;}
+
+        //Search the corresponding grouping heuristic in the grouping heuristic index
+        setGroupingHeuristic(groupingHeuristicIndex.getGroupingHeuristic(aProblemDescription.get(0).getAttribute()));
+        
+        if (groupingHeuristic == null){prepareFailedOutput(); return null;}
+
+        if (searchValueDescriptors(aProblemDescription.remove(0)) == -1){setStatus("error"); return null;}
+
+        if (getTaxonList().isEmpty()){prepareFailedOutput(); return null;}
+
+        return prepareSuccessfulOutputWith(getTaxonList());
+
+        
 }
 
 /**
@@ -188,7 +220,8 @@ import main.Index;
  * @param my parameters list
  * @return my return values
  */
-    public void searchValueDescriptors(){
+    public int searchValueDescriptors(SAVDescriptor aSAVDescriptor){
+        
 /*searchValueDescriptors: aSAVDescriptor
 
 	"This method searchs for value descriptors that either match aSAVDescriptor value, or correspond
@@ -256,5 +289,41 @@ import main.Index;
 	].     "END [ self valueDescriptors isEmpty ] whileFalse:"
 
 	^self.*/
+        Value attrValues = groupingHeuristic.getValues();
+
+
+        for (int i=0;(i <= attrValues.size());i++){
+            List<SAVDescriptor> vd = null;
+            if ((aSAVDescriptor.getValue() instanceof String) != true){
+                 vd = attrValues.getValueDescriptors(aSAVDescriptor.getValue(), i);
+                 if (vd == null){return -1;}
+                 if (vd.isEmpty()){vd = null;}
+            }
+            //If the list of possible value descriptors is not nil, a successful range-based descriptor search was done.
+            //Place the value descriptor in the valueDescriptors instance variable
+            if (vd != null){
+                setValueDescriptors(vd);
+            }else{
+                //At this point, either: a) the argument's value is a ByteSymbol, or a range search was
+                //unsuccessful. Do then an exact match search
+                vd = attrValues.getValueDescriptors(aSAVDescriptor.getValue(), i);
+                if (vd == null){return -1;}
+		if (vd.isEmpty() != true){setValueDescriptors(vd);}
+            }
+        }
+        if (getValueDescriptors().isEmpty()){ setTUnmatchedDescription(aSAVDescriptor); return null;}
+
+        //Extract the taxa included in each of the retrieved value descriptors
+        setTSolutionDescription(aSAVDescriptor);
+
+        while(getValueDescriptors().isEmpty() != true){
+            SAVDescriptor vd = getValueDescriptors().remove(0);
+            List<Taxon> taxa = vd.getTaxonList();
+            List<PossibleSolution> ps = associateTaxaToPossibleSolutions(taxa);
+            while(ps.isEmpty() != true){
+                setTaxonList(ps.remove(0));
+            }
+        }
+        return true;
 }
 }

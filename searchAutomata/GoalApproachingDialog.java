@@ -4,10 +4,28 @@
  */
 
 package searchAutomata;
+import reasoner.PossibleSolution;
 import reasoner.Hypothesis;
+import domainTheory.Taxon;
+import domainTheory.Attribute;
+
+
 import domainTheory.Taxonomy;
+import domainTheory.TaxonomicLevels;
 import domainTheory.Structure;
 import similarityAssessment.SimRanges;
+
+import values.ValueDescriptor;
+import values.Value;
+
+import redundantDiscriminantNet.SAVDescriptor;
+
+import main.Case;
+import main.Description;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Instances of this class are invoked when the search automatas have performed successfully (i.e., with at least one possible solution), but the taxonomic level of all the possible solutions is more general than the stated identification goal.  The purpose of this class is then, for each qualifying possible solution, establish a dialog with the user asking him/her questions about successor taxa of each solution, *all related to the descriptive element*.  As questions are positively answered, the corresponding taxon moves "one level down", approaching the stated goal.
  * This dialog stopswhen the user cancels, when all possible solutions have been processed but no positive "down-movement" was done, or when at least ONE taxon reaches the stated goal.
@@ -17,6 +35,12 @@ import similarityAssessment.SimRanges;
 public class GoalApproachingDialog {
 
     private Hypothesis hypothesis;
+    private String goal;
+    private Taxonomy taxonomy;
+    private List<PossibleSolution> processList;
+    private String status;
+    private List<PossibleSolution> OKList;
+    private List<SimRanges> similarityRanges;
 
  /**
  *Category instance creation
@@ -69,7 +93,7 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void GetGoal(){
+    public void getGoal(){
 /**goal
 
 	^goal.*/
@@ -80,7 +104,7 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void GetHypothesis(){
+    public void getHypothesis(){
 /**hypothesis
 
 	^hypothesis.*/
@@ -91,7 +115,7 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void GetOKList(){
+    public void getOKList(){
 /**OKList
 
 	^OKList.*/
@@ -102,7 +126,7 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void GetProcessList(){
+    public void getProcessList(){
 /**processList
 
 	^processList.*/
@@ -113,7 +137,7 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void GetSimilarityRanges(){
+    public void getSimilarityRanges(){
 /**similarityRanges
 
 	^similarityRanges.*/
@@ -124,7 +148,7 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void GetStatus(){
+    public void getStatus(){
 /**status
 
 	^status.*/
@@ -135,7 +159,7 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void GetTaxonomy(){
+    public void getTaxonomy(){
 /**taxonomy
 
 	^taxonomy.*/
@@ -181,7 +205,7 @@ public class GoalApproachingDialog {
 	1 to: (self hypothesis possibleSolutions size) do:
 	[:i |
 
-		"Get the next possible solution"
+		"get the next possible solution"
 		ps := (self hypothesis possibleSolutions) at: i.
 
 		"Transform the possible solution level to a numeric value"
@@ -204,7 +228,7 @@ public class GoalApproachingDialog {
 					"Solution is a positive case. Retrieve the corresponding taxon from the taxonomy"
 					taxon := (self taxonomy getTaxonByName: (ps name) level: psLevelAsIndex).
 
-					"If the taxon is not found, there is an error. Set ba tate of error and return"
+					"If the taxon is not found, there is an error. set ba tate of error and return"
 					(taxon = nil) ifTrue: [ self status: #error. ^nil ].
 
 					"Exchange the case for the taxon. Finally, place it in the process list"
@@ -231,13 +255,54 @@ public class GoalApproachingDialog {
 
         //Check precondition
         if (hypothesis.getPossibleSolutions().isEmpty()){return null;}
-	//Transform the stated identification goal to a numeric value
-        
-	goalAsIndex := (TaxonomicLevels transformToIndex: (self goal)).
 
-	"Scan the associated hypothesis possible solutions list"
+        //Transform the stated identification goal to a numeric value
+        int goalAsIndex = TaxonomicLevels.transformToIndex(goal);
 
-        
+	//Scan the associated hypothesis possible solutions list
+
+        for (int i = 0;(i<hypothesis.getPossibleSolutions().size());i++){
+            //get the next possible solution
+            PossibleSolution ps = hypothesis.getPossibleSolutions().get(i);
+
+            //Transform the possible solution level to a numeric value
+            int psLevelAsIndex = TaxonomicLevels.transformToIndex(ps.getLevel());
+
+            //If the possible solution's level is equal to, or more specific than the goal, ignore it
+
+            if ((psLevelAsIndex >= goalAsIndex) != true){
+                //If the possible solution is a taxon, place it in the process list. Else, it must be a case. Before placing the possible solution in the process list, find its corresponding taxon in the associated taxonomy
+                if (ps.getSolution() instanceof Taxon){
+                    processList.add(ps);
+
+                }else{
+                    //If the taxon's status is positive, continue processing it. Else, ignore it
+                    if (((Case)ps.getSolution()).getState()){
+                        //Solution is a positive case. Retrieve the corresponding taxon from the taxonomy
+                        Taxon taxon = taxonomy.getTaxonFromLevelIndex(ps.getName(), psLevelAsIndex);
+
+                        //If the taxon is not found, there is an error. set ba tate of error and return
+                        if (taxon == null){status = "error"; return  null;}
+
+                        //Exchange the case for the taxon. Finally, place it in the process list
+                        ps.setSolution(taxon);
+                        setProcessList(ps);
+                    }
+
+                }
+            }
+
+        }
+        //If the process list ends up having zip, return fail status (default)
+
+        if (processList.isEmpty()){return null;}
+
+        //At this point, processList contains a set of possible solutions whose level is more general than the stated identificaction goal. Moreover, all solutions are taxa. Proceed to select those items whose level is *closest* to the goal
+
+	selectPossibleSolutionsNearestToGoal();
+
+        return doDialog();
+
 }
 
 /**
@@ -245,7 +310,7 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void doDialog(){
+    public Object doDialog(){
 /**doDialog
 
 	| ps nextLevelTaxon structure attributeList attribute taxon valueList savDescriptor vd result OKSAVDescriptorList v displayValues returnValues |
@@ -257,17 +322,17 @@ public class GoalApproachingDialog {
 		"Remove the next possible solution"
 		ps := (self processList removeFirst).
 
-		"Get the next possible solution's taxon"
+		"get the next possible solution's taxon"
 		taxon := ps solution.
 
 		"Scan the taxon's successor list"
 		1 to: (taxon successors size) do:
 		[:i |
 
-			"Get the next-level successor taxon"
+			"get the next-level successor taxon"
 			nextLevelTaxon := (taxon successors) at: i.
 
-			"Get the related structure from the successor taxon's SAV description"
+			"get the related structure from the successor taxon's SAV description"
 			structure := (nextLevelTaxon
 							getAnObjectWith: (self hypothesis descriptiveElement name)
 							in: (nextLevelTaxon SAVdescription)).
@@ -275,14 +340,14 @@ public class GoalApproachingDialog {
 			(structure = nil)
 			ifFalse: [
 
-				"Get the attributes from the retrieved structure"
+				"get the attributes from the retrieved structure"
 				attributeList := structure attributes.
 
 				"Scan the attributes list"
 				1 to: (attributeList size) do:
 				[:j |
 
-					"Get the next attribute"
+					"get the next attribute"
 					attribute := (attributeList at: j).
 
 					"Make sure this attribute is not already processed (i.e., included in the solution or
@@ -290,7 +355,7 @@ public class GoalApproachingDialog {
 					(self isAttributeAlreadyProcessed: attribute)
 					ifFalse: [
 
-						"Get the attribute's list of values"
+						"get the attribute's list of values"
 						valueList := (attribute values) valueDescriptorsIn: (Attribute oneLevel).
 						(valueList = nil) ifTrue: [ self status: #error. ^nil ].
 
@@ -303,7 +368,7 @@ public class GoalApproachingDialog {
 						1 to: (valueList size) do:
 						[:k |
 
-							"Get the next value descriptor"
+							"get the next value descriptor"
 							vd := (valueList at: k).
 
 							"If the value decriptor is a range, do a range-driven dialog"
@@ -443,6 +508,188 @@ public class GoalApproachingDialog {
 	].    "END (self OKList isEmpty) ifFalse:"
 
 	^nil.*/
+
+    //Scan the processList
+        while(processList.isEmpty() != true){
+            //Remove the next possible solution
+            PossibleSolution ps = processList.remove(0);
+            //get the next possible solution's taxon
+            Taxon taxon = (Taxon)ps.getSolution();
+
+            //Scan the taxon's successor list
+
+            for (int i=0;(i<taxon.getSuccessors().size());i++){
+                //get the next-level successor taxon
+                Taxon nextLevelTaxon = taxon.getSuccessors().get(i);
+
+                //get the related structure from the successor taxon's SAV description
+                Structure structure = nextLevelTaxon.getAStructureWith(((Taxon)hypothesis.getDescriptiveElement()).getName(), nextLevelTaxon.getSAVDescription());
+                if (structure != null){
+                    //get the attributes from the retrieved structure
+                    List<Attribute> attributeList = structure.getAttributes();
+
+                    for (Attribute attribute:attributeList){
+                        //Make sure this attribute is not already processed (i.e., included in the solution or confirmed descriptions of ANY item in the processList)
+                        if (isAttributeAlreadyProcessed(attribute) != true){
+                            //get the attribute's list of values
+                            List<ValueDescriptor> valueList  = attribute.getValues().getValueDescriptors(Attribute.oneLevel());
+                            if (valueList == null){status= "error"; return false;}
+
+                            List<SAVDescriptor> OKSAVDescriptorList = new ArrayList<SAVDescriptor>();
+                            List<Value> displayValues = new ArrayList<Value>();
+                            List<Value> returnValues = new ArrayList<Value>();
+                            //Scan the value descriptor list: valueList with range value descriptors: only ONE element.
+                            //valueList with non-range value descriptors: at least one element
+
+
+                            for (ValueDescriptor vd: valueList){
+                                //If the value decriptor is a range, do a range-driven dialog
+                                if (vd.asRange()){
+                                    while (OKSAVDescriptorList.isEmpty() != true){
+                                        OKSAVDescriptorList.remove(0);
+                                    }
+
+                                    List<Object> result = rangeValueDescriptorDialogWith(vd,attribute);
+                                    if (result.get(0).equals("cancel") || result.get(0).equals("error")){
+                                        status = (String)result.get(0);
+                                        return null;
+                                    }
+                                    if (result.get(0).equals("reject")){
+                                        ps.setUnconfirmedDescription((Description<SAVDescriptor>)result.get(1));
+                                    }
+                                    if (result.get(0).equals("unmatch")){
+                                        hypothesis.addUnmatchedDescription((SAVDescriptor)result.get(1));
+                                    }
+                                    //The user typed a value within the range. Thus result contains a SAVDescriptor
+                                    //that can be used to update ps confirmedDescription. Additionally, assign
+                                    //nextLevelTaxon to ps solution, and place ps in the OKList. Finally, do a recursive
+                                    //call to doDialog, in order to process the next possible solution in processList
+                                    if (result.get(0).equals("confirm")){
+                                        ps.setSolution(nextLevelTaxon);
+                                        ps.setConfirmedDescription((Description<SAVDescriptor>)result.get(1));
+                                        addOKList(ps);
+                                        return doDialog();
+                                    }
+                                }else{
+                                    //Create a SAV descriptor for each [structure-attribute]-value
+                                    SAVDescriptor savDescriptor = new SAVDescriptor();
+                                    savDescriptor.add(((Structure)hypothesis.getDescriptiveElement()).getName(), attribute.getName(), vd);
+                                    //Make sure the SAV descriptor is not already processed (i.e., included in the unconfirmed,
+                                    //doubtful, or unmatched descriptions of ANY item in the processList. The reason for this
+                                    //check is to avoid asking the user questions previously answered
+                                    if (isDescriptorAlreadyProcessed(savDescriptor) != true){
+                                        //For the new descriptor's value, make sure its degree of similarity (with respect to
+                                        //the attribute's typical value) is acceptable. If it isn't, ignore it"
+                                        if (determineSimilarityFor(savDescriptor,nextLevelTaxon) != null){
+                                            //Place the SAV descriptor value in the Array that will be displayed
+                                            
+                                            savDescriptor.getValue()
+                                        }
+
+
+                                    }
+
+                                }
+
+
+                            }
+
+                        }
+                    }
+
+
+                }
+//                                                        "Place the SAV descriptor value in the Array that will be displayed"
+//                                                        ((savDescriptor value) respondsToArithmetic)
+//                                                        ifTrue: [ v := (savDescriptor value) printString ]
+//                                                        ifFalse: [ v := (savDescriptor value) asString ].
+//                                                        displayValues add: v.
+//                                                        returnValues add: (savDescriptor value).
+//
+//                                                        "Place the descriptor is a separate descriptor list. Process the next value"
+//                                                        OKSAVDescriptorList add: savDescriptor.
+//
+//                                                ].    "END ((self determineSimilarityFor: ...) = nil) ifFalse:"
+//
+//                                        ].    "END (self isDescriptorAlreadyProcessed: savDescriptor) ifFalse:"
+//
+//                                ].    "END (vd asRange) ifFalse:"
+//
+//						].    "END 1 to: (valueList size) do:"
+//
+//						"Once all of the attribute's values have been processed, the number of items in the
+//						 display array MUST be equal to the number of descriptors in the descriptor list. If
+//						 such number is greater than zero, display the dialog"
+//						(OKSAVDescriptorList isEmpty)
+//						ifFalse: [
+//
+//							result := (self valueDescriptorDialogWith: displayValues
+//										returnValueList: returnValues
+//										attribute: attribute).
+//
+//							"User rejects. Flush the descriptor list by placing all SAVDescriptors in the unconfirmed
+//							 description. Continue processing the next attribute"
+//							(result = #reject)
+//							ifTrue: [
+//								[OKSAVDescriptorList isEmpty]
+//								whileFalse: [ ps unconfirmedDescription: (OKSAVDescriptorList removeFirst) ]
+//							].
+//
+//							"User is in doubt. Flush the descriptor list by placing all SAVDescriptors in the doubtful
+//							 description. Continue processing the next attribute"
+//							(result = #doubt)
+//							ifTrue: [
+//								[OKSAVDescriptorList isEmpty]
+//								whileFalse: [ ps doubtfulDescription: (OKSAVDescriptorList removeFirst) ]
+//							].
+//
+//							"User cancels. Cancel the process and exit."
+//							(result = #cancel) ifTrue: [ self status: #cancel. ^nil ].
+//
+//							"User selects one item. The dialog method returns the value included in a SAVDescriptor.
+//							 Assign nextLevelTaxon to ps solution. Place ps in the OKList. Call doDialog recursively"
+//							(result class name = SAVDescriptor getClassName)
+//							ifTrue: [
+//								ps solution: nextLevelTaxon.
+//								ps confirmedDescription: result.
+//								self OKList: ps.
+//								^(self doDialog)
+//							].
+//
+//						].    "END (OKSAVDescriptorList isEmpty) ifFalse:"
+//
+//					].    "END (self isAttributeAlreadyProcessed: attribute) ifFalse:"
+//
+//				].    "END 1 to: (attributeList size) do:"
+//
+//			].    "END (structure = nil) ifFalse:"
+//
+//		].    "END 1 to (taxon successors) do:"
+
+            }
+        }
+
+//
+//	].    "END [ self processList isEmpty ] whileFalse:"
+//
+//	"At this point, all of the possible solutions have been processed. If the OKList is NOT empty, all the elements now
+//	 included in it have advanced one level with respect to the original ps solution. If the If the FIRST possible solution's
+//	 level meets the goal, exit successfully. Else, copy everything back to the processList and call doDialog again. The
+//	 return value is whatever this new call returns"
+//	(self OKList isEmpty)
+//	ifFalse: [
+//
+//		((self goal) = (self OKList first) level)
+//		ifTrue: [ self status: #success. ^self ].
+//
+//		[ self OKList isEmpty ]
+//		whileFalse: [ self processList: (self OKList) removeFirst ].
+//		^(self doDialog).
+//
+//	].    "END (self OKList isEmpty) ifFalse:"
+//
+//	^nil.
+
 }
 
 /**
@@ -470,7 +717,7 @@ public class GoalApproachingDialog {
 	((self processList size) = 1)
 	ifTrue: [ ^self ].
 
-	"Get the level of the first element"
+	"get the level of the first element"
 	level := (self processList first) level.
 
 	"Starting with the second element, process the list"
@@ -498,7 +745,7 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void rangeValueDescriptorDialogWith(){
+    public List<Object> rangeValueDescriptorDialogWith(ValueDescriptor vd,Attribute anAttribute){
 /**rangeValueDescriptorDialogWith: vd attribute: anAttribute
 
 	| msg suggestedValue result d value returnValues |
@@ -548,6 +795,7 @@ public class GoalApproachingDialog {
 
 	returnValues add: d.
 	^returnValues.*/
+        return null;
 }
 
 /**
@@ -581,6 +829,8 @@ public class GoalApproachingDialog {
 	   Attribute: (anAttribute name)
 	   Value: result.
 	^d.*/
+
+        
 }
 
 
@@ -594,7 +844,7 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void initializeGoal(){
+    public void initializeGoal(String aGoal,Hypothesis aHypothesis,Taxonomy aTaxonomy, List<SimRanges> simRangesList){
 /**initializeGoal: aGoal hypothesis: aHypothesis taxonomy: aTaxonomy similarityRanges: simRangesList
 
 	| sb |
@@ -629,6 +879,27 @@ public class GoalApproachingDialog {
 	OKList sortBlock: sb.
 
 	^self.*/
+        //The argument aGoal MUST be a value valid for TaxonomicLevels (e.g., #genus)
+        goal = aGoal;
+
+        //The elements of simrangesList MUST be defined in SimRanges
+        similarityRanges = simRangesList;
+
+        hypothesis = aHypothesis;
+        taxonomy = aTaxonomy;
+
+        //The instance variable status indicates the search status at the end of the process.
+        //The possible values it may have are:
+        //#fail - the dialog was unsuccessful. This is the default value.
+        //#success - at least one taxon reached the goal.
+        //#cancel - the user canceled the dialog process.
+        //#error - a processing error occurred."
+        //self status: #fail.
+        setStatus("fail");
+        
+	OKList = new ArrayList<PossibleSolution>();
+
+
 }
 
 
@@ -642,11 +913,12 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void OKList(Object d){
+    public void addOKList(PossibleSolution aPossibleSolution){
 /**OKList: aPossibleSolution
 
 	OKList add: aPossibleSolution.
 	^self.*/
+        OKList.add(aPossibleSolution);
 }
 
 /**
@@ -654,11 +926,12 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void processList(Object d){
+    public void addProcessList(PossibleSolution aPossibleSolution){
 /**processList: aPossibleSolution
 
 	processList add: aPossibleSolution.
 	^self.*/
+        processList.add(aPossibleSolution);
 }
 
 /**
@@ -666,7 +939,7 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void status(Object d){
+    public void setStatus(String aStatusValue){
 /**status: aStatusValue
 
 	"The instance variable status indicates the search status at the end of the process.
@@ -677,6 +950,8 @@ public class GoalApproachingDialog {
 	#error - a processing error occurred."
 	status := aStatusValue.
 	^self.*/
+        status = aStatusValue;
+        
 }
 
 
@@ -690,7 +965,8 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void determineSimilarityFor(){
+    public Object determineSimilarityFor(SAVDescriptor aSAVDescriptor,Taxon aTaxon){
+        return null;
 /**determineSimilarityFor: aSAVDescriptor context: aTaxon
 
 	"Determines the similarity range between aSAVDescriptor's value and aTaxon's value
@@ -710,6 +986,8 @@ public class GoalApproachingDialog {
 	(self similarityRanges includes: similarity) ifFalse: [ ^nil ].
 
 	^aTaxon.*/
+
+        
 }
 
 /**
@@ -717,7 +995,8 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void isAttributeAlreadyProcessed(){
+    public boolean isAttributeAlreadyProcessed(Attribute anAttribute){
+        
 /**isAttributeAlreadyProcessed: anAttribute
 
 	| d ps |
@@ -738,7 +1017,19 @@ public class GoalApproachingDialog {
 
 	].    "END 1 to: (self hypothesis possibleSolutions size) do:"
 
-	^false.*/
+        ^false.*/
+
+        SAVDescriptor d = new SAVDescriptor();
+        d.add(((Structure)hypothesis.getDescriptiveElement()).getName(), anAttribute.getName(), null);
+
+        for (PossibleSolution ps: hypothesis.getPossibleSolutions()){
+
+            if (ps.contains(d, ps.getSolutionDescription())){return true;}
+            if (ps.contains(d, ps.getConfirmedDescription())){return true;}
+
+        }
+
+        return false;
 }
 
 /**
@@ -746,7 +1037,8 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void isDescriptorAlreadyProcessed(){
+    public boolean isDescriptorAlreadyProcessed(SAVDescriptor aSAVDescriptor){
+        
 /**isDescriptorAlreadyProcessed: aSAVDescriptor
 
 	| ps |
@@ -768,6 +1060,15 @@ public class GoalApproachingDialog {
 	].    "END 1 to: (self hypothesis possibleSolutions size) do:"
 
 	^false.*/
+        if (hypothesis.containsFull(aSAVDescriptor, hypothesis.getUnmatchedDescription())){return true;}
+
+        for (PossibleSolution ps:hypothesis.getPossibleSolutions()){
+            if (ps.containsFull(aSAVDescriptor, ps.getUnconfirmedDescription())){return true;}
+            if (ps.containsFull(aSAVDescriptor, ps.getDoubtfulDescription())){return true;}
+
+        }
+        return false;
 }
+
 
 }

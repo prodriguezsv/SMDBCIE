@@ -1,13 +1,13 @@
 /*
- * @see "Categoría output de SUKIA Smalltalk"
+ * @see "Categorï¿½a output de SUKIA Smalltalk"
  * 
  */
 
 package output;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Collections;
 
 import domainTheory.Taxonomy;
 import domainTheory.Taxon;

@@ -433,7 +433,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    private boolean prepareFailedOutput(){
+    public boolean prepareFailedOutput(){
 /**prepareFailedOutput
 
 	"This method is called from beginWith, and is executed whenn the automaton has failed to provide
@@ -459,7 +459,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    private boolean prepareSuccessfulOutputWith(List<PossibleSolution> aPossibleSolutionsList){
+    public boolean prepareSuccessfulOutputWith(List<PossibleSolution> aPossibleSolutionsList){
 /**prepareSuccessfulOutputWith: aPossibleSolutionsList
 
 	"Automaton reference: PSO"
