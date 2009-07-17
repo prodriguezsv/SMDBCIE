@@ -13,6 +13,9 @@ import domainTheory.Attribute;
 import main.Index;
 
 import similarityAssessment.SimRanges;
+import similarityAssessment.SimAssessor;
+
+
 
 import reasoner.PossibleSolution;
 import java.util.ArrayList;
@@ -32,7 +35,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
     private Attribute attribute;
     private Structure structure;
     private Index structureIndex;
-    private String status;
+    //private String status;
     private List<PossibleSolution> taxonList;
     private PossibleSolution compSolution;
 
@@ -225,19 +228,19 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
 
 	self prepareFailedOutput.
 	^nil.*/
-        if (checkPrecondition(aProblemDescription)){status= "error"; return false;}
+        if (checkPrecondition(aProblemDescription)){setStatus("error"); return false;}
         structure = structureIndex.structureWith(aProblemDescription.get(0).getStructure());
         if (structure == null){prepareFailedOutput(); return false;}
         for (SAVDescriptor dt: aProblemDescription){
             resetAttribute();
-            resetList(valueDescriptors);
-            if (searchAttribute(dt)==false){
-                status = "error";
+            resetList(getValueDescriptors());
+            if (searchAttribute(dt) == null){
+                setStatus("error");
                 return false;
             }
         }
-        if (compress(this)==true){
-           return prepareSuccessfulOutputWith(taxonList());
+        if (compress()==1){
+           return prepareSuccessfulOutputWith(getTaxonList());
         }
         return prepareFailedOutput();
 }
@@ -270,7 +273,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
 
 	^aTaxon.*/
         Object weightedValues = (aTaxon.getAnObjectWith(aSAVDescriptor.getStructure(),aTaxon.getSAVDescription())).attributeWith(aSAVDescriptor.getAttribute(),Attribute.oneLevel());
-        similarity = SimAssessor.similarityRangeOf(aSAVDescriptor.getValue(),weightedValues);
+        SimAssessor similarity = SimAssessor.similarityRangeOf(aSAVDescriptor.getValue(),weightedValues);
         if (similarityRanges.includes(similarity)){return null;}
         return aTaxon;
 }
@@ -325,7 +328,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
         List<Taxon> taxa;
 
         List<Taxon> tempList = new ArrayList<Taxon>();
-        for (SAVDescriptor vd: valueDescriptors()){
+        for (SAVDescriptor vd: getValueDescriptors()){
             taxa = (List<Taxon>)vd.getValue();
             if (taxa.size()<1){return false;}
             while (taxa.size()>0){
@@ -337,12 +340,12 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
 
         }
         if (tempList.size() < 1) {return false;}
-        tSolutionDescription(aSAVDescriptor);
+        setTSolutionDescription(aSAVDescriptor);
         taxa = associateTaxaToPossibleSolutions(tempList);
         while (taxa.size()>0){
             taxa.remove(0);
-            taxonList(taxa);
-            resetList(tSolutionDescription());
+            setTaxonList(taxa);
+            resetList(getTSolutionDescription());
         }
         return true;
 }
@@ -365,7 +368,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
         attribute = getStructure().getAttribute(aSAVDescriptor.getAttribute());
         if (attribute == null) {
             setTUnmatchedDescription(aSAVDescriptor);
-            return false;
+            return null;
         }
         return searchValueDescriptors(aSAVDescriptor);
 
@@ -533,7 +536,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
  * @param my parameters list
  * @return my return values
  */
-    private Object compress(){
+    private int compress(){
 /*compress
 
 	"Since this automaton searches for taxa one SAVDescriptor at a time, at the end of the process there may
@@ -677,7 +680,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
         while (tempList.isEmpty() != true){
             taxonList.add(tempList.remove(0));
         }
-        return null;
+        return 1;
 }
 
 }

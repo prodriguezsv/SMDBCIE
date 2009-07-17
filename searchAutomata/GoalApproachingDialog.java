@@ -14,9 +14,16 @@ import domainTheory.Taxonomy;
 import domainTheory.TaxonomicLevels;
 import domainTheory.Structure;
 import similarityAssessment.SimRanges;
+import similarityAssessment.SimAssessor;
+import similarityAssessment.WeightedValue;
+
+
 
 import values.ValueDescriptor;
 import values.Value;
+
+
+
 
 import redundantDiscriminantNet.SAVDescriptor;
 
@@ -53,7 +60,7 @@ public class GoalApproachingDialog {
 
     public GoalApproachingDialog(){
     }
-    public GoalApproachingDialog(Object aGoal,Hypothesis aHypothesis,Taxonomy aTaxonomy,SimRanges simRangesList){
+    public GoalApproachingDialog(String aGoal,Hypothesis aHypothesis,Taxonomy aTaxonomy,List<SimRanges> simRangesList){
     /**newWithGoal: aGoal hypothesis: aHypothesis taxonomy: aTaxonomy similarityRanges: simRangesList
 
 	| gad |
@@ -65,7 +72,7 @@ public class GoalApproachingDialog {
 	gad := super new.
 	gad initializeGoal: aGoal hypothesis: aHypothesis taxonomy: aTaxonomy similarityRanges: simRangesList.
 	^gad.*/
-        super();
+        //super();
         if ((aHypothesis.getDescriptiveElement() instanceof Structure) == true){
             initializeGoal(aGoal,aHypothesis,aTaxonomy,simRangesList);
         }
@@ -93,10 +100,11 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void getGoal(){
+    public String getGoal(){
 /**goal
 
 	^goal.*/
+        return goal;
 }
 
 /**
@@ -104,10 +112,11 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void getHypothesis(){
+    public Hypothesis getHypothesis(){
 /**hypothesis
 
 	^hypothesis.*/
+        return hypothesis;
 }
 
 /**
@@ -115,10 +124,11 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void getOKList(){
+    public List<PossibleSolution> getOKList(){
 /**OKList
 
 	^OKList.*/
+        return OKList;
 }
 
 /**
@@ -126,10 +136,11 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void getProcessList(){
+    public List<PossibleSolution> getProcessList(){
 /**processList
 
 	^processList.*/
+        return processList;
 }
 
 /**
@@ -137,10 +148,11 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void getSimilarityRanges(){
+    public List<SimRanges> getSimilarityRanges(){
 /**similarityRanges
 
 	^similarityRanges.*/
+        return similarityRanges;
 }
 
 /**
@@ -148,10 +160,11 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void getStatus(){
+    public String getStatus(){
 /**status
 
 	^status.*/
+        return status;
 }
 
 /**
@@ -159,10 +172,11 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void getTaxonomy(){
+    public Taxonomy getTaxonomy(){
 /**taxonomy
 
 	^taxonomy.*/
+        return taxonomy;
 }
 
 
@@ -286,7 +300,7 @@ public class GoalApproachingDialog {
 
                         //Exchange the case for the taxon. Finally, place it in the process list
                         ps.setSolution(taxon);
-                        setProcessList(ps);
+                        addProcessList(ps);
                     }
 
                 }
@@ -537,7 +551,7 @@ public class GoalApproachingDialog {
 
                             List<SAVDescriptor> OKSAVDescriptorList = new ArrayList<SAVDescriptor>();
                             List<String> displayValues = new ArrayList<String>();
-                            List<String> returnValues = new ArrayList<String>();
+                            List<Object> returnValues = new ArrayList<Object>();
                             //Scan the value descriptor list: valueList with range value descriptors: only ONE element.
                             //valueList with non-range value descriptors: at least one element
 
@@ -549,7 +563,8 @@ public class GoalApproachingDialog {
                                         OKSAVDescriptorList.remove(0);
                                     }
 
-                                    SAVDescriptor result = rangeValueDescriptorDialogWith(vd,attribute);
+                                    List<Object> result = rangeValueDescriptorDialogWith(vd,attribute);
+
                                     if (result.get(0).equals("cancel") || result.get(0).equals("error")){
                                         status = (String)result.get(0);
                                         return null;
@@ -732,7 +747,7 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public SAVDescriptor rangeValueDescriptorDialogWith(ValueDescriptor vd,Attribute anAttribute){
+    public List<Object> rangeValueDescriptorDialogWith(ValueDescriptor vd,Attribute anAttribute){
 /**rangeValueDescriptorDialogWith: vd attribute: anAttribute
 
 	| msg suggestedValue result d value returnValues |
@@ -953,7 +968,7 @@ public class GoalApproachingDialog {
  * @return my return values
  */
     public Object determineSimilarityFor(SAVDescriptor aSAVDescriptor,Taxon aTaxon){
-        return null;
+        
 /**determineSimilarityFor: aSAVDescriptor context: aTaxon
 
 	"Determines the similarity range between aSAVDescriptor's value and aTaxon's value
@@ -974,6 +989,13 @@ public class GoalApproachingDialog {
 
 	^aTaxon.*/
 
+        List<WeightedValue> weightedValues = (aTaxon.getAStructureWith(aSAVDescriptor.getStructure(), aTaxon.getSAVDescription())).getAttribute(aSAVDescriptor.getAttribute()).getValues().get(Attribute.oneLevel());
+        
+        String similarity = SimAssessor.similarityRangeOf(aSAVDescriptor.getValue(), weightedValues);
+        
+        if (similarityRanges.contains(similarity) != true){return null;}
+        
+        return aTaxon;
         
 }
 
