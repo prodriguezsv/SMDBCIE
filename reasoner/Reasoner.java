@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import output.DFSAutomatonOutput;
-import output.SearchAutomatonOutput;
 
 import domainTheory.GroupingHeuristic;
 import domainTheory.Structure;
@@ -15,14 +14,17 @@ import domainTheory.TaxonomicLevels;
 import domainTheory.Taxonomy;
 
 import redundantDiscriminantNet.RDMultiNet;
-import redundantDiscriminantNet.RDMultiNetRoot;
 import redundantDiscriminantNet.SAVDescriptor;
+import redundantDiscriminantNet.SAVRoot;
+import searchAutomata.GoalApproachingDialog;
+import searchAutomata.SAVCaseDFSAutomaton;
+import searchAutomata.TaxonGHISAutomaton;
+import searchAutomata.TaxonSISAutomaton;
 import searchHintsBase.HintsBase;
 import similarityAssessment.SimRanges;
 
 import main.Description;
 import main.RDNet;
-import main.RootNorm;
 
 /**
  * @author Armando
@@ -737,9 +739,11 @@ public class Reasoner {
 	public boolean searchCaseGroupingHeuristics() {
 		GroupingHeuristic gh;
 		Hypothesis hypothesis1, hypothesis2;
-		List<SAVDescriptor> problemDescription;
-		RDNet caseNetRoot;
-		SAVCaseDFSAutomaton searchAutomaton; // Ojo pendiente
+		Description<SAVDescriptor> problemDescription;
+		SAVRoot caseNetRoot;
+		SAVCaseDFSAutomaton searchAutomaton1;
+		TaxonGHISAutomaton searchAutomaton2;
+		
 		String status;
 		
 		while (!(this.getGroupHDescription().isEmpty())) {
@@ -760,29 +764,29 @@ public class Reasoner {
 			if (problemDescription == null) return false;
 
 			// Get the net root that corresponds to the grouping heuristic
-			caseNetRoot = this.getCaseMemory().getRoot().getRDNet(this.getTaxonomicGroupName());
+			caseNetRoot = (SAVRoot) this.getCaseMemory().getRoot().getRDNet(this.getTaxonomicGroupName()).getRoot();
 		
 			if (!(caseNetRoot == null)) {
 				// Create a new instance of case net search automaton
-				searchAutomaton = new SAVCaseDFSAutomaton(caseNetRoot);
+				searchAutomaton1 = new SAVCaseDFSAutomaton(caseNetRoot);
 	
 				// Begin the search with the given problem description
-				searchAutomaton.beginWith(problemDescription);
-				status = searchAutomaton.getStatus();
+				searchAutomaton1.beginWith(problemDescription);
+				status = searchAutomaton1.getStatus();
 	
 				if (status.equals("error") || status.equals("cancel"))
 					return false;
 	
 				if (status.equals("success")) {
-					this.processSuccessfulGHSearchOutputWith(searchAutomaton, hypothesis1, hypothesis2);
+					this.processSuccessfulGHSearchOutputWith(searchAutomaton1, hypothesis1, hypothesis2);
 					return this.searchCaseGroupingHeuristics();
 				}
 	
 				if (status.equals("fail")) {
 					/* Copy the unmatched description and the justification to the first hypothesis, which is the one
 					 we'll continue to use from now on.*/
-					hypothesis1.copyToUnmatchedDescriptionFrom(searchAutomaton.getSearchOutput().getUnmatchedDescription());
-					hypothesis1.copyToJustificationFrom(searchAutomaton.getSearchOutput().getJustification());
+					hypothesis1.copyToUnmatchedDescriptionFrom(searchAutomaton1.getSearchOutput().getUnmatchedDescription());
+					hypothesis1.copyToJustificationFrom(searchAutomaton1.getSearchOutput().getJustification());
 				}
 			}
 		
@@ -794,25 +798,25 @@ public class Reasoner {
 			if (problemDescription == null) return false;
 	
 			// Perform a taxonomic search (Ojo)
-			searchAutomaton = new TaxonGHISAutomaton(this.getTaxonomy().getGroupingHeuristicIndex());
-			searchAutomaton.beginWith(problemDescription);
-			status = searchAutomaton.getStatus();
+			searchAutomaton2 = new TaxonGHISAutomaton(this.getTaxonomy().getGroupingHeuristicIndex());
+			searchAutomaton2.beginWith(problemDescription);
+			status = searchAutomaton2.getStatus();
 	
 			if (status.equals("error") || status.equals("cancel"))
 				return false;
 	
 			if (status.equals("success")) {
 				// Load all the possible solutions into the hypothesis
-				while (!(searchAutomaton.getSearchOutput().getPossibleSolutions().isEmpty())) {
+				while (!(searchAutomaton2.getSearchOutput().getPossibleSolutions().isEmpty())) {
 					/* Attempt to add the possible solution to the first hypothesis. If not successful,
 					 return an error value*/
-					 if (hypothesis1.addPossibleSolutions(searchAutomaton.getSearchOutput().getPossibleSolutions.remove()) == null)
+					 if (hypothesis1.addPossibleSolutions(searchAutomaton2.getSearchOutput().getPossibleSolutions().remove(0)) == false)
 						 return false;
 				}
 				
-				hypothesis1.copyToUnmatchedDescriptionFrom(searchAutomaton.getSearchOutput().getUnmatchedDescription());
+				hypothesis1.copyToUnmatchedDescriptionFrom(searchAutomaton2.getSearchOutput().getUnmatchedDescription());
 				//hypothesis1.copyToJustificationFrom(searchAutomaton.getSearchOutput().getJustification());
-				hypothesis1.copyToUnmatchedDescriptionFrom(searchAutomaton.getSearchOutput().getUnmatchedDescription());
+				hypothesis1.copyToUnmatchedDescriptionFrom(searchAutomaton2.getSearchOutput().getUnmatchedDescription());
 	
 				// Add the hypothesis to the successful conflict set
 				this.addSuccGHConflictSet(hypothesis1);
@@ -823,8 +827,8 @@ public class Reasoner {
 			if (status.equals("fail")) {
 				/* Copy the unmatched description and the justification to the first hypothesis, which is the one
 				 we'll continue to use from now on.*/
-				hypothesis1.copyToUnmatchedDescriptionFrom(searchAutomaton.getSearchOutput().getUnmatchedDescription());
-				hypothesis1.copyToJustificationFrom(searchAutomaton.getSearchOutput().getJustification());
+				hypothesis1.copyToUnmatchedDescriptionFrom(searchAutomaton2.getSearchOutput().getUnmatchedDescription());
+				hypothesis1.copyToJustificationFrom(searchAutomaton2.getSearchOutput().getJustification());
 			}
 			
 			// Search was unsuccessful. Add hypothesis to the no-results set
@@ -946,10 +950,11 @@ public class Reasoner {
 	public boolean searchCaseStructures() {
 		Structure s;
 		Hypothesis hypothesis1, hypothesis2;
-		List<SAVDescriptor> problemDescription;
+		Description<SAVDescriptor> problemDescription;
 		RDNet net;
-		RootNorm caseNetRoot;
-		SAVCaseDFSAutomaton searchAutomaton; // Ojo pendiente
+		SAVRoot caseNetRoot;
+		SAVCaseDFSAutomaton searchAutomaton1;
+		TaxonSISAutomaton searchAutomaton2;
 		GoalApproachingDialog dialog;
 		DFSAutomatonOutput outputCopy;
 		String status;
@@ -976,15 +981,15 @@ public class Reasoner {
 			net = this.getCaseMemory().getRoot().getRDNet(s.getName());
 			if (net == null) 
 				caseNetRoot = null;
-			else caseNetRoot = net.getRoot();
+			else caseNetRoot = (SAVRoot) net.getRoot();
 					
 			if (!(caseNetRoot == null)) {
 				// Create a new instance of case net search automaton
-				searchAutomaton = new SAVCaseDFSAutomaton(caseNetRoot);
+				searchAutomaton1 = new SAVCaseDFSAutomaton(caseNetRoot);
 	
 				// Begin the search with the given problem description
-				searchAutomaton.beginWith(problemDescription);
-				status = searchAutomaton.getStatus();
+				searchAutomaton1.beginWith(problemDescription);
+				status = searchAutomaton1.getStatus();
 	
 				if (status.equals("error") || status.equals("cancel"))
 					return false;
@@ -995,19 +1000,19 @@ public class Reasoner {
 				 are correctly set. This process repeats until the problem description list is EMPTY. After each successive 
 				 call, the unmatched description, the justification and whatever possible solutions MUST be concatenated 
 				 to the original search-automaton output copy*/
-				outputCopy = searchAutomaton.getSearchOutput(); // Ojo .copy()
+				outputCopy = searchAutomaton1.getSearchOutput(); // Ojo .copy()
 				outputCopy.setTaxonomy(this.getTaxonomy());
 				
 				while (!(problemDescription.isEmpty())) {
-					searchAutomaton.newSearchWith(problemDescription);
-					status = searchAutomaton.getStatus();
+					searchAutomaton1.newSearchWith(problemDescription);
+					status = searchAutomaton1.getStatus();
 
 					if (status.equals("error") || status.equals("cancel"))
 						return false;
 
-					outputCopy.appendToPossibleSolutions(searchAutomaton.getSearchOutput().getPossibleSolutions());
-					outputCopy.appendToJustification(searchAutomaton.getSearchOutput().getJustification());
-					outputCopy.appendToUnmatchedDescription(searchAutomaton.getSearchOutput().getUnmatchedDescription());
+					outputCopy.appendToPossibleSolutions(searchAutomaton1.getSearchOutput().getPossibleSolutions());
+					outputCopy.appendToJustification(searchAutomaton1.getSearchOutput().getJustification());
+					outputCopy.appendToUnmatchedDescription(searchAutomaton1.getSearchOutput().getUnmatchedDescription());
 				}
 				
 				outputCopy.compress();
@@ -1037,9 +1042,9 @@ public class Reasoner {
 			if (problemDescription == null) return false;
 	
 			// Perform a taxonomic search (Ojo)
-			searchAutomaton = new TaxonSISAutomaton(this.getTaxonomy().getStructureIndex(), this.getMinSimilarityDegree());
-			searchAutomaton.beginWith(problemDescription);
-			status = searchAutomaton.getStatus();
+			searchAutomaton2 = new TaxonSISAutomaton(this.getTaxonomy().getStructureIndex(), this.getMinSimilarityDegree());
+			searchAutomaton2.beginWith(problemDescription);
+			status = searchAutomaton2.getStatus();
 	
 			if (status.equals("error") || status.equals("cancel"))
 				return false;
@@ -1047,16 +1052,16 @@ public class Reasoner {
 			
 			if (status.equals("success")) {
 				// Load all the possible solutions into the hypothesis
-				while (!(searchAutomaton.getSearchOutput().getPossibleSolutions().isEmpty())) {
+				while (!(searchAutomaton2.getSearchOutput().getPossibleSolutions().isEmpty())) {
 					/* Attempt to add the possible solution to the first hypothesis. If not successful,
 					 return an error value*/
-					 if (hypothesis1.addPossibleSolutions(searchAutomaton.getSearchOutput().getPossibleSolutions.remove()) == null)
+					 if (hypothesis1.addPossibleSolutions(searchAutomaton2.getSearchOutput().getPossibleSolutions().remove(0)) == false)
 						 return false;
 				}
 				
-				hypothesis1.copyToUnmatchedDescriptionFrom(searchAutomaton.getSearchOutput().getUnmatchedDescription());
+				hypothesis1.copyToUnmatchedDescriptionFrom(searchAutomaton2.getSearchOutput().getUnmatchedDescription());
 				//hypothesis1.copyToJustificationFrom(searchAutomaton.getSearchOutput().getJustification());
-				hypothesis1.copyToUnmatchedDescriptionFrom(searchAutomaton.getSearchOutput().getUnmatchedDescription());
+				hypothesis1.copyToUnmatchedDescriptionFrom(searchAutomaton2.getSearchOutput().getUnmatchedDescription());
 
 				/*HYPOTHESIS1: If none of the possible solutions is equal to, or more specific than the identification goal, 
 				 establish a new dialog with the user, in order to try to draw the existing possible solutions nearer to the goal*/
@@ -1151,7 +1156,7 @@ public class Reasoner {
 		GroupingHeuristic gh;
 		Hypothesis hypothesis;
 		String status;
-		List<SAVDescriptor> problemDescription;
+		Description<SAVDescriptor> problemDescription;
 		TaxonGHISAutomaton searchAutomaton; // Ojo
 	
 		while (!(this.getGroupHDescription().isEmpty())) {
@@ -1178,7 +1183,7 @@ public class Reasoner {
 				// Load all the possible solutions into the hypothesis
 				while (!(searchAutomaton.getSearchOutput().getPossibleSolutions().isEmpty())) {
 					// Attempt to add the possible solution to the hypothesis. If not successful, return an error value*/
-					 if (hypothesis.addPossibleSolutions(searchAutomaton.getSearchOutput().getPossibleSolutions().remove(0) == null))
+					 if (hypothesis.addPossibleSolutions(searchAutomaton.getSearchOutput().getPossibleSolutions().remove(0)) == false)
 						 return false;
 				}
 				
@@ -1236,7 +1241,7 @@ public class Reasoner {
 				// Load all the possible solutions into the hypothesis
 				while (!(searchAutomaton.getSearchOutput().getPossibleSolutions().isEmpty())) {
 					// Attempt to add the possible solution to the hypothesis. If not successful, return an error value*/
-					 if (hypothesis.addPossibleSolutions(searchAutomaton.getSearchOutput().getPossibleSolutions().remove(0) == null))
+					 if (hypothesis.addPossibleSolutions(searchAutomaton.getSearchOutput().getPossibleSolutions().remove(0)) == false)
 						 return false;
 				}
 				

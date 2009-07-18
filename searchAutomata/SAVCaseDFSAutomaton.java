@@ -1,7 +1,6 @@
 
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * @see "Categoría Sukia Search Automata en SUKIA SmallTalk" 
  */
 
 package searchAutomata;
@@ -28,11 +27,11 @@ import java.util.List;
 import main.Description;
 
 /**
- *SAVCase Depth-First-Search Automaton.
- *1. The search process is based on a problem description composed of a non-empty set of SAVDescriptors.
- *2. The search strategy is depth-first. That is, using all possible SAVDescriptors from the problem description, advance as
- *deep as possible within the Case Memory, before selecting solution cases.  This strategy ensures that all descriptors
- *are considered.
+ * SAVCase Depth-First-Search Automaton.
+ * 1. The search process is based on a problem description composed of a non-empty set of SAVDescriptors.
+ * 2. The search strategy is depth-first. That is, using all possible SAVDescriptors from the problem description, advance as
+ * deep as possible within the Case Memory, before selecting solution cases.  This strategy ensures that all descriptors
+ * are considered.
  * @author pabloq
  */
 
@@ -51,32 +50,11 @@ public class SAVCaseDFSAutomaton {
     public DFSAutomatonOutput searchOutput;
 
     /**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
     public SAVCaseDFSAutomaton(SAVRoot aSAVRoot){
-        //	netRoot := aSAVRoot.
-        //	self currentNorm: nil.
-        //
-        //	self resetLevel.
-        //	self stopLevel: self currentLevel.
-        //
-        //	tSolutionDesc := OrderedCollection new.
-        //	tConfirmedDesc := OrderedCollection new.
-        //	tUnconfirmedDesc := OrderedCollection new.
-        //	tDoubtfulDesc := OrderedCollection new.
-        //	tUnmatchedDesc := OrderedCollection new.
-        //	justification := OrderedCollection new.
-        //	self newOutput.
-        //
-        //	"The instance variable status indicates the search status at the end of the process.
-        //	 The possible values it may have are:
-        //	#fail - the search was unsuccessful. This is the default value.
-        //	#success - at least one possible solution was found.
-        //	#cancel - the user canceled the search process.
-        //	#error - a processing error occurred."
-        //	self status: #fail.
         netRoot = aSAVRoot;
         currentNorm = null;
         resetLevel();
@@ -102,345 +80,232 @@ public class SAVCaseDFSAutomaton {
  *Category adding
  */
     /**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
     public void setCurrentNorm(Norm aNorm){
-        //<body>currentNorm: aNorm
-        //
-        //	"Automaton reference: CN"
-        //
-        //	currentNorm := aNorm.
-        //	^self.</body>
         currentNorm = aNorm;
     }
+    
     /**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
-    public void setJustification(Object aJustificationElement){
-        //<body>justification: aJustificationElement
-        //
-        //	justification add: aJustificationElement.
-        //	^self.</body>
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
+    public void setJustification(SAVDescriptor aJustificationElement){
         justification.add(aJustificationElement);
     }
+    
     /**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
     public void setNextLevel(){
-        //<body>nextLevel
-        //
-        //	currentLevel := currentLevel + 1.
-        //	^self.</body>
         currentLevel += 1;
     }
+    
     /**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
     public void setPreviousLevel(){
-        //<body>previousLevel
-        //
-        //	currentLevel := currentLevel - 1.
-        //	^self.</body>
         currentLevel -= 1;
     }
+    
     /**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
     public void resetLevel(){
-        //<body>resetLevel
-        //
-        //	currentLevel := 0.
-        //	^self.</body>
         currentLevel = 0;
     }
     /**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
     public void setStatus(String aStatusValue){
-        //<body>status: aStatusValue
-        //
-        //	"The possible values for the argument aStatusValue are:
-        //	#fail - the search was unsuccessful. This is the default value.
-        //	#success - at least one possible solution was found.
-        //	#cancel - the user canceled the search process.
-        //	#error - a processing error occurred."
-        //
-        //	status := aStatusValue.
-        //	^self.</body>
         status = aStatusValue;
     }
+    
     /**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
     public void setStopLevel(int aLevelNumber){
-        //<body>stopLevel: aLevelNumber
-        //
-        //	stopLevel := aLevelNumber.
-        //	^self.</body>
      stopLevel = aLevelNumber;
     }
+    
     /**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
     public void setTConfirmedDescription(SAVDescriptor aSAVDescriptor){
-        //<body>tConfirmedDescription: aSAVDescriptor
-        //
-        //	"Automaton reference: AtCD"
-        //
-        //	tConfirmedDesc add: aSAVDescriptor.
-        //	^self.</body>
         tConfirmedDesc.add(aSAVDescriptor);
     }
+    
     /**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
     public void setTDoubtfulDescription(SAVDescriptor aSAVDescriptor){
-        //<body>tDoubtfulDescription: aSAVDescriptor
-        //
-        //	"Automaton reference: AtDD"
-        //
-        //	tDoubtfulDesc add: aSAVDescriptor.
-        //	^self.</body>
         tDoubtfulDesc.add(aSAVDescriptor);
     }
+    
     /**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
     public void setTSolutionDescription(SAVDescriptor aSAVDescriptor){
-        //<body>tSolutionDescription: aSAVDescriptor
-        //
-        //	"Automaton reference: AtSD"
-        //
-        //	tSolutionDesc add: aSAVDescriptor.
-        //	^self.</body>
         tSolutionDesc.add(aSAVDescriptor);
     }
+    
     /**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
     public void setTUnconfirmedDescription(SAVDescriptor aSAVDescriptor){
-        //<body>tUnconfirmedDescription: aSAVDescriptor
-        //
-        //	"Automaton reference: AtUD"
-        //
-        //	tUnconfirmedDesc add: aSAVDescriptor.
-        //	^self.</body>
         tUnconfirmedDesc.add(aSAVDescriptor);
     }
     /**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
     public void setTUnmatchedDescription(SAVDescriptor aSAVDescriptor){
-        //<body>tUnmatchedDescription: aSAVDescriptor
-        //
-        //	"Automaton reference: AtUMD"
-        //
-        //	tUnmatchedDesc add: aSAVDescriptor.
-        //	^self.</body>
         tUnmatchedDesc.add(aSAVDescriptor);
     }
-/**
- *Category accessing
- */
 
     /**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
     public int getCurrentLevel(){
-        //<body>currentLevel
-        //
-        //	^currentLevel.</body>
         return currentLevel;
     }
-    // TODO
+
     /**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
     public Object getCurrentNorm(){
-        //<body>currentNorm
-        //
-        //	^currentNorm.</body>
         return currentNorm;
     }
     /**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
-    public List<Object> getJustification(){
-        //<body>justification
-        //
-        //	^justification.</body>
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
+    public Description<SAVDescriptor> getJustification(){
         return justification;
     }
+    
     /**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
     public SAVRoot getNetRoot(){
-        //<body>netRoot
-        //
-        //	^netRoot.</body>
         return netRoot;
     }
     /**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
     public int getRootLevel(){
-        //<body>rootLevel
-        //
-        //	^1.</body>
         return 1;
     }
+    
     /**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
     public DFSAutomatonOutput getSearchOutput(){
-        //<body>searchOutput
-        //
-        //	^searchOutput.</body>
-
        return searchOutput;
     }
+
     /**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
     public String getStatus(){
-        //<body>status
-        //
-        //	^status.</body>
         return status;
     }
+    
     /**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
     public int getStopLevel(){
-        //<body>stopLevel
-        //
-        //	^stopLevel.</body>
         return stopLevel;
     }
+    
     /**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
     public Description<SAVDescriptor> getTConfirmedDescription(){
-        //<body>tConfirmedDescription
-        //
-        //	^tConfirmedDesc.</body>
         return tConfirmedDesc;
     }
+
     /**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
     public Description<SAVDescriptor> getTDoubtfulDescription(){
-        //<body>tDoubtfulDescription
-        //
-        //	^tDoubtfulDesc.</body>
-        return tDoubtfulDesc;
+    	return tDoubtfulDesc;
     }
+    
     /**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
     public Description<SAVDescriptor> getTSolutionDescription(){
-        //<body>tSolutionDescription
-        //
-        //	^tSolutionDesc.</body>
         return tSolutionDesc;
     }
+    
     /**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
     public Description<SAVDescriptor> getTUnconfirmedDescription(){
-        //<body>tUnconfirmedDescription
-        //
-        //	^tUnconfirmedDesc.</body>
         return tUnconfirmedDesc;
     }
+    
     /**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
     public Description<SAVDescriptor> getTUnmatchedDescription(){
-        //<body>tUnmatchedDescription
-        //
-        //	^tUnmatchedDesc.</body>
         return tUnmatchedDesc;
     }
-/**
- *Category backtracking
- */
+
     /**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
     public String backtrack(){
-        //<body>backtrack
-        //
-        //	"A backtrack operation consists of moving up a norm, in order to present the user
-        //	 with that norm's indices.  During a backtrack operation, the descriptor that corresponds
-        //	 to the current norm is extracted from the confirmed list, and placed in the unconfirmed
-        //	 list.  The reason for this action is that such descriptor was once confirmed, and now the
-        //	 user 'states' that it's no good.
-        //
-        //	 Returns: - nil - if the backtracking process fails, or indexDialog returns nil,
-        //			   self - if indexDialog returns self after a successful backtrack.
-        //
-        //	 Automaton reference: BkTk"
-        //
-        //	((self removeSAVDescriptorFromTConfirmedDesc: (self currentNorm)) = nil)
-        //	ifTrue: [self prepareFailedOutput. ^nil. ].
-        //
-        //	((self processPreviousNorm) = nil)
-        //	ifTrue: [ self prepareFailedOutput. ^nil. ].
-        //
-        //	^(self indexDialog).</body>
         if (removeSAVDescriptorFromTConfirmedDesc(currentNorm)==null) {
             prepareFailedOutput();
             return null;
@@ -451,35 +316,13 @@ public class SAVCaseDFSAutomaton {
         }
         return indexDialog();
     }
+    
     /**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
     public String processPreviousNorm(){
-        //<body>processPreviousNorm
-        //
-        //	"Moves up a norm. This operation fails if an attempt is made to move
-        //	 farther up than the stop-level norm, or if control is already at the net
-        //	 root.  If all goes well, an index verification is performed on the norm.
-        //
-        //	Returns: nil - if the process fails;
-        //			self - if everything dandy.
-        //
-        //	Automaton reference: PPN"
-        //
-        //	| r |
-        //
-        //	self currentNorm: (self currentNorm predecessor).
-        //	self previousLevel.
-        //	((self currentLevel &lt; self stopLevel) | (self currentNorm = self netRoot))
-        //	ifTrue: [ ^nil ].
-        //
-        //	r := self verifyIndices.
-        //	(r = nil) ifTrue: [ ^nil ].
-        //	(r = #backtrack) ifTrue: [ ^(self processPreviousNorm) ].
-        //
-        //	^self.</body>
         currentNorm = currentNorm.getPredecessorNorm();
         setPreviousLevel();
         if ((currentLevel < stopLevel) || (currentNorm == netRoot)){
@@ -603,26 +446,29 @@ public class SAVCaseDFSAutomaton {
         int successorsSize = currentNorm.getSuccessors().size();
         for (int i=0;(i<successorsSize);i++){
             //get the next successor. It's got to be an index!!
-            Norm normSucc = currentNorm.getSuccessors().get(i);
+            Node normSucc = currentNorm.getSuccessors().get(i);
 
-            //get its list of successors (i.e., IndexValues)
-            List idxSucc = normSucc.getSuccessors();
-
-            //Scan the list of successors for the current index
-            for (int j=0; (j<idxSucc.size());j++){
-                SAVDescriptor d = new SAVDescriptor();
-                d.add(netRoot.getStructure(), normSucc.getLabel(), idxSucc.get(j).getValue());
-                //If the SAVDescriptor is not a member of the unconfirmed description, check it against
-                //the doubtful description. If this time the SAVDescriptior is NOT a member of the doubtful
-                //description, return self, indicating that there is at least one index-value to show to the user
-
-                if (includes(d,getTUnconfirmedDescription())== null){
-                    if (includes(d,getTDoubtfulDescription())== null){
-                        return true;
-                    }
-                }
+            if (normSucc instanceof Index) {
+	            //get its list of successors (i.e., IndexValues)
+	            List<IndexValue<Object>> idxSucc = ((Index)normSucc).getSuccessors();
+	
+	            //Scan the list of successors for the current index
+	            for (int j = 0; (j< idxSucc.size()); j++){
+	                SAVDescriptor d = new SAVDescriptor();
+	                d.add(netRoot.getStructure(), ((Index)normSucc).getLabel(), idxSucc.get(j).getValue());
+	                //If the SAVDescriptor is not a member of the unconfirmed description, check it against
+	                //the doubtful description. If this time the SAVDescriptior is NOT a member of the doubtful
+	                //description, return self, indicating that there is at least one index-value to show to the user
+	
+	                if (includes(d,getTUnconfirmedDescription())== null){
+	                    if (includes(d,getTDoubtfulDescription())== null){
+	                        return true;
+	                    }
+	                }
+	            }
             }
         }
+        
         //At this point, the entire list of norm successors was scanned, and all of them were members
         // of either the unconfirmed or doubtful descriptions. Return nil to indicate that another backtrack
         // must be performed. Before returning, the descriptor of the current norm must be removed from
@@ -632,14 +478,12 @@ public class SAVCaseDFSAutomaton {
         }
         return "backtrack";
     }
-/**
- *Category case-pointing search
- */
+
     /**
- * @see Define method name.
- * @param my parameters list
- * @return my return values
- */
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
     public Object searchForCasesUnderCurrNormUsing(Description<SAVDescriptor> aProblemDescription,List<PossibleSolution> aPossibleSolutionsList){
         //<body>searchForCasesUnderCurrNormUsing: aProblemDescription saveIn: aPossibleSolutionsList
         //
@@ -1437,7 +1281,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    private void newSearchWith(Description<SAVDescriptor> anOldProblemDescription){
+    public void newSearchWith(Description<SAVDescriptor> anOldProblemDescription){
         //<body>newSearchWith: anOldProblemDescription
         //
         //	"If the automaton returns a non-empty problem description list, then the REASONER MUST call it again with that remaining description,

@@ -369,7 +369,7 @@ public class Taxonomy {
 		if (!(TaxonomicLevels.getLevels().contains(aSuccessorTaxon.getLevel())))
 			return false;
 		//Step 3: Make sure that the successor taxon can indeed be linked to the parent taxon
-		if (aSuccessorTaxon.isOKDirectLink(aParentTaxon))
+		if (aSuccessorTaxon.isDirectLinkOK(aParentTaxon))
 			return false;
 		//Step 4: Make sure that a taxon with the successor's name does not already exist
 		if (this.getTaxonFromLevelIndex(aSuccessorTaxon.getName())==null)

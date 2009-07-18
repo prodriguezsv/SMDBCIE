@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import main.Description;
+
 import redundantDiscriminantNet.SAVDescriptor;
 import values.RangeDescriptor;
 import values.SingleDescriptor;
@@ -146,8 +148,8 @@ public class Structure implements Comparable<Structure> {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public List<SAVDescriptor> createSAVDescription(String aDummyName) {
-		List<SAVDescriptor> description;
+	public Description<SAVDescriptor> createSAVDescription(String aDummyName) {
+		Description<SAVDescriptor> description;
 		Attribute a;
 		List<ValueDescriptor> vdList;
 		ValueDescriptor vd;
@@ -162,7 +164,7 @@ public class Structure implements Comparable<Structure> {
 			return null;
 
 		// Create the description holder
-		description = new ArrayList<SAVDescriptor>();
+		description = new Description<SAVDescriptor>();
 
 		// Scan the receiver's attributes
 		for (int i = 1; i <= this.getAttributes().size(); i++) {

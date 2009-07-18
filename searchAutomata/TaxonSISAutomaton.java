@@ -6,6 +6,7 @@
 package searchAutomata;
 
 import redundantDiscriminantNet.SAVDescriptor;
+import domainTheory.StructureIndex;
 import domainTheory.Taxon;
 import domainTheory.Structure;
 import domainTheory.Attribute;
@@ -34,12 +35,12 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
 
     private Attribute attribute;
     private Structure structure;
-    private Index structureIndex;
+    private StructureIndex structureIndex;
     //private String status;
     private List<PossibleSolution> taxonList;
     private PossibleSolution compSolution;
 
-    private List<SimRanges> similarityRanges;
+    private List<String> similarityRanges;
 
 
 /*
@@ -62,7 +63,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
  * @param my parameters list
  * @return my return values
  */
- public TaxonSISAutomaton(Index aStructureIndex,List<SimRanges> aSimilarityRangeList){
+ public TaxonSISAutomaton(StructureIndex aStructureIndex,List<String> aSimilarityRangeList){
  
         //Index searchIndex = aStructureIndex;
         setSearchIndex(aStructureIndex);

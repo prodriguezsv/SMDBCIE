@@ -6,6 +6,8 @@ package domainTheory;
 import java.util.ArrayList;
 import java.util.List;
 
+import main.Description;
+
 import redundantDiscriminantNet.SAVDescriptor;
 
 import values.ValueDescriptor;
@@ -142,8 +144,8 @@ public class GroupingHeuristic implements Comparable<GroupingHeuristic> {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public List<SAVDescriptor> createSAVDescription(String aTaxonomicGroupName) {
-		List<SAVDescriptor> description;
+	public Description<SAVDescriptor> createSAVDescription(String aTaxonomicGroupName) {
+		Description<SAVDescriptor> description;
 		List<ValueDescriptor> vdList;
 		ValueDescriptor vd;
 		SAVDescriptor d;
@@ -153,7 +155,7 @@ public class GroupingHeuristic implements Comparable<GroupingHeuristic> {
 			return null;
 
 		// Create the description holder
-		description = new ArrayList<SAVDescriptor>();
+		description = new Description<SAVDescriptor>();
 
 		// Get the set of value descriptors
 		vdList = this.getValues().getValueDescriptors(TaxonomicLevels.getLevels().get(GroupingHeuristic.oneLevel()));
