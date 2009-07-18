@@ -1,12 +1,11 @@
 /**
  * @see "Categoría Sukia Redundant Discriminant Net de SUKIA Smalltalk"
  */
-package redundantDiscriminantNet;
+package redundantDiscriminationNet;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import main.RDNet;
 
 /**
  * Purpose: Main element of an RDMultiNet.  The main feature of an RDMultiNetRoot is that it contains a collection of
@@ -22,7 +21,7 @@ public class RDMultiNetRoot {
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
 	public RDMultiNetRoot() {
-		nets = new ArrayList<RDNet>();
+		nets = null;
 	}
 
 	/**
@@ -45,12 +44,14 @@ public class RDMultiNetRoot {
 	 * Returns an RDNet whose root's descriptor has the same name as NetRootStructure; nil otherwise.
 	 * @see "Método getNetWith del protocolo accessing en SUKIA SmallTalk"
 	 */
-	public RDNet getRDNet(String NetRootStructure) {
-		for( int i = 1; i <= this.getNets().size(); i++) {
-			if (((SAVRoot)this.getNets().get(i-1).getRoot()).getStructure().equals(NetRootStructure))
-				return this.getNets().get(i-1);
+	public RDNet getRDNet(String aStructureName) {
+		if (this.getNets() != null) {
+			for(RDNet rdn: this.getNets()) {
+				if (rdn.getRoot().getStructure().equals(aStructureName))
+					return rdn;
+			}
 		}
-			
+		
 		return null;
 	}
 	
@@ -58,28 +59,33 @@ public class RDMultiNetRoot {
 	 * Adds a new instance of RDNet to the nets list.  Before doing so, the root reference of the newly-created RDNet is changed for one
 	 * belonging to the class SAVRoot (a subclass of RootNorm).  This way, the 'structure' attribute in the changed root can be accessed
 	 * @see "Método addRDNetWith: del protocolo adding en SUKIA SmallTalk"
-	 * @param aStructure
+	 * @param aStructureName
 	 */
-	public void addRDNet(String aStructure) {
-		RDNet anRDNet;
-		SAVRoot aSAVRoot;
+	public void addRDNet(String aStructureName) {
+		RDNet aRDNet;
+		RootNorm aRoot;
 		
-		anRDNet = new RDNet();
-		aSAVRoot = new SAVRoot(aStructure);
-
-		anRDNet.setRoot(aSAVRoot);
-		this.getNets().add(anRDNet);
+		aRDNet = new RDNet();
+		aRoot = new RootNorm(aStructureName);
+		aRDNet.setRoot(aRoot);
+		
+		if (this.nets == null)
+			this.nets = new ArrayList<RDNet>();
+		
+		this.getNets().add(aRDNet);
 	}
 
 	/**
 	 * Returns true if aStructure is the descriptor of an RDNet's root, in the nets list. Returns false otherwise
 	 * @see "Método includes: del protocolo testing en SUKIA SmallTalk"
-	 * @param aStructure
+	 * @param aStructureName
 	 */
-	public boolean contains(String aStructure) {
-		for( int i = 1; i <= this.getNets().size(); i++) {
-			if (((SAVRoot)this.getNets().get(i-1).getRoot()).getStructure().equals(aStructure))
-				return true;
+	public boolean contains(String aStructureName) {
+		if (this.getNets() != null) {
+			for(RDNet rdn: this.getNets()) {
+				if (rdn.getRoot().getStructure().equals(aStructureName))
+					return true;
+			}
 		}
 		
 		return false;

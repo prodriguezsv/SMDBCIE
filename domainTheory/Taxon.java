@@ -265,7 +265,7 @@ public class Taxon implements Comparable<Taxon>{
 	 */
 	/*public Structure getAStructureWith(String aName, List<Structure> aDescription) {
 		for (int i = 1; i <= aDescription.size(); i++) {
-			if (aDescription.get(i-1).getName().equals(aName)) 
+			if (aDescription.get(i).getName().equals(aName)) 
 				return aDescription.get(i-1);
 		}
 		
@@ -279,8 +279,8 @@ public class Taxon implements Comparable<Taxon>{
 	 */
 	/*public GroupingHeuristic getAGroupingHeuristicWith(String aName, List<GroupingHeuristic> aDescription) {
 		for (int i = 1; i <= aDescription.size(); i++) {
-			if (aDescription.get(i-1).getName().equals(aName)) 
-				return aDescription.get(i-1);
+			if (aDescription.get(i).getName().equals(aName)) 
+				return aDescription.get(i);
 		}
 		
 		return null;
@@ -292,7 +292,7 @@ public class Taxon implements Comparable<Taxon>{
 	 * @param aSuccessorTaxon
 	 * @return
 	 */
-	public boolean isDirectLinkOK(Taxon aParentTaxon) {
+	public boolean isOKDirectLink(Taxon aParentTaxon) {
 		return (((TaxonomicLevels.getLevels().indexOf(this.getLevel())) - (TaxonomicLevels.getLevels().indexOf(aParentTaxon.getLevel()))) == 1);
 	}
 	

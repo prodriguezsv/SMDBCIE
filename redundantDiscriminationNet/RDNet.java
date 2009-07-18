@@ -1,20 +1,20 @@
 /**
  * @see "Categoría Main de SUKIA Smalltalk"
  */
-package main;
+package redundantDiscriminationNet;
 
 import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import main.Case;
+import main.Description;
+import main.Descriptor;
 import patternMatching.ProblemCase;
 import patternMatching.Solution;
 import auxiliary.CBRStack;
 import auxiliary.ComparingTable;
 import auxiliary.ComparingTableTuple;
-import auxiliary.IndexValue;
-import auxiliary.MultipleIndexValue;
-import auxiliary.SingleIndexValue;
 
 /**
  * Purpose: Entry access structure to a redundant discrimination net.  This class implements all necessary methods to establish a net root,
@@ -40,7 +40,7 @@ public class RDNet {
 	public RDNet() {
 		setRoot(new RootNorm());
 		setRoute(new CBRStack<String>());
-		setCaseInsert(null);
+		setCaseToInsert(null);
 		setCaseCompare(new CBRStack<Case>());
 		setCiDesc(new Description<Descriptor<Object>>());
 		setCurrNorm(null);
@@ -79,17 +79,17 @@ public class RDNet {
 
 	/**
 	 * @see "Método copyCase: del protocolo reading en SUKIA SmallTalk"
-	 * @param caseInsert
+	 * @param caseToInsert
 	 */
-	public void setCaseInsert(Case caseInsert) {
-		this.caseInsert = caseInsert;
+	public void setCaseToInsert(Case caseToInsert) {
+		this.caseInsert = caseToInsert;
 	}
 
 	/**
 	 * @see "Método caseToInsert del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public Case getCaseInsert() {
+	public Case getCaseToInsert() {
 		return caseInsert;
 	}
 
@@ -195,8 +195,8 @@ public class RDNet {
 	public void add(Case aCase) {
 		// Step 2. Get ready: Clear working variables, get the case's description, copy the case, and set the current norm
 		this.clear();
-		this.getCaseDescription(aCase);
-		this.setCaseInsert(aCase);
+		this.setCiDesc(aCase.getDescription(this.getRoot().getStructure()));
+		this.setCaseToInsert(aCase);
 		this.setCurrNorm(this.getRoot());
 		this.getCurrNorm().incrementNumCasesBy(1);
 
@@ -238,11 +238,10 @@ public class RDNet {
 	 * Calcula los pesos correspondientes a cada (atributo, valor) del caso problema en la norma actual.
 	 * @see "Método computeWeights del protocolo matching en SUKIA SmallTalk"
 	 */
-	@SuppressWarnings("unchecked")
 	public void computeWeights() {
 		Descriptor<Object> descriptorAct;
 		Index indiceAct;
-		Object sucesor;
+		Node successor;
 		
 		// Para cada par (atributo, valor) del caso problema
 		for( int i = 1; i <= this.getProblemCase().getDescription().size(); i++) {
@@ -250,20 +249,20 @@ public class RDNet {
 			// ( ( ( (problemCase weightAt: caract )  = -1) not)  & ( (route containsTheObject: ( descriptorAct attribute ) ) not ) )
 			if (!(this.getRoute().contains(descriptorAct.getAttribute()))) { 
 				// Indice correspondiente a descriptor del caso problema. 
-      		 	indiceAct =  this.getCurrNorm().getIndex(descriptorAct.getAttribute(), descriptorAct.getValue());
+      		 	indiceAct =  this.getCurrNorm().getSuccessorIndex(descriptorAct.getAttribute(), descriptorAct.getValue());
 				// Si el indice para el atributo del caso problema no existe
 	  			if (indiceAct == null) {
 	  				this.getProblemCase().weightsAt(i-1, -1); 
 	  			} else {
 					// OJO: HAY QUE ARREGLAR ESTA PARTE
-					sucesor = indiceAct.getIndexValueSuccessors(descriptorAct.getValue());
-					if (sucesor == null) {
+					successor = indiceAct.getSuccessor(descriptorAct.getValue());
+					if (successor == null) {
 						this.getProblemCase().weightsAt(i-1, -1);
 					} else {
-						if (sucesor instanceof List) 
-							this.getProblemCase().weightsAt(i-1, ((List<Case>)sucesor).size());
+						if (!(successor instanceof Norm)) 
+							this.getProblemCase().weightsAt(i-1, 1);
 						else
-							this.getProblemCase().weightsAt(i-1, ((Norm)sucesor).getNumCases());
+							this.getProblemCase().weightsAt(i-1, ((Norm)successor).getNumCases());
 					}
 				}	  					
 	  		}
@@ -280,20 +279,19 @@ public class RDNet {
 	//Pendiente de traducir (ojo)
 	public void gotDeadEnd(Norm aNorm) {
 		List<Index> indexes;
-		List<IndexValue<Object>> sucesoresIndice;
+		List<Node> sucesoresIndice;
 		
 		indexes = aNorm.successorIndexes();
 		
-		for( int i = 1; i <= indexes.size(); i++) {
+		for(Index n1: indexes) {
 			// Si no existe el atributo en el caso problema, es una posible ruta a visitar.
-			if (this.getProblemCase().valueOf( indexes.get(i-1).getLabel()) == null ) {
-				sucesoresIndice = indexes.get(i-1).getSuccessors();
-				for( int j = 1; j <= sucesoresIndice.size(); j++) {
-					if (sucesoresIndice.get(j-1) instanceof MultipleIndexValue) {
-						for( int k = 1; k <= ((MultipleIndexValue)sucesoresIndice.get(j-1)).getSuccessors().size(); k++)
-							this.getSolution().add((Case)((MultipleIndexValue)sucesoresIndice.get(j-1)).getSuccessors().get(k-1), this.getProblemCase());
+			if (this.getProblemCase().valueOf( n1.getLabel()) == null ) {
+				sucesoresIndice = n1.getSuccessors();
+				for(Node n2: sucesoresIndice) {
+					if (n2 instanceof SheetNode) {
+							this.getSolution().add(((SheetNode)n2).getCase(), this.getProblemCase());
 					} else {
-						this.gotDeadEnd(((SingleIndexValue<Norm>)sucesoresIndice.get(i-1)).getSuccessor());
+						this.gotDeadEnd((Norm) n2);
 					}
 				}
 			}
@@ -330,12 +328,11 @@ public class RDNet {
 	 * Busca el siguiente mejor caso para solucionar el problema
 	 * @see "Método nextBestMatch del protocolo matching en SUKIA SmallTalk"
 	 */
-	@SuppressWarnings("unchecked")
 	public void nextBestMatch() {
 		int posMasPredictivo;
 		Descriptor<Object> descriptorMasPredictivo;
 		Index indicePredictivo;
-		Object sucesorIndice;
+		Node successor;
 		
 		this.computeWeights();
 		posMasPredictivo =  this.lowestWeight();
@@ -343,17 +340,16 @@ public class RDNet {
 		if (!(posMasPredictivo == -1 )) {
 			descriptorMasPredictivo = this.getProblemCase().getDescription().get(posMasPredictivo-1);
 			// Indice correspondiente al descriptor mas predictivo del caso problema. 
-  		 	indicePredictivo = this.getCurrNorm().getIndex(descriptorMasPredictivo.getAttribute(), descriptorMasPredictivo.getValue());
+  		 	indicePredictivo = this.getCurrNorm().getSuccessorIndex(descriptorMasPredictivo.getAttribute(), descriptorMasPredictivo.getValue());
   		 	
   		 	// OJO: HAY QUE ARREGLAR ESTA PARTE
-			sucesorIndice = indicePredictivo.getIndexValueSuccessors(descriptorMasPredictivo.getValue());
-			if (sucesorIndice instanceof MultipleIndexValue) {
+			successor = indicePredictivo.getSuccessor(descriptorMasPredictivo.getValue());
+			if (successor instanceof SheetNode) {
 				this.getRoute().push(descriptorMasPredictivo.getAttribute());
 
 				/* Como la red es redundantisima no es necesario utilizar mas de una vez un atributo
 				self problemCase weightsAt: posMasPredictivo  modifiedWith: -1.*/
-				for( int k = 1; k <= ((MultipleIndexValue)sucesorIndice).getSuccessors().size(); k++)
-					this.getSolution().add((Case)((MultipleIndexValue)sucesorIndice).getSuccessors().get(k-1), this.getProblemCase());
+				this.getSolution().add(((SheetNode)successor).getCase(), this.getProblemCase());
 				
 				posMasPredictivo =  this.lowestWeight();
 				if (!(posMasPredictivo == -1)) {
@@ -368,7 +364,7 @@ public class RDNet {
 				// Como la red es redundantisima no es necesario utilizar mas de una vez un atributo
 			 	this.getProblemCase().weightsAt(posMasPredictivo, -1);
 
-			 	this.setCurrNorm(((SingleIndexValue<Norm>)sucesorIndice).getSuccessor());
+			 	this.setCurrNorm((Norm)successor);
 			 	this.nextBestMatch();																															
 			}
 		}		
@@ -391,13 +387,13 @@ public class RDNet {
 
 		desc = new Descriptor<Object>();
 
-		for( int i = 1; i <= indicesRaiz.size(); i++) {
-			valor =  JOptionPane.showInputDialog(indicesRaiz.get(i-1).getLabel());
+		for(Index ix: indicesRaiz) {
+			valor =  JOptionPane.showInputDialog(ix.getLabel());
 			if (!(valor == null)) {
-				if (indicesRaiz.get(i-1).getSuccessors().get(0).getValue() instanceof String)
+				if (ix.getSuccessors().get(0).getValue() instanceof String)
 					valorSimbolo =  valor;
 				else valorSimbolo =  Double.parseDouble(valor);
-				desc.add(indicesRaiz.get(i-1).getLabel(), valorSimbolo);
+				desc.add(this.getRoot().getStructure(), ix.getLabel(), valorSimbolo);
 				this.getProblemCase().addToDescription(desc);
 			}
 		}
@@ -408,12 +404,6 @@ public class RDNet {
 	 */
 	private boolean doReturn() {
 		this.decrementRecursionCount();
-		
-		if (this.getRecursionCount() == 0) {
-			this.getCaseToCompare().restoreDescription();
-			this.getCaseToCompare().flushDescriptionCopy();
-			this.getCaseToCompare().flushStructureCopy();
-		}
 		
 		this.getCaseCompare().pop();
 		this.getRoute().pop();
@@ -428,8 +418,9 @@ public class RDNet {
 	 * @param aDescriptor
 	 * @param aNumber
 	 */
-	private boolean moveToNormWith(Descriptor<Object> aDescriptor,int aNumber) {
+	private boolean moveToNorm(Descriptor<Object> aDescriptor, int aNumber) {
 		Description<Descriptor<Object>> tmpDesc;
+		SheetNode sn;
 		boolean retVal;
 		
 		this.setCurrNorm(this.getCurrNorm().getSuccessorNorm(aDescriptor));
@@ -437,24 +428,29 @@ public class RDNet {
 		this.getRoute().push(this.getCurrNorm().getDescriptor().getAttribute());
 
 		if (this.isCaseToInsertDescUsedUp()) {
-			this.getCurrNorm().addSuccessor(this.getCaseInsert());
-			this.getCaseInsert().addPredecessor(this.getCurrNorm(), this.getCurrNorm().getDescriptor().getValue());
+			sn = new SheetNode();
+			sn.setDescriptor(aDescriptor);
+			sn.setCase(this.getCaseToInsert());
+			this.getCurrNorm().addSuccessor(sn);
+			sn.addPredecessor(this.getCurrNorm());
 
 			this.getRoute().pop();
 			this.setCurrNorm(this.getCurrNorm().getPredecessorNorm());
+			
+			return true;
 		}
 		
 		// Save current state of ciDesc, since a totally new checking process (with ciDesc) will take place, considering all description elements
 		tmpDesc = new Description<Descriptor<Object>>();
-		this.moveDescElementsFrom(this.getCiDesc(), tmpDesc);
-		this.getCaseDescription((this.getCaseInsert()));
+		this.moveDescElements(this.getCiDesc(), tmpDesc);
+		this.getCiDescription(this.getCaseToInsert());
 
 		// Keep moving
 		retVal = this.processCase();
 
 		// Set ciDesc and everything else to the current state
-		this.moveDescElementsFrom(tmpDesc, this.getCiDesc()); 
-		this.removeMatchingElementsInTheRouteFrom(this.getCiDesc());
+		this.moveDescElements(tmpDesc, this.getCiDesc()); 
+		this.removeMatchingElementsInTheRoute(this.getCiDesc());
 		this.getRoute().pop();
 		this.setCurrNorm(this.getCurrNorm().getPredecessorNorm());
 
@@ -468,11 +464,11 @@ public class RDNet {
 	private boolean processCase() {
 		Descriptor<Object> d;
 		Index ix;
-		IndexValue<Object> ixv;
-		Case succ;
+		SheetNode sn;
+		Node n;
 		
 		// Discard from the case's description all descriptors whose attribute is already in the route
-		if (this.removeMatchingElementsInTheRouteFrom(this.getCiDesc()).isEmpty())
+		if (this.removeMatchingElementsInTheRoute(this.getCiDesc()).isEmpty())
 			return true;
 
 		while (!(this.getCiDesc().isEmpty())) {
@@ -480,42 +476,38 @@ public class RDNet {
 			d = this.getCiDesc().remove(0);
 
 			// Search for an index with the label's value equal to d's attribute"
-			ix = this.getCurrNorm().getIndex(d.getAttribute());
+			ix = this.getCurrNorm().getSuccessorIndex(d.getAttribute());
 			if (ix == null) {
 				// An index with d's value was not found. Must create a new one
 				ix = new Index();
 				ix.setLabel(d.getAttribute());
-				ix.setPredecessorNorm(this.getCurrNorm());
+				ix.setPredecessor(this.getCurrNorm());
 				this.getCurrNorm().addSuccessor(ix);
-				ixv = new MultipleIndexValue();
-				((MultipleIndexValue)ixv).setValue(d.getValue());
-				((MultipleIndexValue)ixv).addSuccessor(this.getCaseInsert());
-				if (ix.addIndexValue(ixv))
-					this.getCaseInsert().addPredecessor(ix, d.getValue()); 
+				sn = new SheetNode();
+				sn.setDescriptor(d);
+				sn.setCase(this.getCaseToInsert());
+				ix.addSuccessor(sn);
+				sn.addPredecessor(ix);
 			} else {
 				// An index with d's attribute was found. Find an index value with d's value
-				ixv = ix.getIndexValue(d.getValue());
-				if (ixv == null) {
+				n = ix.getSuccessor(d.getValue());
+				
+				if (n == null) {
 					// An index value was not found.  Create a new IndexValue and append the caseToInsert as successor
-					ixv = new MultipleIndexValue();
-					((MultipleIndexValue)ixv).setValue(d.getValue());
-					((MultipleIndexValue)ixv).addSuccessor(this.getCaseInsert());
-					if (ix.addIndexValue(ixv))
-						this.getCaseInsert().addPredecessor(ix, d.getValue());
+					sn = new SheetNode();
+					sn.setDescriptor(d);
+					sn.setCase(this.getCaseToInsert());
+					if (ix.addSuccessor(sn))
+						sn.addPredecessor(ix);
+					else return false;
 				} else {
-					// Get the list of successors of the current IndexValue
-					if (ixv instanceof SingleIndexValue) {
-						return this.moveToNormWith(d, 1);
+					if (n instanceof Norm) {
+						if (!this.moveToNorm(d, 1)) return false;
 					} else {
-						if (((MultipleIndexValue)ixv).getSuccessors().size() == 1) {
-							succ = ((MultipleIndexValue)ixv).getSuccessors().get(0);
-							
-							if (this.getCiDesc().isEmpty()) {
-								return this.processCICCWithCIDescEmpty(d, ix, (MultipleIndexValue)ixv, succ);
-							} else {
-								return this.processCICCWithCIDescNotEmpty(d, ix, (MultipleIndexValue)ixv, succ);
-							}
-						}
+						if (this.getCiDesc().isEmpty())
+							if (!this.processCICCWithCIDescEmpty(d, ix, (SheetNode)n)) return false;
+						else
+							if (!this.processCICCWithCIDescNotEmpty(d, ix, (SheetNode)n)) return false;
 					}
 				}	 
 			}
@@ -528,49 +520,50 @@ public class RDNet {
 	 * @see "Método processCICCWithCIDescEmpty:index:indexValue:successor: del protocolo operation-private en SUKIA SmallTalk"
 	 * @param aDescriptor
 	 * @param anIndex
-	 * @param anIndexValue
+	 * @param aNodeList
 	 * @param aSuccessor
 	 */
-	private boolean processCICCWithCIDescEmpty(Descriptor<Object> aDescriptor, Index anIndex, MultipleIndexValue anIndexValue, Case aSuccessor) {
+	private boolean processCICCWithCIDescEmpty(Descriptor<Object> aDescriptor, Index anIndex, SheetNode sn) {
 		boolean CIInserted;
 		boolean CCInserted;
+		SheetNode sn2;
 		Norm norm;
-		SingleIndexValue<Norm> anIndexNewValue;
 		
-		if (this.areDescriptionsEqualFor(this.getCaseInsert(), aSuccessor)) {
-			return this.processCICCWithCIDescNotEmpty(aDescriptor, anIndex, anIndexValue, aSuccessor);
-		}
+		if (this.areDescriptionsEqual(this.getCaseToInsert(), sn.getCase()))
+			return this.processCICCWithCIDescNotEmpty(aDescriptor, anIndex, sn);
 
 		CIInserted = false;
 		CCInserted = false;
 
 		norm = new Norm();
 		norm.setDescriptor(aDescriptor);
-		norm.setPredecessorIndex(anIndex);
+		norm.setPredecessor(anIndex);
 		norm.incrementNumCasesBy(2);
 		
-		anIndexValue.getSuccessors().remove(aSuccessor);
-		this.getCaseCompare().push(aSuccessor);
-		this.getCaseToCompare().prepareDescriptionWith(this.getCaseInsert().getCurrentStructure());
-		this.getCaseToCompare().removePredecessor(anIndex, aDescriptor.getValue());
+		this.getCaseCompare().push(sn.getCase());
 		
-		// Verificar está parte
-		anIndexNewValue = new SingleIndexValue<Norm>(anIndexValue.getValue(), norm);
-		anIndex.getSuccessors().remove(anIndexValue);
-		anIndex.getSuccessors().add(anIndexNewValue);
+		sn.removePredecessor(anIndex);
+		anIndex.removeSuccessor(sn);
+		anIndex.addSuccessor(norm);
 
 		this.getRoute().push(norm.getDescriptor().getAttribute());
 		this.setCurrNorm(this.getCurrNorm().getSuccessorNorm(aDescriptor));
 
 		if (this.isCaseToInsertDescUsedUp()) {
-			this.getCurrNorm().addSuccessor(this.getCaseInsert());
-			this.getCaseInsert().addPredecessor(this.getCurrNorm(), this.getCurrNorm().getDescriptor().getValue());
+			sn2 = new SheetNode();
+			sn2.setDescriptor(aDescriptor);
+			sn2.setCase(this.getCaseToInsert());
+			if (anIndex.addSuccessor(sn2))
+				sn2.addPredecessor(anIndex);
+			
+			this.getCurrNorm().addSuccessor(sn2);
+			sn2.addPredecessor(this.getCurrNorm());
 			CIInserted = true;
 		}
 		
 		if (this.isCaseToCompareDescUsedUp()) {
-			this.getCurrNorm().addSuccessor(this.getCaseToCompare());
-			this.getCaseToCompare().addPredecessor(this.getCurrNorm(), this.getCurrNorm().getDescriptor().getValue());
+			this.getCurrNorm().addSuccessor(sn);
+			sn.addPredecessor(this.getCurrNorm());
 			CCInserted = true;
 		}
 		
@@ -579,10 +572,6 @@ public class RDNet {
 		if (CIInserted == false || CCInserted == false) {
 			this.whenCCExists();
 		} else {
-			this.getCaseToCompare().restoreDescription();
-			this.getCaseToCompare().flushDescriptionCopy();
-			this.getCaseToCompare().flushStructureCopy();
-			
 			this.getCaseCompare().pop();
 			this.getRoute().pop();
 			this.setCurrNorm(this.getCurrNorm().getPredecessorNorm());
@@ -595,43 +584,37 @@ public class RDNet {
 	 * @see "Método processCICCWithCIDescNotEmpty:index:indexValue:successor: del protocolo operation-private en SUKIA SmallTalk"
 	 * @param aDescriptor
 	 * @param anIndex
-	 * @param anIndexValue
+	 * @param aNodeList
 	 * @param aSuccessor
 	 */
-	private boolean processCICCWithCIDescNotEmpty(Descriptor<Object> aDescriptor, Index anIndex, MultipleIndexValue anIndexValue, Case aSuccessor) {
+	private boolean processCICCWithCIDescNotEmpty(Descriptor<Object> aDescriptor, Index anIndex, SheetNode sn) {
 		Norm norm;
-		SingleIndexValue<Norm> anIndexNewValue;
 		
 		norm = new Norm();
 		norm.setDescriptor(aDescriptor);
-		norm.setPredecessorIndex(anIndex);
+		norm.setPredecessor(anIndex);
 		/* Both caseToInsert and caseToCompare will live together under this new norm. Thus
 		increment the number of (underlying) cases for it by 2*/
 		norm.incrementNumCasesBy(2);
 	
 		// Remove the case-to-compare as successor from the IndexValue
-		anIndexValue.getSuccessors().remove(aSuccessor);
-		this.getCaseCompare().push(aSuccessor);
+		this.getCaseCompare().push(sn.getCase());
 		// Remove old index reference in the case-to-compare's index list
-		this.getCaseToCompare().prepareDescriptionWith(this.getCaseInsert().getCurrentStructure());
-		this.getCaseToCompare().removePredecessor(anIndex, aDescriptor.getValue());
+		sn.removePredecessor(anIndex);
 
-		// Verificar está parte
-		anIndexNewValue = new SingleIndexValue<Norm>(anIndexValue.getValue(), norm);
-		anIndex.getSuccessors().remove(anIndexValue);
-		anIndex.getSuccessors().add(anIndexNewValue);
+		anIndex.removeSuccessor(sn);
+		anIndex.addSuccessor(norm);
 
-		this.getRoute().push(norm.getDescriptor().getAttribute());
-		norm.setPredecessorIndex(anIndex);
 		this.getRoute().push(anIndex.getLabel());
 		this.setCurrNorm(this.getCurrNorm().getSuccessorNorm(aDescriptor));
 		
 		if (this.isCaseToCompareDescUsedUp()) {
-			this.getCurrNorm().addSuccessor(this.getCaseToCompare());
-			this.getCaseToCompare().addPredecessor(this.getCurrNorm(), this.getCurrNorm().getDescriptor().getValue());
+			this.getCurrNorm().addSuccessor(sn);
+			sn.addPredecessor(this.getCurrNorm());
 		}
 		
 		this.setRecursionCount(0);
+		
 		return this.whenCCExists();
 	}
 	
@@ -639,17 +622,12 @@ public class RDNet {
 	 * @see "Método removeRepeatingElementsInRouteFrom: del protocolo operation-private en SUKIA SmallTalk"
 	 * @param aTable
 	 */
-	private void removeRepeatingElementsInRouteFrom(ComparingTable aTable) {
-		ComparingTableTuple<Object> t;
-		int i;
+	private void removeRepeatingElementsInRoute(ComparingTable aTable) {
 		
-		i = 1;
-		while (i <= aTable.size()) {
-			t = aTable.get(i-1);
-			if (!((this.getCurrNorm().getIndex(t.getAttribute(), t.getACIValue()) == null) ||
-					(this.getCurrNorm().getIndex(t.getAttribute(), t.getACCValue()) == null)))
-				aTable.remove(i-1);
-			else i = i + 1;
+		for (ComparingTableTuple<Object> t: aTable) {
+			if (!((this.getCurrNorm().getSuccessorIndex(t.getAttribute(), t.getACIValue()) == null) ||
+					(this.getCurrNorm().getSuccessorIndex(t.getAttribute(), t.getACCValue()) == null)))
+				aTable.remove(t);
 		}
 	}
 
@@ -665,31 +643,40 @@ public class RDNet {
 	private boolean whenCCExists() {
 		ComparingTable table;
 		ComparingTableTuple<Object> tuple;
-		Norm norm;
 		Descriptor<Object> d;
+		Norm norm;
 		Index ix;
-		IndexValue<Object> ixv;
+		SheetNode sn;
 		
 		this.incrementRecursionCount();
 
 		// Create a table with all the descriptors for both the case to insert and the case to compare
 		table = new ComparingTable();
-		table.fill(this.getCaseInsert(), this.getCaseToCompare());
+		table.fill(this.getCaseToInsert().getDescription(this.getRoot().getStructure()), 
+				this.getCaseToCompare().getDescription(this.getRoot().getStructure()));
 
 		// Discard from the table all tuples whose attribute is already in the route
-		this.removeMatchingElementsInTheRouteFrom(table);
+		this.removeMatchingElementsInTheRoute(table);
 
 		/* If the resulting table is empty, then both (CC and CI) descriptions are already on the route. This means that,
 		 at this point, both descriptions are equal and used up along the net traversing. Thus, no more traversing is
 		 possible.*/
 		if (table.isEmpty()) {
 			// Place the case-to-insert as successor of the current norm
-			this.getCurrNorm().addSuccessor(this.getCaseInsert());
-			this.getCaseInsert().addPredecessor(this.getCurrNorm(), this.getCurrNorm().getDescriptor().getValue());
+			sn = new SheetNode();
+			sn.setDescriptor(this.getCurrNorm().getDescriptor());
+			sn.setCase(this.getCaseToInsert());
+			
+			this.getCurrNorm().addSuccessor(sn);
+			sn.addPredecessor(this.getCurrNorm());
 
 			// Place the case-to-compare as successor of the current norm
-			this.getCurrNorm().addSuccessor(this.getCaseToCompare());
-			this.getCaseToCompare().addPredecessor(this.getCurrNorm(), this.getCurrNorm().getDescriptor().getValue());
+			sn = new SheetNode();
+			sn.setDescriptor(this.getCurrNorm().getDescriptor());
+			sn.setCase(this.getCaseToCompare());
+			
+			this.getCurrNorm().addSuccessor(sn);
+			sn.addPredecessor(this.getCurrNorm());
 
 			return doReturn();
 		}
@@ -701,14 +688,22 @@ public class RDNet {
 
 		// Situation 1: If CI description is used up, place CI as successor of the current norm
 		if (this.isCaseToInsertDescUsedUp()) {
-			this.getCurrNorm().addSuccessor(this.getCaseInsert());
-			this.getCaseInsert().addPredecessor(this.getCurrNorm(), this.getCurrNorm().getDescriptor().getValue());
+			sn = new SheetNode();
+			sn.setDescriptor(this.getCurrNorm().getDescriptor());
+			sn.setCase(this.getCaseToInsert());
+			
+			this.getCurrNorm().addSuccessor(sn);
+			sn.addPredecessor(this.getCurrNorm());
 		}
 		
 		// Situation 2: If CC description is empty, place CC as successor of the current norm
 		if (this.isCaseToCompareDescUsedUp()) {
-			this.getCurrNorm().addSuccessor(this.getCaseToCompare());
-			this.getCaseToCompare().addPredecessor(this.getCurrNorm(), this.getCurrNorm().getDescriptor().getValue());
+			sn = new SheetNode();
+			sn.setDescriptor(this.getCurrNorm().getDescriptor());
+			sn.setCase(this.getCaseToCompare());
+			
+			this.getCurrNorm().addSuccessor(sn);
+			sn.addPredecessor(this.getCurrNorm());
 		}
 		
 		// Situation 3: Compare each table tuple
@@ -721,52 +716,52 @@ public class RDNet {
 			this.getCurrNorm().addSuccessor(ix);
 
 			// Set the index predecessor (current) norm
-			ix.setPredecessorNorm(this.getCurrNorm()); 
+			ix.setPredecessor(this.getCurrNorm()); 
 
 			/* Check if the values for the tuple are different
 			"Values are diferent. Create a new index using the tuple's attribute*/
 			if (!(tuple.getACIValue() == tuple.getACCValue())) {
 				// If the case-to-insert value is non-nil, attach it to the index
 				if (!(tuple.getACIValue() == null)) {
-					ixv = new MultipleIndexValue();
-					((MultipleIndexValue)ixv).setValue(tuple.getACIValue());
-					((MultipleIndexValue)ixv).addSuccessor(this.getCaseInsert());
-					ix.addIndexValue(ixv);
+					sn = new SheetNode();
+					d = new Descriptor<Object>();
+					d.add(this.getRoot().getStructure(), tuple.getAttribute(), tuple.getACIValue());
+					sn.setDescriptor(d);
+					sn.setCase(this.getCaseToInsert());
+					ix.addSuccessor(sn);
 
 					// Add the index-and-value to the case's index list
-					this.getCaseInsert().addPredecessor(ix,tuple.getACIValue()); 
+					sn.addPredecessor(ix); 
 				}
 				
 				// If the case-to-compare value is non-nil, attach it to the index"
 				if (!(tuple.getACCValue() == null)) {
-					ixv = new MultipleIndexValue();
-					((MultipleIndexValue)ixv).setValue(tuple.getACCValue());
-					((MultipleIndexValue)ixv).addSuccessor(this.getCaseToCompare());
-					ix.addIndexValue(ixv);
+					sn = new SheetNode();
+					d = new Descriptor<Object>();
+					d.add(this.getRoot().getStructure(), tuple.getAttribute(), tuple.getACCValue());
+					sn.setDescriptor(d);
+					sn.setCase(this.getCaseToCompare());
+					ix.addSuccessor(sn);
 
-					// Add the index-and-value to the case's index list"
-					this.getCaseToCompare().addPredecessor(ix,tuple.getACCValue());
+					// Add the index-and-value to the case's index list
+					sn.addPredecessor(ix);
 				}
 			} else {
 				// Create an empty norm and fill its values
 				norm = new Norm();
 				d = new Descriptor<Object>();
-				d.add(tuple.getAttribute(), tuple.getACIValue());
+				d.add(this.getRoot().getStructure(), tuple.getAttribute(), tuple.getACCValue());
 				norm.setDescriptor(d);
 				norm.incrementNumCasesBy(2);
 
 				// Link the recently created index to this new norm
-				norm.setPredecessorIndex(ix);
-				ixv = new SingleIndexValue<Norm>();
-				((SingleIndexValue<Norm>)ixv).setValue(tuple.getACIValue());
-				((SingleIndexValue<Norm>)ixv).setSuccessor(norm);
-				
-				ix.addIndexValue(ixv);
+				norm.setPredecessor(ix);				
+				ix.addSuccessor(norm);
 
 				// Add the tuple's attribute to the route
 				this.getRoute().push(tuple.getAttribute());
 
-				// Push a new case to compare
+				// Push a new case to compare (Ojo se pone el mismo caso)
 				this.getCaseCompare().push(this.getCaseToCompare());
 
 				// Move to the new norm
@@ -775,7 +770,7 @@ public class RDNet {
 				// Repeat the procedure for the new case to compare
 				this.whenCCExists();
 
-				this.removeRepeatingElementsInRouteFrom(table);
+				this.removeRepeatingElementsInRoute(table);
 
 			}
 		}
@@ -790,21 +785,16 @@ public class RDNet {
 	public boolean isCaseToCompareDescUsedUp() {
 		List<Descriptor<Object>> ccCopy;
 		String a;
-		int i;
 		
-		ccCopy = this.getCaseToCompare().getDescription().subList(0, this.getCaseToCompare().getDescription().size());
-		i = 1;
-		while (i <= ccCopy.size()) {
-			a = ccCopy.get(i-1).getAttribute();
+		ccCopy = this.getCaseToCompare().getDescription(this.getRoot().getStructure());
+		for (Descriptor<Object> d:ccCopy) {
+			a = d.getAttribute();
 			if (this.getRoute().contains(a)) {
-				ccCopy.remove(i-1);
-				i = 1;
-			} else {
-				 i = i + 1;
+				ccCopy.remove(a);
 			}
 		}
 		
-		if (ccCopy.isEmpty()) return false;
+		if (!(ccCopy.isEmpty())) return false;
 		return true;
 	}
 	
@@ -815,21 +805,17 @@ public class RDNet {
 	public boolean isCaseToInsertDescUsedUp() {
 		List<Descriptor<Object>> ccCopy;
 		String a;
-		int i;
 		
-		ccCopy = this.getCaseInsert().getDescription().subList(0, this.getCaseInsert().getDescription().size());
-		i = 1;
-		while (i <= ccCopy.size()) {
-			a = ccCopy.get(i-1).getAttribute();
+		ccCopy = this.getCaseToInsert().getDescription(this.getRoot().getStructure());
+		for (Descriptor<Object> d:ccCopy) {
+			a = d.getAttribute();
 			if (this.getRoute().contains(a)) {
-				ccCopy.remove(i-1);
-				i = 1;
-			} else {
-				 i = i + 1;
+				ccCopy.remove(a);
 			}
 		}
 		
-		if (ccCopy.isEmpty()) return false;
+		if (!(ccCopy.isEmpty())) return false;
+		
 		return true;
 	}
 	
@@ -838,7 +824,7 @@ public class RDNet {
 	 */
 	void clear() {
 		this.getRoute().clear();
-		this.setCaseInsert(null);
+		this.setCaseToInsert(null);
 		this.getCaseCompare().clear();
 		this.getCiDesc().clear();
 		this.setCurrNorm(null);
@@ -851,14 +837,12 @@ public class RDNet {
 	 * @see "Método getCaseDescription del protocolo reading en SUKIA SmallTalk"
 	 * @param aCase
 	 */
-	public void getCaseDescription(Case aCase) {
+	public void getCiDescription(Case aCase) {
 		Description<Descriptor<Object>> desc;
 		
-		desc = aCase.getDescription();
+		desc = aCase.getDescription(this.getRoot().getStructure());
 		
-		for( int i = 1; i <= desc.size(); i++) {
-			this.getCiDesc().add(desc.get(i-1));
-		}
+		this.setCiDesc(desc);
 	}
 	
 	/**
@@ -867,7 +851,7 @@ public class RDNet {
 	 * @param anotherDescList
 	 * @return
 	 */
-	public boolean moveDescElementsFrom(Description<Descriptor<Object>> oneDescList, Description<Descriptor<Object>> anotherDescList) {
+	public boolean moveDescElements(Description<Descriptor<Object>> oneDescList, Description<Descriptor<Object>> anotherDescList) {
 		if (oneDescList.isEmpty()) return false;
 		while (oneDescList.isEmpty()) {
 			anotherDescList.add(oneDescList.remove(0));
@@ -883,14 +867,11 @@ public class RDNet {
 	 * @see "Método removeMatchingElementsInTheRouteFrom: del protocolo removing en SUKIA SmallTalk"
 	 * @param aDescriptionList
 	 */
-	public ComparingTable removeMatchingElementsInTheRouteFrom(ComparingTable aDescriptionList) {
-		int i;
+	public ComparingTable removeMatchingElementsInTheRoute(ComparingTable aDescriptionList) {
 
-		i = 1;
-		while (i <= aDescriptionList.size()) {
-			if (this.getRoute().contains(aDescriptionList.get(i-1).getAttribute()))
-				aDescriptionList.remove(i-1);
-			else i = i + 1;
+		for (ComparingTableTuple<Object> ctt: aDescriptionList) {
+			if (this.getRoute().contains(ctt.getAttribute()))
+				aDescriptionList.remove(ctt);
 		}
 
 		return aDescriptionList;
@@ -903,14 +884,11 @@ public class RDNet {
 	 * @see "Método removeMatchingElementsInTheRouteFrom: del protocolo removing en SUKIA SmallTalk"
 	 * @param aDescriptionList
 	 */
-	public Description<Descriptor<Object>> removeMatchingElementsInTheRouteFrom(Description<Descriptor<Object>> aDescriptionList) {
-		int i;
+	public Description<Descriptor<Object>> removeMatchingElementsInTheRoute(Description<Descriptor<Object>> aDescriptionList) {
 
-		i = 1;
-		while (i <= aDescriptionList.size()) {
-			if (this.getRoute().contains(aDescriptionList.get(i-1).getAttribute()))
-				aDescriptionList.remove(i-1);
-			else i = i + 1;
+		for (Descriptor<Object> d: aDescriptionList) {
+			if (this.getRoute().contains(d.getAttribute()))
+				aDescriptionList.remove(d);
 		}
 
 		return aDescriptionList;
@@ -922,31 +900,24 @@ public class RDNet {
 	 * @param aCase2
 	 * @return
 	 */
-	public boolean areDescriptionsEqualFor(Case aCase1, Case aCase2) {
-		Description<Descriptor<Object>> desc2;
-		Descriptor<Object> d;
-		int j;
+	public boolean areDescriptionsEqual(Case aCase1, Case aCase2) {
+		Description<Descriptor<Object>> desc1, desc2;
 		
 		if (!((aCase1 instanceof Case) && (aCase2 instanceof Case))) return false;
 
+		desc1 = aCase1.getDescription(this.getRoot().getStructure());
+		desc2 = aCase2.getDescription(this.getRoot().getStructure());
+		
 		// If the cases' descriptions are of different size, then they are not equal
-		if (!(aCase1.getDescription().size() == aCase2.getDescription().size())) return false;
-
-		// Copy aCase2 description into desc2
-		desc2 = new Description<Descriptor<Object>>();
-		for( int i = 1; i <= aCase2.getDescription().size(); i++) {
-			desc2.add(aCase2.getDescription().get(i-1));
-		}
+		if (!(desc1.size() == desc2.size())) return false;
 		
 		// For every element in the description of aCase1: if its attribute-value pair matches one in desc2, then delete that element from desc2
-		for( int i = 1; i <= aCase1.getDescription().size(); i++) {
-			d = aCase1.getDescription().get(i-1);
-			j = 1;
-			while (j <= desc2.size()) {
-				if ((d.getAttribute() == desc2.get(j-1).getAttribute()) && (d.getValue() == desc2.get(j-1).getValue())) {
-					desc2.remove(j-1);
-					j = desc2.size() + 1;
-				} else j = j + 1;
+		for(Descriptor<Object> d1: desc1) {
+			for(Descriptor<Object> d2: desc2) {
+				if ((d1.getAttribute() == d2.getAttribute()) && (d1.getValue() == d2.getValue())) {
+					desc2.remove(d2);
+					break;
+				}
 			}
 		}
 

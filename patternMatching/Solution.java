@@ -25,12 +25,12 @@ public class Solution extends ArrayList<Case> {
 	 * @see "Método Add:for: del protocolo adding en SUKIA SmallTalk"
 	 * @return
 	 */
-	public void add(Case aHipotesis, ProblemCase aProblemCase) {
+	public void add(Case aHypothesis, ProblemCase aProblemCase) {
 		// Si la hipotesis no existe en la lista de soluciones
-		if (!(this.contains(aHipotesis))) {
-			if (!(aProblemCase.thereAreContradictions(aHipotesis))) {
+		if (!(this.contains(aHypothesis))) {
+			if (!(aProblemCase.thereAreContradictions(aHypothesis))) {
 				// Agrego el caso aunque sea negativo para saber como no deberia solucionarse el problema.
-				this.add(aHipotesis);
+				this.add(aHypothesis);
 			}
 		}
 	}

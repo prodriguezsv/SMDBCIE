@@ -5,7 +5,7 @@ package reasoner;
 
 import domainTheory.TaxonomicLevels;
 import domainTheory.Taxonomy;
-import redundantDiscriminantNet.RDMultiNet;
+import redundantDiscriminationNet.RDMultiNet;
 import scopes.AttributeScopes;
 import scopes.GroupingHeuristicScopes;
 import scopes.StructureScopes;

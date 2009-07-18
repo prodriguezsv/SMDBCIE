@@ -9,8 +9,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import searchHintsElements.FrequentGroupingHeuristicElt;
-import values.SingleDescriptor;
 import domainTheory.GroupingHeuristic;
+import domainTheory.values.SingleDescriptor;
 
 /**
  * @author Armando

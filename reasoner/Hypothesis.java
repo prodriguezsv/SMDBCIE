@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import redundantDiscriminantNet.SAVDescriptor;
 import domainTheory.GroupingHeuristic;
 import domainTheory.Structure;
 import main.Description;
+import main.Descriptor;
 
 /**
  * @author Armando
@@ -18,10 +18,10 @@ import main.Description;
  */
 public class Hypothesis {
 	private Object descriptiveElement;
-	private Description<SAVDescriptor> justification;
+	private Description<Descriptor<Object>> justification;
 	private double points;
 	private List<PossibleSolution> possibleSolutions;
-	private Description<SAVDescriptor> unmatchedDescription;
+	private Description<Descriptor<Object>> unmatchedDescription;
 
 
 	/**
@@ -35,8 +35,8 @@ public class Hypothesis {
 		setPossibleSolutions(new ArrayList<PossibleSolution>());
 
 		// Sort criteria: concatenated structure and attribute names
-		setUnmatchedDescription(new Description<SAVDescriptor>());
-		setJustification(new Description<SAVDescriptor>());
+		setUnmatchedDescription(new Description<Descriptor<Object>>());
+		setJustification(new Description<Descriptor<Object>>());
 		setPoints(0);
 	}
 
@@ -65,7 +65,7 @@ public class Hypothesis {
 	 * Método de instancia agregado
 	 * @param justification
 	 */
-	public void setJustification(Description<SAVDescriptor> justification) {
+	public void setJustification(Description<Descriptor<Object>> justification) {
 		this.justification = justification;
 	}
 
@@ -73,7 +73,7 @@ public class Hypothesis {
 	 * @see "Método justification del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public Description<SAVDescriptor> getJustification() {
+	public Description<Descriptor<Object>> getJustification() {
 		return justification;
 	}
 	
@@ -81,7 +81,7 @@ public class Hypothesis {
 	 * @see "Método justification: del protocolo adding en SUKIA SmallTalk"
 	 * @param aJustification
 	 */
-	public void addJustification(SAVDescriptor aJustification) {
+	public void addJustification(Descriptor<Object> aJustification) {
 		justification.add(aJustification);
 	}
 
@@ -166,20 +166,20 @@ public class Hypothesis {
 	 * Método de instancia agregado
 	 * @param unmatchedDescription
 	 */
-	public void setUnmatchedDescription(Description<SAVDescriptor> unmatchedDescription) {
+	public void setUnmatchedDescription(Description<Descriptor<Object>> unmatchedDescription) {
 		this.unmatchedDescription = unmatchedDescription;
 	}
 
 	/**
 	 * @see "Método unmatchedDescription: del protocolo adding en SUKIA SmallTalk"
-	 * @param aSAVDescriptor
+	 * @param aDescriptor
 	 * @return
 	 */
-	public boolean addUnmatchedDescription(SAVDescriptor aSAVDescriptor) {
-		if (containsFull(aSAVDescriptor, this.getUnmatchedDescription()))
+	public boolean addUnmatchedDescription(Descriptor<Object> aDescriptor) {
+		if (containsFull(aDescriptor, this.getUnmatchedDescription()))
 			return false;
 
-		this.getUnmatchedDescription().add(aSAVDescriptor);
+		this.getUnmatchedDescription().add(aDescriptor);
 		Collections.sort(this.getUnmatchedDescription());
 		
 		return true;
@@ -190,7 +190,7 @@ public class Hypothesis {
 	 * @see "Método unmatchedDescription del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public Description<SAVDescriptor> getUnmatchedDescription() {
+	public Description<Descriptor<Object>> getUnmatchedDescription() {
 		return unmatchedDescription;
 	}
 	
@@ -199,7 +199,7 @@ public class Hypothesis {
 	 * @param aJustificationDescription
 	 * @return
 	 */
-	public boolean copyToJustificationFrom(Description<SAVDescriptor> aJustificationDescription) {
+	public boolean copyToJustificationFrom(Description<Descriptor<Object>> aJustificationDescription) {
 		if (aJustificationDescription == null)
 			return false;
 
@@ -215,7 +215,7 @@ public class Hypothesis {
 	 * @param anUnmatchedDescription
 	 * @return
 	 */
-	public boolean copyToUnmatchedDescriptionFrom(Description<SAVDescriptor> anUnmatchedDescription) {
+	public boolean copyToUnmatchedDescriptionFrom(Description<Descriptor<Object>> anUnmatchedDescription) {
 		if (anUnmatchedDescription == null)
 			return false;
 
@@ -231,12 +231,12 @@ public class Hypothesis {
 	 * @param aTaxonomicGroupName
 	 * @return
 	 */
-	public  List<SAVDescriptor> problemDescriptionFor(String aTaxonomicGroupName) {
+	public  List<Descriptor<Object>> problemDescriptionFor(String aTaxonomicGroupName) {
 		if (this.getDescriptiveElement() == null)
 			return null;
 		
 		if (this.getDescriptiveElement() instanceof Structure)
-			return ((Structure)this.getDescriptiveElement()).createSAVDescription(aTaxonomicGroupName);
+			return ((Structure)this.getDescriptiveElement()).createDescription(aTaxonomicGroupName);
 		else
 			return ((GroupingHeuristic)this.getDescriptiveElement()).createSAVDescription(aTaxonomicGroupName);
 	}
@@ -247,23 +247,23 @@ public class Hypothesis {
 	 * nil : if aSAVDescriptor was NOT found in aDescription.
 	 * not nil: the instance in aDescription that matched aSAVDescriptor's structure and attribute names.
 	 * @see "Método includes:in: del protocolo testing en SUKIA SmallTalk"
-	 * @param aSAVDescriptor
+	 * @param aDescriptor
 	 * @param aDescription
 	 * @return
 	 */
-	public boolean contains(SAVDescriptor aSAVDescriptor, Description<SAVDescriptor> aDescription) {
+	public boolean contains(Descriptor<Object> aDescriptor, Description<Descriptor<Object>> aDescription) {
 		// Make sure that aDescription is indeed one of my description lists. If not, return the -1 error value
 		 if (!(aDescription == this.getUnmatchedDescription()))
 			 return false;
 
 		for( int i = 1; i <= aDescription.size(); i++) {
-			if (aDescription.get(i-1).getStructure() == aSAVDescriptor.getStructure() &&
-					aDescription.get(i-1).getAttribute() == aSAVDescriptor.getAttribute())
+			if (aDescription.get(i-1).getStructure() == aDescriptor.getStructure() &&
+					aDescription.get(i-1).getAttribute() == aDescriptor.getAttribute())
 				return true;
 
 			// Stop searching if the next descriptor's structure name is (alphabetically) greater than the argument's structure name
 			if (i < aDescription.size())
-				if (aSAVDescriptor.getStructure().compareTo(aDescription.get(i).getStructure()) < 0)
+				if (aDescriptor.getStructure().compareTo(aDescription.get(i).getStructure()) < 0)
 					return false;
 		}
 
@@ -277,24 +277,24 @@ public class Hypothesis {
 	 * nil: aSAVDescriptor IS NOT a member of aDescriptionList.
 	 * not nil: an element of aDescriptionList whose structure and attribute names match those of aSAVDescriptor"
 	 * @see "Método includesFull:in: del protocolo testing en SUKIA SmallTalk"
-	 * @param aSAVDescriptor
+	 * @param aDescriptor
 	 * @param aDescription
 	 * @return
 	 */
-	public boolean containsFull(SAVDescriptor aSAVDescriptor, Description<SAVDescriptor> aDescription) {
+	public boolean containsFull(Descriptor<Object> aDescriptor, Description<Descriptor<Object>> aDescription) {
 		// Make sure that aDescription is indeed one of my description lists. If not, return the -1 error value
 		 if (!(aDescription == this.getUnmatchedDescription()))
 			 return false;
 
 		for( int i = 1; i <= aDescription.size(); i++) {
-			if (aDescription.get(i-1).getStructure().equals(aSAVDescriptor.getStructure()) &&
-					aDescription.get(i-1).getAttribute().equals(aSAVDescriptor.getAttribute()) &&
-					aDescription.get(i-1).getValue().equals(aSAVDescriptor.getValue()))
+			if (aDescription.get(i-1).getStructure().equals(aDescriptor.getStructure()) &&
+					aDescription.get(i-1).getAttribute().equals(aDescriptor.getAttribute()) &&
+					aDescription.get(i-1).getValue().equals(aDescriptor.getValue()))
 				return true;
 
 			// Stop searching if the next descriptor's structure name is (alphabetically) greater than the argument's structure name
 			if (i < aDescription.size())
-				if (aSAVDescriptor.getStructure().compareTo(aDescription.get(i).getStructure()) < 0)
+				if (aDescriptor.getStructure().compareTo(aDescription.get(i).getStructure()) < 0)
 					return false;
 		}
 

@@ -1,7 +1,7 @@
 /**
  * @see "Categoría Sukia Values de SUKIA Smalltalk"
  */
-package values;
+package domainTheory.values;
 
 
 import domainTheory.Taxon;

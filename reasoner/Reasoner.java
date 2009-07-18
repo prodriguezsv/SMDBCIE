@@ -7,31 +7,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 import output.DFSAutomatonOutput;
-
+import output.SearchAutomatonOutput;
 import domainTheory.GroupingHeuristic;
 import domainTheory.Structure;
 import domainTheory.TaxonomicLevels;
 import domainTheory.Taxonomy;
-
-import redundantDiscriminantNet.RDMultiNet;
-import redundantDiscriminantNet.SAVDescriptor;
-import redundantDiscriminantNet.SAVRoot;
 import searchAutomata.GoalApproachingDialog;
 import searchAutomata.SAVCaseDFSAutomaton;
 import searchAutomata.TaxonGHISAutomaton;
 import searchAutomata.TaxonSISAutomaton;
+import redundantDiscriminationNet.RDMultiNet;
+import redundantDiscriminationNet.RDMultiNetRoot;
+import redundantDiscriminationNet.RDNet;
+import redundantDiscriminationNet.RootNorm;
 import searchHintsBase.HintsBase;
 import similarityAssessment.SimRanges;
-
 import main.Description;
-import main.RDNet;
+import main.Descriptor;
 
 /**
  * @author Armando
  *
  */
 public class Reasoner {
-	private Description<SAVDescriptor> caseMemorySearchJustification; //Ojo
+	private Description<Descriptor<Object>> caseMemorySearchJustification; //Ojo
 	private List<Hypothesis> failGHConflictSet;
 	private List<Hypothesis> failStructConflictSet;
 	private List<GroupingHeuristic> groupHDescription;
@@ -42,11 +41,11 @@ public class Reasoner {
 	private List<Hypothesis> noResultsSet;
 	private boolean presentFailedSolutions;
 	private List<ProposedSolution> proposedSolutions;
-	private Description<SAVDescriptor> routeSelectJustification; //Ojo
+	private Description<Descriptor<Object>> routeSelectJustification; //Ojo
 	private List<Structure> structDescription;
 	private List<Hypothesis> succGHConflictSet;
 	private List<Hypothesis> succStructConflictSet;
-	private Description<SAVDescriptor> taxonHierarchySearchJustification; // OJo
+	private Description<Descriptor<Object>> taxonHierarchySearchJustification; // OJo
 
 	/**
 	 * Método de instancia agregado
@@ -116,20 +115,20 @@ public class Reasoner {
 		setProposedSolutions(null);
 
 		// Justification list: route selection (using the HintsBase) 
-		setRouteSelectJustification(new Description<SAVDescriptor>());
+		setRouteSelectJustification(new Description<Descriptor<Object>>());
 
 		// Justification list: case memory search 
-		setCaseMemorySearchJustification(new Description<SAVDescriptor>());
+		setCaseMemorySearchJustification(new Description<Descriptor<Object>>());
 
 		// Justification list: taxonomic hierarchy serach
-		setTaxonHierarchySearchJustification(new Description<SAVDescriptor>());
+		setTaxonHierarchySearchJustification(new Description<Descriptor<Object>>());
 	}
 
 	/**
 	 * Método de instancia agregado
 	 * @param caseMemorySearchJustification
 	 */
-	public void setCaseMemorySearchJustification(Description<SAVDescriptor> caseMemorySearchJustification) {
+	public void setCaseMemorySearchJustification(Description<Descriptor<Object>> caseMemorySearchJustification) {
 		this.caseMemorySearchJustification = caseMemorySearchJustification;
 	}
 	
@@ -137,7 +136,7 @@ public class Reasoner {
 	 * @see "Método caseMemorySearchJustification: del protocolo adding en SUKIA SmallTalk"
 	 * @param aJustificationItem
 	 */
-	public void addCaseMemorySearchJustification(SAVDescriptor aJustificationItem) {
+	public void addCaseMemorySearchJustification(Descriptor<Object> aJustificationItem) {
 		this.getCaseMemorySearchJustification().add(aJustificationItem);
 	}
 
@@ -145,7 +144,7 @@ public class Reasoner {
 	 * @see "Método caseMemorySearchJustification del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public Description<SAVDescriptor> getCaseMemorySearchJustification() {
+	public Description<Descriptor<Object>> getCaseMemorySearchJustification() {
 		return caseMemorySearchJustification;
 	}
 
@@ -355,7 +354,7 @@ public class Reasoner {
 	 * Método de instancia agregado
 	 * @param routeSelectJustification
 	 */
-	public void setRouteSelectJustification(Description<SAVDescriptor> routeSelectJustification) {
+	public void setRouteSelectJustification(Description<Descriptor<Object>> routeSelectJustification) {
 		this.routeSelectJustification = routeSelectJustification;
 	}
 	
@@ -363,7 +362,7 @@ public class Reasoner {
 	 * @see "Método routeSelectJustification: del protocolo adding en SUKIA SmallTalk"
 	 * @param aJustificationItem
 	 */
-	public void addRouteSelectJustification(SAVDescriptor aJustificationItem) {
+	public void addRouteSelectJustification(Descriptor<Object> aJustificationItem) {
 		this.getRouteSelectJustification().add(aJustificationItem);
 	}
 
@@ -371,7 +370,7 @@ public class Reasoner {
 	 * @see "Método routeSelectJustification del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public Description<SAVDescriptor> getRouteSelectJustification() {
+	public Description<Descriptor<Object>> getRouteSelectJustification() {
 		return routeSelectJustification;
 	}
 
@@ -456,7 +455,7 @@ public class Reasoner {
 	 * Método de instancia agregado
 	 * @param taxonHierarchySearchJustification
 	 */
-	public void setTaxonHierarchySearchJustification(Description<SAVDescriptor> taxonHierarchySearchJustification) {
+	public void setTaxonHierarchySearchJustification(Description<Descriptor<Object>> taxonHierarchySearchJustification) {
 		this.taxonHierarchySearchJustification = taxonHierarchySearchJustification;
 	}
 	
@@ -464,7 +463,7 @@ public class Reasoner {
 	 * @see "Método routeSelectJustification: del protocolo adding en SUKIA SmallTalk"
 	 * @param aJustificationItem
 	 */
-	public void addTaxonHierarchySearchJustification(SAVDescriptor aJustificationItem) {
+	public void addTaxonHierarchySearchJustification(Descriptor<Object> aJustificationItem) {
 		this.getTaxonHierarchySearchJustification().add(aJustificationItem);
 	}
 
@@ -472,7 +471,7 @@ public class Reasoner {
 	 * @see "Método taxonHierarchySearchJustification del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public Description<SAVDescriptor> getTaxonHierarchySearchJustification() {
+	public Description<Descriptor<Object>> getTaxonHierarchySearchJustification() {
 		return taxonHierarchySearchJustification;
 	}
 	
@@ -739,11 +738,11 @@ public class Reasoner {
 	public boolean searchCaseGroupingHeuristics() {
 		GroupingHeuristic gh;
 		Hypothesis hypothesis1, hypothesis2;
-		Description<SAVDescriptor> problemDescription;
-		SAVRoot caseNetRoot;
+		RootNorm caseNetRoot;
 		SAVCaseDFSAutomaton searchAutomaton1;
 		TaxonGHISAutomaton searchAutomaton2;
-		
+		Description<Descriptor<Object>> problemDescription;
+		SAVCaseDFSAutomaton searchAutomaton;
 		String status;
 		
 		while (!(this.getGroupHDescription().isEmpty())) {
@@ -764,7 +763,7 @@ public class Reasoner {
 			if (problemDescription == null) return false;
 
 			// Get the net root that corresponds to the grouping heuristic
-			caseNetRoot = (SAVRoot) this.getCaseMemory().getRoot().getRDNet(this.getTaxonomicGroupName()).getRoot();
+			caseNetRoot = this.getCaseMemory().getRoot().getRDNet(this.getTaxonomicGroupName()).getRoot();
 		
 			if (!(caseNetRoot == null)) {
 				// Create a new instance of case net search automaton
@@ -950,9 +949,9 @@ public class Reasoner {
 	public boolean searchCaseStructures() {
 		Structure s;
 		Hypothesis hypothesis1, hypothesis2;
-		Description<SAVDescriptor> problemDescription;
+		List<Descriptor<Object>> problemDescription;
 		RDNet net;
-		SAVRoot caseNetRoot;
+		RootNorm caseNetRoot;
 		SAVCaseDFSAutomaton searchAutomaton1;
 		TaxonSISAutomaton searchAutomaton2;
 		GoalApproachingDialog dialog;
@@ -973,7 +972,7 @@ public class Reasoner {
 			hypothesis2.setDescriptiveElement(s);
 			
 			// Get the SAV problem description from the structure. If no description available, return error value
-			problemDescription = s.createSAVDescription(this.getTaxonomicGroupName());
+			problemDescription = s.createDescription(this.getTaxonomicGroupName());
 			
 			if (problemDescription == null) return false;
 			
@@ -1038,7 +1037,7 @@ public class Reasoner {
 			 (i.e., status = #fail). Try doing a taxonomic search*/
 	
 			// Refresh the problem description
-			problemDescription = s.createSAVDescription(this.getTaxonomicGroupName());
+			problemDescription = s.createDescription(this.getTaxonomicGroupName());
 			if (problemDescription == null) return false;
 	
 			// Perform a taxonomic search (Ojo)
@@ -1156,8 +1155,8 @@ public class Reasoner {
 		GroupingHeuristic gh;
 		Hypothesis hypothesis;
 		String status;
-		Description<SAVDescriptor> problemDescription;
-		TaxonGHISAutomaton searchAutomaton; // Ojo
+		Description<Descriptor<Object>> problemDescription;
+		TaxonGHISAutomaton searchAutomaton;
 	
 		while (!(this.getGroupHDescription().isEmpty())) {
 			// Remove the next grouping heuristic from the description
@@ -1213,7 +1212,7 @@ public class Reasoner {
 		Structure s;
 		Hypothesis hypothesis;
 		String status;
-		List<SAVDescriptor> problemDescription;
+		Description<Descriptor<Object>> problemDescription;
 		TaxonSISAutomaton searchAutomaton; // Ojo
 		GoalApproachingDialog dialog;
 	
@@ -1226,7 +1225,7 @@ public class Reasoner {
 			hypothesis.setDescriptiveElement(s);
 
 			// Get the SAV problem description from the structure
-			problemDescription = s.createSAVDescription(this.getTaxonomicGroupName());
+			problemDescription = s.createDescription(this.getTaxonomicGroupName());
 			if (problemDescription == null) return false;
 
 			// Perform a taxonomic search

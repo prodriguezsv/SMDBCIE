@@ -7,12 +7,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import domainTheory.values.RangeDescriptor;
+import domainTheory.values.SingleDescriptor;
+import domainTheory.values.ValueDescriptor;
 import main.Description;
+import main.Descriptor;
 
-import redundantDiscriminantNet.SAVDescriptor;
-import values.RangeDescriptor;
-import values.SingleDescriptor;
-import values.ValueDescriptor;
 
 /**
  * @author Armando
@@ -148,12 +148,12 @@ public class Structure implements Comparable<Structure> {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public Description<SAVDescriptor> createSAVDescription(String aDummyName) {
-		Description<SAVDescriptor> description;
+	public Description<Descriptor<Object>> createDescription(String aDummyName) {
+		Description<Descriptor<Object>> description;
 		Attribute a;
 		List<ValueDescriptor> vdList;
 		ValueDescriptor vd;
-		SAVDescriptor d;
+		Descriptor<Object> d;
 		
 		// Make sure there's at least one attribute
 		if (getAttributes().isEmpty())
@@ -164,7 +164,7 @@ public class Structure implements Comparable<Structure> {
 			return null;
 
 		// Create the description holder
-		description = new Description<SAVDescriptor>();
+		description = new Description<Descriptor<Object>>();
 
 		// Scan the receiver's attributes
 		for (int i = 1; i <= this.getAttributes().size(); i++) {
@@ -180,8 +180,8 @@ public class Structure implements Comparable<Structure> {
 			if (vd instanceof RangeDescriptor) return null;
 
 			// Create the new SAVDescriptor and assign its values
-			d = new SAVDescriptor();
-			d.add(this.getName(), a.getName(), ((SingleDescriptor)vd).getValue());
+			d = new Descriptor<Object>();
+			d.add(this.getName(), a.getName(), ((SingleDescriptor<Object>)vd).getValue());
 					
 			description.add(d);
 		}

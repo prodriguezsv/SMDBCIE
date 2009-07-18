@@ -1,7 +1,7 @@
 /**
  * 
  */
-package values;
+package domainTheory.values;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -6,10 +6,11 @@ package domainTheory;
 import java.util.ArrayList;
 import java.util.List;
 
-import values.ValueDescriptor;
-import values.MeasuringUnit;
-import values.RangeDescriptor;
-import values.SingleDescriptor;
+import domainTheory.values.MeasuringUnit;
+import domainTheory.values.RangeDescriptor;
+import domainTheory.values.SingleDescriptor;
+import domainTheory.values.ValueDescriptor;
+
 
 /**
  * @author Armando
@@ -369,7 +370,7 @@ public class Taxonomy {
 		if (!(TaxonomicLevels.getLevels().contains(aSuccessorTaxon.getLevel())))
 			return false;
 		//Step 3: Make sure that the successor taxon can indeed be linked to the parent taxon
-		if (aSuccessorTaxon.isDirectLinkOK(aParentTaxon))
+		if (aSuccessorTaxon.isOKDirectLink(aParentTaxon))
 			return false;
 		//Step 4: Make sure that a taxon with the successor's name does not already exist
 		if (this.getTaxonFromLevelIndex(aSuccessorTaxon.getName())==null)

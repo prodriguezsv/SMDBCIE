@@ -5,7 +5,7 @@ package auxiliary;
 
 import java.util.ArrayList;
 import java.util.List;
-import main.Case;
+import main.Description;
 import main.Descriptor;
 
 /**
@@ -28,26 +28,22 @@ public class ComparingTable extends ArrayList<ComparingTableTuple<Object>> {
 	 * @param aCase1
 	 * @param aCase2
 	 */
-	public void fill(Case aCase1, Case aCase2) {
-		List<Descriptor<Object>> desc1, desc2;
+	public void fill(Description<Descriptor<Object>> desc1, Description<Descriptor<Object>> desc2) {
 		Descriptor<Object> d1, d2;
 		ComparingTableTuple<Object> tuple;
 		int increment;
-		
-		desc1 = aCase1.getDescription();
-		desc2 = aCase2.getDescription();
 		
 		if (desc1.size() > desc2.size()) increment = 0;
 		else increment = desc2.size() - desc1.size();
 		
 		for (int i = 0; i < desc1.size()+ increment; i++) {			
 			if  (i < desc1.size()) {
-				d1 = desc1.get(i);
+				d1 = desc1.get(i-1);
    				d2 = this.getDescriptor(desc2, d1.getAttribute());
    				
    				tuple = new ComparingTableTuple<Object>(d1.getAttribute(), d1.getValue(), ((d2 == null)? null:d2.getValue()));
    			} else {
-   				d2 = desc2.get(i);
+   				d2 = desc2.get(i-1);
    		   		tuple = new ComparingTableTuple<Object>(d2.getAttribute(), null, d2.getValue());
    			}
    			
