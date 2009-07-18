@@ -11,6 +11,8 @@ import domainTheory.Structure;
 import domainTheory.Attribute;
 
 import domainTheory.TaxonomicLevels;
+import domainTheory.values.RangeDescriptor;
+import domainTheory.values.SingleDescriptor;
 import domainTheory.values.Value;
 import domainTheory.values.ValueDescriptor;
 import similarityAssessment.SimAssessor;
@@ -37,7 +39,6 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
     //private String status;
     private List<PossibleSolution> taxonList;
     private PossibleSolution compSolution;
-
     private List<String> similarityRanges;
 
 
@@ -249,7 +250,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
  * @param my parameters list
  * @return my return values
  */
-    public Taxon determineSimilarityFor(Descriptor<Object> aSAVDescriptor,Taxon aTaxon){
+    public Taxon determineSimilarityFor(Descriptor<Object> aDescriptor,Taxon aTaxon){
 /*determineSimilarityFor: aSAVDescriptor context: aTaxon
 
 	"Determines the similarity range between aSAVDescriptor's value and aTaxon's value
@@ -271,9 +272,10 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
 	(self similarityRanges includes: similarity) ifFalse: [ ^nil ].
 
 	^aTaxon.*/
-        Object weightedValues = (aTaxon.getAnObjectWith(aSAVDescriptor.getStructure(),aTaxon.getSAVDescription())).attributeWith(aSAVDescriptor.getAttribute(),Attribute.oneLevel());
-        SimAssessor similarity = SimAssessor.similarityRangeOf(aSAVDescriptor.getValue(),weightedValues);
-        if (similarityRanges.includes(similarity)){return null;}
+        List<ValueDescriptor> weightedValues = ((aTaxon.getSAVDescription().getStructure(aDescriptor.getStructure())
+        		.getAttribute(aDescriptor.getAttribute())).getValues().get(Attribute.oneLevel()));
+        String similarity = SimAssessor.similarityRangeOf(aDescriptor.getValue(),weightedValues);
+        if (similarityRanges.contains(similarity)){return null;}
         return aTaxon;
 }
 
@@ -283,52 +285,12 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
  * @return my return values
  */
     public boolean retrieveTaxa(Descriptor<Object> aSAVDescriptor){
-/*retrieveTaxa: aSAVDescriptor
-
-	"This method extracts all taxa from the value descriptors located in the instance list variable
-	 valueDescriptors.  ONLY exact-match value descriptors may exist at this point. The reason
-	 is that a similarity check will be performed between the argument's value and the descriptor's
-	 taxa weighted-value list; this check will not work with range value descriptors.
-
-	 Returns: -1 : if a processing error occurred.
-			 nil : if the argument's value is NOT similar to any value in the taxon's weighted value list.
-		     self : if at least one taxon's weighted value list contains a similar item to the argument's value.
-
-	 Automaton reference: RT"
-
-	| vd taxa taxon tempList |
-
-	tempList := OrderedCollection new.
-
-	1 to: (self valueDescriptors size) do:
-	[:i |
-		vd := (self valueDescriptors at: i).
-		taxa := vd taxonList.
-		(taxa isEmpty) ifTrue: [ ^-1 ].
-
-		[ taxa isEmpty ]
-		whileFalse: [
-
-			taxon := self determineSimilarityFor: aSAVDescriptor context: (taxa removeFirst).
-			(taxon = nil) ifFalse: [ tempList add: taxon ].
-
-		].    "END [taxa isEmpty] whileFalse:"
-
-	].    "END 1 to: (self valueDescriptors size) do:"
-
-	(tempList isEmpty) ifTrue: [ ^nil ].
-
-	self tSolutionDescription: aSAVDescriptor.
-	taxa := self associateTaxaToPossibleSolutions: tempList.
-	[ taxa isEmpty ] whileFalse: [ self taxonList: (taxa removeFirst) ].
-	self resetList: (self tSolutionDescription).
-
-	^self.*/
-        List<Taxon> taxa;
+    	List<Taxon> taxa;
+    	List<PossibleSolution> tps;
 
         List<Taxon> tempList = new ArrayList<Taxon>();
-        for (Descriptor<Object> vd: getValueDescriptors()){
-            taxa = (List<Taxon>)vd.getValue();
+        for (ValueDescriptor vd: getValueDescriptors()){
+            taxa = (List<Taxon>)vd.getTaxonList();
             if (taxa.size()<1){return false;}
             while (taxa.size()>0){
                 Taxon taxon = determineSimilarityFor(aSAVDescriptor,taxa.remove(0));
@@ -340,10 +302,10 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
         }
         if (tempList.size() < 1) {return false;}
         setTSolutionDescription(aSAVDescriptor);
-        taxa = associateTaxaToPossibleSolutions(tempList);
-        while (taxa.size()>0){
-            taxa.remove(0);
-            addTaxonList(taxa);
+        tps = associateTaxaToPossibleSolutions(tempList);
+        while (tps.size()>0){
+            tps.remove(0);
+            setTaxonList(tps);
             resetList(getTSolutionDescription());
         }
         return true;
@@ -374,140 +336,68 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
 }
 
 /**
+ * This method searches for value descriptors that that do an exact match with aSAVDescriptor's values,
+ * or value range-descriptors for which aSAVDescriptor value applies
+ * Returns: -1 : if a processing error occurred.
+ * nil : if no value descriptors were found.
+ * self : if range descriptors were found.
+ * value returned by methodRetrieveTaxa (this method is invoked for exact-match value descriptors).
+ * Automaton reference: SVD
  * @see Define method name.
  * @param my parameters list
  * @return my return values
  */
-    public Object searchValueDescriptors(Descriptor<Object> aSAVDescriptor){
-/*searchValueDescriptors: aSAVDescriptor
-
-	"This method searches for value descriptors that that do an exact match with aSAVDescriptor's values,
-	 or value range-descriptors for which aSAVDescriptor value applies
-
-	 Returns: -1 : if a processing error occurred.
-			 nil : if no value descriptors were found.
-			self : if range descriptors were found.
-			value returned by methodRetrieveTaxa (this method is invoked for exact-match value descriptors).
-
-	Automaton reference: SVD"
-
-	| bSymbol attrValues i vd taxa tempList |
-
-	"This variable is set just to test if aSAVDescriptor value is a ByteSymbol"
-	bSymbol := ByteSymbol new: 1.
-
-	attrValues := (self attribute) values.
-
-	i := 1.
-	[ i &lt;= (attrValues size) ]
-	whileTrue: [
-
-		"set the list of possible value descriptors to nil"
-		vd := nil.
-
-		"If the argument's value is not ByteSymbol, then it MUST be a number. If so, search for
-		 a match using value descriptor ranges. If the search was unsuccessful, reset vd to nil"
-		((aSAVDescriptor value) class name = bSymbol class name)
-		ifFalse: [
-			vd := attrValues numberInRange: (aSAVDescriptor value) atLevel: i.
-			(vd = nil) ifTrue: [ ^-1 ].
-			(vd isEmpty) ifTrue: [ vd := nil ].
-		].
-
-		"If the list of possible value descriptors is not nil, a successful range-based descriptor search was done.
-		 Place the value descriptor in the valueDescriptors instance variable"
-		(vd = nil)
-		ifFalse: [ self valueDescriptors: vd ]
-		ifTrue: [
-			"At this point, either: a) the argument's value is a ByteSymbol, or a range search was
-			 unsuccessful. Do then an exact match search"
-			vd := attrValues value: (aSAVDescriptor value) in: i.
-			(vd = nil) ifTrue: [ ^-1 ].
-			(vd isEmpty) ifFalse: [ self valueDescriptors: vd ].
-		].
-
-		i := i + 1.
-
-	].    "END [ i &lt;= (attrValues size) ] whileTrue:"
-
-	(self valueDescriptors isEmpty)
-	ifTrue: [ self tUnmatchedDescription: aSAVDescriptor. ^nil ].
-
-	"Separate the range descriptors from the exact-match descriptors"
-	tempList := OrderedCollection new.
-	[ self valueDescriptors isEmpty ]
-	whileFalse: [
-
-		vd := (self valueDescriptors removeFirst).
-		(vd asRange)
-		ifTrue: [
-			"Value desscriptor is a range. Associate all taxa to possible solutions, place them in the taxon list"
-			taxa := vd taxonList.
-			self tSolutionDescription: aSAVDescriptor.
-			taxa := self associateTaxaToPossibleSolutions: taxa.
-			self resetList: (self tSolutionDescription).
-			[ taxa isEmpty ] whileFalse: [ self taxonList: (taxa removeFirst) ].
-		]
-
-		"Value descriptor is not a range. Place it in a temporary list"
-		ifFalse: [ tempList add: vd ]
-
-	].    "END [ self valueDescriptors isEmpty ]"
-
-	"At this point, all descriptors have been verified and processed. If there are no exact-match value descriptors left, return"
-	(tempList isEmpty) ifTrue: [ ^self ].
-
-	"Remove all exact-match value descriptors from the temporary list, put them back in the valueDescriptos
-	 list, and continue processing"
-	self valueDescriptors: tempList.
-	^(self retrieveTaxa: aSAVDescriptor).*/
-
-	//This variable is set just to test if aSAVDescriptor value is a ByteSymbol
-	//bSymbol := ByteSymbol new: 1.
+    public Object searchValueDescriptors(Descriptor<Object> aDescriptor){
+    	List<ValueDescriptor> vdList;
+    	ValueDescriptor vd;
+    	List<Taxon> taxa;
+    	List<PossibleSolution> tps;
 
         Value attrValues = attribute.getValues();
         
         int i = 0;
         //set the list of possible value descriptors to nil
-        List<ValueDescriptor> vd = null;
+        vdList = null;
         
         while ( i <= attrValues.size()){
 		//If the argument's value is not ByteSymbol, then it MUST be a number. If so, search for a match using value descriptor ranges. If the search was unsuccessful, reset vd to nil
                 //TODO check the real instance that it should be.
-                if ((aSAVDescriptor.getValue() instanceof String) != true){
-                    vd = attrValues.getRangeDescriptorsWithNumber((Double)aSAVDescriptor.getValue(), TaxonomicLevels.getLevels().get(i));
-                    if (vd == null) {return false;}
-                    if (vd.isEmpty()) {vd = null;}
+                if ((aDescriptor.getValue() instanceof String) != true){
+                    vdList = attrValues.getRangeDescriptorsWithNumber((Double)aDescriptor.getValue(), TaxonomicLevels.getLevels().get(i));
+                    if (vdList == null) {return false;}
+                    if (vdList.isEmpty()) {vdList = null;}
                 }
             //If the list of possible value descriptors is not nil, a successful range-based descriptor search was done. Place the value descriptor in the valueDescriptors instance variable
-            if (vd != null){
-                setValueDescriptors(vd);
+            if (vdList != null){
+                setValueDescriptors(vdList);
             }else{
                 //At this point, either: a) the argument's value is a ByteSymbol, or a range search was unsuccessful. Do then an exact match search
-                vd = attrValues.getRangeDescriptorsWithNumber((Double)aSAVDescriptor.getValue(),TaxonomicLevels.getLevels().get(i));
-                if (vd == null) {return -1;}
-                if (vd.isEmpty()!=true){setValueDescriptors(vd);}
+                vdList = attrValues.getRangeDescriptorsWithNumber((Double)aDescriptor.getValue(),TaxonomicLevels.getLevels().get(i));
+                if (vdList == null) {return -1;}
+                if (vdList.isEmpty()!=true){setValueDescriptors(vdList);}
             }
             i += 1;
         }
 
         if (getValueDescriptors().isEmpty()){
-            setTUnmatchedDescription(aSAVDescriptor);
+            setTUnmatchedDescription(aDescriptor);
             return null;
         }
         //Separate the range descriptors from the exact-match descriptors
-	List<ValueDescriptor> tempList = new ArrayList<ValueDescriptor>();
+        List<ValueDescriptor> tempList = new ArrayList<ValueDescriptor>();
         
         while (getValueDescriptors().isEmpty()!=true){
-		vd = getValueDescriptors().remove(0);
-                if (vd.asRange()){
+        	vd = getValueDescriptors().remove(0);
+                if (vd instanceof RangeDescriptor){
                     //Value desscriptor is a range. Associate all taxa to possible solutions, place them in the taxon list
-                    List<Taxon> taxa = vd.getValue().taxonList();
-                    tSolutionDescription(aSAVDescriptor);
-                    taxa = associateTaxaToPossibleSolutions(taxa);
-                    resetList(tSolutionDescription());
+
+        			
+                    taxa = vd.getTaxonList();
+                    setTSolutionDescription(aDescriptor);
+                    tps = associateTaxaToPossibleSolutions(taxa);
+                    resetList(getTSolutionDescription());
                     while(taxa.isEmpty() != true){
-                        taxonList.add(taxa.remove(0));
+                        taxonList.add(tps.remove(0));
                     }
                 }else{//Value descriptor is not a range. Place it in a temporary list
                     tempList.add(vd);
@@ -521,7 +411,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
         if (tempList.isEmpty()){return true;}
         //Remove all exact-match value descriptors from the temporary list, put them back in the valueDescriptos list, and continue processing
         setValueDescriptors(tempList);
-        return retrieveTaxa(aSAVDescriptor);
+        return retrieveTaxa(aDescriptor);
 }
 
 

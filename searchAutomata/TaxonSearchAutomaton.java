@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import output.TaxonAutomatonOutput;
+import domainTheory.StructureIndex;
 import domainTheory.Taxon;
 import domainTheory.values.ValueDescriptor;
 import reasoner.PossibleSolution;
-import redundantDiscriminationNet.Index;
 import main.Description;
 import main.Descriptor;
 
@@ -22,10 +22,10 @@ public class TaxonSearchAutomaton {
     private Description<Descriptor<Object>> tSolutionDesc;
     private Description<Descriptor<Object>> tUnmatchedDesc;
     private Description<Descriptor<Object>> justification;
-    private List<Taxon> taxonList;
+    private List<PossibleSolution> taxonList;
     private Description<Descriptor<Object>> tSolutionDescription;
     private Description<Descriptor<Object>> tUnmatchedDescription;
-    private Index searchIndex;
+    private StructureIndex searchIndex;
     private String status;
     private TaxonAutomatonOutput searchOutput;
 /**
@@ -79,7 +79,7 @@ public class TaxonSearchAutomaton {
 
 	^self.*/
         newOutput();
-        taxonList = new ArrayList<Taxon>();
+        taxonList = new ArrayList<PossibleSolution>();
 
 //        Comparator  comparator = new Comparator<String>() {
 //            /**
@@ -149,7 +149,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public void addTaxonList(Taxon taxonList){
+    public void addTaxonList(PossibleSolution taxonList){
 /**taxonList: aTaxon
 
 	taxonList add: aTaxon.
@@ -157,6 +157,14 @@ public class TaxonSearchAutomaton {
         this.taxonList.add(taxonList);
 }
 
+    public void setTaxonList(List<PossibleSolution> taxonList){
+    	/**taxonList: aTaxon
+
+    		taxonList add: aTaxon.
+    		^self.*/
+    	        this.taxonList = taxonList;
+    	}
+    
 /**
  * @see Define method name.
  * @param my parameters list
@@ -275,7 +283,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public List<Taxon> getTaxonList(){
+    public List<PossibleSolution> getTaxonList(){
 /**taxonList
 
 	^taxonList.*/
@@ -476,14 +484,16 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public void resetList(Description<Descriptor<Object>>  anOrderedCollection){
+    // Ojo
+    @SuppressWarnings("unchecked")
+	public void resetList(List  vdList){
 /**resetList: anOrderedCollection
 
 	[ anOrderedCollection isEmpty ]
 	whileFalse: [ anOrderedCollection removeFirst ].
 
 	^self.*/
-        anOrderedCollection.clear();
+        vdList.clear();
 }
 
 /**
@@ -491,7 +501,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public void setSearchIndex(Index aSearchIndex){
+    public void setSearchIndex(StructureIndex aSearchIndex){
 /**searchIndex: aSearchIndex
 
 	searchIndex := aSearchIndex.

@@ -5,7 +5,7 @@
 
 package searchAutomata;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 import reasoner.PossibleSolution;

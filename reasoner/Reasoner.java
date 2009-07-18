@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import output.DFSAutomatonOutput;
-import output.SearchAutomatonOutput;
 import domainTheory.GroupingHeuristic;
 import domainTheory.Structure;
 import domainTheory.TaxonomicLevels;
@@ -17,7 +16,6 @@ import searchAutomata.SAVCaseDFSAutomaton;
 import searchAutomata.TaxonGHISAutomaton;
 import searchAutomata.TaxonSISAutomaton;
 import redundantDiscriminationNet.RDMultiNet;
-import redundantDiscriminationNet.RDMultiNetRoot;
 import redundantDiscriminationNet.RDNet;
 import redundantDiscriminationNet.RootNorm;
 import searchHintsBase.HintsBase;

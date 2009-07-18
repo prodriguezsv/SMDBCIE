@@ -594,8 +594,8 @@ public class SAVCaseDFSAutomaton {
                     setTSolutionDescription(d);
 
                     //PENDIENTE
-                    pSolutionList.add((SheetNode)succ);
-                    pSolutionList = associateCasesToPossibleSolutions(pSolutionList);
+                    //pSolutionList.add((SheetNode)succ); Ojo
+                    // pSolutionList = associateCasesToPossibleSolutions(pSolutionList);
                     aPossibleSolutionsList.add(pSolutionList.get(0));
                     getTSolutionDescription().remove(getTSolutionDescription().size()-1);
                 }
@@ -739,9 +739,9 @@ public class SAVCaseDFSAutomaton {
                     setTSolutionDescription(d);
 
                     //PENDIENTE
-                    pSolutionList.add((SheetNode)succ);
-                    pSolutionList = associateCasesToPossibleSolutions(pSolutionList);
-                    aPossibleSolutionsList.add(pSolutionList.remove(0));
+                    // pSolutionList.add((SheetNode)succ);
+                    // pSolutionList = associateCasesToPossibleSolutions(pSolutionList);
+                    // aPossibleSolutionsList.add(pSolutionList.remove(0));
                     getTSolutionDescription().remove(0);
 
                 }
