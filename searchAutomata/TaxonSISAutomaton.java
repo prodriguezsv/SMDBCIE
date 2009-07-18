@@ -5,23 +5,21 @@
 
 package searchAutomata;
 
-import redundantDiscriminantNet.SAVDescriptor;
 import domainTheory.StructureIndex;
 import domainTheory.Taxon;
 import domainTheory.Structure;
 import domainTheory.Attribute;
 
-import main.Index;
-
-import similarityAssessment.SimRanges;
+import domainTheory.TaxonomicLevels;
+import domainTheory.values.Value;
+import domainTheory.values.ValueDescriptor;
 import similarityAssessment.SimAssessor;
-
-
 
 import reasoner.PossibleSolution;
 import java.util.ArrayList;
 import java.util.List;
-import values.Value;
+import main.Description;
+import main.Descriptor;
 
 /*
  *
@@ -195,14 +193,14 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
  * @param my parameters list
  * @return my return values
  */
-    public boolean beginWith(List<SAVDescriptor> aProblemDescription){
+    public boolean beginWith(Description<Descriptor<Object>> aProblemDescription){
 /*beginWith: aProblemDescription
 
 	"Initial state of the search automaton.
 
 	 Precondition:
 	 1. aProblemDescription is a non-empty set of SAVDescriptors.
-	 2. For all s1, s2::SAVDescriptor in aProblemDescription : (s1 structure) = (s2 structure).
+	 2. For all s1, s2::Descriptor<Object> in aProblemDescription : (s1 structure) = (s2 structure).
 
 	Returns: nil - if the precondition was not satisfied or the search process failed;
 			 object returned by prepareSuccessfulOutputWith:
@@ -230,9 +228,9 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
 	self prepareFailedOutput.
 	^nil.*/
         if (checkPrecondition(aProblemDescription)){setStatus("error"); return false;}
-        structure = structureIndex.structureWith(aProblemDescription.get(0).getStructure());
+        structure = structureIndex.getStructure(aProblemDescription.get(0).getStructure());
         if (structure == null){prepareFailedOutput(); return false;}
-        for (SAVDescriptor dt: aProblemDescription){
+        for (Descriptor<Object> dt: aProblemDescription){
             resetAttribute();
             resetList(getValueDescriptors());
             if (searchAttribute(dt) == null){
@@ -251,7 +249,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
  * @param my parameters list
  * @return my return values
  */
-    public Taxon determineSimilarityFor(SAVDescriptor aSAVDescriptor,Taxon aTaxon){
+    public Taxon determineSimilarityFor(Descriptor<Object> aSAVDescriptor,Taxon aTaxon){
 /*determineSimilarityFor: aSAVDescriptor context: aTaxon
 
 	"Determines the similarity range between aSAVDescriptor's value and aTaxon's value
@@ -284,7 +282,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
  * @param my parameters list
  * @return my return values
  */
-    public boolean retrieveTaxa(SAVDescriptor aSAVDescriptor){
+    public boolean retrieveTaxa(Descriptor<Object> aSAVDescriptor){
 /*retrieveTaxa: aSAVDescriptor
 
 	"This method extracts all taxa from the value descriptors located in the instance list variable
@@ -329,7 +327,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
         List<Taxon> taxa;
 
         List<Taxon> tempList = new ArrayList<Taxon>();
-        for (SAVDescriptor vd: getValueDescriptors()){
+        for (Descriptor<Object> vd: getValueDescriptors()){
             taxa = (List<Taxon>)vd.getValue();
             if (taxa.size()<1){return false;}
             while (taxa.size()>0){
@@ -356,7 +354,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
  * @param my parameters list
  * @return my return values
  */
-    public Object searchAttribute(SAVDescriptor aSAVDescriptor){
+    public Object searchAttribute(Descriptor<Object> aSAVDescriptor){
 /*searchAttribute: aSAVDescriptor
 
 	"Automaton reference: SA"
@@ -380,7 +378,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
  * @param my parameters list
  * @return my return values
  */
-    public Object searchValueDescriptors(SAVDescriptor aSAVDescriptor){
+    public Object searchValueDescriptors(Descriptor<Object> aSAVDescriptor){
 /*searchValueDescriptors: aSAVDescriptor
 
 	"This method searches for value descriptors that that do an exact match with aSAVDescriptor's values,
@@ -471,13 +469,13 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
         
         int i = 0;
         //set the list of possible value descriptors to nil
-        List<SAVDescriptor> vd = null;
+        List<ValueDescriptor> vd = null;
         
         while ( i <= attrValues.size()){
 		//If the argument's value is not ByteSymbol, then it MUST be a number. If so, search for a match using value descriptor ranges. If the search was unsuccessful, reset vd to nil
                 //TODO check the real instance that it should be.
-                if ((aSAVDescriptor.getValue() instanceof Object) != true){
-                    vd = attrValues.numberInRange(aSAVDescriptor.getValue(),i);
+                if ((aSAVDescriptor.getValue() instanceof String) != true){
+                    vd = attrValues.getRangeDescriptorsWithNumber((Double)aSAVDescriptor.getValue(), TaxonomicLevels.getLevels().get(i));
                     if (vd == null) {return false;}
                     if (vd.isEmpty()) {vd = null;}
                 }
@@ -486,7 +484,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
                 setValueDescriptors(vd);
             }else{
                 //At this point, either: a) the argument's value is a ByteSymbol, or a range search was unsuccessful. Do then an exact match search
-                vd = attrValues.getValue(aSAVDescriptor.getValue(),i);
+                vd = attrValues.getRangeDescriptorsWithNumber((Double)aSAVDescriptor.getValue(),TaxonomicLevels.getLevels().get(i));
                 if (vd == null) {return -1;}
                 if (vd.isEmpty()!=true){setValueDescriptors(vd);}
             }
@@ -498,7 +496,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
             return null;
         }
         //Separate the range descriptors from the exact-match descriptors
-	List<SAVDescriptor> tempList = new ArrayList<SAVDescriptor>();
+	List<ValueDescriptor> tempList = new ArrayList<ValueDescriptor>();
         
         while (getValueDescriptors().isEmpty()!=true){
 		vd = getValueDescriptors().remove(0);
@@ -540,17 +538,17 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
     private int compress(){
 /*compress
 
-	"Since this automaton searches for taxa one SAVDescriptor at a time, at the end of the process there may
-	 exist a number of possible solutions (with one SAVDescriptor solution descriptions) refering to: a) the same
+	"Since this automaton searches for taxa one Descriptor<Object> at a time, at the end of the process there may
+	 exist a number of possible solutions (with one Descriptor<Object> solution descriptions) refering to: a) the same
 	 taxon or b) a successor taxon of another possible solution.  What this method does is to place the solution
 	 descriptions of several possible solutions (that refer to the same taxon) in a single one, and to inherit the
 	 solution description of a predecessor possible-solution taxon.
 
 	Precondition: (self taxonList is NOT empty)
 
-	 Returns: -1: error condition. All posible solutions' solution description MUST consist of ONE SAVDescriptor.
-				 The reason for this is that since earch search was done one SAVDescriptor at a time, then all possible
-				 solutions must contain exactly one SAVDescriptor in their solution description.
+	 Returns: -1: error condition. All posible solutions' solution description MUST consist of ONE Descriptor<Object>.
+				 The reason for this is that since earch search was done one Descriptor<Object> at a time, then all possible
+				 solutions must contain exactly one Descriptor<Object> in their solution description.
 			nil - if the precondition is not met.
 			self - the process ran OK.
 
@@ -634,7 +632,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
 
         if (taxonList.isEmpty()) {return -1;}
         List<PossibleSolution> tempList = new ArrayList<PossibleSolution>();
-        List<SAVDescriptor> inheritedDescription = new ArrayList<SAVDescriptor>();
+        List<Descriptor<Object>> inheritedDescription = new ArrayList<Descriptor<Object>>();
 
         while (taxonList.isEmpty() != true){
             PossibleSolution ps = taxonList.remove(0);
@@ -662,7 +660,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
                             //Check if ps is a successor of compSolution
                             if (((Taxon)ps.getSolution()).isSuccessorOf((Taxon)compSolution.getSolution())){
                                 //ps inherits compSolution's description
-                                for (SAVDescriptor myps: compSolution.getSolutionDescription()){
+                                for (Descriptor<Object> myps: compSolution.getSolutionDescription()){
                                     inheritedDescription.add(myps);
                                 }
                                 i += 1;

@@ -5,7 +5,6 @@
 
 package searchAutomata;
 
-import main.Case;
 
 import reasoner.PossibleSolution;
 
@@ -324,7 +323,7 @@ public class SAVCaseDFSAutomaton {
         if ((currentLevel < stopLevel) || (currentNorm == netRoot)){
             return null;
         }
-        String r = verifyIndices();
+        String r = (String)verifyIndices();
         if (r == null) {return null;}
         if (r.equals("backtrack")){
             processPreviousNorm();
@@ -446,7 +445,7 @@ public class SAVCaseDFSAutomaton {
 
             if (normSucc instanceof Index) {
 	            //get its list of successors (i.e., IndexValues)
-	            List<IndexValue<Object>> idxSucc = ((Index)normSucc).getSuccessors();
+	            List<Node> idxSucc = ((Index)normSucc).getSuccessors();
 	
 	            //Scan the list of successors for the current index
 	            for (int j = 0; (j< idxSucc.size()); j++){
@@ -570,7 +569,7 @@ public class SAVCaseDFSAutomaton {
             Descriptor<Object> d = aProblemDescription.remove(0);
             //Look for a matching index
 
-            Index idx = currentNorm.getIndex(d.getAttribute(), d.getValue());
+            Index idx = currentNorm.getSuccessorIndex(d.getAttribute(), d.getValue());
 
 
             //If the descriptor did not match any index, take it out of the problem description and
@@ -583,7 +582,7 @@ public class SAVCaseDFSAutomaton {
                 if (result.equals("success")){setTUnmatchedDescription(d);}
             }else{
                 //Index found. get the IndexValue successor
-                Object succ = idx.getIndexValue(d.getValue()).getSuccesors().get(0);
+                Node succ = idx.getSuccessor(d.getValue()).getSuccessors().get(0);
 
                 //If a matched index points to a Norm, don't process it. Place the descriptor in a temporary list
                 if (succ instanceof Norm){
@@ -593,7 +592,9 @@ public class SAVCaseDFSAutomaton {
                     //and associate the corresponding case to a PossibleSolution. Next, place the possible solution in the
                     //output possible solutions list. Finally, remove the descriptor from the solution description
                     setTSolutionDescription(d);
-                    pSolutionList.add((PossibleSolution)succ);
+
+                    //PENDIENTE
+                    pSolutionList.add((SheetNode)succ);
                     pSolutionList = associateCasesToPossibleSolutions(pSolutionList);
                     aPossibleSolutionsList.add(pSolutionList.get(0));
                     getTSolutionDescription().remove(getTSolutionDescription().size()-1);
@@ -703,7 +704,7 @@ public class SAVCaseDFSAutomaton {
         //Create the temporary process lists
 
         Description<Descriptor<Object>> tempList = new Description<Descriptor<Object>>();
-        List<PossibleSolution> pSolutionList = new ArrayList<PossibleSolution>();
+        List<SheetNode> pSolutionList = new ArrayList<SheetNode>();
 
         //Scan the the Descriptor list of the problem description. Look for indices that strictly point to cases
         while (aProblemDescription.isEmpty() != true){
@@ -736,7 +737,9 @@ public class SAVCaseDFSAutomaton {
                     //and associate the corresponding case to a PossibleSolution. Next, place the possible solution in the
                     //output possible solutions list. Finally, remove the descriptor from the solution description
                     setTSolutionDescription(d);
-                    pSolutionList.add((PossibleSolution)succ);
+
+                    //PENDIENTE
+                    pSolutionList.add((SheetNode)succ);
                     pSolutionList = associateCasesToPossibleSolutions(pSolutionList);
                     aPossibleSolutionsList.add(pSolutionList.remove(0));
                     getTSolutionDescription().remove(0);
@@ -1007,7 +1010,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    private Description<Descriptor<Object>> associateCasesToPossibleSolutions(Description<Descriptor<Object>> aCaseList){
+    private List<PossibleSolution> associateCasesToPossibleSolutions(List<SheetNode> aCaseList){
         //<body>associateCasesToPossibleSolutions: aCaseList
         //
         //	"This method is used in conjuntion with prepareSuccessfulOutput.  The purpose
@@ -1017,32 +1020,16 @@ public class SAVCaseDFSAutomaton {
         //	Returns: a list of PossibleSolutions.
         //
         //	 Automaton reference: none."
-        //
-        //	| ps psList |
-        //
-        //	psList := OrderedCollection new.
-        //
-        //	1 to: (aCaseList size) do:
-        //	[ :i |
-        //		ps := PossibleSolution new.
-        //		ps solution: (aCaseList at: i).
-        //		ps copy: (self tSolutionDescription) to: (ps solutionDescription).
-        //		ps copy: (self tConfirmedDescription) to: (ps confirmedDescription).
-        //		ps copy: (self tUnconfirmedDescription) to: (ps unconfirmedDescription).
-        //		ps copy: (self tDoubtfulDescription) to: (ps doubtfulDescription).
-        //		psList add: ps.
-        //	].
-        //
-        //	^psList.</body>
-        Description<Descriptor<Object>> psList = new Description<Descriptor<Object>>();
-        for (Descriptor<Object> mycase: aCaseList){
+
+        List<PossibleSolution> psList = new ArrayList<PossibleSolution>();
+        for (SheetNode mycase: aCaseList){
             PossibleSolution ps = new PossibleSolution();
-            ps.addSolutionDescription(mycase);
+            ps.setSolution(mycase);
             ps.copy(getTSolutionDescription(), ps.getSolutionDescription());
             ps.copy(getTConfirmedDescription(), ps.getConfirmedDescription());
             ps.copy(getTUnconfirmedDescription(), ps.getUnconfirmedDescription());
             ps.copy(getTDoubtfulDescription(), ps.getDoubtfulDescription());
-            psList.add(mycase);
+            psList.add(ps);
         }
         return psList;
     }
@@ -1146,7 +1133,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    private boolean isUseless(List<Node> anAlternative){
+    private boolean isUseless(Alternative anAlternative){
         //<body>isUseless: anAlternative
         //
         //	| d n successorList idx idxSuccessors |
@@ -1185,7 +1172,7 @@ public class SAVCaseDFSAutomaton {
         //stopLevel
         //	^true.</body>
 
-        Node n = anAlternative.get(0);
+        Node n = anAlternative.getNode().getSuccessors().get(0);
         if ((n instanceof SheetNode)){return false;}
         if (((Norm)n).successorCases().isEmpty() != true){return false;}
         //First, get the list of successors for the current norm
@@ -1230,7 +1217,7 @@ public class SAVCaseDFSAutomaton {
             aCopyList.add(d);
         }
     }
-    /**
+/**
  * @see Define method name.
  * @param my parameters list
  * @return my return values
@@ -1299,7 +1286,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    private Object prepareSuccessfulOutputWith(List<PossibleSolution> aPossibleSolutionsList){
+    private boolean prepareSuccessfulOutputWith(List<PossibleSolution> aPossibleSolutionsList){
         //<body>prepareSuccessfulOutputWith: aPossibleSolutionsList
         //
         //	"Automaton reference: PSO"
@@ -1346,92 +1333,12 @@ public class SAVCaseDFSAutomaton {
         //			self - If one case was found.
         //
         //	Automaton reference: IdxDial"
-        //
-        //	| idx d idxSuccessors successorList caseAlternatives normAlternatives alternative result answer newList nA |
-        //
-        //	caseAlternatives := OrderedCollection new.
-        //	normAlternatives := OrderedCollection new.
-        //
-        //	"First, get the list of successors for the current norm"
-        //	successorList := currentNorm successors.
-        //
-        //	1 to: (successorList size) do:
-        //	[:i |
-        //		"Proceed to extract the next index"
-        //		idx := (successorList at: i).
-        //
-        //		"Parse the list of IndexValues associated to the index"
-        //		idxSuccessors := idx successors.
-        //		1 to: (idxSuccessors size) do:
-        //		[:j |
-        //			"For every associated IndexValue: create a Descriptor<Object>"
-        //			d := Descriptor<Object> new.
-        //			d addStructure: (netRoot structure) Attribute: (idx label) Value: ((idxSuccessors at: j) value).
-        //
-        //			"Make sure that the descriptor is NOT already included in neither the unconfirmed and doubtful descriptions"
-        //			(((self includes: d in: (self tUnconfirmedDescription)) = nil) &amp; ((self includes: d in: (self tDoubtfulDescription)) = nil))
-        //			ifTrue: [
-        //				"Pack the descriptor, along with the associated IndexValue, in a list called alternative. The form of this list
-        //				 will be (Descriptor<Object> IndexValue)"
-        //				alternative := OrderedCollection new.
-        //				alternative add: d.
-        //				alternative add: (idxSuccessors at: j).
-        //
-        //				(((idxSuccessors at: j) successors) first class name = Norm getClassName)
-        //				ifTrue: [ normAlternatives add: alternative ]
-        //				ifFalse: [ caseAlternatives add: alternative ].
-        //
-        //			].    "END ((self includes: d in: (self tUnconfirmedDescription)) &amp; (self includes: d in: (self tDoubtfulDescription))) ifFalse: ["
-        //
-        //		].    "END 1 to: (idxSuccessors size) do:"
-        //
-        //	].    "END 1 to: (successorList size) do:"
-        //
-        //	"Present the list of alternatives (associated to one index) to the user, preferably the cases"
-        //	(caseAlternatives isEmpty)
-        //	ifFalse:[
-        //		result := (self presentChoices: caseAlternatives).
-        //		(result = self) ifTrue: [ ^self ].
-        //		(result = nil) ifTrue: [ self prepareFailedOutput. ^nil ].
-        //		(result = #cancel) ifTrue: [ self prepareFailedOutput. self status: result. ^nil ].
-        //	].
-        //
-        //	(normAlternatives isEmpty)
-        //	ifFalse:[
-        //		newList := OrderedCollection new.
-        //		[normAlternatives isEmpty]
-        //		whileFalse: [
-        //			nA := normAlternatives removeFirst.
-        //			(self isUseless: nA) ifFalse: [ newList add: nA ].
-        //		].
-        //		(newList isEmpty)
-        //		ifFalse: [
-        //			result := (self presentChoices: newList).
-        //			(result = self) ifTrue: [ ^self ].
-        //			(result = nil) ifTrue: [ self prepareFailedOutput. ^nil ].
-        //			(result = #cancel) ifTrue: [ self prepareFailedOutput. self status: result. ^nil ].
-        //
-        //		].    "END (newList isEmpty) ifFalse:"
-        //
-        //	].    "END (normAlternatives isEmpty) ifFalse:["
-        //
-        //	"At this point, all alternatives for this norm failed because they were either unconfirmed or rejected
-        //	due to doubt. Present to the user the possibility to BACKTRACK"
-        //	answer := (SukiaDialog
-        //				confirm: 'Hasta ahora las alternativas presentadas \no han ayudado a resolver el problema.\Desea continuar evaluando otras alternativas?'
-        //				initialAnswer: false).
-        //	(answer = false)
-        //	ifTrue: [ self prepareFailedOutput. ^nil ].
-        //
-        //	^(self backtrack).</body>
 
-
-
-        List<Object> caseAlternatives = new ArrayList<Object>();
-        List<Object> normAlternatives = new ArrayList<Object>();
+        List<Alternative> caseAlternatives = new ArrayList<Alternative>();
+        List<Alternative> normAlternatives = new ArrayList<Alternative>();
         
         //First, get the list of successors for the current norm
-        List<Index> successorList = currentNorm.getSuccessors();
+        List<Index> successorList = currentNorm.successorIndexes();
 
         for (int i=0;(i<successorList.size());i++){
 
@@ -1440,7 +1347,7 @@ public class SAVCaseDFSAutomaton {
 
             //Parse the list of IndexValues associated to the index
             
-            List<IndexValue<Object>> idxSuccessors = idx.getSuccessors();
+            List<Node> idxSuccessors = idx.getSuccessors();
             for (int j=0;(j<idxSuccessors.size());j++){
                 Descriptor<Object> d =  new Descriptor<Object>();
 
@@ -1450,16 +1357,15 @@ public class SAVCaseDFSAutomaton {
                 if ((includes(d,getTUnconfirmedDescription()) == null) && ((includes(d,getTDoubtfulDescription()) == null))){
                     //Pack the descriptor, along with the associated IndexValue, in a list called alternative. The form of this list
                     //will be (Descriptor<Object> IndexValue)
-                    List<IndexValue<Object>> alternative = new ArrayList<IndexValue<Object>>();
-                    alternative.add(d);
-                    alternative.add(idxSuccessors.get(j));
+                    Alternative alternative = new Alternative();
+                    alternative.setDescriptor(d);
+                    alternative.setNode(idxSuccessors.get(j));
 
                     //(((idxSuccessors at: j) successors) first class name = Norm getClassName)
                     if (idxSuccessors.get(j).getValue() instanceof Norm){
                         normAlternatives.add(alternative);
-                        caseAlternatives.add(alternative);
                     }else{
-
+                        caseAlternatives.add(alternative);
                     }
 
                 }
@@ -1481,9 +1387,9 @@ public class SAVCaseDFSAutomaton {
 
         if (normAlternatives.isEmpty() != true){
 
-            List<Object> newList = new ArrayList<Object>();
+            List<Alternative> newList = new ArrayList<Alternative>();
             while (normAlternatives.isEmpty() != true){
-                Object nA = normAlternatives.get(0);
+                Alternative nA = normAlternatives.get(0);
                 if (isUseless(nA) != false){newList.add(nA);}
             }
             if (newList.isEmpty() != true){
@@ -1517,7 +1423,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public String presentChoices(List<Object> alternativeList){
+    public String presentChoices(List<Alternative> alternativeList){
         
         //<body>presentChoices: alternativeList
         //
@@ -1582,7 +1488,7 @@ public class SAVCaseDFSAutomaton {
         //
         //	^#fail.</body>
 
-        for (Object al: alternativeList){
+        for (Alternative al: alternativeList){
             if (isUseless(al)!= true){
             //TODO PRESENT OPTIONs in dialog
 
@@ -1731,19 +1637,19 @@ public class SAVCaseDFSAutomaton {
         //	^#success.</body>
 
         //Partial match: Look for an index under the current norm, whose label matches the
-        //escriptor's attribute. Disregard the descriptor's value
-        Index idx = currentNorm.getIndex(aSAVDescriptor.getAttribute());
+        //descriptor's attribute. Disregard the descriptor's value
+        Index idx = currentNorm.getSuccessorIndex(aSAVDescriptor.getAttribute());
         if (idx == null) {return "idxNotFound";}
 
         //The index was found. Create a temporary possible solutions list
-        List pSolutionList = new ArrayList();
+        List<PossibleSolution> pSolutionList = new ArrayList<PossibleSolution>();
 
         List displayValues = new ArrayList();
         List returnValues = new ArrayList();
         List<Descriptor<Object>> descriptorList = new ArrayList<Descriptor<Object>>();
 
         //Scan the index's index-values
-        List<IndexValue<Object>> indexValues = idx.getSuccessors();
+        List<Node> indexValues = idx.getSuccessors();
         for (int i = 0; (i<indexValues.size());i++){
             //get the next index value successor
             //TODO check if this is correct
@@ -1826,10 +1732,15 @@ public class SAVCaseDFSAutomaton {
             return "fail";
         }
 
-        //At this point, the answer must be successful. Associate the confirmed case to PossibleSolution. Then exit successfully
+        //At this point, the answer must be successful.
+        //Associate the confirmed case to PossibleSolution. Then exit successfully
         setTConfirmedDescription(descriptorList.get(returnValues.indexOf(result)));
-        pSolutionList.add(result);
-        pSolutionList = associateCasesToPossibleSolutions(pSolutionList);
+
+        //PENDIENTE
+//        pSolutionList.add(result);
+//        pSolutionList = associateCasesToPossibleSolutions(pSolutionList);
+
+
         aPossibleSolutionsList.add(pSolutionList.remove(0));
         getTConfirmedDescription().remove(getTConfirmedDescription().size()-1);
         return "success";
@@ -1889,13 +1800,13 @@ public class SAVCaseDFSAutomaton {
         if (aProblemDescription.isEmpty()){return null;}
 
         //Check part 2. of precondition
-        if ((aProblemDescription.get(0) instanceof Descriptor<Object>) !=true){return null;}
+        if ((aProblemDescription.get(0) instanceof Descriptor) != true){return null;}
         String sName = null;
         if (aProblemDescription.size()>0){
             sName = aProblemDescription.get(0).getStructure();
         }
         for (int i=1;(i<aProblemDescription.size());i++){
-            if ((aProblemDescription.get(i) instanceof Descriptor<Object>) != true){return null;}
+            if ((aProblemDescription.get(i) instanceof Descriptor) != true){return null;}
             if ((sName.equals(aProblemDescription.get(i).getStructure())) != true){return null;}
         }
         //Initialization steps. At this point, nextLevel = 1. Thus, the root level is 1
@@ -1910,7 +1821,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public String retrieveCasesUnderCurrNorm(){
+    public Object retrieveCasesUnderCurrNorm(){
         //<body>retrieveCasesUnderCurrNorm
         //
         //	"This method attempts to retrieve norm-dependant cases, from the stop-level norm.
@@ -1929,7 +1840,7 @@ public class SAVCaseDFSAutomaton {
         //	ifFalse: [ ^(self prepareSuccessfulOutputWith: (self associateCasesToPossibleSolutions: caseList)) ].
         //
         //	^(self indexDialog).</body>
-        List<Case> caseList = currentNorm.successorCases();
+        List<SheetNode> caseList = currentNorm.successorCases();
         if (caseList.isEmpty() != true){
 
             return prepareSuccessfulOutputWith(associateCasesToPossibleSolutions(caseList));
