@@ -1,30 +1,26 @@
 
 /*
- * @see "Categoría Sukia Search Automata en SUKIA SmallTalk" 
+ * @see "Categorï¿½a Sukia Search Automata en SUKIA SmallTalk" 
  */
 
 package searchAutomata;
 
-import main.Norm;
-import main.Node;
-import main.Index;
 import main.Case;
-
-import auxiliary.IndexValue;
-
 
 import reasoner.PossibleSolution;
 
-
-import redundantDiscriminantNet.SAVRoot;
-import redundantDiscriminantNet.SAVCase;
-import redundantDiscriminantNet.SAVDescriptor;
+import redundantDiscriminationNet.RootNorm;
 import output.DFSAutomatonOutput;
 import java.util.ArrayList;
 import java.util.List;
 
 
 import main.Description;
+import main.Descriptor;
+import redundantDiscriminationNet.Index;
+import redundantDiscriminationNet.Node;
+import redundantDiscriminationNet.Norm;
+import redundantDiscriminationNet.SheetNode;
 
 /**
  * SAVCase Depth-First-Search Automaton.
@@ -36,16 +32,16 @@ import main.Description;
  */
 
 public class SAVCaseDFSAutomaton {
-    public SAVRoot netRoot;
+    public RootNorm netRoot;
     public Norm currentNorm;
     public int currentLevel;
     public int stopLevel;
-    private Description<SAVDescriptor> tSolutionDesc;
-    private Description<SAVDescriptor> tConfirmedDesc;
-    private Description<SAVDescriptor> tUnconfirmedDesc;
-    private Description<SAVDescriptor> tDoubtfulDesc;
-    private Description<SAVDescriptor> tUnmatchedDesc;
-    private Description<SAVDescriptor> justification;
+    private Description<Descriptor<Object>> tSolutionDesc;
+    private Description<Descriptor<Object>> tConfirmedDesc;
+    private Description<Descriptor<Object>> tUnconfirmedDesc;
+    private Description<Descriptor<Object>> tDoubtfulDesc;
+    private Description<Descriptor<Object>> tUnmatchedDesc;
+    private Description<Descriptor<Object>> justification;
     public String status;
     public DFSAutomatonOutput searchOutput;
 
@@ -54,17 +50,17 @@ public class SAVCaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public SAVCaseDFSAutomaton(SAVRoot aSAVRoot){
+    public SAVCaseDFSAutomaton(RootNorm aSAVRoot){
         netRoot = aSAVRoot;
         currentNorm = null;
         resetLevel();
         setStopLevel(currentLevel);
-        tSolutionDesc = new Description<SAVDescriptor>();
-        tConfirmedDesc = new Description<SAVDescriptor>();
-        tUnconfirmedDesc = new Description<SAVDescriptor>();
-        tDoubtfulDesc = new Description<SAVDescriptor>();
-        tUnmatchedDesc = new Description<SAVDescriptor>();
-        justification = new Description<SAVDescriptor>();
+        tSolutionDesc = new Description<Descriptor<Object>>();
+        tConfirmedDesc = new Description<Descriptor<Object>>();
+        tUnconfirmedDesc = new Description<Descriptor<Object>>();
+        tDoubtfulDesc = new Description<Descriptor<Object>>();
+        tUnmatchedDesc = new Description<Descriptor<Object>>();
+        justification = new Description<Descriptor<Object>>();
         newOutput();
         status = "fail";
     }
@@ -93,7 +89,7 @@ public class SAVCaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public void setJustification(SAVDescriptor aJustificationElement){
+    public void addJustification(Descriptor<Object> aJustificationElement){
         justification.add(aJustificationElement);
     }
     
@@ -146,7 +142,7 @@ public class SAVCaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public void setTConfirmedDescription(SAVDescriptor aSAVDescriptor){
+    public void setTConfirmedDescription(Descriptor<Object> aSAVDescriptor){
         tConfirmedDesc.add(aSAVDescriptor);
     }
     
@@ -155,7 +151,7 @@ public class SAVCaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public void setTDoubtfulDescription(SAVDescriptor aSAVDescriptor){
+    public void setTDoubtfulDescription(Descriptor<Object> aSAVDescriptor){
         tDoubtfulDesc.add(aSAVDescriptor);
     }
     
@@ -164,7 +160,7 @@ public class SAVCaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public void setTSolutionDescription(SAVDescriptor aSAVDescriptor){
+    public void setTSolutionDescription(Descriptor<Object> aSAVDescriptor){
         tSolutionDesc.add(aSAVDescriptor);
     }
     
@@ -173,7 +169,7 @@ public class SAVCaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public void setTUnconfirmedDescription(SAVDescriptor aSAVDescriptor){
+    public void setTUnconfirmedDescription(Descriptor<Object> aSAVDescriptor){
         tUnconfirmedDesc.add(aSAVDescriptor);
     }
     /**
@@ -181,7 +177,7 @@ public class SAVCaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public void setTUnmatchedDescription(SAVDescriptor aSAVDescriptor){
+    public void setTUnmatchedDescription(Descriptor<Object> aSAVDescriptor){
         tUnmatchedDesc.add(aSAVDescriptor);
     }
 
@@ -207,7 +203,7 @@ public class SAVCaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public Description<SAVDescriptor> getJustification(){
+    public Description<Descriptor<Object>> getJustification(){
         return justification;
     }
     
@@ -216,7 +212,7 @@ public class SAVCaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public SAVRoot getNetRoot(){
+    public RootNorm getNetRoot(){
         return netRoot;
     }
     /**
@@ -260,7 +256,7 @@ public class SAVCaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public Description<SAVDescriptor> getTConfirmedDescription(){
+    public Description<Descriptor<Object>> getTConfirmedDescription(){
         return tConfirmedDesc;
     }
 
@@ -269,7 +265,7 @@ public class SAVCaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public Description<SAVDescriptor> getTDoubtfulDescription(){
+    public Description<Descriptor<Object>> getTDoubtfulDescription(){
     	return tDoubtfulDesc;
     }
     
@@ -278,7 +274,7 @@ public class SAVCaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public Description<SAVDescriptor> getTSolutionDescription(){
+    public Description<Descriptor<Object>> getTSolutionDescription(){
         return tSolutionDesc;
     }
     
@@ -287,7 +283,7 @@ public class SAVCaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public Description<SAVDescriptor> getTUnconfirmedDescription(){
+    public Description<Descriptor<Object>> getTUnconfirmedDescription(){
         return tUnconfirmedDesc;
     }
     
@@ -296,7 +292,7 @@ public class SAVCaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public Description<SAVDescriptor> getTUnmatchedDescription(){
+    public Description<Descriptor<Object>> getTUnmatchedDescription(){
         return tUnmatchedDesc;
     }
 
@@ -343,11 +339,11 @@ public class SAVCaseDFSAutomaton {
     public Object removeSAVDescriptorFromTConfirmedDesc(Norm aNorm){
         //<body>removeSAVDescriptorFromTConfirmedDesc: aNorm
         //
-        //	"Removes, from tConfirmedDescription, a SAVDescriptor that matches aNorm's attribute
-        //	 and value.  The removed SAVDescriptor is placed in the tUnconfirmedDescription.
+        //	"Removes, from tConfirmedDescription, a Descriptor<Object> that matches aNorm's attribute
+        //	 and value.  The removed Descriptor<Object> is placed in the tUnconfirmedDescription.
         //
         //	 Returns: nil - if the aNorm's level (i.e., currentLevel) is the less than or equal to the stopLevel,
-        //				   or if the SAVDescriptor was not found in tConfirmedDescriptor;
+        //				   or if the Descriptor<Object> was not found in tConfirmedDescriptor;
         //			  self - if all OK.
         //
         //	 Automaton reference: RtCD"
@@ -365,7 +361,7 @@ public class SAVCaseDFSAutomaton {
         //	^nil.</body>
         if (currentLevel <= stopLevel){return null;}
          int idx = 0;
-        for (SAVDescriptor tcd : getTConfirmedDescription()) {
+        for (Descriptor<Object> tcd : getTConfirmedDescription()) {
 
             if (tcd.getAttribute().equals(aNorm.getDescriptor().getAttribute()) &&
                     (tcd.getValue().equals(aNorm.getDescriptor().getValue()))){
@@ -394,7 +390,7 @@ public class SAVCaseDFSAutomaton {
         //	already been searched for by the method retrieveCasesUnderNorm.
         //
         //	Returns:
-        //		self - if at least one index value (in the form of a SAVDescriptor) is not member of either the the unconfirmed
+        //		self - if at least one index value (in the form of a Descriptor<Object>) is not member of either the the unconfirmed
         //			  or doubtful lists;
         //		nil - if removeSAVDescriptorFromTConfirmedDesc: returns nil;
         //		#backtrack - if a new bactrack operation should be performed.
@@ -415,11 +411,11 @@ public class SAVCaseDFSAutomaton {
         //		"Scan the list of successors for the current index"
         //		1 to: idxSucc size do:
         //		[:j |
-        //			"Create a SAVDescriptor"
-        //			d := SAVDescriptor new.
+        //			"Create a Descriptor<Object>"
+        //			d := Descriptor<Object> new.
         //			d addStructure: (self netRoot structure) Attribute: (normSucc label) Value: (idxSucc at: j) value.
         //
-        //			"If the SAVDescriptor is not a member of the unconfirmed description, check it against
+        //			"If the Descriptor<Object> is not a member of the unconfirmed description, check it against
         //			 the doubtful description. If this time the SAVDescriptior is NOT a member of the doubtful
         //			 description, return self, indicating that there is at least one index-value to show to the user"
         //			((self includes: d in: (self tUnconfirmedDescription)) = nil)
@@ -454,9 +450,9 @@ public class SAVCaseDFSAutomaton {
 	
 	            //Scan the list of successors for the current index
 	            for (int j = 0; (j< idxSucc.size()); j++){
-	                SAVDescriptor d = new SAVDescriptor();
+	                Descriptor<Object> d = new Descriptor<Object>();
 	                d.add(netRoot.getStructure(), ((Index)normSucc).getLabel(), idxSucc.get(j).getValue());
-	                //If the SAVDescriptor is not a member of the unconfirmed description, check it against
+	                //If the Descriptor<Object> is not a member of the unconfirmed description, check it against
 	                //the doubtful description. If this time the SAVDescriptior is NOT a member of the doubtful
 	                //description, return self, indicating that there is at least one index-value to show to the user
 	
@@ -484,7 +480,7 @@ public class SAVCaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public Object searchForCasesUnderCurrNormUsing(Description<SAVDescriptor> aProblemDescription,List<PossibleSolution> aPossibleSolutionsList){
+    public Object searchForCasesUnderCurrNormUsing(Description<Descriptor<Object>> aProblemDescription,List<PossibleSolution> aPossibleSolutionsList){
         //<body>searchForCasesUnderCurrNormUsing: aProblemDescription saveIn: aPossibleSolutionsList
         //
         //	"This method searches for indices, strictly under a norm other than the net root, that point to cases. If a Descriptor in
@@ -513,7 +509,7 @@ public class SAVCaseDFSAutomaton {
         //	[ aProblemDescription isEmpty ]
         //	whileFalse: [
         //
-        //		"Remove the next SAVDescriptor"
+        //		"Remove the next Descriptor<Object>"
         //		d := aProblemDescription removeFirst.
         //
         //		"Look for a matching index"
@@ -570,8 +566,8 @@ public class SAVCaseDFSAutomaton {
         //Scan the the Descriptor list of the problem description. Look for indices that strictly point to cases
 
         while (aProblemDescription.isEmpty() != true){
-            //Remove the next SAVDescriptor
-            SAVDescriptor d = aProblemDescription.remove(0);
+            //Remove the next Descriptor<Object>
+            Descriptor<Object> d = aProblemDescription.remove(0);
             //Look for a matching index
 
             Index idx = currentNorm.getIndex(d.getAttribute(), d.getValue());
@@ -606,7 +602,7 @@ public class SAVCaseDFSAutomaton {
         }
         //Put the descriptors that didn't match indices back in the problem description list
         while (tempList.isEmpty() != true){
-            aProblemDescription.add((SAVDescriptor)tempList.remove(0));
+            aProblemDescription.add((Descriptor<Object>)tempList.remove(0));
         }
         return true;
 
@@ -617,7 +613,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public Object searchForCasesUnderRootUsing(Description<SAVDescriptor> aProblemDescription,List<PossibleSolution> aPossibleSolutionsList){
+    public Object searchForCasesUnderRootUsing(Description<Descriptor<Object>> aProblemDescription,List<PossibleSolution> aPossibleSolutionsList){
         //<body>searchForCasesUnderRootUsing: aProblemDescription saveIn: aPossibleSolutionsList
         //
         //	"This method searches for indices, strictly under the net root, that point to cases. If a Descriptor in
@@ -649,7 +645,7 @@ public class SAVCaseDFSAutomaton {
         //	[ aProblemDescription isEmpty ]
         //	whileFalse: [
         //
-        //		"Remove the next SAVDescriptor"
+        //		"Remove the next Descriptor<Object>"
         //		d := aProblemDescription removeFirst.
         //
         //		"Look for a matching index"
@@ -706,15 +702,15 @@ public class SAVCaseDFSAutomaton {
         if ((currentNorm == netRoot) && (aPossibleSolutionsList.isEmpty()) && (getTSolutionDescription().isEmpty()!=true)){return -1;}
         //Create the temporary process lists
 
-        Description<SAVDescriptor> tempList = new Description<SAVDescriptor>();
+        Description<Descriptor<Object>> tempList = new Description<Descriptor<Object>>();
         List<PossibleSolution> pSolutionList = new ArrayList<PossibleSolution>();
 
         //Scan the the Descriptor list of the problem description. Look for indices that strictly point to cases
         while (aProblemDescription.isEmpty() != true){
-            //Remove the next SAVDescriptor
-            SAVDescriptor d = aProblemDescription.get(0);
+            //Remove the next Descriptor<Object>
+            Descriptor<Object> d = aProblemDescription.get(0);
             //Look for a matching index
-            Index idx = currentNorm.getIndex(d.getAttribute(),d.getValue());
+            Index idx = currentNorm.getSuccessorIndex(d.getAttribute(),d.getValue());
 
             //If the descriptor did not match any index, take it out of the problem description and
             //place it in the unmatched descriptor list
@@ -731,7 +727,7 @@ public class SAVCaseDFSAutomaton {
 
             }else{
                 //Index found. get the IndexValue successor
-                Object succ = idx.getIndexValue(d.getValue()).getSuccessors().get(0);
+                Object succ = idx.getSuccessor(d.getValue()).getSuccessors().get(0);
 
                 if (succ instanceof Norm){
                     tempList.add(d);
@@ -762,7 +758,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public Object searchForCasesUsing(Description<SAVDescriptor> aProblemDescription){
+    public Object searchForCasesUsing(Description<Descriptor<Object>> aProblemDescription){
         //<body>searchForCasesUsing: aProblemDescription
         //
         //	"At this point, the problem description still contains descriptors, and control is located either at a norm within
@@ -949,13 +945,13 @@ public class SAVCaseDFSAutomaton {
         //list is that, depending on the output from the root-search, it may be necessary to put all descriptors
         //back in the solution description, in order to try the next search strategy
 
-        Description<SAVDescriptor> tempDeleteSolution = new Description<SAVDescriptor>();
+        Description<Descriptor<Object>> tempDeleteSolution = new Description<Descriptor<Object>>();
         moveDescriptorsFrom(getTSolutionDescription(),getTUnmatchedDescription(),tempDeleteSolution);
 
         // Same sitution as with the solution description.  In this case, place the confirmed description items in the
         // unconfirmed description, and also copy them to another temporary list
 
-        Description<SAVDescriptor> tempDeleteConfirmed = new Description<SAVDescriptor>();
+        Description<Descriptor<Object>> tempDeleteConfirmed = new Description<Descriptor<Object>>();
         moveDescriptorsFrom(getTConfirmedDescription(),getTUnconfirmedDescription(),tempDeleteConfirmed);
         
         // Call the search-cases-under-root method with a clean &amp; empty possible solutions list (its part of the precondition)
@@ -1011,7 +1007,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    private Description<SAVDescriptor> associateCasesToPossibleSolutions(Description<SAVDescriptor> aCaseList){
+    private Description<Descriptor<Object>> associateCasesToPossibleSolutions(Description<Descriptor<Object>> aCaseList){
         //<body>associateCasesToPossibleSolutions: aCaseList
         //
         //	"This method is used in conjuntion with prepareSuccessfulOutput.  The purpose
@@ -1038,8 +1034,8 @@ public class SAVCaseDFSAutomaton {
         //	].
         //
         //	^psList.</body>
-        Description<SAVDescriptor> psList = new Description<SAVDescriptor>();
-        for (SAVDescriptor mycase: aCaseList){
+        Description<Descriptor<Object>> psList = new Description<Descriptor<Object>>();
+        for (Descriptor<Object> mycase: aCaseList){
             PossibleSolution ps = new PossibleSolution();
             ps.addSolutionDescription(mycase);
             ps.copy(getTSolutionDescription(), ps.getSolutionDescription());
@@ -1056,7 +1052,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    private void deleteDescriptorsIn(Description<SAVDescriptor> aTempDeleteList,Description<SAVDescriptor> aList,Description<SAVDescriptor> anotherList){
+    private void deleteDescriptorsIn(Description<Descriptor<Object>> aTempDeleteList,Description<Descriptor<Object>> aList,Description<Descriptor<Object>> anotherList){
         //<body>deleteDescriptorsIn: aTempDeleteList from: aList andPlaceIn: anotherList
         //
         //	| d j |
@@ -1078,7 +1074,7 @@ public class SAVCaseDFSAutomaton {
         //
         //	^self.</body>
         for (int i=0;(i<aTempDeleteList.size());i++){
-            SAVDescriptor d = aTempDeleteList.get(i);
+            Descriptor<Object> d = aTempDeleteList.get(i);
             int j = 0;
             while (j<= aList.size()){
                 if ((aList.get(j).getAttribute().equals(d.getAttribute())) &&(aList.get(j).getAttribute().equals(d.getAttribute()))){
@@ -1097,74 +1093,32 @@ public class SAVCaseDFSAutomaton {
  * @return my return values
  */
     private List<Norm> filterUselessNorms(List<Norm> aNormAlternativeList){
-        //<body>filterUselessNorms: aNormAlternativeList
-        //
-        //	| newList normAlternative n successorList idx idxSuccessors d |
-        //
-        //	newList := OrderedCollection new.
-        //
-        //	[aNormAlternativeList isEmpty]
-        //	whileFalse: [
-        //
-        //		normAlternative := aNormAlternativeList removeFirst.
-        //		n := (normAlternative last successors) first.
-        //
-        //		((n successorCases) isEmpty)
-        //		ifFalse: [ newList add: normAlternative ]
-        //		ifTrue: [
-        //			"First, get the list of successors for the current norm"
-        //			successorList := n successors.
-        //
-        //			1 to: (successorList size) do:
-        //			[:i |
-        //				"Proceed to extract the next index"
-        //				idx := (successorList at: i).
-        //
-        //				"Parse the list of IndexValues associated to the index"
-        //				idxSuccessors := idx successors.
-        //				1 to: (idxSuccessors size) do:
-        //				[:j |
-        //					"For every associated IndexValue: create a SAVDescriptor"
-        //					d := SAVDescriptor new.
-        //					d addStructure: (netRoot structure) Attribute: (idx label) Value: ((idxSuccessors at: j) value).
-        //
-        //					"Make sure that the descriptor is NOT already included in neither the unconfirmed and doubtful descriptions"
-        //					(((self includes: d in: (self tUnconfirmedDescription)) = nil) &amp; ((self includes: d in: (self tDoubtfulDescription)) = nil))
-        //					ifTrue: [ newList add: normAlternative ]
-        //
-        //				].    "END 1 to: (idxSuccessors size) do:"
-        //
-        //			].    "END 1 to: (successorList size) do:"
-        //
-        //		].    "END ((n successorCases) isEmpty) ifTrue:"
-        //
-        //	].    "END [aNormAlternativeList isEmpty] whileFalse:"
-        //
-        //	^newList.</body>
 
         List<Norm> newList = new ArrayList<Norm>();
         while (aNormAlternativeList.isEmpty() != true){
-            Norm normAlternative = aNormAlternativeList.remove(0);
-            Norm n = normAlternative.getSuccessors().get(0);
-            if (n.getSuccessors().isEmpty() != true){
-                newList.add(normAlternative);
+            Node normAlternative = aNormAlternativeList.remove(0);
+            //n := (normAlternative last successors) first.
+            if ((normAlternative instanceof SheetNode)){return null;}
+
+            if (((Norm)normAlternative).successorCases().isEmpty() != true){
+                newList.add((Norm)normAlternative);
             }else{
                 //First, get the list of successors for the current norm
-                List<Norm> successorList = n.getSuccessors();
+                List<Index> successorList = ((Norm)normAlternative).successorIndexes();
                 for (int i = 0; (i<successorList.size());i++){
                     //Proceed to extract the next index
                     Index idx = successorList.get(i);
 
                     //Parse the list of IndexValues associated to the index
-                    List<IndexValue<Object>> idxSuccessors = idx.getSuccessors();
+                    List<Node> idxSuccessors = idx.getSuccessors();
                     for (int j = 0; (j<idxSuccessors.size());j++){
-                        //For every associated IndexValue: create a SAVDescriptor
-                        SAVDescriptor d = new SAVDescriptor();
+                        //For every associated IndexValue: create a Descriptor<Object>
+                        Descriptor<Object> d = new Descriptor<Object>();
                         d.add(netRoot.getStructure(), idx.getLabel(), idxSuccessors.get(j).getValue());
 
                         //Make sure that the descriptor is NOT already included in neither the unconfirmed and doubtful descriptions
                         if ((includes(d,getTUnconfirmedDescription())== null) &&(includes(d,getTDoubtfulDescription())== null)){
-                            newList.add(normAlternative);
+                            newList.add((Norm)normAlternative);
                         }
                     }
 
@@ -1179,7 +1133,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    private void flush(Description<SAVDescriptor> aList){
+    private void flush(Description<Descriptor<Object>> aList){
         //<body>flush: aList
         //
         //	[ aList isEmpty ]
@@ -1192,7 +1146,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    private boolean isUseless(Index anAlternative){
+    private boolean isUseless(List<Node> anAlternative){
         //<body>isUseless: anAlternative
         //
         //	| d n successorList idx idxSuccessors |
@@ -1217,8 +1171,8 @@ public class SAVCaseDFSAutomaton {
         //		idxSuccessors := idx successors.
         //		1 to: (idxSuccessors size) do:
         //		[:j |
-        //			"For every associated IndexValue: create a SAVDescriptor"
-        //			d := SAVDescriptor new.
+        //			"For every associated IndexValue: create a Descriptor<Object>"
+        //			d := Descriptor<Object> new.
         //			d addStructure: (netRoot structure) Attribute: (idx label) Value: ((idxSuccessors at: j) value).
         //
         //			"Make sure that the descriptor is NOT already included in neither the unconfirmed and doubtful descriptions"
@@ -1228,23 +1182,23 @@ public class SAVCaseDFSAutomaton {
         //		].    "END 1 to: (idxSuccessors size) do:"
         //
         //	].    "END 1 to: (successorList size) do:"
-        //
+        //stopLevel
         //	^true.</body>
 
-        Norm n = anAlternative.getSuccessors().get(0);
-        if ((n instanceof SAVCase) ||(n instanceof Case)){return false;}
-        if (n.getSuccessorCases().isEmpty() != true){return false;}
+        Node n = anAlternative.get(0);
+        if ((n instanceof SheetNode)){return false;}
+        if (((Norm)n).successorCases().isEmpty() != true){return false;}
         //First, get the list of successors for the current norm
-        List<Norm> successorList = n.getSuccessors();
+        List<Index> successorList = ((Norm)n).successorIndexes();
 
         for (int i = 0; (i<successorList.size());i++){
             //Proceed to extract the next index
             Index idx = successorList.get(i);
             //Parse the list of IndexValues associated to the index
-            List<IndexValue<Object>> idxSuccessors = idx.getSuccessors();
+            List<Node> idxSuccessors = idx.getSuccessors();
             for (int j = 0; (j<idxSuccessors.size());j++){
-                //For every associated IndexValue: create a SAVDescriptor
-                SAVDescriptor d = new SAVDescriptor();
+                //For every associated IndexValue: create a Descriptor<Object>
+                Descriptor<Object> d = new Descriptor<Object>();
                 d.add(netRoot.getStructure(), idx.getLabel(), idxSuccessors.get(j).getValue());
                 //Make sure that the descriptor is NOT already included in neither the unconfirmed and doubtful descriptions
                 if ((includes(d,getTUnconfirmedDescription()) == null) && (includes(d,getTDoubtfulDescription()) == null)){ return false;}
@@ -1257,7 +1211,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    private void moveDescriptorsFrom(Description<SAVDescriptor> aList,Description<SAVDescriptor> anotherList,Description<SAVDescriptor> aCopyList){
+    private void moveDescriptorsFrom(Description<Descriptor<Object>> aList,Description<Descriptor<Object>> anotherList,Description<Descriptor<Object>> aCopyList){
         //<body>moveDescriptorsFrom: aList to: anotherList copyTo: aCopyList
         //
         //	| d |
@@ -1271,7 +1225,7 @@ public class SAVCaseDFSAutomaton {
         //
         //	^self.</body>
         while (aList.isEmpty() != true){
-            SAVDescriptor d  = aList.remove(0);
+            Descriptor<Object> d  = aList.remove(0);
             anotherList.add(d);
             aCopyList.add(d);
         }
@@ -1281,7 +1235,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public void newSearchWith(Description<SAVDescriptor> anOldProblemDescription){
+    public void newSearchWith(Description<Descriptor<Object>> anOldProblemDescription){
         //<body>newSearchWith: anOldProblemDescription
         //
         //	"If the automaton returns a non-empty problem description list, then the REASONER MUST call it again with that remaining description,
@@ -1410,15 +1364,15 @@ public class SAVCaseDFSAutomaton {
         //		idxSuccessors := idx successors.
         //		1 to: (idxSuccessors size) do:
         //		[:j |
-        //			"For every associated IndexValue: create a SAVDescriptor"
-        //			d := SAVDescriptor new.
+        //			"For every associated IndexValue: create a Descriptor<Object>"
+        //			d := Descriptor<Object> new.
         //			d addStructure: (netRoot structure) Attribute: (idx label) Value: ((idxSuccessors at: j) value).
         //
         //			"Make sure that the descriptor is NOT already included in neither the unconfirmed and doubtful descriptions"
         //			(((self includes: d in: (self tUnconfirmedDescription)) = nil) &amp; ((self includes: d in: (self tDoubtfulDescription)) = nil))
         //			ifTrue: [
         //				"Pack the descriptor, along with the associated IndexValue, in a list called alternative. The form of this list
-        //				 will be (SAVDescriptor IndexValue)"
+        //				 will be (Descriptor<Object> IndexValue)"
         //				alternative := OrderedCollection new.
         //				alternative add: d.
         //				alternative add: (idxSuccessors at: j).
@@ -1488,14 +1442,14 @@ public class SAVCaseDFSAutomaton {
             
             List<IndexValue<Object>> idxSuccessors = idx.getSuccessors();
             for (int j=0;(j<idxSuccessors.size());j++){
-                SAVDescriptor d =  new SAVDescriptor();
+                Descriptor<Object> d =  new Descriptor<Object>();
 
                 d.add(netRoot.getStructure(), idx.getLabel(), idxSuccessors.get(j).getValue());
 
                 //Make sure that the descriptor is NOT already included in neither the unconfirmed and doubtful descriptions
                 if ((includes(d,getTUnconfirmedDescription()) == null) && ((includes(d,getTDoubtfulDescription()) == null))){
                     //Pack the descriptor, along with the associated IndexValue, in a list called alternative. The form of this list
-                    //will be (SAVDescriptor IndexValue)
+                    //will be (Descriptor<Object> IndexValue)
                     List<IndexValue<Object>> alternative = new ArrayList<IndexValue<Object>>();
                     alternative.add(d);
                     alternative.add(idxSuccessors.get(j));
@@ -1567,7 +1521,7 @@ public class SAVCaseDFSAutomaton {
         
         //<body>presentChoices: alternativeList
         //
-        //	"The elements of the argument alternativeList are lists of the form: (SAVDescriptor IndexValue)
+        //	"The elements of the argument alternativeList are lists of the form: (Descriptor<Object> IndexValue)
         //	Returns:	self - if successful (i.e., at least one possible solution was found).
         //				nil - if retrieveCasesUnderNorm fails.
         //				#cancel - if the user cancels the dialog.
@@ -1647,7 +1601,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public void processNextNormWith(SAVDescriptor aSAVDescriptor,Norm aNorm){
+    public void processNextNormWith(Descriptor<Object> aSAVDescriptor,Norm aNorm){
         //<body>processNextNormWith: aSAVDescriptor and: aNorm
         //
         //	"Automaton reference: PNN"
@@ -1665,13 +1619,13 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public String searchCasesDialogUsing(SAVDescriptor aSAVDescriptor,List<PossibleSolution> aPossibleSolutionsList){
+    public String searchCasesDialogUsing(Descriptor<Object> aSAVDescriptor,List<PossibleSolution> aPossibleSolutionsList){
 
         //<body>searchCasesDialogUsing: aSAVDescriptor saveIn: aPossibleSolutionsList
         //
         //	"MANAGEMENT OF A POSSIBLY INNACURATE DESCRIPTOR.
         //	 This method establishes a dialog with the user. First, an index is searched, under the current
-        //	 norm, that matches the descriptor argument's attribute only. If there is a match, a new SAVDescriptor
+        //	 norm, that matches the descriptor argument's attribute only. If there is a match, a new Descriptor<Object>
         //	 is created for every index value found for the retrieved index. The new information is presented to
         // 	 the user, in order for him/her to determine if it applies.
         //
@@ -1705,9 +1659,9 @@ public class SAVCaseDFSAutomaton {
         //		"Determine if the successor is a norm"
         //		(succ class name = (Norm getClassName))
         //		ifFalse: [
-        //			"The successor is a case. Create a new SAVDescriptor with the information from the current
+        //			"The successor is a case. Create a new Descriptor<Object> with the information from the current
         //			 structure, index, and index value"
-        //			d := SAVDescriptor new.
+        //			d := Descriptor<Object> new.
         //			d addStructure: (netRoot structure) Attribute: (idx label) Value: (indexValues at: i) value.
         //
         //			"Since this descriptor corresponds to a partial match, make sure that it is NOT already
@@ -1786,7 +1740,7 @@ public class SAVCaseDFSAutomaton {
 
         List displayValues = new ArrayList();
         List returnValues = new ArrayList();
-        List<SAVDescriptor> descriptorList = new ArrayList<SAVDescriptor>();
+        List<Descriptor<Object>> descriptorList = new ArrayList<Descriptor<Object>>();
 
         //Scan the index's index-values
         List<IndexValue<Object>> indexValues = idx.getSuccessors();
@@ -1797,9 +1751,9 @@ public class SAVCaseDFSAutomaton {
 
             //Determine if the successor is a norm
             if ((succ instanceof Norm) != true){
-                //The successor is a case. Create a new SAVDescriptor with the information from the current
+                //The successor is a case. Create a new Descriptor<Object> with the information from the current
                 //structure, index, and index value
-                SAVDescriptor d = new SAVDescriptor();
+                Descriptor<Object> d = new Descriptor<Object>();
                 d.add(netRoot.getStructure(), idx.getLabel() , indexValues.get(i).getValue());
 
                 //Since this descriptor corresponds to a partial match, make sure that it is NOT already
@@ -1888,7 +1842,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public Object beginWith(Description<SAVDescriptor> aProblemDescription){
+    public Object beginWith(Description<Descriptor<Object>> aProblemDescription){
         //<body>beginWith: aProblemDescription
         //
         //	"Initial state of the search automaton.  Control is placed on the root norm. The final step is a call to the next state
@@ -1896,7 +1850,7 @@ public class SAVCaseDFSAutomaton {
         //
         //	 Precondition:
         //	 1. aProblemDescription is a non-empty set of SAVDescriptors.
-        //	 2. For all s1, s2::SAVDescriptor in aProblemDescription : (s1 structure) = (s2 structure).
+        //	 2. For all s1, s2::Descriptor<Object> in aProblemDescription : (s1 structure) = (s2 structure).
         //
         //	 Returns: nil - if the argument is an empty list, or
         //			  object returned by searchForNormWith:
@@ -1910,7 +1864,7 @@ public class SAVCaseDFSAutomaton {
         //	ifTrue: [ ^nil ].
         //
         //	"Check part 2. of precondition"
-        //	(aProblemDescription at: 1) class name = (SAVDescriptor getClassName)
+        //	(aProblemDescription at: 1) class name = (Descriptor<Object> getClassName)
         //	ifFalse: [ ^nil ].
         //
         //	((aProblemDescription size) &gt; 1)
@@ -1920,7 +1874,7 @@ public class SAVCaseDFSAutomaton {
         //
         //		2 to: (aProblemDescription size) do:
         //		[:i |
-        //			((aProblemDescription at: i) class name = (SAVDescriptor getClassName)) ifFalse: [ ^nil ].
+        //			((aProblemDescription at: i) class name = (Descriptor<Object> getClassName)) ifFalse: [ ^nil ].
         //		      (sName = ((aProblemDescription at: i) structure)) ifFalse: [ ^nil ] ].
         //	].
         //
@@ -1935,13 +1889,13 @@ public class SAVCaseDFSAutomaton {
         if (aProblemDescription.isEmpty()){return null;}
 
         //Check part 2. of precondition
-        if ((aProblemDescription.get(0) instanceof SAVDescriptor) !=true){return null;}
+        if ((aProblemDescription.get(0) instanceof Descriptor<Object>) !=true){return null;}
         String sName = null;
         if (aProblemDescription.size()>0){
             sName = aProblemDescription.get(0).getStructure();
         }
         for (int i=1;(i<aProblemDescription.size());i++){
-            if ((aProblemDescription.get(i) instanceof SAVDescriptor) != true){return null;}
+            if ((aProblemDescription.get(i) instanceof Descriptor<Object>) != true){return null;}
             if ((sName.equals(aProblemDescription.get(i).getStructure())) != true){return null;}
         }
         //Initialization steps. At this point, nextLevel = 1. Thus, the root level is 1
@@ -1991,7 +1945,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public Object searchForNormWith(Description<SAVDescriptor> aProblemDescription){
+    public Object searchForNormWith(Description<Descriptor<Object>> aProblemDescription){
         //<body>searchForNormWith: aProblemDescription
         //
         //	"The argument aProblemDescription is scanned in search for descriptors that correspond
@@ -2053,7 +2007,7 @@ public class SAVCaseDFSAutomaton {
         
         //Scan the problem description
         int i = 0;
-        SAVDescriptor d = null;
+        Descriptor<Object> d = null;
         Norm nextNorm = null;
         while (i<=aProblemDescription.size()){
             //Search for a norm whose descriptor matches the scanned descriptor. If found,
@@ -2086,7 +2040,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public void updateNormSearchWith(SAVDescriptor aSAVDescriptor,Norm aNewNorm){
+    public void updateNormSearchWith(Descriptor<Object> aSAVDescriptor,Norm aNewNorm){
         //<body>updateNormSearchWith: aSAVDescriptor and: aNewNorm
         //
         //	"Automaton reference: UNS"
@@ -2108,7 +2062,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public Object includes(SAVDescriptor aSAVDescriptor,Description<SAVDescriptor> aDescription){
+    public Object includes(Descriptor<Object> aSAVDescriptor,Description<Descriptor<Object>> aDescription){
         //<body>includes: aSAVDescriptor in: aDescription
         //
         //	"Determines if aSAVDescriptor is already a member of aDescriptionList. The argument aSAVDescriptor is a member of
@@ -2142,7 +2096,7 @@ public class SAVCaseDFSAutomaton {
             (aDescription == getTUnconfirmedDescription()) ||
             (aDescription == getTUnmatchedDescription()) ||
             (aDescription == getTDoubtfulDescription())) != true){return -1;}
-        for (SAVDescriptor d: aDescription){
+        for (Descriptor<Object> d: aDescription){
             if ((d.getStructure().equals(aSAVDescriptor.getStructure())) &&
                 (d.getAttribute().equals(aSAVDescriptor.getAttribute())) &&
                 (d.getValue().equals(aSAVDescriptor.getValue()))){return d;}

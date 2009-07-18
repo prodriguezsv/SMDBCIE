@@ -1,5 +1,5 @@
 /*
- * @see "Categoría Sukia Search Automata en SUKIA SmallTalk"
+ * @see "Categorï¿½a Sukia Search Automata en SUKIA SmallTalk"
  */
 
 package searchAutomata;
@@ -18,13 +18,13 @@ import domainTheory.Attribute;
 import domainTheory.Taxonomy;
 import domainTheory.TaxonomicLevels;
 import domainTheory.Structure;
+import domainTheory.values.RangeDescriptor;
+import domainTheory.values.SingleDescriptor;
+import domainTheory.values.ValueDescriptor;
 import similarityAssessment.SimAssessor;
-import values.RangeDescriptor;
-import values.SingleDescriptor;
-import values.ValueDescriptor;
-import redundantDiscriminantNet.SAVDescriptor;
 import main.Case;
 import main.Description;
+import main.Descriptor;
 
 /**
  * Instances of this class are invoked when the search automatas have performed successfully (i.e., with at least one possible solution),
@@ -233,7 +233,7 @@ public class GoalApproachingDialog {
                             	status= "error";
                             	return false;
                             }
-                            Description<SAVDescriptor> OKSAVDescriptorList = new Description<SAVDescriptor>();
+                            Description<Descriptor<Object>> OKSAVDescriptorList = new Description<Descriptor<Object>>();
                             displayValues = new ArrayList<String>();
                             returnValues = new ArrayList<Object>();
                             //Scan the value descriptor list: valueList with range value descriptors: only ONE element.
@@ -256,7 +256,7 @@ public class GoalApproachingDialog {
                                         ps.addUnconfirmedDescription(result.getASAVDescriptor());
                                     }
                                     if (result.getResponse().equals("unmatch")){
-                                        hypothesis.addUnmatchedDescription((SAVDescriptor)result.getASAVDescriptor());
+                                        hypothesis.addUnmatchedDescription((Descriptor<Object>)result.getASAVDescriptor());
                                     }
                                     //The user typed a value within the range. Thus result contains a SAVDescriptor
                                     //that can be used to update ps confirmedDescription. Additionally, assign
@@ -270,7 +270,7 @@ public class GoalApproachingDialog {
                                     }
                                 } else {
                                     //Create a SAV descriptor for each [structure-attribute]-value
-                                    SAVDescriptor savDescriptor = new SAVDescriptor();
+                                    Descriptor<Object> savDescriptor = new Descriptor<Object>();
                                     savDescriptor.add(((Structure)hypothesis.getDescriptiveElement()).getName(), attribute.getName(), ((SingleDescriptor<Object>)vd).getValue());
                                     //Make sure the SAV descriptor is not already processed (i.e., included in the unconfirmed,
                                     //doubtful, or unmatched descriptions of ANY item in the processList. The reason for this
@@ -426,7 +426,7 @@ public class GoalApproachingDialog {
     	ReturnValue returnValues;
     	String msg, name, result;
     	double suggestedValue, value;
-    	SAVDescriptor d;
+    	Descriptor<Object> d;
     	
     	returnValues = new ReturnValue();
     	if (this.getHypothesis().getDescriptiveElement() instanceof Structure)
@@ -443,7 +443,7 @@ public class GoalApproachingDialog {
 		result = JOptionPane.showInputDialog(msg, Double.toString(suggestedValue));
 	
 		if (result == null) {
-			d = new SAVDescriptor();
+			d = new Descriptor<Object>();
 			d.add(name, anAttribute.getName(), suggestedValue);
 			returnValues.setResponse("reject");
 			returnValues.setASAVDescriptor(d);
@@ -451,7 +451,7 @@ public class GoalApproachingDialog {
 		}
 		
 		value = Double.parseDouble(result);
-		d = new SAVDescriptor();
+		d = new Descriptor<Object>();
 		d.add(name, anAttribute.getName(), value);
 			
 		if (value >= vd.getLowerBound() && value <= vd.getUpperBound())
@@ -471,7 +471,7 @@ public class GoalApproachingDialog {
     public ReturnValue valueDescriptorDialogWith(List<String> displayValues, List<Object> returnValues,Attribute anAttribute){
     	ReturnValue returnValue;
     	String msg, name, result;
-    	SAVDescriptor d;
+    	Descriptor<Object> d;
     	
     	returnValue = new ReturnValue();
     	if (this.getHypothesis().getDescriptiveElement() instanceof Structure)
@@ -490,7 +490,7 @@ public class GoalApproachingDialog {
 			return returnValue;
 		}
 		
-		d = new SAVDescriptor();
+		d = new Descriptor<Object>();
 		d.add(name, anAttribute.getName(), result);
 		returnValue.setResponse("");
 		returnValue.setASAVDescriptor(d);
@@ -572,7 +572,7 @@ public class GoalApproachingDialog {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public Object determineSimilarityFor(SAVDescriptor aSAVDescriptor,Taxon aTaxon){
+    public Object determineSimilarityFor(Descriptor<Object> aSAVDescriptor,Taxon aTaxon){
         
 /**determineSimilarityFor: aSAVDescriptor context: aTaxon
 
@@ -634,7 +634,7 @@ public class GoalApproachingDialog {
 
         ^false.*/
 
-        SAVDescriptor d = new SAVDescriptor();
+        Descriptor<Object> d = new Descriptor<Object>();
         d.add(((Structure)hypothesis.getDescriptiveElement()).getName(), anAttribute.getName(), null);
 
         for (PossibleSolution ps: hypothesis.getPossibleSolutions()){
@@ -652,7 +652,7 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public boolean isDescriptorAlreadyProcessed(SAVDescriptor aSAVDescriptor){
+    public boolean isDescriptorAlreadyProcessed(Descriptor<Object> aSAVDescriptor){
         
 /**isDescriptorAlreadyProcessed: aSAVDescriptor
 
