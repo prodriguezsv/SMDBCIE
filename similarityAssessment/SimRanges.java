@@ -6,6 +6,8 @@ package similarityAssessment;
 import java.util.ArrayList;
 import java.util.List;
 
+import domainTheory.values.ValueDescriptor;
+
 /**
  * @author Armando
  *
@@ -111,7 +113,7 @@ public class SimRanges {
 	 * @param aValueWeightList
 	 * @return
 	 */
-	public static List<ValuedRange> assignValuesUsing(List<WeightedValue> aValueWeightList) {
+	public static List<ValuedRange> assignValuesUsing(List<ValueDescriptor> aValueWeightList) {
 		List<String> rCopy;
 		List<ValuedRange> valuedRangesList;
 		ValuedRange vrInstance;
