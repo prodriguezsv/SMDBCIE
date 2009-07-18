@@ -1,5 +1,5 @@
 /**
- * @see "Categoría Sukia Similarity Assessment de SUKIA Smalltalk"
+ * @see "Categorï¿½a Sukia Similarity Assessment de SUKIA Smalltalk"
  */
 package similarityAssessment;
 
@@ -15,7 +15,7 @@ import domainTheory.values.ValueDescriptor;
 public class SimAssessor {
 
 	/**
-	 * @see "Método distanceBetween:and:in: del protocolo de clase class calculating en SUKIA SmallTalk"
+	 * @see "Mï¿½todo distanceBetween:and:in: del protocolo de clase class calculating en SUKIA SmallTalk"
 	 * @param aValue1
 	 * @param aValue2
 	 * @param aValueWeightList
@@ -39,7 +39,7 @@ public class SimAssessor {
 	/**
 	 * Returns the weight associated to aValue, if aValue exists in aValueWeightList.
 	 * If it doesn't exist, returns nil
-	 * @see "Método getTheWeightOf:in: del protocolo de clase class calculating en SUKIA SmallTalk"
+	 * @see "Mï¿½todo getTheWeightOf:in: del protocolo de clase class calculating en SUKIA SmallTalk"
 	 * @param aValue
 	 * @param aValueWeightList
 	 * @return
@@ -56,7 +56,7 @@ public class SimAssessor {
 	}
 	
 	/**
-	 * @see "Método similarityDegreeOf:in: del protocolo de clase class calculating en SUKIA SmallTalk"
+	 * @see "Mï¿½todo similarityDegreeOf:in: del protocolo de clase class calculating en SUKIA SmallTalk"
 	 * @param aValue
 	 * @param aValueWeightList
 	 * @return
@@ -72,7 +72,7 @@ public class SimAssessor {
 	}
 	
 	/**
-	 * @see "Método similarityRangeOf:in: del protocolo de clase class calculating en SUKIA SmallTalk"
+	 * @see "Mï¿½todo similarityRangeOf:in: del protocolo de clase class calculating en SUKIA SmallTalk"
 	 * @param aValue
 	 * @param aValueWeightList
 	 * @return
@@ -100,7 +100,7 @@ public class SimAssessor {
 	}
 	
 	/**
-	 * @see "Método maxValueWeightOf: del protocolo de clase class weight assessment en SUKIA SmallTalk"
+	 * @see "Mï¿½todo maxValueWeightOf: del protocolo de clase class weight assessment en SUKIA SmallTalk"
 	 * @param aValueWeightList
 	 * @return
 	 */
@@ -127,7 +127,7 @@ public class SimAssessor {
 	}
 	
 	/**
-	 * @see "Método maxWeightOf: del protocolo de clase class weight assessment en SUKIA SmallTalk"
+	 * @see "Mï¿½todo maxWeightOf: del protocolo de clase class weight assessment en SUKIA SmallTalk"
 	 * @param aValueWeightList
 	 * @return
 	 */
