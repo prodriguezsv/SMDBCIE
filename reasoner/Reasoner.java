@@ -742,7 +742,6 @@ public class Reasoner {
 		SAVCaseDFSAutomaton searchAutomaton1;
 		TaxonGHISAutomaton searchAutomaton2;
 		Description<Descriptor<Object>> problemDescription;
-		SAVCaseDFSAutomaton searchAutomaton;
 		String status;
 		
 		while (!(this.getGroupHDescription().isEmpty())) {
@@ -949,7 +948,7 @@ public class Reasoner {
 	public boolean searchCaseStructures() {
 		Structure s;
 		Hypothesis hypothesis1, hypothesis2;
-		List<Descriptor<Object>> problemDescription;
+		Description<Descriptor<Object>> problemDescription;
 		RDNet net;
 		RootNorm caseNetRoot;
 		SAVCaseDFSAutomaton searchAutomaton1;
@@ -980,7 +979,7 @@ public class Reasoner {
 			net = this.getCaseMemory().getRoot().getRDNet(s.getName());
 			if (net == null) 
 				caseNetRoot = null;
-			else caseNetRoot = (SAVRoot) net.getRoot();
+			else caseNetRoot = net.getRoot();
 					
 			if (!(caseNetRoot == null)) {
 				// Create a new instance of case net search automaton

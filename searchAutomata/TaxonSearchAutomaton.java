@@ -1,19 +1,16 @@
 
 package searchAutomata;
 
-import output.TaxonAutomatonOutput;
 import java.util.ArrayList;
 import java.util.List;
-//import java.util.Collections;
-//import java.util.Comparator;
 
+import output.TaxonAutomatonOutput;
 import domainTheory.Taxon;
-//import domainTheory.TaxonomicLevels;
+import domainTheory.values.ValueDescriptor;
 import reasoner.PossibleSolution;
-
-import redundantDiscriminantNet.SAVDescriptor;
+import redundantDiscriminationNet.Index;
 import main.Description;
-import main.Index;
+import main.Descriptor;
 
 /**
  *
@@ -21,22 +18,16 @@ import main.Index;
  */
 
 public class TaxonSearchAutomaton {
-
-    private List<SAVDescriptor> valueDescriptors;
-    private List<SAVDescriptor> tSolutionDesc;
-    private List<SAVDescriptor> tUnmatchedDesc;
-    private Description<SAVDescriptor> justification;
+    private List<ValueDescriptor> valueDescriptors;
+    private Description<Descriptor<Object>> tSolutionDesc;
+    private Description<Descriptor<Object>> tUnmatchedDesc;
+    private Description<Descriptor<Object>> justification;
     private List<Taxon> taxonList;
-    private Description<SAVDescriptor> tSolutionDescription;
-    private Description<SAVDescriptor> tUnmatchedDescription;
-
-
-
+    private Description<Descriptor<Object>> tSolutionDescription;
+    private Description<Descriptor<Object>> tUnmatchedDescription;
     private Index searchIndex;
-
-
     private String status;
-    TaxonAutomatonOutput searchOutput;
+    private TaxonAutomatonOutput searchOutput;
 /**
 <name>TaxonSearchAutomaton</name>
 <environment>Smalltalk</environment>
@@ -108,9 +99,9 @@ public class TaxonSearchAutomaton {
 //        Collections.sort(taxonList,comparator);
 
         
-        valueDescriptors = new ArrayList<SAVDescriptor>();
-        tSolutionDesc = new ArrayList<SAVDescriptor>();
-        tUnmatchedDesc = new ArrayList<SAVDescriptor>();
+        valueDescriptors = new ArrayList<ValueDescriptor>();
+        tSolutionDesc = new Description<Descriptor<Object>>();
+        tUnmatchedDesc = new Description<Descriptor<Object>>();
         //justification = new ArrayList<SAVDescriptor>();
         status = "fail";
 }
@@ -158,12 +149,12 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public void setTaxonList(List<Taxon> taxonList){
+    public void addTaxonList(Taxon taxonList){
 /**taxonList: aTaxon
 
 	taxonList add: aTaxon.
 	^self.*/
-        this.taxonList.addAll(taxonList);
+        this.taxonList.add(taxonList);
 }
 
 /**
@@ -171,7 +162,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public boolean setTSolutionDescription(SAVDescriptor aSAVDescriptor){
+    public boolean setTSolutionDescription(Descriptor<Object> aDescriptor){
 /**tSolutionDescription: aSAVDescriptor
 
 	"Automaton reference: AtS"
@@ -181,10 +172,10 @@ public class TaxonSearchAutomaton {
 
 	tSolutionDesc add: aSAVDescriptor.
 	^self.*/
-        if (includes(aSAVDescriptor,tSolutionDescription) != null){
+        if (includes(aDescriptor,tSolutionDescription) != null){
             return true;
         };
-        tSolutionDesc.add(aSAVDescriptor);
+        tSolutionDesc.add(aDescriptor);
         return true;
 }
 
@@ -193,7 +184,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public boolean setTUnmatchedDescription(SAVDescriptor aSAVDescriptor){
+    public boolean setTUnmatchedDescription(Descriptor<Object> aDescriptor){
 /**tUnmatchedDescription: aSAVDescriptor
 
 	"Automaton reference: AtUMD"
@@ -203,10 +194,10 @@ public class TaxonSearchAutomaton {
 
 	tUnmatchedDesc add: aSAVDescriptor.
 	^self.*/
-        if (includes(aSAVDescriptor,tUnmatchedDescription) != null){
+        if (includes(aDescriptor,tUnmatchedDescription) != null){
         return true;
         }
-        tUnmatchedDesc.add(aSAVDescriptor);
+        tUnmatchedDesc.add(aDescriptor);
         return true;
 }
 
@@ -215,7 +206,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public boolean setValueDescriptors(List<SAVDescriptor> aValueDescriptorList){
+    public boolean setValueDescriptors(List<ValueDescriptor> aValueDescriptorList){
 /**valueDescriptors: aValueDescriptorList
 
 	[ aValueDescriptorList isEmpty ]
@@ -236,7 +227,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public Description<SAVDescriptor> getJustification(){
+    public Description<Descriptor<Object>> getJustification(){
 /**justification
 
 	^justification.*/
@@ -296,7 +287,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public List<SAVDescriptor> getTSolutionDescription(){
+    public Description<Descriptor<Object>> getTSolutionDescription(){
 /**tSolutionDescription
 
 	^tSolutionDesc.*/
@@ -308,7 +299,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public List<SAVDescriptor>  getTUnmatchedDescription(){
+    public Description<Descriptor<Object>>  getTUnmatchedDescription(){
 /**tUnmatchedDescription
 
 	^tUnmatchedDesc.*/
@@ -320,7 +311,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public List<SAVDescriptor> getValueDescriptors(){
+    public List<ValueDescriptor> getValueDescriptors(){
 /**valueDescriptors
 
 	^valueDescriptors.*/
@@ -379,7 +370,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public boolean checkPrecondition(List<SAVDescriptor> aProblemDescription){
+    public boolean checkPrecondition(Description<Descriptor<Object>>  aProblemDescription){
 /**checkPrecondition: aProblemDescription
 
 	"beginWith Check:
@@ -419,7 +410,7 @@ public class TaxonSearchAutomaton {
         String sName = aProblemDescription.get(0).getStructure();
         if (aProblemDescription.size()>0){
             for (int i = 1;(i<aProblemDescription.size());i++){
-                if ((aProblemDescription.get(i) instanceof SAVDescriptor) != true) {return false;}
+                if ((aProblemDescription.get(i) instanceof Descriptor) != true) {return false;}
                 if (sName.equals(aProblemDescription.get(i).getStructure()) != true) {return false;}
 
             }
@@ -485,7 +476,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public void resetList(List<SAVDescriptor> anOrderedCollection){
+    public void resetList(Description<Descriptor<Object>>  anOrderedCollection){
 /**resetList: anOrderedCollection
 
 	[ anOrderedCollection isEmpty ]
@@ -520,7 +511,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public SAVDescriptor includes(SAVDescriptor aSAVDescriptor,Description<SAVDescriptor> aDescription) {
+    public Descriptor<Object> includes(Descriptor<Object> aDescriptor, Description<Descriptor<Object>>  aDescription) {
 /**includes: aSAVDescriptor in: aDescription
 
 	"Determines if aSAVDescriptor is already a member of aDescriptionList. The argument aSAVDescriptor is a member of
@@ -548,11 +539,10 @@ public class TaxonSearchAutomaton {
 	^nil.*/
         if (( (aDescription.equals(tSolutionDescription)) ||
                 (aDescription.equals(tUnmatchedDescription)))!=true) {return null;}
-        for (Object desc : aDescription){
-            SAVDescriptor d = (SAVDescriptor)desc;
-            if ((d.getStructure().equals(aSAVDescriptor.getStructure())) &&
-                    (d.getAttribute().equals(aSAVDescriptor.getAttribute())) &&
-                    (d.getValue().equals(aSAVDescriptor.getValue()))
+        for (Descriptor<Object> d : aDescription){
+            if ((d.getStructure().equals(aDescriptor.getStructure())) &&
+                    (d.getAttribute().equals(aDescriptor.getAttribute())) &&
+                    (d.getValue().equals(aDescriptor.getValue()))
                     ){return d;}
 
 

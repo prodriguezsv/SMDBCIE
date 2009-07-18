@@ -345,7 +345,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
         taxa = associateTaxaToPossibleSolutions(tempList);
         while (taxa.size()>0){
             taxa.remove(0);
-            setTaxonList(taxa);
+            addTaxonList(taxa);
             resetList(getTSolutionDescription());
         }
         return true;

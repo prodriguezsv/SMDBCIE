@@ -253,10 +253,10 @@ public class GoalApproachingDialog {
                                     }
                                     
                                     if (result.getResponse().equals("reject")){
-                                        ps.addUnconfirmedDescription(result.getASAVDescriptor());
+                                        ps.addUnconfirmedDescription(result.getDescriptor());
                                     }
                                     if (result.getResponse().equals("unmatch")){
-                                        hypothesis.addUnmatchedDescription((Descriptor<Object>)result.getASAVDescriptor());
+                                        hypothesis.addUnmatchedDescription((Descriptor<Object>)result.getDescriptor());
                                     }
                                     //The user typed a value within the range. Thus result contains a SAVDescriptor
                                     //that can be used to update ps confirmedDescription. Additionally, assign
@@ -264,7 +264,7 @@ public class GoalApproachingDialog {
                                     //call to doDialog, in order to process the next possible solution in processList
                                     if (result.getResponse().equals("confirm")){
                                         ps.setSolution(nextLevelTaxon);
-                                        ps.addConfirmedDescription(result.getASAVDescriptor());
+                                        ps.addConfirmedDescription(result.getDescriptor());
                                         addOKList(ps);
                                         return doDialog();
                                     }
@@ -325,9 +325,9 @@ public class GoalApproachingDialog {
                                 }
                                 //User selects one item. The dialog method returns the value included in a SAVDescriptor.
                                 //Assign nextLevelTaxon to ps solution. Place ps in the OKList. Call doDialog recursively
-                                if (result.getASAVDescriptor() != null){
+                                if (result.getDescriptor() != null){
                                     ps.setSolution(nextLevelTaxon);
-                                    ps.addConfirmedDescription(result.getASAVDescriptor());
+                                    ps.addConfirmedDescription(result.getDescriptor());
                                     OKList.add(ps);
                                     return doDialog();
                                 }
@@ -446,7 +446,7 @@ public class GoalApproachingDialog {
 			d = new Descriptor<Object>();
 			d.add(name, anAttribute.getName(), suggestedValue);
 			returnValues.setResponse("reject");
-			returnValues.setASAVDescriptor(d);
+			returnValues.setDescriptor(d);
 			return returnValues;
 		}
 		
@@ -458,7 +458,7 @@ public class GoalApproachingDialog {
 			returnValues.setResponse("confirm");
 		else returnValues.setResponse("unmatch");
 	
-		returnValues.setASAVDescriptor(d);
+		returnValues.setDescriptor(d);
 		
 		return returnValues;
     }
@@ -486,14 +486,14 @@ public class GoalApproachingDialog {
 		
 		if (result.equals("reject") || result.equals("doubt") || result.equals("cancel")) {
 			returnValue.setResponse(result);
-			returnValue.setASAVDescriptor(null);
+			returnValue.setDescriptor(null);
 			return returnValue;
 		}
 		
 		d = new Descriptor<Object>();
 		d.add(name, anAttribute.getName(), result);
 		returnValue.setResponse("");
-		returnValue.setASAVDescriptor(d);
+		returnValue.setDescriptor(d);
 		return returnValue;
     }
 

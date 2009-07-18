@@ -3,7 +3,7 @@
  */
 package searchAutomata;
 
-import redundantDiscriminantNet.SAVDescriptor;
+import main.Descriptor;
 
 /**
  * @author Armando
@@ -11,7 +11,7 @@ import redundantDiscriminantNet.SAVDescriptor;
  */
 public class ReturnValue {
 	private String response;
-	private SAVDescriptor aSAVDescriptor;
+	private Descriptor<Object> aDescriptor;
 
 	/**
 	 * 
@@ -22,9 +22,9 @@ public class ReturnValue {
 	/**
 	 * 
 	 */
-	public ReturnValue(String response, SAVDescriptor aSAVDescriptor) {
+	public ReturnValue(String response, Descriptor<Object> aDescriptor) {
 		this.response = response;
-		this.aSAVDescriptor = aSAVDescriptor;
+		this.aDescriptor = aDescriptor;
 	}
 
 	public void setResponse(String response) {
@@ -35,12 +35,12 @@ public class ReturnValue {
 		return response;
 	}
 
-	public void setASAVDescriptor(SAVDescriptor aSAVDescriptor) {
-		this.aSAVDescriptor = aSAVDescriptor;
+	public void setDescriptor(Descriptor<Object> aDescriptor) {
+		this.aDescriptor = aDescriptor;
 	}
 
-	public SAVDescriptor getASAVDescriptor() {
-		return aSAVDescriptor;
+	public Descriptor<Object> getDescriptor() {
+		return aDescriptor;
 	}
 
 }
