@@ -182,7 +182,7 @@ public class Structure implements Comparable<Structure> {
 
 			// Create the new SAVDescriptor and assign its values
 			d = new Descriptor<Object>();
-			d.add(this.getName(), a.getName(), ((SingleDescriptor<Object>)vd).getValue());
+			d.set(this.getName(), a.getName(), ((SingleDescriptor<Object>)vd).getValue());
 					
 			description.add(d);
 		}

@@ -272,7 +272,7 @@ public class GoalApproachingDialog {
                                 } else {
                                     //Create a SAV descriptor for each [structure-attribute]-value
                                     Descriptor<Object> savDescriptor = new Descriptor<Object>();
-                                    savDescriptor.add(((Structure)hypothesis.getDescriptiveElement()).getName(), attribute.getName(), ((SingleDescriptor<Object>)vd).getValue());
+                                    savDescriptor.set(((Structure)hypothesis.getDescriptiveElement()).getName(), attribute.getName(), ((SingleDescriptor<Object>)vd).getValue());
                                     //Make sure the SAV descriptor is not already processed (i.e., included in the unconfirmed,
                                     //doubtful, or unmatched descriptions of ANY item in the processList. The reason for this
                                     //check is to avoid asking the user questions previously answered
@@ -445,7 +445,7 @@ public class GoalApproachingDialog {
 	
 		if (result == null) {
 			d = new Descriptor<Object>();
-			d.add(name, anAttribute.getName(), suggestedValue);
+			d.set(name, anAttribute.getName(), suggestedValue);
 			returnValues.setResponse("reject");
 			returnValues.setDescriptor(d);
 			return returnValues;
@@ -453,7 +453,7 @@ public class GoalApproachingDialog {
 		
 		value = Double.parseDouble(result);
 		d = new Descriptor<Object>();
-		d.add(name, anAttribute.getName(), value);
+		d.set(name, anAttribute.getName(), value);
 			
 		if (value >= vd.getLowerBound() && value <= vd.getUpperBound())
 			returnValues.setResponse("confirm");
@@ -492,7 +492,7 @@ public class GoalApproachingDialog {
 		}
 		
 		d = new Descriptor<Object>();
-		d.add(name, anAttribute.getName(), result);
+		d.set(name, anAttribute.getName(), result);
 		returnValue.setResponse("");
 		returnValue.setDescriptor(d);
 		return returnValue;
@@ -636,7 +636,7 @@ public class GoalApproachingDialog {
         ^false.*/
 
         Descriptor<Object> d = new Descriptor<Object>();
-        d.add(((Structure)hypothesis.getDescriptiveElement()).getName(), anAttribute.getName(), null);
+        d.set(((Structure)hypothesis.getDescriptiveElement()).getName(), anAttribute.getName(), null);
 
         for (PossibleSolution ps: hypothesis.getPossibleSolutions()){
 

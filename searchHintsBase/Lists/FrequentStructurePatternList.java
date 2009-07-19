@@ -228,7 +228,7 @@ public class FrequentStructurePatternList extends HintsList<FrequentStructurePat
 				vdList.get(Attribute.oneLevel()).get(Attribute.oneLevel()) instanceof SingleDescriptor) {
 				d = new Descriptor<Object>();
 				
-				d.add(aStructure.getName(), a.getName(), ((SingleDescriptor<Object>)vdList.get(Attribute.oneLevel()).get(Attribute.oneLevel())).getValue());
+				d.set(aStructure.getName(), a.getName(), ((SingleDescriptor<Object>)vdList.get(Attribute.oneLevel()).get(Attribute.oneLevel())).getValue());
 				aDescriptorList.add(d);
 			} else return null;
 		}

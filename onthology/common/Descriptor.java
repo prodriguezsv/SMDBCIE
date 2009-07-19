@@ -28,13 +28,24 @@ public class Descriptor<T> implements Comparable<Descriptor<T>> {
 	}
 	
 	/**
-	 * Sets self to default values: self = (nil, nil)
-	 * @see "Método clear del protocolo initializing en SUKIA SmallTalk"
+	 * Método agregado
 	 */
-	public void clear() {
-		this.setStructure(null);
-		this.setAttribute(null);
-		this.setValue(null);
+	public Descriptor(String aStructure, String aAttribute, T aValue) {
+		this.setStructure(aStructure);
+		this.setAttribute(aAttribute);
+		this.setValue(aValue);
+	}
+
+	/**
+	 * @see "Método addStructure:Attribute:Value: del protocolo adding en SUKIA SmallTalk"
+	 * @param aStructure
+	 * @param anAttribute
+	 * @param aValue
+	 */
+	public void set(String aStructure, String anAttribute, T aValue) {
+		this.setStructure(aStructure);
+		this.setAttribute(anAttribute);
+		this.setValue(aValue);
 	}
 	
 	/**
@@ -52,24 +63,12 @@ public class Descriptor<T> implements Comparable<Descriptor<T>> {
 	public String getStructure() {
 		return structure;
 	}
-
-	/**
-	 * @see "Método addStructure:Attribute:Value: del protocolo adding en SUKIA SmallTalk"
-	 * @param aStructure
-	 * @param anAttribute
-	 * @param aValue
-	 */
-	public void add(String aStructure, String anAttribute, T aValue) {
-		this.setStructure(aStructure);
-		this.setAttribute(anAttribute);
-		this.setValue(aValue);
-	}
     
 	/**
 	 * @see "Método addAttribute: del protocolo adding-private en SUKIA SmallTalk"
 	 * @param attribute
 	 */
-    public void setAttribute(String attribute) {
+    private void setAttribute(String attribute) {
     	this.attribute = attribute;
     }
     
@@ -102,5 +101,22 @@ public class Descriptor<T> implements Comparable<Descriptor<T>> {
 	 */
 	public int compareTo(Descriptor<T> aDescriptor) {
 		return this.getStructure().concat(this.getAttribute()).compareTo(aDescriptor.getStructure().concat(aDescriptor.getAttribute()));
+	}
+	
+	/**
+	 * Método agregado
+	 * @param aDescriptor
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public boolean equals(Object aDescriptor) {
+		if (aDescriptor == null) return false;
+		if (!(aDescriptor instanceof Descriptor)) return false;
+		
+		if (this.getStructure().equals(((Descriptor<Object>)aDescriptor).getStructure()) &&
+				this.getAttribute().equals(((Descriptor<Object>)aDescriptor).getAttribute()) &&
+				this.getValue().equals(((Descriptor<Object>)aDescriptor).getValue()))
+			return true;
+		else return false;
 	}
 }

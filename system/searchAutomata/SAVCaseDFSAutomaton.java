@@ -451,7 +451,7 @@ public class SAVCaseDFSAutomaton {
 	            //Scan the list of successors for the current index
 	            for (int j = 0; (j< idxSucc.size()); j++){
 	                Descriptor<Object> d = new Descriptor<Object>();
-	                d.add(netRoot.getStructure(), ((Index)normSucc).getLabel(), idxSucc.get(j).getValue());
+	                d.set(netRoot.getStructure(), ((Index)normSucc).getLabel(), idxSucc.get(j).getValue());
 	                //If the Descriptor<Object> is not a member of the unconfirmed description, check it against
 	                //the doubtful description. If this time the SAVDescriptior is NOT a member of the doubtful
 	                //description, return self, indicating that there is at least one index-value to show to the user
@@ -1102,7 +1102,7 @@ public class SAVCaseDFSAutomaton {
                     for (int j = 0; (j<idxSuccessors.size());j++){
                         //For every associated IndexValue: create a Descriptor<Object>
                         Descriptor<Object> d = new Descriptor<Object>();
-                        d.add(netRoot.getStructure(), idx.getLabel(), idxSuccessors.get(j).getValue());
+                        d.set(netRoot.getStructure(), idx.getLabel(), idxSuccessors.get(j).getValue());
 
                         //Make sure that the descriptor is NOT already included in neither the unconfirmed and doubtful descriptions
                         if ((includes(d,getTUnconfirmedDescription())== null) &&(includes(d,getTDoubtfulDescription())== null)){
@@ -1187,7 +1187,7 @@ public class SAVCaseDFSAutomaton {
             for (int j = 0; (j<idxSuccessors.size());j++){
                 //For every associated IndexValue: create a Descriptor<Object>
                 Descriptor<Object> d = new Descriptor<Object>();
-                d.add(netRoot.getStructure(), idx.getLabel(), idxSuccessors.get(j).getValue());
+                d.set(netRoot.getStructure(), idx.getLabel(), idxSuccessors.get(j).getValue());
                 //Make sure that the descriptor is NOT already included in neither the unconfirmed and doubtful descriptions
                 if ((includes(d,getTUnconfirmedDescription()) == null) && (includes(d,getTDoubtfulDescription()) == null)){ return false;}
             }
@@ -1352,7 +1352,7 @@ public class SAVCaseDFSAutomaton {
             for (int j=0;(j<idxSuccessors.size());j++){
                 Descriptor<Object> d =  new Descriptor<Object>();
 
-                d.add(netRoot.getStructure(), idx.getLabel(), idxSuccessors.get(j).getValue());
+                d.set(netRoot.getStructure(), idx.getLabel(), idxSuccessors.get(j).getValue());
 
                 //Make sure that the descriptor is NOT already included in neither the unconfirmed and doubtful descriptions
                 if ((includes(d,getTUnconfirmedDescription()) == null) && ((includes(d,getTDoubtfulDescription()) == null))){
@@ -1661,7 +1661,7 @@ public class SAVCaseDFSAutomaton {
                 //The successor is a case. Create a new Descriptor<Object> with the information from the current
                 //structure, index, and index value
                 Descriptor<Object> d = new Descriptor<Object>();
-                d.add(netRoot.getStructure(), idx.getLabel() , indexValues.get(i).getValue());
+                d.set(netRoot.getStructure(), idx.getLabel() , indexValues.get(i).getValue());
 
                 //Since this descriptor corresponds to a partial match, make sure that it is NOT already
                 //included in neither the unconfirmed, doubtful, unmatched, solution, or confirmed descriptions

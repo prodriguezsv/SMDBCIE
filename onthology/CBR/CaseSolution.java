@@ -20,6 +20,14 @@ public class CaseSolution {
 		taxonLevel = null;
 		taxonName = null;
 	}
+	
+	/**
+	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
+	 */
+	public CaseSolution(String taxonLevel, String taxonName) {
+		this.taxonLevel = taxonLevel;
+		this.taxonName = taxonName;
+	}
 
 	/**
 	 * @see "Método taxonLevel del protocolo accessing en SUKIA SmallTalk"

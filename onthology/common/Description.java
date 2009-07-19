@@ -25,7 +25,7 @@ public class Description <T extends Descriptor<Object>> extends ArrayList<T>{
 		if (this.contains(aDescriptor)) return false;
 
 		descriptor = (T) new Descriptor<Object>();
-		descriptor.add(aDescriptor.getStructure(), aDescriptor.getAttribute(), aDescriptor.getValue());
+		descriptor.set(aDescriptor.getStructure(), aDescriptor.getAttribute(), aDescriptor.getValue());
 		super.add(descriptor);
 		
 		return true;
