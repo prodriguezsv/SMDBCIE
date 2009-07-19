@@ -7,14 +7,15 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import main.Case;
-import main.Description;
-import main.Descriptor;
-import patternMatching.ProblemCase;
-import patternMatching.Solution;
-import auxiliary.CBRStack;
-import auxiliary.ComparingTable;
-import auxiliary.ComparingTableTuple;
+import onthology.CBR.Case;
+import onthology.CBR.ProblemCase;
+import onthology.CBR.Solution;
+import onthology.common.Description;
+import onthology.common.Descriptor;
+
+import redundantDiscriminationNet.auxiliary.CBRStack;
+import redundantDiscriminationNet.auxiliary.ComparingTable;
+import redundantDiscriminationNet.auxiliary.ComparingTableTuple;
 
 /**
  * Purpose: Entry access structure to a redundant discrimination net.  This class implements all necessary methods to establish a net root,

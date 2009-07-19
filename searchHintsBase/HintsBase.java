@@ -3,11 +3,11 @@
  */
 package searchHintsBase;
 
-import searchHintsLists.FrequentGroupingHeuristicList;
-import searchHintsLists.FrequentStructurePatternList;
-import searchHintsLists.SpecificStructureAttributeList;
-import searchHintsLists.WeightedGroupingHeuristicList;
-import searchHintsLists.WeightedStructureList;
+import searchHintsBase.Lists.FrequentGroupingHeuristicList;
+import searchHintsBase.Lists.FrequentStructurePatternList;
+import searchHintsBase.Lists.SpecificStructureAttributeList;
+import searchHintsBase.Lists.WeightedGroupingHeuristicList;
+import searchHintsBase.Lists.WeightedStructureList;
 
 /**
  * @author Armando

@@ -6,7 +6,8 @@ package redundantDiscriminationNet;
 import java.util.ArrayList;
 import java.util.List;
 
-import main.Descriptor;
+import onthology.common.Descriptor;
+
 
 
 
