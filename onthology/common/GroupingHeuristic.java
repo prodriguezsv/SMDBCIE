@@ -169,7 +169,7 @@ public class GroupingHeuristic implements Comparable<GroupingHeuristic> {
 		
 		// Create the new SAVDescriptor and assign its values
 		d = new Descriptor<Object>();
-		d.add(aTaxonomicGroupName, this.getName(), ((SingleDescriptor<Object>)vd).getValue());
+		d.set(aTaxonomicGroupName, this.getName(), ((SingleDescriptor<Object>)vd).getValue());
 					
 		description.add(d);
 		

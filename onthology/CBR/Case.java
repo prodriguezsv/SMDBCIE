@@ -110,6 +110,8 @@ public class Case {
 	 * @return
 	 */
 	public boolean addToDescription(Descriptor<Object> aDescriptor) {
+		if (aDescriptor == null) return false;
+		
 		if (this.getDescription().contains(aDescriptor))
 			return false;
 		this.getDescription().add(aDescriptor);
@@ -124,6 +126,8 @@ public class Case {
 	 * @return
 	 */
 	public boolean addToJustification(Descriptor<Object> aDescriptor) {
+		if (aDescriptor == null) return false;
+		
 		if (this.getDescription().contains(aDescriptor))
 			return false;
 		this.getJustification().add(aDescriptor);
@@ -173,8 +177,7 @@ public class Case {
 		
 		for(Descriptor<Object> d: this.getDescription()) {
 			// Determine if the structure name in Deescriptor has already been included in structureList
-			if (!(description.contains(d.getStructure()))) {
-				// The structure name was not found in structureList. Append it to structureList
+			if (d.getStructure().equals(aStructureName)) {
 				description.add(d);
 			} else continue;
 		}

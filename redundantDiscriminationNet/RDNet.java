@@ -394,7 +394,7 @@ public class RDNet {
 				if (ix.getSuccessors().get(0).getValue() instanceof String)
 					valorSimbolo =  valor;
 				else valorSimbolo =  Double.parseDouble(valor);
-				desc.add(this.getRoot().getStructure(), ix.getLabel(), valorSimbolo);
+				desc.set(this.getRoot().getStructure(), ix.getLabel(), valorSimbolo);
 				this.getProblemCase().addToDescription(desc);
 			}
 		}
@@ -726,7 +726,7 @@ public class RDNet {
 				if (!(tuple.getACIValue() == null)) {
 					sn = new SheetNode();
 					d = new Descriptor<Object>();
-					d.add(this.getRoot().getStructure(), tuple.getAttribute(), tuple.getACIValue());
+					d.set(this.getRoot().getStructure(), tuple.getAttribute(), tuple.getACIValue());
 					sn.setDescriptor(d);
 					sn.setCase(this.getCaseToInsert());
 					ix.addSuccessor(sn);
@@ -739,7 +739,7 @@ public class RDNet {
 				if (!(tuple.getACCValue() == null)) {
 					sn = new SheetNode();
 					d = new Descriptor<Object>();
-					d.add(this.getRoot().getStructure(), tuple.getAttribute(), tuple.getACCValue());
+					d.set(this.getRoot().getStructure(), tuple.getAttribute(), tuple.getACCValue());
 					sn.setDescriptor(d);
 					sn.setCase(this.getCaseToCompare());
 					ix.addSuccessor(sn);
@@ -751,7 +751,7 @@ public class RDNet {
 				// Create an empty norm and fill its values
 				norm = new Norm();
 				d = new Descriptor<Object>();
-				d.add(this.getRoot().getStructure(), tuple.getAttribute(), tuple.getACCValue());
+				d.set(this.getRoot().getStructure(), tuple.getAttribute(), tuple.getACCValue());
 				norm.setDescriptor(d);
 				norm.incrementNumCasesBy(2);
 
