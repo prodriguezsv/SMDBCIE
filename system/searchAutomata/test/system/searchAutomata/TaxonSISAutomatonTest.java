@@ -5,11 +5,12 @@
 
 package system.searchAutomata.test.system.searchAutomata;
 
-import onthology.common.Attribute;
-import onthology.common.Description;
-import onthology.common.Descriptor;
-import onthology.common.Structure;
-import onthology.taxonomy.Taxon;
+import ontology.common.Attribute;
+import ontology.common.Description;
+import ontology.common.Descriptor;
+import ontology.common.Structure;
+import ontology.taxonomy.Taxon;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

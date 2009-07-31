@@ -8,8 +8,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import onthology.common.Attribute;
-import onthology.common.Structure;
+import ontology.common.Attribute;
+import ontology.common.Structure;
 
 import searchHintsBase.Elements.SpecificAttribute;
 import searchHintsBase.Elements.SpecificStructureAttributeElt;

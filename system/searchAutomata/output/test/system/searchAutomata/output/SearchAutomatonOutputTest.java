@@ -6,9 +6,10 @@
 package system.searchAutomata.output.test.system.searchAutomata.output;
 
 import java.util.List;
-import onthology.CBR.PossibleSolution;
-import onthology.common.Description;
-import onthology.common.Descriptor;
+import ontology.CBR.PossibleSolution;
+import ontology.common.Description;
+import ontology.common.Descriptor;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

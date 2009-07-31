@@ -5,7 +5,8 @@
 
 package system.searchAutomata.test.system.searchAutomata;
 
-import onthology.common.Descriptor;
+import ontology.common.Descriptor;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

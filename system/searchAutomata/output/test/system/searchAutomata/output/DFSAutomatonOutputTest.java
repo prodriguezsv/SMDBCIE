@@ -5,7 +5,8 @@
 
 package system.searchAutomata.output.test.system.searchAutomata.output;
 
-import onthology.taxonomy.Taxonomy;
+import ontology.taxonomy.Taxonomy;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

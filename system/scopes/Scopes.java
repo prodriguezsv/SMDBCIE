@@ -6,9 +6,9 @@ package system.scopes;
 import java.util.ArrayList;
 import java.util.List;
 
-import onthology.common.Attribute;
-import onthology.common.GroupingHeuristic;
-import onthology.common.Structure;
+import ontology.common.Attribute;
+import ontology.common.GroupingHeuristic;
+import ontology.common.Structure;
 
 
 /**

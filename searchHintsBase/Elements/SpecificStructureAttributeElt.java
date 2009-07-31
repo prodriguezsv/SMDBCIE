@@ -6,7 +6,7 @@ package searchHintsBase.Elements;
 import java.util.ArrayList;
 import java.util.List;
 
-import onthology.common.Attribute;
+import ontology.common.Attribute;
 
 
 /**

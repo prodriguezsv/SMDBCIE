@@ -11,18 +11,18 @@ import system.similarityAssessment.SimAssessor;
 import java.util.ArrayList;
 import java.util.List;
 
-import onthology.CBR.PossibleSolution;
-import onthology.common.Attribute;
-import onthology.common.Description;
-import onthology.common.Descriptor;
-import onthology.common.Structure;
-import onthology.taxonomy.StructureIndex;
-import onthology.taxonomy.Taxon;
-import onthology.taxonomy.TaxonomicLevels;
-import onthology.values.RangeDescriptor;
-import onthology.values.SingleDescriptor;
-import onthology.values.Value;
-import onthology.values.ValueDescriptor;
+import ontology.CBR.PossibleSolution;
+import ontology.common.Attribute;
+import ontology.common.Description;
+import ontology.common.Descriptor;
+import ontology.common.Structure;
+import ontology.taxonomy.StructureIndex;
+import ontology.taxonomy.Taxon;
+import ontology.taxonomy.TaxonomicLevels;
+import ontology.values.RangeDescriptor;
+import ontology.values.SingleDescriptor;
+import ontology.values.Value;
+import ontology.values.ValueDescriptor;
 
 /*
  *

@@ -7,11 +7,11 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import onthology.CBR.Case;
-import onthology.CBR.ProblemCase;
-import onthology.CBR.Solution;
-import onthology.common.Description;
-import onthology.common.Descriptor;
+import ontology.CBR.Case;
+import ontology.CBR.ProblemCase;
+import ontology.CBR.Solution;
+import ontology.common.Description;
+import ontology.common.Descriptor;
 
 import redundantDiscriminationNet.auxiliary.CBRStack;
 import redundantDiscriminationNet.auxiliary.ComparingTable;

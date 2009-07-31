@@ -6,8 +6,8 @@ package redundantDiscriminationNet.auxiliary;
 import java.util.ArrayList;
 import java.util.List;
 
-import onthology.common.Description;
-import onthology.common.Descriptor;
+import ontology.common.Description;
+import ontology.common.Descriptor;
 
 /**
  * Purpose:  This class is used when the case-adding process needs to compare the descriptors of two cases.  When a case is being added to the net,

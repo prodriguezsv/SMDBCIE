@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import onthology.CBR.PossibleSolution;
-import onthology.taxonomy.Taxon;
-import onthology.taxonomy.Taxonomy;
+import ontology.CBR.PossibleSolution;
+import ontology.taxonomy.Taxon;
+import ontology.taxonomy.Taxonomy;
 
 
 /**

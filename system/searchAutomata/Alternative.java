@@ -5,7 +5,7 @@
 
 package system.searchAutomata;
 
-import onthology.common.Descriptor;
+import ontology.common.Descriptor;
 import redundantDiscriminationNet.Node;
 
 /**

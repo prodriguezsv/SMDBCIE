@@ -10,20 +10,20 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import onthology.CBR.Case;
-import onthology.CBR.Hypothesis;
-import onthology.CBR.PossibleSolution;
-import onthology.common.Attribute;
-import onthology.common.Description;
-import onthology.common.Descriptor;
-import onthology.common.GroupingHeuristic;
-import onthology.common.Structure;
-import onthology.taxonomy.Taxon;
-import onthology.taxonomy.TaxonomicLevels;
-import onthology.taxonomy.Taxonomy;
-import onthology.values.RangeDescriptor;
-import onthology.values.SingleDescriptor;
-import onthology.values.ValueDescriptor;
+import ontology.CBR.Case;
+import ontology.CBR.Hypothesis;
+import ontology.CBR.PossibleSolution;
+import ontology.common.Attribute;
+import ontology.common.Description;
+import ontology.common.Descriptor;
+import ontology.common.GroupingHeuristic;
+import ontology.common.Structure;
+import ontology.taxonomy.Taxon;
+import ontology.taxonomy.TaxonomicLevels;
+import ontology.taxonomy.Taxonomy;
+import ontology.values.RangeDescriptor;
+import ontology.values.SingleDescriptor;
+import ontology.values.ValueDescriptor;
 
 import system.similarityAssessment.SimAssessor;
 

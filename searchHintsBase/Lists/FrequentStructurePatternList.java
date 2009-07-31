@@ -8,12 +8,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import onthology.common.Attribute;
-import onthology.common.Description;
-import onthology.common.Descriptor;
-import onthology.common.Structure;
-import onthology.values.SingleDescriptor;
-import onthology.values.Value;
+import ontology.common.Attribute;
+import ontology.common.Description;
+import ontology.common.Descriptor;
+import ontology.common.Structure;
+import ontology.values.SingleDescriptor;
+import ontology.values.Value;
 
 
 import searchHintsBase.Elements.FrequentDescriptorPattern;

@@ -3,8 +3,8 @@
  */
 package system;
 
-import onthology.taxonomy.TaxonomicLevels;
-import onthology.taxonomy.Taxonomy;
+import ontology.taxonomy.TaxonomicLevels;
+import ontology.taxonomy.Taxonomy;
 import redundantDiscriminationNet.RDMultiNet;
 import searchHintsBase.HintsBase;
 import system.scopes.AttributeScopes;

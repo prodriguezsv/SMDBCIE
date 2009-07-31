@@ -8,8 +8,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import onthology.common.GroupingHeuristic;
-import onthology.values.SingleDescriptor;
+import ontology.common.GroupingHeuristic;
+import ontology.values.SingleDescriptor;
 
 import searchHintsBase.Elements.FrequentGroupingHeuristicElt;
 

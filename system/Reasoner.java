@@ -6,15 +6,15 @@ package system;
 import java.util.ArrayList;
 import java.util.List;
 
-import onthology.CBR.Hypothesis;
-import onthology.CBR.PossibleSolution;
-import onthology.CBR.ProposedSolution;
-import onthology.common.Description;
-import onthology.common.Descriptor;
-import onthology.common.GroupingHeuristic;
-import onthology.common.Structure;
-import onthology.taxonomy.TaxonomicLevels;
-import onthology.taxonomy.Taxonomy;
+import ontology.CBR.Hypothesis;
+import ontology.CBR.PossibleSolution;
+import ontology.CBR.ProposedSolution;
+import ontology.common.Description;
+import ontology.common.Descriptor;
+import ontology.common.GroupingHeuristic;
+import ontology.common.Structure;
+import ontology.taxonomy.TaxonomicLevels;
+import ontology.taxonomy.Taxonomy;
 
 import redundantDiscriminationNet.RDMultiNet;
 import redundantDiscriminationNet.RDNet;

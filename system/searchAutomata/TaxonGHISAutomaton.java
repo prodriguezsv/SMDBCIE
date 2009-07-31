@@ -8,15 +8,15 @@ package system.searchAutomata;
 
 import java.util.List;
 
-import onthology.CBR.PossibleSolution;
-import onthology.common.Description;
-import onthology.common.Descriptor;
-import onthology.common.GroupingHeuristic;
-import onthology.taxonomy.GroupingHeuristicIndex;
-import onthology.taxonomy.Taxon;
-import onthology.taxonomy.TaxonomicLevels;
-import onthology.values.Value;
-import onthology.values.ValueDescriptor;
+import ontology.CBR.PossibleSolution;
+import ontology.common.Description;
+import ontology.common.Descriptor;
+import ontology.common.GroupingHeuristic;
+import ontology.taxonomy.GroupingHeuristicIndex;
+import ontology.taxonomy.Taxon;
+import ontology.taxonomy.TaxonomicLevels;
+import ontology.values.Value;
+import ontology.values.ValueDescriptor;
 
 
 

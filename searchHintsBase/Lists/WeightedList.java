@@ -8,8 +8,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import onthology.common.GroupingHeuristic;
-import onthology.common.Structure;
+import ontology.common.GroupingHeuristic;
+import ontology.common.Structure;
 
 import searchHintsBase.Elements.WeightedIndicator;
 

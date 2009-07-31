@@ -5,7 +5,7 @@ package redundantDiscriminationNet;
 
 import java.util.List;
 
-import onthology.CBR.Case;
+import ontology.CBR.Case;
 
 
 

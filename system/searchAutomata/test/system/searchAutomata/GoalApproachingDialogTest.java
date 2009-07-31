@@ -6,13 +6,14 @@
 package system.searchAutomata.test.system.searchAutomata;
 
 import java.util.List;
-import onthology.CBR.Hypothesis;
-import onthology.CBR.PossibleSolution;
-import onthology.common.Attribute;
-import onthology.common.Descriptor;
-import onthology.taxonomy.Taxon;
-import onthology.taxonomy.Taxonomy;
-import onthology.values.RangeDescriptor;
+import ontology.CBR.Hypothesis;
+import ontology.CBR.PossibleSolution;
+import ontology.common.Attribute;
+import ontology.common.Descriptor;
+import ontology.taxonomy.Taxon;
+import ontology.taxonomy.Taxonomy;
+import ontology.values.RangeDescriptor;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

@@ -8,10 +8,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Collections;
 
-import onthology.CBR.Hypothesis;
-import onthology.CBR.PossibleSolution;
-import onthology.CBR.ProposedSolution;
-import onthology.taxonomy.TaxonomicLevels;
+import ontology.CBR.Hypothesis;
+import ontology.CBR.PossibleSolution;
+import ontology.CBR.ProposedSolution;
+import ontology.taxonomy.TaxonomicLevels;
 
 
 /**

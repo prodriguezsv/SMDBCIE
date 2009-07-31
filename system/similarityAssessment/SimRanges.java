@@ -6,7 +6,7 @@ package system.similarityAssessment;
 import java.util.ArrayList;
 import java.util.List;
 
-import onthology.values.ValueDescriptor;
+import ontology.values.ValueDescriptor;
 
 
 /**

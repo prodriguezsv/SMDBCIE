@@ -5,8 +5,8 @@ package system.scopes;
 
 import java.util.List;
 
-import onthology.common.Attribute;
-import onthology.common.Structure;
+import ontology.common.Attribute;
+import ontology.common.Structure;
 
 
 /**

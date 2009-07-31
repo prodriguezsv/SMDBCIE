@@ -5,10 +5,11 @@
 
 package system.searchAutomata.test.system.searchAutomata;
 
-import onthology.common.Description;
-import onthology.common.Descriptor;
-import onthology.common.GroupingHeuristic;
-import onthology.taxonomy.GroupingHeuristicIndex;
+import ontology.common.Description;
+import ontology.common.Descriptor;
+import ontology.common.GroupingHeuristic;
+import ontology.taxonomy.GroupingHeuristicIndex;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

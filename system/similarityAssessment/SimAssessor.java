@@ -5,8 +5,8 @@ package system.similarityAssessment;
 
 import java.util.List;
 
-import onthology.values.SingleDescriptor;
-import onthology.values.ValueDescriptor;
+import ontology.values.SingleDescriptor;
+import ontology.values.ValueDescriptor;
 
 
 /**

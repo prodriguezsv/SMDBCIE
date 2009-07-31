@@ -1,0 +1,52 @@
+/**
+ * @see "Categoría Sukia Values de SUKIA Smalltalk"
+ */
+package ontology.values;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import ontology.taxonomy.Taxon;
+
+
+/**
+ * Clase modificada
+ * @see "Clase ValueDescriptor"
+ * @author Armando
+ */
+public abstract class ValueDescriptor {
+	private List<Taxon> taxonList;
+	
+	/**
+	 * 
+	 */
+	public ValueDescriptor() {
+		setTaxonList(new ArrayList<Taxon>());
+	}
+		
+	/**
+	 * Método agregado
+	 * @param taxonList
+	 */
+	public void setTaxonList(List<Taxon> taxonList) {
+		this.taxonList = taxonList;
+	}
+
+	/**
+	 * @see "Método taxonList del protocolo accessing-general en SUKIA SmallTalk"
+	 * @return
+	 */
+	public List<Taxon> getTaxonList() {
+		return taxonList;
+	}
+	
+	/**
+	 * @see "Método taxon: del protocolo adding-general en SUKIA SmallTalk"
+	 * @param aTaxon
+	 */
+	public void addTaxon(Taxon aTaxon) {			
+		this.getTaxonList().add(aTaxon);
+	}
+	
+	public abstract <T> void addValues(T aDescriptor, Taxon aTaxon);
+}
