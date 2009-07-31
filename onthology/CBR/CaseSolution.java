@@ -20,6 +20,14 @@ public class CaseSolution {
 		taxonLevel = null;
 		taxonName = null;
 	}
+	
+	/**
+	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
+	 */
+	public CaseSolution(String aTaxonLevel, String aTaxonName) {
+		taxonLevel = aTaxonLevel;
+		taxonName = aTaxonName;
+	}
 
 	/**
 	 * @see "Método taxonLevel del protocolo accessing en SUKIA SmallTalk"
@@ -37,7 +45,7 @@ public class CaseSolution {
 	 */
 	public void setTaxonLevel(String taxonLevel) {
 		// Search in the element list for the given name
-		if (!(TaxonomicLevels.getLevels().contains(taxonLevel)))
+		if (!(TaxonomicLevels.getLevels().contains(taxonLevel))) // ojo: verificar si vale la pena
 			return;
 
 		this.taxonLevel = taxonLevel;

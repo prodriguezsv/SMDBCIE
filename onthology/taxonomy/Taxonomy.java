@@ -307,11 +307,11 @@ public class Taxonomy {
 	/**
 	 * @see "Método add:linkTo: del protocolo adding en SUKIA SmallTalk"
 	 * @param aNewTaxon
-	 * @param anParentTaxon
+	 * @param aParentTaxon
 	 */
-	public boolean addTaxon(Taxon aNewTaxon, Taxon anParentTaxon) {
+	public boolean addTaxon(Taxon aNewTaxon, Taxon aParentTaxon) {
 		// Step 1: link the new taxon to the existing taxon in the hierarchy, if all taxonomic dependencies are OK.
-		if (this.areTaxonomicDependenciesOK(anParentTaxon, aNewTaxon))
+		if (this.areTaxonomicDependenciesOK(aParentTaxon, aNewTaxon))
 			return false;
 		//Step 2: Reference the new taxon in levelIndex (i.e., alphabetically by taxon name, by taxonomic level)
 		if (!(this.addTaxonToLevelIndex(aNewTaxon))) {
