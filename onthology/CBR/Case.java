@@ -1,5 +1,5 @@
 /**
- * @see "Categoría Main de SUKIA Smalltalk"
+ * @see "Categora Main de SUKIA Smalltalk"
  */
 package onthology.CBR;
 
@@ -15,11 +15,11 @@ import onthology.common.Descriptor;
 
 
 /**
- * Case representa un caso que es una representación de una situación, donde una descripción
- * (i.e., un conjunto de objetos Descriptor) y una solución ilustra como un problema particular fue resuelto
- * Además, una justificación explica las razones de solución del caso.  Cuando un caso (problema) se resuelve,
- * se agrega a una red para referencia futura vía métodos de búsqueda heuristica
- * @see "Categoría Main de SUKIA Smalltalk"
+ * Case representa un caso que es una representaciï¿½n de una situaciï¿½n, donde una descripciï¿½n
+ * (i.e., un conjunto de objetos Descriptor) y una soluciï¿½n ilustra como un problema particular fue resuelto
+ * Ademï¿½s, una justificaciï¿½n explica las razones de soluciï¿½n del caso.  Cuando un caso (problema) se resuelve,
+ * se agrega a una red para referencia futura vï¿½a mï¿½todos de bï¿½squeda heuristica
+ * @see "Categorï¿½a Main de SUKIA Smalltalk"
  * @author Armando
  *
  */
@@ -30,7 +30,7 @@ public class Case {
 	private boolean state; // A case may be "positive" (i.e., the given solution is correct) or "negative" (i.e., the given solution is incorrect)
 	
 	/**
-	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
+	 * @see "Mï¿½todo initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
 	public Case() {
 		solution = null;
@@ -40,7 +40,7 @@ public class Case {
 	}
 	
 	/**
-	 * @see "Método solution del protocolo adding en SUKIA SmallTalk"
+	 * @see "Mï¿½todo solution del protocolo adding en SUKIA SmallTalk"
 	 * @param solution
 	 */
 	public void setSolution(CaseSolution solution) {
@@ -48,7 +48,7 @@ public class Case {
 	}
 	
 	/**
-	 * @see "Método solution del protocolo accessing en SUKIA SmallTalk"
+	 * @see "Mï¿½todo solution del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
 	public CaseSolution getSolution() {
@@ -56,7 +56,7 @@ public class Case {
 	}
 	
 	/**
-	 * Método de instancia agregado
+	 * Mï¿½todo de instancia agregado
 	 * @param description
 	 */
 	public void setDescription(Description<Descriptor<Object>> description) {
@@ -64,7 +64,7 @@ public class Case {
 	}
 	
 	/**
-	 * @see "Método description del protocolo accessing en SUKIA SmallTalk"
+	 * @see "Mï¿½todo description del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
 	public Description<Descriptor<Object>> getDescription() {
@@ -72,7 +72,7 @@ public class Case {
 	}
 
 	/**
-	 * Método de instancia agregado
+	 * Mï¿½todo de instancia agregado
 	 * @param justification
 	 */
 	public void setJustification(Description<Descriptor<Object>> justification) {
@@ -80,7 +80,7 @@ public class Case {
 	}
 
 	/**
-	 * @see "Método justification del protocolo accessing en SUKIA SmallTalk"
+	 * @see "Mï¿½todo justification del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
 	public Description<Descriptor<Object>> getJustification() {
@@ -88,7 +88,7 @@ public class Case {
 	}
 
 	/**
-	 * @see "Método state del protocolo adding en SUKIA SmallTalk"
+	 * @see "Mï¿½todo state del protocolo adding en SUKIA SmallTalk"
 	 * @param state
 	 */
 	public void setState(boolean state) {
@@ -96,7 +96,7 @@ public class Case {
 	}
 
 	/**
-	 * @see "Método state del protocolo accessing en SUKIA SmallTalk"
+	 * @see "Mï¿½todo state del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
 	public boolean getState() {
@@ -105,7 +105,7 @@ public class Case {
 	
 	/**
 	 * Appends aDescriptor to the variable description
-	 * @see "Método addToDescription: del protocolo adding en SUKIA SmallTalk"
+	 * @see "Mï¿½todo addToDescription: del protocolo adding en SUKIA SmallTalk"
 	 * @param aDescriptor
 	 * @return
 	 */
@@ -121,7 +121,7 @@ public class Case {
 	
 	/**
 	 * Appends aDescriptor to the variable description
-	 * @see "Método addToJustification: del protocolo adding en SUKIA SmallTalk"
+	 * @see "Mï¿½todo addToJustification: del protocolo adding en SUKIA SmallTalk"
 	 * @param aDescriptor
 	 * @return
 	 */
@@ -137,7 +137,7 @@ public class Case {
 	
 	/**
 	 * Clears and resets all of the case's instance variables
-	 * @see "Método flush del protocolo resetting en SUKIA SmallTalk"
+	 * @see "Mï¿½todo flush del protocolo resetting en SUKIA SmallTalk"
 	 */
 	public void clear() {
 		this.getDescription().clear();
@@ -147,7 +147,7 @@ public class Case {
 	}
 	
 	/**
-	 * Método de instancia agregado
+	 * Mï¿½todo de instancia agregado
 	 * @return
 	 */
 	public List<String> getStructuresList() {
@@ -167,7 +167,7 @@ public class Case {
 	}
 	
 	/**
-	 * Método de instancia agregado
+	 * Mï¿½todo de instancia agregado
 	 * @return
 	 */
 	public Description<Descriptor<Object>> getDescription(String aStructureName) {
