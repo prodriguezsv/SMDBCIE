@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ontology.CBR;
+package ontology.CBR.test;
 
 import static org.junit.Assert.*;
 
@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import ontology.CBR.Case;
 import ontology.common.Description;
 import ontology.common.Descriptor;
 

@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package system.searchAutomata.output.test.system.searchAutomata.output;
+package system.searchAutomata.output.test;
 
 import java.util.List;
 import ontology.CBR.PossibleSolution;

@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package system.searchAutomata.test.system.searchAutomata;
+package system.searchAutomata.test;
 
 import ontology.common.Attribute;
 import ontology.common.Description;

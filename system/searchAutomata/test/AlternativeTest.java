@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package system.searchAutomata.test.system.searchAutomata;
+package system.searchAutomata.test;
 
 import ontology.common.Descriptor;
 
@@ -13,15 +13,16 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import system.searchAutomata.ReturnValue;
+import redundantDiscriminationNet.Node;
+import system.searchAutomata.Alternative;
 
 /**
  *
  * @author pabloq
  */
-public class ReturnValueTest {
+public class AlternativeTest {
 
-    public ReturnValueTest() {
+    public AlternativeTest() {
     }
 
     @BeforeClass
@@ -41,52 +42,52 @@ public class ReturnValueTest {
     }
 
     /**
-     * Test of setResponse method, of class ReturnValue.
+     * Test of getNode method, of class Alternative.
      */
     @Test
-    public void testSetResponse() {
-        System.out.println("setResponse");
-        String response = "";
-        ReturnValue instance = new ReturnValue();
-        instance.setResponse(response);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getResponse method, of class ReturnValue.
-     */
-    @Test
-    public void testGetResponse() {
-        System.out.println("getResponse");
-        ReturnValue instance = new ReturnValue();
-        String expResult = "";
-        String result = instance.getResponse();
+    public void testGetNode() {
+        System.out.println("getNode");
+        Alternative instance = new Alternative();
+        Node expResult = null;
+        Node result = instance.getNode();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
     /**
-     * Test of setDescriptor method, of class ReturnValue.
+     * Test of setNode method, of class Alternative.
      */
     @Test
-    public void testSetDescriptor() {
-        System.out.println("setDescriptor");
-        Descriptor<Object> aDescriptor = null;
-        ReturnValue instance = new ReturnValue();
-        instance.setDescriptor(aDescriptor);
+    public void testSetNode() {
+        System.out.println("setNode");
+        Node node = null;
+        Alternative instance = new Alternative();
+        instance.setNode(node);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
     /**
-     * Test of getDescriptor method, of class ReturnValue.
+     * Test of setDescriptor method, of class Alternative.
+     */
+    @Test
+    public void testSetDescriptor() {
+        System.out.println("setDescriptor");
+        Descriptor<Object> descriptor = null;
+        Alternative instance = new Alternative();
+        instance.setDescriptor(descriptor);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getDescriptor method, of class Alternative.
      */
     @Test
     public void testGetDescriptor() {
         System.out.println("getDescriptor");
-        ReturnValue instance = new ReturnValue();
+        Alternative instance = new Alternative();
         Descriptor expResult = null;
         Descriptor result = instance.getDescriptor();
         assertEquals(expResult, result);

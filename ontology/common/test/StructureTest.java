@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package ontology.common.test.onthology.common;
+package ontology.common.test;
 
 import java.util.List;
 
