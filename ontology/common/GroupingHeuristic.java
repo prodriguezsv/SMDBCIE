@@ -3,6 +3,7 @@
  */
 package ontology.common;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ontology.taxonomy.Taxon;
@@ -143,8 +144,8 @@ public class GroupingHeuristic implements Comparable<GroupingHeuristic> {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public Description<Descriptor<Object>> createSAVDescription(String aTaxonomicGroupName) {
-		Description<Descriptor<Object>> description;
+	public List<Descriptor<Object>> createSAVDescription(String aTaxonomicGroupName) {
+		List<Descriptor<Object>> description;
 		List<ValueDescriptor> vdList;
 		ValueDescriptor vd;
 		Descriptor<Object> d;
@@ -154,7 +155,7 @@ public class GroupingHeuristic implements Comparable<GroupingHeuristic> {
 			return null;
 
 		// Create the description holder
-		description = new Description<Descriptor<Object>>();
+		description = new ArrayList<Descriptor<Object>>();
 
 		// Get the set of value descriptors
 		vdList = this.getValues().getValueDescriptors(TaxonomicLevels.getLevels().get(GroupingHeuristic.oneLevel()));

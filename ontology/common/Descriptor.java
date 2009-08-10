@@ -68,7 +68,7 @@ public class Descriptor<T> implements Comparable<Descriptor<T>> {
 	 * @see "Método addAttribute: del protocolo adding-private en SUKIA SmallTalk"
 	 * @param attribute
 	 */
-    private void setAttribute(String attribute) {
+    public void setAttribute(String attribute) {
     	this.attribute = attribute;
     }
     
@@ -92,7 +92,7 @@ public class Descriptor<T> implements Comparable<Descriptor<T>> {
 	 * @see "Método addValue: del protocolo adding-private en SUKIA SmallTalk"
 	 * @param value
 	 */
-	private void setValue(T value) {
+	public void setValue(T value) {
 		this.value = value;
 	}
 	

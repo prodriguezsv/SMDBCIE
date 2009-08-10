@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import ontology.CBR.Case;
-import ontology.common.Description;
 import ontology.common.Descriptor;
 
 import org.junit.After;
@@ -114,7 +113,7 @@ public class CaseTest {
 	 */
 	@Test
 	public final void testGetDescription() {
-		Description<Descriptor<Object>> dl = new Description<Descriptor<Object>>();
+		List<Descriptor<Object>> dl = new ArrayList<Descriptor<Object>>();
 		
 		dl.add(new Descriptor<Object>("Estructura1", "Atributo1", 1.5));
 		assertEquals(dl, aCase.getDescription("Estructura1"));

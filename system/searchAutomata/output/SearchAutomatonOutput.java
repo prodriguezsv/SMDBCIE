@@ -9,7 +9,6 @@ package system.searchAutomata.output;
 import java.util.List;
 
 import ontology.CBR.PossibleSolution;
-import ontology.common.Description;
 import ontology.common.Descriptor;
 
 
@@ -19,8 +18,8 @@ import ontology.common.Descriptor;
  */
 public class SearchAutomatonOutput {
     private List<PossibleSolution> possibleSolutions;
-    private Description<Descriptor<Object>> unmatchedDescription;
-    private Description<Descriptor<Object>> justification;
+    private List<Descriptor<Object>> unmatchedDescription;
+    private List<Descriptor<Object>> justification;
 
 
     public SearchAutomatonOutput() {
@@ -33,7 +32,7 @@ public class SearchAutomatonOutput {
 	 /**
 	 *Category adding
 	 */
-    public void setJustification(Description<Descriptor<Object>> aJustificationsList){
+    public void setJustification(List<Descriptor<Object>> aJustificationsList){
         justification = aJustificationsList; // .copy()
     }
     
@@ -41,14 +40,14 @@ public class SearchAutomatonOutput {
         possibleSolutions = aPossibleSolutionList.subList(0, aPossibleSolutionList.size()-1);
     }
     
-    public void setUnmatchedDescription(Description<Descriptor<Object>> anUnmatchedDescription){
+    public void setUnmatchedDescription(List<Descriptor<Object>> anUnmatchedDescription){
         unmatchedDescription = anUnmatchedDescription; // .copy();
     }
     
 	 /**
 	 *Category accessing
 	 */
-    public Description<Descriptor<Object>> getJustification(){
+    public List<Descriptor<Object>> getJustification(){
         return justification;
     }
     
@@ -56,14 +55,14 @@ public class SearchAutomatonOutput {
         return possibleSolutions;
     }
     
-    public Description<Descriptor<Object>> getUnmatchedDescription(){
+    public List<Descriptor<Object>> getUnmatchedDescription(){
         return unmatchedDescription;
     }
     
 	 /**
 	 *Category appending
 	 */
-    public void appendToJustification(Description<Descriptor<Object>> aJustificationList){
+    public void appendToJustification(List<Descriptor<Object>> aJustificationList){
         if (aJustificationList != null) {
             justification.addAll(aJustificationList);
         }
@@ -74,7 +73,7 @@ public class SearchAutomatonOutput {
         }
     }
     
-    public void appendToUnmatchedDescription(Description<Descriptor<Object>> anUnmatchedDescription){
+    public void appendToUnmatchedDescription(List<Descriptor<Object>> anUnmatchedDescription){
         if (anUnmatchedDescription != null) {
             for (Descriptor<Object> d : anUnmatchedDescription) {
                  if (!this.contains(d, this.unmatchedDescription)){
@@ -92,7 +91,7 @@ public class SearchAutomatonOutput {
 	 * not nil: an element of aDescriptionList whose structure and attribute names match those of aSAVDescriptor
 	 *Category testing
 	 */
-    public Descriptor<Object> getDescriptor(Descriptor<Object> aDescriptor, Description<Descriptor<Object>> aDescription){
+    public Descriptor<Object> getDescriptor(Descriptor<Object> aDescriptor, List<Descriptor<Object>> aDescription){
         if (!(aDescription.equals(unmatchedDescription))) return null;
         
         for (Descriptor<Object> d : unmatchedDescription) {
@@ -105,7 +104,7 @@ public class SearchAutomatonOutput {
         return null;
     }
     
-    public boolean contains(Descriptor<Object> aSAVDescriptor, Description<Descriptor<Object>> aDescription){
+    public boolean contains(Descriptor<Object> aSAVDescriptor, List<Descriptor<Object>> aDescription){
         if (!(aDescription.equals(unmatchedDescription))) return false;
         
         for (Descriptor<Object> d : unmatchedDescription) {

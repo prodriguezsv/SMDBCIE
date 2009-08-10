@@ -59,7 +59,7 @@ public class Attribute implements Comparable<Attribute>{
 	 * Metodo de instancia agregado
 	 * @param values
 	 */
-	private void setValues(Value values) {
+	public void setValues(Value values) {
 		this.values = values;
 	}
 
@@ -77,19 +77,16 @@ public class Attribute implements Comparable<Attribute>{
 	 * @param taxon
 	 */
 	public <T> boolean addValues(Attribute attribute, Taxon taxon) {
-		List<ValueDescriptor> vList;
-		ValueDescriptor ovd, nvd;
+		ValueDescriptor nvd;
 
-		if (values.size() < attribute.getValues().size())
+		// Si this.value es de un unico nivel no se puede agregar valores
+		if (this.getValues().size() < attribute.getValues().size())
 			return false;
 
 		name = attribute.getName();
 		
-		for (int i = 1; i <= attribute.getValues().size(); i++) {
-			vList = attribute.getValues().get(i-1);
-			
-			for (int j = 1; j <= vList.size(); j++) {
-				ovd = vList.get(j-1);
+		for(List<ValueDescriptor> l: attribute.getValues()) {
+			for(ValueDescriptor ovd: l) {
 				if (ovd instanceof SingleDescriptor)
 					nvd = new SingleDescriptor<T>();
 				else {
@@ -98,15 +95,12 @@ public class Attribute implements Comparable<Attribute>{
 				
 				nvd.addValues(ovd, taxon);
 				if (this.getValues().size() == attribute.getValues().size())
-					// Ojo verificar índice
-					this.getValues().addValueDescriptor(nvd, TaxonomicLevels.getLevels().get(i+1));
+					this.getValues().addValueDescriptor(nvd, TaxonomicLevels.getLevels().get(l.indexOf(ovd)+1));
 				else
 					this.getValues().addValueDescriptor(nvd, taxon.getLevel());
-				
 			}
-			
 		}
-		
+				
 		return true;
 	}
 	

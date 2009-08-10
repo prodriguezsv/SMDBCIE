@@ -7,7 +7,6 @@ package ontology.CBR;
 import java.util.ArrayList;
 import java.util.List;
 
-import ontology.common.Description;
 import ontology.common.Descriptor;
 
 
@@ -25,8 +24,8 @@ import ontology.common.Descriptor;
  */
 public class Case {
 	private CaseSolution solution; // An object that represents the solution to the case.  Such object may be a text string, or a compund object with more associated information.
-	private Description<Descriptor<Object>> description; // A list containing a set of Descriptor's (a description of the problem)
-	private Description<Descriptor<Object>> justification; // A list containing a set of Descriptor's (the solution path of the case, i.e., the result of the traversal across the net and other reference structures).  
+	private List<Descriptor<Object>> description; // A list containing a set of Descriptor's (a description of the problem)
+	private List<Descriptor<Object>> justification; // A list containing a set of Descriptor's (the solution path of the case, i.e., the result of the traversal across the net and other reference structures).  
 	private boolean state; // A case may be "positive" (i.e., the given solution is correct) or "negative" (i.e., the given solution is incorrect)
 	
 	/**
@@ -34,8 +33,8 @@ public class Case {
 	 */
 	public Case() {
 		solution = null;
-		description = new Description<Descriptor<Object>>();
-		justification = new Description<Descriptor<Object>>();
+		description = new ArrayList<Descriptor<Object>>();
+		justification = new ArrayList<Descriptor<Object>>();
 		state = false;
 	}
 	
@@ -59,7 +58,7 @@ public class Case {
 	 * M�todo de instancia agregado
 	 * @param description
 	 */
-	public void setDescription(Description<Descriptor<Object>> description) {
+	public void setDescription(List<Descriptor<Object>> description) {
 		this.description = description;
 	}
 	
@@ -67,7 +66,7 @@ public class Case {
 	 * @see "M�todo description del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public Description<Descriptor<Object>> getDescription() {
+	public List<Descriptor<Object>> getDescription() {
 		return description;
 	}
 
@@ -75,7 +74,7 @@ public class Case {
 	 * M�todo de instancia agregado
 	 * @param justification
 	 */
-	public void setJustification(Description<Descriptor<Object>> justification) {
+	public void setJustification(List<Descriptor<Object>> justification) {
 		this.justification = justification;
 	}
 
@@ -83,7 +82,7 @@ public class Case {
 	 * @see "M�todo justification del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public Description<Descriptor<Object>> getJustification() {
+	public List<Descriptor<Object>> getJustification() {
 		return justification;
 	}
 
@@ -170,10 +169,10 @@ public class Case {
 	 * M�todo de instancia agregado
 	 * @return
 	 */
-	public Description<Descriptor<Object>> getDescription(String aStructureName) {
-		Description<Descriptor<Object>> description;
+	public List<Descriptor<Object>> getDescription(String aStructureName) {
+		List<Descriptor<Object>> description;
 		
-		description = new Description<Descriptor<Object>>();
+		description = new ArrayList<Descriptor<Object>>();
 		
 		for(Descriptor<Object> d: this.getDescription()) {
 			// Determine if the structure name in Deescriptor has already been included in structureList

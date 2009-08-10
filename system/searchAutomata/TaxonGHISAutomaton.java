@@ -9,7 +9,6 @@ package system.searchAutomata;
 import java.util.List;
 
 import ontology.CBR.PossibleSolution;
-import ontology.common.Description;
 import ontology.common.Descriptor;
 import ontology.common.GroupingHeuristic;
 import ontology.taxonomy.GroupingHeuristicIndex;
@@ -161,7 +160,7 @@ import ontology.values.ValueDescriptor;
  * @param my parameters list
  * @return my return values
  */
-    public Object beginWith(Description<Descriptor<Object>> aProblemDescription){
+    public Object beginWith(List<Descriptor<Object>> aProblemDescription){
 /*beginWith: aProblemDescription
 
 	"The argument aProblemDescription MUST consist of one SAVDescriptor of the form:

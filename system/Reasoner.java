@@ -9,7 +9,6 @@ import java.util.List;
 import ontology.CBR.Hypothesis;
 import ontology.CBR.PossibleSolution;
 import ontology.CBR.ProposedSolution;
-import ontology.common.Description;
 import ontology.common.Descriptor;
 import ontology.common.GroupingHeuristic;
 import ontology.common.Structure;
@@ -32,7 +31,7 @@ import system.similarityAssessment.SimRanges;
  *
  */
 public class Reasoner {
-	private Description<Descriptor<Object>> caseMemorySearchJustification; //Ojo
+	private List<Descriptor<Object>> caseMemorySearchJustification; //Ojo
 	private List<Hypothesis> failGHConflictSet;
 	private List<Hypothesis> failStructConflictSet;
 	private List<GroupingHeuristic> groupHDescription;
@@ -43,11 +42,11 @@ public class Reasoner {
 	private List<Hypothesis> noResultsSet;
 	private boolean presentFailedSolutions;
 	private List<ProposedSolution> proposedSolutions;
-	private Description<Descriptor<Object>> routeSelectJustification; //Ojo
+	private List<Descriptor<Object>> routeSelectJustification; //Ojo
 	private List<Structure> structDescription;
 	private List<Hypothesis> succGHConflictSet;
 	private List<Hypothesis> succStructConflictSet;
-	private Description<Descriptor<Object>> taxonHierarchySearchJustification; // OJo
+	private List<Descriptor<Object>> taxonHierarchySearchJustification; // OJo
 
 	/**
 	 * Método de instancia agregado
@@ -117,20 +116,20 @@ public class Reasoner {
 		setProposedSolutions(null);
 
 		// Justification list: route selection (using the HintsBase) 
-		setRouteSelectJustification(new Description<Descriptor<Object>>());
+		setRouteSelectJustification(new ArrayList<Descriptor<Object>>());
 
 		// Justification list: case memory search 
-		setCaseMemorySearchJustification(new Description<Descriptor<Object>>());
+		setCaseMemorySearchJustification(new ArrayList<Descriptor<Object>>());
 
 		// Justification list: taxonomic hierarchy serach
-		setTaxonHierarchySearchJustification(new Description<Descriptor<Object>>());
+		setTaxonHierarchySearchJustification(new ArrayList<Descriptor<Object>>());
 	}
 
 	/**
 	 * Método de instancia agregado
 	 * @param caseMemorySearchJustification
 	 */
-	public void setCaseMemorySearchJustification(Description<Descriptor<Object>> caseMemorySearchJustification) {
+	public void setCaseMemorySearchJustification(List<Descriptor<Object>> caseMemorySearchJustification) {
 		this.caseMemorySearchJustification = caseMemorySearchJustification;
 	}
 	
@@ -146,7 +145,7 @@ public class Reasoner {
 	 * @see "Método caseMemorySearchJustification del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public Description<Descriptor<Object>> getCaseMemorySearchJustification() {
+	public List<Descriptor<Object>> getCaseMemorySearchJustification() {
 		return caseMemorySearchJustification;
 	}
 
@@ -356,7 +355,7 @@ public class Reasoner {
 	 * Método de instancia agregado
 	 * @param routeSelectJustification
 	 */
-	public void setRouteSelectJustification(Description<Descriptor<Object>> routeSelectJustification) {
+	public void setRouteSelectJustification(List<Descriptor<Object>> routeSelectJustification) {
 		this.routeSelectJustification = routeSelectJustification;
 	}
 	
@@ -372,7 +371,7 @@ public class Reasoner {
 	 * @see "Método routeSelectJustification del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public Description<Descriptor<Object>> getRouteSelectJustification() {
+	public List<Descriptor<Object>> getRouteSelectJustification() {
 		return routeSelectJustification;
 	}
 
@@ -457,7 +456,7 @@ public class Reasoner {
 	 * Método de instancia agregado
 	 * @param taxonHierarchySearchJustification
 	 */
-	public void setTaxonHierarchySearchJustification(Description<Descriptor<Object>> taxonHierarchySearchJustification) {
+	public void setTaxonHierarchySearchJustification(List<Descriptor<Object>> taxonHierarchySearchJustification) {
 		this.taxonHierarchySearchJustification = taxonHierarchySearchJustification;
 	}
 	
@@ -473,7 +472,7 @@ public class Reasoner {
 	 * @see "Método taxonHierarchySearchJustification del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public Description<Descriptor<Object>> getTaxonHierarchySearchJustification() {
+	public List<Descriptor<Object>> getTaxonHierarchySearchJustification() {
 		return taxonHierarchySearchJustification;
 	}
 	
@@ -743,7 +742,7 @@ public class Reasoner {
 		RootNorm caseNetRoot;
 		SAVCaseDFSAutomaton searchAutomaton1;
 		TaxonGHISAutomaton searchAutomaton2;
-		Description<Descriptor<Object>> problemDescription;
+		List<Descriptor<Object>> problemDescription;
 		String status;
 		
 		while (!(this.getGroupHDescription().isEmpty())) {
@@ -950,7 +949,7 @@ public class Reasoner {
 	public boolean searchCaseStructures() {
 		Structure s;
 		Hypothesis hypothesis1, hypothesis2;
-		Description<Descriptor<Object>> problemDescription;
+		List<Descriptor<Object>> problemDescription;
 		RDNet net;
 		RootNorm caseNetRoot;
 		SAVCaseDFSAutomaton searchAutomaton1;
@@ -1156,7 +1155,7 @@ public class Reasoner {
 		GroupingHeuristic gh;
 		Hypothesis hypothesis;
 		String status;
-		Description<Descriptor<Object>> problemDescription;
+		List<Descriptor<Object>> problemDescription;
 		TaxonGHISAutomaton searchAutomaton;
 	
 		while (!(this.getGroupHDescription().isEmpty())) {
@@ -1213,7 +1212,7 @@ public class Reasoner {
 		Structure s;
 		Hypothesis hypothesis;
 		String status;
-		Description<Descriptor<Object>> problemDescription;
+		List<Descriptor<Object>> problemDescription;
 		TaxonSISAutomaton searchAutomaton; // Ojo
 		GoalApproachingDialog dialog;
 	

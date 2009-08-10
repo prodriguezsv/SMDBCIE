@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import ontology.common.Description;
 import ontology.common.Descriptor;
 import ontology.common.GroupingHeuristic;
 import ontology.common.Structure;
@@ -19,10 +18,10 @@ import ontology.common.Structure;
  */
 public class Hypothesis {
 	private Object descriptiveElement;
-	private Description<Descriptor<Object>> justification;
+	private List<Descriptor<Object>> justification;
 	private double points;
 	private List<PossibleSolution> possibleSolutions;
-	private Description<Descriptor<Object>> unmatchedDescription;
+	private List<Descriptor<Object>> unmatchedDescription;
 
 
 	/**
@@ -36,8 +35,8 @@ public class Hypothesis {
 		setPossibleSolutions(new ArrayList<PossibleSolution>());
 
 		// Sort criteria: concatenated structure and attribute names
-		setUnmatchedDescription(new Description<Descriptor<Object>>());
-		setJustification(new Description<Descriptor<Object>>());
+		setUnmatchedDescription(new ArrayList<Descriptor<Object>>());
+		setJustification(new ArrayList<Descriptor<Object>>());
 		setPoints(0);
 	}
 
@@ -66,7 +65,7 @@ public class Hypothesis {
 	 * Método de instancia agregado
 	 * @param justification
 	 */
-	public void setJustification(Description<Descriptor<Object>> justification) {
+	public void setJustification(List<Descriptor<Object>> justification) {
 		this.justification = justification;
 	}
 
@@ -74,7 +73,7 @@ public class Hypothesis {
 	 * @see "Método justification del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public Description<Descriptor<Object>> getJustification() {
+	public List<Descriptor<Object>> getJustification() {
 		return justification;
 	}
 	
@@ -167,7 +166,7 @@ public class Hypothesis {
 	 * Método de instancia agregado
 	 * @param unmatchedDescription
 	 */
-	public void setUnmatchedDescription(Description<Descriptor<Object>> unmatchedDescription) {
+	public void setUnmatchedDescription(List<Descriptor<Object>> unmatchedDescription) {
 		this.unmatchedDescription = unmatchedDescription;
 	}
 
@@ -191,7 +190,7 @@ public class Hypothesis {
 	 * @see "Método unmatchedDescription del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public Description<Descriptor<Object>> getUnmatchedDescription() {
+	public List<Descriptor<Object>> getUnmatchedDescription() {
 		return unmatchedDescription;
 	}
 	
@@ -200,7 +199,7 @@ public class Hypothesis {
 	 * @param aJustificationDescription
 	 * @return
 	 */
-	public boolean copyToJustificationFrom(Description<Descriptor<Object>> aJustificationDescription) {
+	public boolean copyToJustificationFrom(List<Descriptor<Object>> aJustificationDescription) {
 		if (aJustificationDescription == null)
 			return false;
 
@@ -216,7 +215,7 @@ public class Hypothesis {
 	 * @param anUnmatchedDescription
 	 * @return
 	 */
-	public boolean copyToUnmatchedDescriptionFrom(Description<Descriptor<Object>> anUnmatchedDescription) {
+	public boolean copyToUnmatchedDescriptionFrom(List<Descriptor<Object>> anUnmatchedDescription) {
 		if (anUnmatchedDescription == null)
 			return false;
 
@@ -252,7 +251,7 @@ public class Hypothesis {
 	 * @param aDescription
 	 * @return
 	 */
-	public boolean contains(Descriptor<Object> aDescriptor, Description<Descriptor<Object>> aDescription) {
+	public boolean contains(Descriptor<Object> aDescriptor, List<Descriptor<Object>> aDescription) {
 		// Make sure that aDescription is indeed one of my description lists. If not, return the -1 error value
 		 if (!(aDescription == this.getUnmatchedDescription()))
 			 return false;
@@ -282,7 +281,7 @@ public class Hypothesis {
 	 * @param aDescription
 	 * @return
 	 */
-	public boolean containsFull(Descriptor<Object> aDescriptor, Description<Descriptor<Object>> aDescription) {
+	public boolean containsFull(Descriptor<Object> aDescriptor, List<Descriptor<Object>> aDescription) {
 		// Make sure that aDescription is indeed one of my description lists. If not, return the -1 error value
 		 if (!(aDescription == this.getUnmatchedDescription()))
 			 return false;

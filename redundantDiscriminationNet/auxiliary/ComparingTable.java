@@ -6,7 +6,6 @@ package redundantDiscriminationNet.auxiliary;
 import java.util.ArrayList;
 import java.util.List;
 
-import ontology.common.Description;
 import ontology.common.Descriptor;
 
 /**
@@ -29,7 +28,7 @@ public class ComparingTable extends ArrayList<ComparingTableTuple<Object>> {
 	 * @param aCase1
 	 * @param aCase2
 	 */
-	public void fill(Description<Descriptor<Object>> desc1, Description<Descriptor<Object>> desc2) {
+	public void fill(List<Descriptor<Object>> desc1, List<Descriptor<Object>> desc2) {
 		Descriptor<Object> d1, d2;
 		ComparingTableTuple<Object> tuple;
 		int increment;

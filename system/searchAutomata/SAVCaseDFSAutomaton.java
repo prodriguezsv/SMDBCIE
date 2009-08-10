@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ontology.CBR.PossibleSolution;
-import ontology.common.Description;
 import ontology.common.Descriptor;
 
 
@@ -36,12 +35,12 @@ public class SAVCaseDFSAutomaton {
     public Norm currentNorm;
     public int currentLevel;
     public int stopLevel;
-    private Description<Descriptor<Object>> tSolutionDesc;
-    private Description<Descriptor<Object>> tConfirmedDesc;
-    private Description<Descriptor<Object>> tUnconfirmedDesc;
-    private Description<Descriptor<Object>> tDoubtfulDesc;
-    private Description<Descriptor<Object>> tUnmatchedDesc;
-    private Description<Descriptor<Object>> justification;
+    private List<Descriptor<Object>> tSolutionDesc;
+    private List<Descriptor<Object>> tConfirmedDesc;
+    private List<Descriptor<Object>> tUnconfirmedDesc;
+    private List<Descriptor<Object>> tDoubtfulDesc;
+    private List<Descriptor<Object>> tUnmatchedDesc;
+    private List<Descriptor<Object>> justification;
     public String status;
     public DFSAutomatonOutput searchOutput;
 
@@ -55,12 +54,12 @@ public class SAVCaseDFSAutomaton {
         currentNorm = null;
         resetLevel();
         setStopLevel(currentLevel);
-        tSolutionDesc = new Description<Descriptor<Object>>();
-        tConfirmedDesc = new Description<Descriptor<Object>>();
-        tUnconfirmedDesc = new Description<Descriptor<Object>>();
-        tDoubtfulDesc = new Description<Descriptor<Object>>();
-        tUnmatchedDesc = new Description<Descriptor<Object>>();
-        justification = new Description<Descriptor<Object>>();
+        tSolutionDesc = new ArrayList<Descriptor<Object>>();
+        tConfirmedDesc = new ArrayList<Descriptor<Object>>();
+        tUnconfirmedDesc = new ArrayList<Descriptor<Object>>();
+        tDoubtfulDesc = new ArrayList<Descriptor<Object>>();
+        tUnmatchedDesc = new ArrayList<Descriptor<Object>>();
+        justification = new ArrayList<Descriptor<Object>>();
         newOutput();
         status = "fail";
     }
@@ -203,7 +202,7 @@ public class SAVCaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public Description<Descriptor<Object>> getJustification(){
+    public List<Descriptor<Object>> getJustification(){
         return justification;
     }
     
@@ -256,7 +255,7 @@ public class SAVCaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public Description<Descriptor<Object>> getTConfirmedDescription(){
+    public List<Descriptor<Object>> getTConfirmedDescription(){
         return tConfirmedDesc;
     }
 
@@ -265,7 +264,7 @@ public class SAVCaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public Description<Descriptor<Object>> getTDoubtfulDescription(){
+    public List<Descriptor<Object>> getTDoubtfulDescription(){
     	return tDoubtfulDesc;
     }
     
@@ -274,7 +273,7 @@ public class SAVCaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public Description<Descriptor<Object>> getTSolutionDescription(){
+    public List<Descriptor<Object>> getTSolutionDescription(){
         return tSolutionDesc;
     }
     
@@ -283,7 +282,7 @@ public class SAVCaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public Description<Descriptor<Object>> getTUnconfirmedDescription(){
+    public List<Descriptor<Object>> getTUnconfirmedDescription(){
         return tUnconfirmedDesc;
     }
     
@@ -292,7 +291,7 @@ public class SAVCaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public Description<Descriptor<Object>> getTUnmatchedDescription(){
+    public List<Descriptor<Object>> getTUnmatchedDescription(){
         return tUnmatchedDesc;
     }
 
@@ -480,7 +479,7 @@ public class SAVCaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public Object searchForCasesUnderCurrNormUsing(Description<Descriptor<Object>> aProblemDescription,List<PossibleSolution> aPossibleSolutionsList){
+    public Object searchForCasesUnderCurrNormUsing(List<Descriptor<Object>> aProblemDescription,List<PossibleSolution> aPossibleSolutionsList){
         //<body>searchForCasesUnderCurrNormUsing: aProblemDescription saveIn: aPossibleSolutionsList
         //
         //	"This method searches for indices, strictly under a norm other than the net root, that point to cases. If a Descriptor in
@@ -615,7 +614,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public Object searchForCasesUnderRootUsing(Description<Descriptor<Object>> aProblemDescription,List<PossibleSolution> aPossibleSolutionsList){
+    public Object searchForCasesUnderRootUsing(List<Descriptor<Object>> aProblemDescription,List<PossibleSolution> aPossibleSolutionsList){
         //<body>searchForCasesUnderRootUsing: aProblemDescription saveIn: aPossibleSolutionsList
         //
         //	"This method searches for indices, strictly under the net root, that point to cases. If a Descriptor in
@@ -704,7 +703,7 @@ public class SAVCaseDFSAutomaton {
         if ((currentNorm == netRoot) && (aPossibleSolutionsList.isEmpty()) && (getTSolutionDescription().isEmpty()!=true)){return -1;}
         //Create the temporary process lists
 
-        Description<Descriptor<Object>> tempList = new Description<Descriptor<Object>>();
+        List<Descriptor<Object>> tempList = new ArrayList<Descriptor<Object>>();
         List<SheetNode> pSolutionList = new ArrayList<SheetNode>();
 
         //Scan the the Descriptor list of the problem description. Look for indices that strictly point to cases
@@ -762,7 +761,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public Object searchForCasesUsing(Description<Descriptor<Object>> aProblemDescription){
+    public Object searchForCasesUsing(List<Descriptor<Object>> aProblemDescription){
         //<body>searchForCasesUsing: aProblemDescription
         //
         //	"At this point, the problem description still contains descriptors, and control is located either at a norm within
@@ -949,13 +948,13 @@ public class SAVCaseDFSAutomaton {
         //list is that, depending on the output from the root-search, it may be necessary to put all descriptors
         //back in the solution description, in order to try the next search strategy
 
-        Description<Descriptor<Object>> tempDeleteSolution = new Description<Descriptor<Object>>();
+        List<Descriptor<Object>> tempDeleteSolution = new ArrayList<Descriptor<Object>>();
         moveDescriptorsFrom(getTSolutionDescription(),getTUnmatchedDescription(),tempDeleteSolution);
 
         // Same sitution as with the solution description.  In this case, place the confirmed description items in the
         // unconfirmed description, and also copy them to another temporary list
 
-        Description<Descriptor<Object>> tempDeleteConfirmed = new Description<Descriptor<Object>>();
+        List<Descriptor<Object>> tempDeleteConfirmed = new ArrayList<Descriptor<Object>>();
         moveDescriptorsFrom(getTConfirmedDescription(),getTUnconfirmedDescription(),tempDeleteConfirmed);
         
         // Call the search-cases-under-root method with a clean &amp; empty possible solutions list (its part of the precondition)
@@ -1040,7 +1039,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    private void deleteDescriptorsIn(Description<Descriptor<Object>> aTempDeleteList,Description<Descriptor<Object>> aList,Description<Descriptor<Object>> anotherList){
+    private void deleteDescriptorsIn(List<Descriptor<Object>> aTempDeleteList,List<Descriptor<Object>> aList,List<Descriptor<Object>> anotherList){
         //<body>deleteDescriptorsIn: aTempDeleteList from: aList andPlaceIn: anotherList
         //
         //	| d j |
@@ -1121,7 +1120,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    private void flush(Description<Descriptor<Object>> aList){
+    private void flush(List<Descriptor<Object>> aList){
         //<body>flush: aList
         //
         //	[ aList isEmpty ]
@@ -1199,7 +1198,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    private void moveDescriptorsFrom(Description<Descriptor<Object>> aList,Description<Descriptor<Object>> anotherList,Description<Descriptor<Object>> aCopyList){
+    private void moveDescriptorsFrom(List<Descriptor<Object>> aList,List<Descriptor<Object>> anotherList,List<Descriptor<Object>> aCopyList){
         //<body>moveDescriptorsFrom: aList to: anotherList copyTo: aCopyList
         //
         //	| d |
@@ -1223,7 +1222,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public void newSearchWith(Description<Descriptor<Object>> anOldProblemDescription){
+    public void newSearchWith(List<Descriptor<Object>> anOldProblemDescription){
         //<body>newSearchWith: anOldProblemDescription
         //
         //	"If the automaton returns a non-empty problem description list, then the REASONER MUST call it again with that remaining description,
@@ -1754,7 +1753,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public Object beginWith(Description<Descriptor<Object>> aProblemDescription){
+    public Object beginWith(List<Descriptor<Object>> aProblemDescription){
         //<body>beginWith: aProblemDescription
         //
         //	"Initial state of the search automaton.  Control is placed on the root norm. The final step is a call to the next state
@@ -1857,7 +1856,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public Object searchForNormWith(Description<Descriptor<Object>> aProblemDescription){
+    public Object searchForNormWith(List<Descriptor<Object>> aProblemDescription){
         //<body>searchForNormWith: aProblemDescription
         //
         //	"The argument aProblemDescription is scanned in search for descriptors that correspond
@@ -1974,7 +1973,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public Object includes(Descriptor<Object> aSAVDescriptor,Description<Descriptor<Object>> aDescription){
+    public Object includes(Descriptor<Object> aSAVDescriptor,List<Descriptor<Object>> aDescription){
         //<body>includes: aSAVDescriptor in: aDescription
         //
         //	"Determines if aSAVDescriptor is already a member of aDescriptionList. The argument aSAVDescriptor is a member of

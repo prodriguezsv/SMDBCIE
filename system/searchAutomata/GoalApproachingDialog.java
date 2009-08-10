@@ -14,7 +14,6 @@ import ontology.CBR.Case;
 import ontology.CBR.Hypothesis;
 import ontology.CBR.PossibleSolution;
 import ontology.common.Attribute;
-import ontology.common.Description;
 import ontology.common.Descriptor;
 import ontology.common.GroupingHeuristic;
 import ontology.common.Structure;
@@ -234,7 +233,7 @@ public class GoalApproachingDialog {
                             	status= "error";
                             	return false;
                             }
-                            Description<Descriptor<Object>> OKSAVDescriptorList = new Description<Descriptor<Object>>();
+                            List<Descriptor<Object>> OKSAVDescriptorList = new ArrayList<Descriptor<Object>>();
                             displayValues = new ArrayList<String>();
                             returnValues = new ArrayList<Object>();
                             //Scan the value descriptor list: valueList with range value descriptors: only ONE element.

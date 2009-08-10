@@ -13,7 +13,6 @@ import java.util.List;
 
 import ontology.CBR.PossibleSolution;
 import ontology.common.Attribute;
-import ontology.common.Description;
 import ontology.common.Descriptor;
 import ontology.common.Structure;
 import ontology.taxonomy.StructureIndex;
@@ -195,7 +194,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
  * @param my parameters list
  * @return my return values
  */
-    public boolean beginWith(Description<Descriptor<Object>> aProblemDescription){
+    public boolean beginWith(List<Descriptor<Object>> aProblemDescription){
 /*beginWith: aProblemDescription
 
 	"Initial state of the search automaton.

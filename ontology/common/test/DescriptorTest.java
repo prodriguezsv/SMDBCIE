@@ -1,9 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package ontology.common.test;
+
+import static org.junit.Assert.*;
 
 import ontology.common.Descriptor;
 
@@ -12,131 +9,48 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
-/**
- *
- * @author pabloq
- */
 public class DescriptorTest {
+	private static Descriptor<Object> d1;
 
-    public DescriptorTest() {
-    }
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		d1 = new Descriptor<Object>("Estructura1", "Atributo1", "Estado1");
+	}
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+	}
 
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
+	@Before
+	public void setUp() throws Exception {
+	}
 
-    @Before
-    public void setUp() {
-    }
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    @After
-    public void tearDown() {
-    }
+	@Test
+	public final void testCompareTo() {
+		Descriptor<Object> d2;
 
-    /**
-     * Test of set method, of class Descriptor.
-     */
-    @Test
-    public void testSet() {
-        System.out.println("set");
-        String aStructure = "";
-        String anAttribute = "";
-        Object aValue = null;
-        Descriptor instance = new Descriptor();
-        instance.set(aStructure, anAttribute, aValue);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+		d2 = new Descriptor<Object>("Estructura1", "Atributo1", "Estado1");
+		assertEquals(0, d1.compareTo(d2));
+		d2 = new Descriptor<Object>("Estructura1", "Atributo2", "Estado1");
+		assertEquals(-1, d1.compareTo(d2));
+		d2 = new Descriptor<Object>("Estructura1", "Atributo0", "Estado1");
+		assertEquals(1, d1.compareTo(d2));
+	}
 
-    /**
-     * Test of setStructure method, of class Descriptor.
-     */
-    @Test
-    public void testSetStructure() {
-        System.out.println("setStructure");
-        String structure = "";
-        Descriptor instance = new Descriptor();
-        instance.setStructure(structure);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getStructure method, of class Descriptor.
-     */
-    @Test
-    public void testGetStructure() {
-        System.out.println("getStructure");
-        Descriptor instance = new Descriptor();
-        String expResult = "";
-        String result = instance.getStructure();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getAttribute method, of class Descriptor.
-     */
-    @Test
-    public void testGetAttribute() {
-        System.out.println("getAttribute");
-        Descriptor instance = new Descriptor();
-        String expResult = "";
-        String result = instance.getAttribute();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getValue method, of class Descriptor.
-     */
-    @Test
-    public void testGetValue() {
-        System.out.println("getValue");
-        Descriptor instance = new Descriptor();
-        Object expResult = null;
-        Object result = instance.getValue();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of compareTo method, of class Descriptor.
-     */
-    @Test
-    public void testCompareTo() {
-        System.out.println("compareTo");
-        Descriptor<T> aDescriptor = null;
-        Descriptor instance = new Descriptor();
-        int expResult = 0;
-        int result = instance.compareTo(aDescriptor);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of equals method, of class Descriptor.
-     */
-    @Test
-    public void testEquals() {
-        System.out.println("equals");
-        Object aDescriptor = null;
-        Descriptor instance = new Descriptor();
-        boolean expResult = false;
-        boolean result = instance.equals(aDescriptor);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+	@Test
+	public final void testEquals() {
+		Descriptor<Object> d2;
+		
+		assertFalse(d1.equals(null));
+		d2 = new Descriptor<Object>("Estructura1", "Atributo1", "Estado1");
+		assertTrue(d1.equals(d2));
+		d2 = new Descriptor<Object>("Estructura1", "Atributo1", "Estado2");
+		assertFalse(d1.equals(d2));
+	}
 
 }

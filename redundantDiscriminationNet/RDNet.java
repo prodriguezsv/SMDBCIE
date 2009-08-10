@@ -3,6 +3,7 @@
  */
 package redundantDiscriminationNet;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -10,7 +11,6 @@ import javax.swing.JOptionPane;
 import ontology.CBR.Case;
 import ontology.CBR.ProblemCase;
 import ontology.CBR.Solution;
-import ontology.common.Description;
 import ontology.common.Descriptor;
 
 import redundantDiscriminationNet.auxiliary.CBRStack;
@@ -29,7 +29,7 @@ public class RDNet {
 								// their attributes are placed in this stack to make sure that no indices will be duplicated.
 	private Case caseInsert;	// Pointer to the Case to be inserted into the net.
 	private CBRStack<Case> caseCompare; 	// A CBRStack that contains instances of Case's found during net traversal.
-	private Description<Descriptor<Object>> ciDesc;	// Case-To-Insert description, used to traverse the net, and create new Norms and indices.
+	private List<Descriptor<Object>> ciDesc;	// Case-To-Insert description, used to traverse the net, and create new Norms and indices.
 	private Norm currNorm; 				// Pointer to the current Norm during net traversal.
 	private ProblemCase problemCase;	// Instance of a Problem Case to be resolved.
 	private Solution solution;			// Solution object obtained from the adaptation of a Case found.
@@ -43,7 +43,7 @@ public class RDNet {
 		setRoute(new CBRStack<String>());
 		setCaseToInsert(null);
 		setCaseCompare(new CBRStack<Case>());
-		setCiDesc(new Description<Descriptor<Object>>());
+		setCiDesc(new ArrayList<Descriptor<Object>>());
 		setCurrNorm(null);
 		setProblemCase(new ProblemCase());
 		setSolution(new Solution());
@@ -114,7 +114,7 @@ public class RDNet {
 		return caseCompare.peek();
 	}
 
-	public void setCiDesc(Description<Descriptor<Object>> ciDesc) {
+	public void setCiDesc(List<Descriptor<Object>> ciDesc) {
 		this.ciDesc = ciDesc;
 	}
 
@@ -122,7 +122,7 @@ public class RDNet {
 	 * @see "Método caseToInsertDesc del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public Description<Descriptor<Object>> getCiDesc() {
+	public List<Descriptor<Object>> getCiDesc() {
 		return ciDesc;
 	}
 
@@ -420,7 +420,7 @@ public class RDNet {
 	 * @param aNumber
 	 */
 	private boolean moveToNorm(Descriptor<Object> aDescriptor, int aNumber) {
-		Description<Descriptor<Object>> tmpDesc;
+		List<Descriptor<Object>> tmpDesc;
 		SheetNode sn;
 		boolean retVal;
 		
@@ -442,7 +442,7 @@ public class RDNet {
 		}
 		
 		// Save current state of ciDesc, since a totally new checking process (with ciDesc) will take place, considering all description elements
-		tmpDesc = new Description<Descriptor<Object>>();
+		tmpDesc = new ArrayList<Descriptor<Object>>();
 		this.moveDescElements(this.getCiDesc(), tmpDesc);
 		this.getCiDescription(this.getCaseToInsert());
 
@@ -839,7 +839,7 @@ public class RDNet {
 	 * @param aCase
 	 */
 	public void getCiDescription(Case aCase) {
-		Description<Descriptor<Object>> desc;
+		List<Descriptor<Object>> desc;
 		
 		desc = aCase.getDescription(this.getRoot().getStructure());
 		
@@ -852,7 +852,7 @@ public class RDNet {
 	 * @param anotherDescList
 	 * @return
 	 */
-	public boolean moveDescElements(Description<Descriptor<Object>> oneDescList, Description<Descriptor<Object>> anotherDescList) {
+	public boolean moveDescElements(List<Descriptor<Object>> oneDescList, List<Descriptor<Object>> anotherDescList) {
 		if (oneDescList.isEmpty()) return false;
 		while (oneDescList.isEmpty()) {
 			anotherDescList.add(oneDescList.remove(0));
@@ -885,7 +885,7 @@ public class RDNet {
 	 * @see "Método removeMatchingElementsInTheRouteFrom: del protocolo removing en SUKIA SmallTalk"
 	 * @param aDescriptionList
 	 */
-	public Description<Descriptor<Object>> removeMatchingElementsInTheRoute(Description<Descriptor<Object>> aDescriptionList) {
+	public List<Descriptor<Object>> removeMatchingElementsInTheRoute(List<Descriptor<Object>> aDescriptionList) {
 
 		for (Descriptor<Object> d: aDescriptionList) {
 			if (this.getRoute().contains(d.getAttribute()))
@@ -902,7 +902,7 @@ public class RDNet {
 	 * @return
 	 */
 	public boolean areDescriptionsEqual(Case aCase1, Case aCase2) {
-		Description<Descriptor<Object>> desc1, desc2;
+		List<Descriptor<Object>> desc1, desc2;
 		
 		if (!((aCase1 instanceof Case) && (aCase2 instanceof Case))) return false;
 

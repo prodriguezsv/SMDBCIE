@@ -9,7 +9,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import ontology.common.Attribute;
-import ontology.common.Description;
 import ontology.common.Descriptor;
 import ontology.common.Structure;
 import ontology.values.SingleDescriptor;
@@ -212,13 +211,13 @@ public class FrequentStructurePatternList extends HintsList<FrequentStructurePat
 	}
 	
 	@SuppressWarnings("unchecked")
-	private Description<Descriptor<Object>> convertAttributesToDescriptorsOf(Structure aStructure) {
-		Description<Descriptor<Object>> aDescriptorList;
+	private List<Descriptor<Object>> convertAttributesToDescriptorsOf(Structure aStructure) {
+		List<Descriptor<Object>> aDescriptorList;
 		Attribute a;
 		Value vdList;
 		Descriptor<Object> d;
 		
-		aDescriptorList = new Description<Descriptor<Object>>();
+		aDescriptorList = new ArrayList<Descriptor<Object>>();
 
 		for (int i = 1; i <= aStructure.getAttributes().size(); i++) {
 			a = aStructure.getAttributes().get(i-1);

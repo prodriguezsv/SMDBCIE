@@ -511,7 +511,7 @@ public class Value extends ArrayList<List<ValueDescriptor>> {
 		if (levelNumber == -1) return false;
 		
 		for (int i = 1; i <= this.get(levelNumber).size(); i++) {
-			vd = this.get(levelNumber).get(i);
+			vd = this.get(levelNumber).get(i-1);
 			
 			if (aDescriptor instanceof RangeDescriptor) {
 				rvd = (RangeDescriptor) aDescriptor;
@@ -554,7 +554,7 @@ public class Value extends ArrayList<List<ValueDescriptor>> {
 		if (levelNumber == -1) return false;
 		
 		for (int i = 1; i <= this.get(levelNumber).size(); i++) {
-			vd = this.get(levelNumber).get(i);
+			vd = this.get(levelNumber).get(i-1);
 			
 			if (aDescriptor instanceof RangeDescriptor) {
 				rvd = (RangeDescriptor) aDescriptor;

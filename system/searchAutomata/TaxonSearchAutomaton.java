@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ontology.CBR.PossibleSolution;
-import ontology.common.Description;
 import ontology.common.Descriptor;
 import ontology.taxonomy.StructureIndex;
 import ontology.taxonomy.Taxon;
@@ -20,12 +19,12 @@ import system.searchAutomata.output.TaxonAutomatonOutput;
 
 public class TaxonSearchAutomaton {
     private List<ValueDescriptor> valueDescriptors;
-    private Description<Descriptor<Object>> tSolutionDesc;
-    private Description<Descriptor<Object>> tUnmatchedDesc;
-    private Description<Descriptor<Object>> justification;
+    private List<Descriptor<Object>> tSolutionDesc;
+    private List<Descriptor<Object>> tUnmatchedDesc;
+    private List<Descriptor<Object>> justification;
     private List<PossibleSolution> taxonList;
-    private Description<Descriptor<Object>> tSolutionDescription;
-    private Description<Descriptor<Object>> tUnmatchedDescription;
+    private List<Descriptor<Object>> tSolutionDescription;
+    private List<Descriptor<Object>> tUnmatchedDescription;
     private StructureIndex searchIndex;
     private String status;
     private TaxonAutomatonOutput searchOutput;
@@ -101,8 +100,8 @@ public class TaxonSearchAutomaton {
 
         
         valueDescriptors = new ArrayList<ValueDescriptor>();
-        tSolutionDesc = new Description<Descriptor<Object>>();
-        tUnmatchedDesc = new Description<Descriptor<Object>>();
+        tSolutionDesc = new ArrayList<Descriptor<Object>>();
+        tUnmatchedDesc = new ArrayList<Descriptor<Object>>();
         //justification = new ArrayList<SAVDescriptor>();
         status = "fail";
 }
@@ -236,7 +235,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public Description<Descriptor<Object>> getJustification(){
+    public List<Descriptor<Object>> getJustification(){
 /**justification
 
 	^justification.*/
@@ -296,7 +295,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public Description<Descriptor<Object>> getTSolutionDescription(){
+    public List<Descriptor<Object>> getTSolutionDescription(){
 /**tSolutionDescription
 
 	^tSolutionDesc.*/
@@ -308,7 +307,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public Description<Descriptor<Object>>  getTUnmatchedDescription(){
+    public List<Descriptor<Object>>  getTUnmatchedDescription(){
 /**tUnmatchedDescription
 
 	^tUnmatchedDesc.*/
@@ -379,7 +378,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public boolean checkPrecondition(Description<Descriptor<Object>>  aProblemDescription){
+    public boolean checkPrecondition(List<Descriptor<Object>>  aProblemDescription){
 /**checkPrecondition: aProblemDescription
 
 	"beginWith Check:
@@ -522,7 +521,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public Descriptor<Object> includes(Descriptor<Object> aDescriptor, Description<Descriptor<Object>>  aDescription) {
+    public Descriptor<Object> includes(Descriptor<Object> aDescriptor, List<Descriptor<Object>>  aDescription) {
 /**includes: aSAVDescriptor in: aDescription
 
 	"Determines if aSAVDescriptor is already a member of aDescriptionList. The argument aSAVDescriptor is a member of

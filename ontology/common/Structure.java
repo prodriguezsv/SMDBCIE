@@ -149,8 +149,8 @@ public class Structure implements Comparable<Structure> {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public Description<Descriptor<Object>> createDescription(String aDummyName) {
-		Description<Descriptor<Object>> description;
+	public List<Descriptor<Object>> createDescription(String aDummyName) {
+		List<Descriptor<Object>> description;
 		Attribute a;
 		List<ValueDescriptor> vdList;
 		ValueDescriptor vd;
@@ -165,7 +165,7 @@ public class Structure implements Comparable<Structure> {
 			return null;
 
 		// Create the description holder
-		description = new Description<Descriptor<Object>>();
+		description = new ArrayList<Descriptor<Object>>();
 
 		// Scan the receiver's attributes
 		for (int i = 1; i <= this.getAttributes().size(); i++) {
