@@ -10,7 +10,7 @@ import ontology.CBR.SimilarityDegree;
 import ontology.common.Descriptor;
 import ontology.common.GroupingHeuristic;
 import ontology.common.Structure;
-import ontology.taxonomy.TaxonomicLevels;
+import ontology.taxonomy.TaxonomicRank;
 import ontology.taxonomy.Taxonomy;
 
 import redundantDiscriminationNet.RDMultiNet;
@@ -32,7 +32,7 @@ public class Reasoner {
 	private List<Hypothesis> failGHConflictSet;
 	private List<Hypothesis> failStructConflictSet;
 	private List<GroupingHeuristic> groupHDescription;
-	private String identGoal;
+	private TaxonomicRank identGoal;
 	private System identSystem;
 	private int maxNumberSolutions;
 	private SimilarityDegree minSimilarityDegree;
@@ -69,7 +69,7 @@ public class Reasoner {
 	 */
 	public void initialize() {
 		// The identification goal. Default value: species
-		setIdentGoal(TaxonomicLevels.getMostSpecificLevel());
+		setIdentGoal(TaxonomicRank.getMostSpecificLevel());
 
 		// USER EXPECTATION: Maximum number of solutions to present. Default value: 3
 		setMaxNumberSolutions(3);
@@ -227,20 +227,15 @@ public class Reasoner {
 	 * @see "Método identGoal: del protocolo adding en SUKIA SmallTalk"
 	 * @param identGoal
 	 */
-	public void setIdentGoal(String aTaxonomicLevelsValue) {
-		if (TaxonomicLevels.getLevels().contains(aTaxonomicLevelsValue)) {
-			this.identGoal = aTaxonomicLevelsValue;
-			return;
-		}
-		
-		return;
+	public void setIdentGoal(TaxonomicRank aTaxonomicLevelsValue) {
+		this.identGoal = aTaxonomicLevelsValue;
 	}
 
 	/**
 	 * @see "Método identGoal del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public String getIdentGoal() {
+	public TaxonomicRank getIdentGoal() {
 		return identGoal;
 	}
 
@@ -889,8 +884,8 @@ public class Reasoner {
 		 the identification goal, establish a new dialog with the user, in order to try to draw
 		 the existing possible solutions nearer to the said goal*/
 		if (hypothesis1.getPossibleSolutions().get(0).getStatus() == true) {
-			if (TaxonomicLevels.getLevels().indexOf(hypothesis1.getPossibleSolutions().get(0).getLevel()) <
-					 TaxonomicLevels.getLevels().indexOf(this.getIdentGoal())) {
+			if (TaxonomicRank.getIndex(hypothesis1.getPossibleSolutions().get(0).getLevel()) <
+					 TaxonomicRank.getIndex(this.getIdentGoal())) {
 				dialog = new GoalApproachingDialog(this.getIdentGoal(), hypothesis1, this.getTaxonomy(), this.getMinSimilarityDegree());
 				dialog.chat();
 				status = dialog.getStatus();
@@ -904,8 +899,8 @@ public class Reasoner {
 		 	the existing possible solutions nearer to the said goal*/
 			// Ojo
 			if (!(hypothesis2.getPossibleSolutions().isEmpty())) {
-				if (TaxonomicLevels.getLevels().indexOf(hypothesis2.getPossibleSolutions().get(0).getLevel()) <
-						 TaxonomicLevels.getLevels().indexOf(this.getIdentGoal())) {
+				if (TaxonomicRank.getIndex(hypothesis2.getPossibleSolutions().get(0).getLevel()) <
+						 TaxonomicRank.getIndex(this.getIdentGoal())) {
 					dialog = new GoalApproachingDialog(this.getIdentGoal(), hypothesis2, this.getTaxonomy(), this.getMinSimilarityDegree());
 					dialog.chat();
 					status = dialog.getStatus();
@@ -1062,8 +1057,8 @@ public class Reasoner {
 				/*HYPOTHESIS1: If none of the possible solutions is equal to, or more specific than the identification goal, 
 				 establish a new dialog with the user, in order to try to draw the existing possible solutions nearer to the goal*/
 				if (hypothesis1.getPossibleSolutions().get(0).getStatus() == true) {
-					if (TaxonomicLevels.getLevels().indexOf(hypothesis1.getPossibleSolutions().get(0).getLevel()) <
-							 TaxonomicLevels.getLevels().indexOf(this.getIdentGoal())) {
+					if (TaxonomicRank.getIndex(hypothesis1.getPossibleSolutions().get(0).getLevel()) <
+							 TaxonomicRank.getIndex(this.getIdentGoal())) {
 						dialog = new GoalApproachingDialog(this.getIdentGoal(), hypothesis1, this.getTaxonomy(), this.getMinSimilarityDegree());
 						dialog.chat();
 						status = dialog.getStatus();
@@ -1246,8 +1241,8 @@ public class Reasoner {
 				
 				/* Determine if necessary to establish a dialog with the user (in case none of the possible solutions is
 				 equal to or more specific than the identification goal)*/
-				if (TaxonomicLevels.getLevels().indexOf(hypothesis.getPossibleSolutions().get(0).getLevel()) <
-						 TaxonomicLevels.getLevels().indexOf(this.getIdentGoal())) {
+				if (TaxonomicRank.getIndex(hypothesis.getPossibleSolutions().get(0).getLevel()) <
+						 TaxonomicRank.getIndex(this.getIdentGoal())) {
 					dialog = new GoalApproachingDialog(this.getIdentGoal(), hypothesis, this.getTaxonomy(), this.getMinSimilarityDegree());
 					dialog.chat();
 					status = dialog.getStatus();

@@ -31,6 +31,7 @@ public class CaseTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		System.out.println("Iniciando pruebas para la clase " + Case.class.getName());
 		aCase = new Case();
 	}
 
@@ -40,6 +41,7 @@ public class CaseTest {
 	 */
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
+		System.out.println("Terminando pruebas para la clase " + Case.class.getName());
 	}
 
 	/**
@@ -49,9 +51,9 @@ public class CaseTest {
 	public void setUp() throws Exception {
 		Descriptor<Object> aDescriptor;
 		
-		aDescriptor = new Descriptor<Object>("Estructura1", "Atributo1", 1.5);
+		aDescriptor = new Descriptor<Object>("Cuerpo", "Longitud", 0.3);
 		aCase.addToDescription(aDescriptor);
-		aDescriptor = new Descriptor<Object>("Estructura2", "Atributo2", "Estado1");
+		aDescriptor = new Descriptor<Object>("Pie", "Disposición", "Sobresale al manto");
 		aCase.addToDescription(aDescriptor);
 	}
 
@@ -70,12 +72,21 @@ public class CaseTest {
 	public final void testAddToDescription() {
 		Descriptor<Object> aDescriptor;
 		
+		System.out.println("Iniciando pruebas para el método AddToDescription()");
+		
+		System.out.println("Verificar que no se agregue un referencia a null");
 		assertFalse(aCase.addToDescription(null));
-		aDescriptor = new Descriptor<Object>("Estructura1", "Atributo1", 1.5);
+		
+		System.out.println("Verificar que no se agregue un descriptor duplicado");
+		aDescriptor = new Descriptor<Object>("Cuerpo", "Longitud", 0.3);
 		assertFalse(aCase.addToDescription(aDescriptor));
-		aDescriptor = new Descriptor<Object>("Estructura2", "Atributo2", "Estado1");
+		aDescriptor = new Descriptor<Object>("Pie", "Disposición", "Sobresale al manto");
 		assertFalse(aCase.addToDescription(aDescriptor));
-		aDescriptor = new Descriptor<Object>("Estructura1", "Atributo1", 2.0);
+		
+		System.out.println("Verificar que se agregue un descriptor correctamente");
+		aDescriptor = new Descriptor<Object>("Cuerpo", "Conformación", "Tiene cerata");
+		assertTrue(aCase.addToDescription(aDescriptor));
+		aDescriptor = new Descriptor<Object>("Branquias", "Número de hojas branquiales", 6);
 		assertTrue(aCase.addToDescription(aDescriptor));
 	}
 
@@ -86,12 +97,21 @@ public class CaseTest {
 	public final void testAddToJustification() {
 		Descriptor<Object> aDescriptor;
 		
+		System.out.println("Iniciando pruebas para el método AddToJustification()");
+		
+		System.out.println("Verificar que no se agregue un referencia a null");
 		assertFalse(aCase.addToDescription(null));
-		aDescriptor = new Descriptor<Object>("Estructura1", "Atributo1", 1.5);
+		
+		System.out.println("Verificar que no se agregue un descriptor duplicado");
+		aDescriptor = new Descriptor<Object>("Cuerpo", "Longitud", 0.3);
 		assertFalse(aCase.addToDescription(aDescriptor));
-		aDescriptor = new Descriptor<Object>("Estructura2", "Atributo2", "Estado1");
+		aDescriptor = new Descriptor<Object>("Pie", "Disposición", "Sobresale al manto");
 		assertFalse(aCase.addToDescription(aDescriptor));
-		aDescriptor = new Descriptor<Object>("Estructura1", "Atributo1", 2.0);
+		
+		System.out.println("Verificar que se agregue un descriptor correctamente");
+		aDescriptor = new Descriptor<Object>("Cuerpo", "Conformación", "Tiene cerata");
+		assertTrue(aCase.addToDescription(aDescriptor));
+		aDescriptor = new Descriptor<Object>("Branquias", "Número de hojas branquiales", 6);
 		assertTrue(aCase.addToDescription(aDescriptor));
 	}
 
@@ -102,8 +122,11 @@ public class CaseTest {
 	public final void testGetStructuresList() {
 		List<String> sl;
 		
+		System.out.println("Iniciando pruebas para el método GetStructuresList()");
+		
+		System.out.println("Verificar que se obtenga una lista de nombres de estructura");
 		sl = new ArrayList<String>();
-		sl.addAll(Arrays.asList("Estructura1", "Estructura2"));
+		sl.addAll(Arrays.asList("Cuerpo", "Pie"));
 		
 		assertEquals(sl, aCase.getStructuresList());
 	}
@@ -115,7 +138,10 @@ public class CaseTest {
 	public final void testGetDescription() {
 		List<Descriptor<Object>> dl = new ArrayList<Descriptor<Object>>();
 		
-		dl.add(new Descriptor<Object>("Estructura1", "Atributo1", 1.5));
-		assertEquals(dl, aCase.getDescription("Estructura1"));
+		System.out.println("Iniciando pruebas para el método GetDescription()");
+		
+		System.out.println("Verificar que se obtenga una descripción asociada a una estructura");
+		dl.add(new Descriptor<Object>("Cuerpo", "Longitud", 0.3));
+		assertEquals(dl, aCase.getDescription("Cuerpo"));
 	}
 }

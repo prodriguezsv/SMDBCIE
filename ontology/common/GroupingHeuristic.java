@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ontology.taxonomy.Taxon;
-import ontology.taxonomy.TaxonomicLevels;
+import ontology.taxonomy.TaxonomicRank;
 import ontology.values.RangeDescriptor;
 import ontology.values.SingleDescriptor;
 import ontology.values.Value;
@@ -120,7 +120,7 @@ public class GroupingHeuristic implements Comparable<GroupingHeuristic> {
 				
 				nvd.addValues(ovd, aTaxon);
 				if (this.getValues().size() == aGroupingHeuristic.getValues().size())
-					this.getValues().addValueDescriptor(nvd, TaxonomicLevels.getLevels().get(i+1));
+					this.getValues().addValueDescriptor(nvd, TaxonomicRank.values()[i+1]);
 				else
 					this.getValues().addValueDescriptor(nvd, aTaxon.getLevel());
 				
@@ -158,7 +158,7 @@ public class GroupingHeuristic implements Comparable<GroupingHeuristic> {
 		description = new ArrayList<Descriptor<Object>>();
 
 		// Get the set of value descriptors
-		vdList = this.getValues().getValueDescriptors(TaxonomicLevels.getLevels().get(GroupingHeuristic.oneLevel()));
+		vdList = this.getValues().getValueDescriptors(TaxonomicRank.values()[GroupingHeuristic.oneLevel()]);
 
 		// Make sure that the value descriptor list only contains ONE item
 		if (!(vdList.size() == 1)) return null;

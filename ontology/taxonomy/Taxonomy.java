@@ -37,11 +37,11 @@ public class Taxonomy {
 		
 		rootTaxon = new Taxon();
 		rootTaxon.setName(null);
-		rootTaxon.setLevel("root");
+		rootTaxon.setLevel(TaxonomicRank.ROOT);
 		
 		setLevelIndex(new ArrayList<List<Taxon>>());
 			
-		for (int i = 1; i <= TaxonomicLevels.getNomenclaturalLevelsNumber(); i++) {
+		for (int i = 1; i <= TaxonomicRank.getNomenclaturalRanksNumber(); i++) {
 			level = new ArrayList<Taxon>();
 			levelIndex.add(level);
 		}
@@ -52,7 +52,7 @@ public class Taxonomy {
 	 * @see "Método initializeClasses del protocolo de clase class initialization en SUKIA SmallTalk"
 	 */
 	public static void initializeParameters() {
-		TaxonomicLevels.initialize();
+		//TaxonomicRank.initialize();
 		MeasuringUnit.initialize();
 	}
 	
@@ -242,7 +242,7 @@ public class Taxonomy {
 	private boolean addTaxonToLevelIndex(Taxon aTaxon) {
 		int levelNumber;
 
-		levelNumber = TaxonomicLevels.getLevels().indexOf(aTaxon.getLevel());
+		levelNumber = TaxonomicRank.getIndex(aTaxon.getLevel());
 		
 		if (levelNumber == -1 || levelNumber == 0) return false;
 
@@ -256,10 +256,10 @@ public class Taxonomy {
 	 * @param aLevel
 	 * @return
 	 */
-	public List<Taxon> getTaxonListFromLevelIndex(String aLevel) {
+	public List<Taxon> getTaxonListFromLevelIndex(TaxonomicRank aLevel) {
 		int levelNumber;
 
-		levelNumber = TaxonomicLevels.getLevels().indexOf(aLevel);
+		levelNumber = TaxonomicRank.getIndex(aLevel);
 		if (levelNumber == -1) return null;
 
 		return (levelIndex.get(levelNumber));
@@ -271,7 +271,7 @@ public class Taxonomy {
 	 * @param aLevel
 	 * @return
 	 */
-	public Taxon getTaxonFromLevelIndex(String aTaxonName, String aLevel) {
+	public Taxon getTaxonFromLevelIndex(String aTaxonName, TaxonomicRank aLevel) {
 		List<Taxon> aList;
 		
 		aList = getTaxonListFromLevelIndex(aLevel);
@@ -370,9 +370,7 @@ public class Taxonomy {
 		//Step 1: Make sure that (at least) the SAV description of the successor taxon is not empty
 		if (aSuccessorTaxon.getSAVDescription().isEmpty())
 			return false;		
-		//Step 2: Make sure that the successor taxon's level name exists
-		if (!(TaxonomicLevels.getLevels().contains(aSuccessorTaxon.getLevel())))
-			return false;
+		
 		//Step 3: Make sure that the successor taxon can indeed be linked to the parent taxon
 		if (aSuccessorTaxon.isOKDirectLink(aParentTaxon))
 			return false;
@@ -431,7 +429,7 @@ public class Taxonomy {
 	public boolean includes_old(Taxon aTaxon) {
 		Taxon t;
 		for (int i = 1; i <= levelIndex.size(); i++) {
-			if (!(i == (TaxonomicLevels.getLevels().indexOf("species")))) {
+			if (!(i == (TaxonomicRank.getIndex(TaxonomicRank.SPECIES)))) {
 				for (int j = 1; j <= levelIndex.get(i-1).size(); j++) {
 					t =  levelIndex.get(i).get(j-1);
 					if (t.getName().equals(aTaxon.getName())) 

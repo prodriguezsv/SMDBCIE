@@ -13,7 +13,7 @@ import java.util.List;
  *
  */
 public class Taxon implements Comparable<Taxon>{
-	private String level;
+	private TaxonomicRank level;
 	private String name;
 	private Taxon predecessor;
 	private List<Taxon> successors;
@@ -39,7 +39,7 @@ public class Taxon implements Comparable<Taxon>{
 	 * @see "Método level: del protocolo adding en SUKIA SmallTalk"
 	 * @param level
 	 */
-	public void setLevel(String level) {
+	public void setLevel(TaxonomicRank level) {
 		this.level = level;
 	}
 
@@ -51,7 +51,7 @@ public class Taxon implements Comparable<Taxon>{
 	 * @see "Método level del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public String getLevel() {
+	public TaxonomicRank getLevel() {
 		return level;
 	}
 
@@ -221,12 +221,12 @@ public class Taxon implements Comparable<Taxon>{
 	public boolean isSuccessorOf(Taxon aTaxon) {
 		Taxon  predecessorTaxon;
 		
-		if (TaxonomicLevels.getLevels().indexOf(level) <= TaxonomicLevels.getLevels().indexOf(aTaxon.getLevel()))
+		if (TaxonomicRank.getIndex(level) <= TaxonomicRank.getIndex(aTaxon.getLevel()))
 			return false;
 		
 		predecessorTaxon = predecessor;
-		while (!(predecessorTaxon.getLevel() == TaxonomicLevels.getRoot())) {
-			if (predecessorTaxon.getName() == aTaxon.getName())
+		while (!(predecessorTaxon.getLevel().equals(TaxonomicRank.ROOT))) {
+			if (predecessorTaxon.getName().equals(aTaxon.getName()))
 				return true;
 
 			predecessorTaxon = predecessorTaxon.getPredecessor();
@@ -294,7 +294,7 @@ public class Taxon implements Comparable<Taxon>{
 	 * @return
 	 */
 	public boolean isOKDirectLink(Taxon aParentTaxon) {
-		return (((TaxonomicLevels.getLevels().indexOf(this.getLevel())) - (TaxonomicLevels.getLevels().indexOf(aParentTaxon.getLevel()))) == 1);
+		return (((TaxonomicRank.getIndex(this.getLevel())) - (TaxonomicRank.getIndex(aParentTaxon.getLevel()))) == 1);
 	}
 	
 	/**

@@ -4,14 +4,10 @@
  */
 package ontology.CBR;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
 import ontology.common.Descriptor;
-
-
-
 
 
 /**
@@ -45,8 +41,8 @@ public class Case {
 	 * @see "M&eacute;todo initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
 	public Case() {
-		solution = null;
 		problem = new Problem();
+		solution = new Solution();
 		state = false;
 	}
 	
@@ -162,7 +158,6 @@ public class Case {
 	 */
 	public void setToDefault() {
 		this.getProblem().getDescription().clear();
-		this.setSolution(null);
 		this.getSolution().getJustification().clear();
 		this.setState(false);
 	}

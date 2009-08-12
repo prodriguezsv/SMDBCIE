@@ -1,4 +1,5 @@
 /**
+ * Paquete que reune clases auxiliares para el paquete redundantDiscrininationNet
  * @see "Categoría Auxiliary de SUKIA Smalltalk"
  */
 package redundantDiscriminationNet.auxiliary;
@@ -9,11 +10,12 @@ import java.util.List;
 import ontology.common.Descriptor;
 
 /**
- * Purpose:  This class is used when the case-adding process needs to compare the descriptors of two cases.  When a case is being added to the net,
- * every descriptor is evaluated against indices and norms, in order to traverse the net until a spot is found to insert the new case.  If during net traversal
- * another case is found, then a new set of indices and norms must be created according to the similarities and differences between the descriptors of both
- * cases (i.e., the case-to-insert and the case-to-compare --the case found).  In this situation a ComparingTable is created, and ComparingTableTuple's
- * are added to it.
+ * This class is used when the case-adding process needs to compare the descriptors of two cases.  When a case
+ * is being added to the net, every descriptor is evaluated against indices and norms, in order to traverse
+ * the net until a spot is found to insert the new case.  If during net traversal another case is found, then
+ * a new set of indices and norms must be created according to the similarities and differences between the
+ * descriptors of both cases (i.e., the case-to-insert and the case-to-compare --the case found).  In this
+ * situation a ComparingTable is created, and ComparingTableTuple's are added to it.
  * @author Armando
  *
  */
@@ -21,49 +23,39 @@ import ontology.common.Descriptor;
 public class ComparingTable extends ArrayList<ComparingTableTuple<Object>> {
 	
 	/**
-	 * Takes the descriptors of aCase1 and aCase2 and:
+	 * Takes the descriptors of desc1 and desc2 and:
 	 * a) Creates ComparingTableTuple's according to similarities and differences between these descriptors;
 	 * b) Each newly created ComparingTableTuple is added to the ComparingTable
 	 * @see "Método fillWith:and: del protocolo filling en SUKIA SmallTalk"
-	 * @param aCase1
-	 * @param aCase2
+	 * @param desc1 La decripción del caso1
+	 * @param desc2 La decripción del caso2
 	 */
 	public void fill(List<Descriptor<Object>> desc1, List<Descriptor<Object>> desc2) {
-		Descriptor<Object> d1, d2;
+		Descriptor<Object> d2;
 		ComparingTableTuple<Object> tuple;
-		int increment;
 		
-		if (desc1.size() > desc2.size()) increment = 0;
-		else increment = desc2.size() - desc1.size();
-		
-		for (int i = 0; i < desc1.size()+ increment; i++) {			
-			if  (i < desc1.size()) {
-				d1 = desc1.get(i-1);
-   				d2 = this.getDescriptor(desc2, d1.getAttribute());
-   				
-   				tuple = new ComparingTableTuple<Object>(d1.getAttribute(), d1.getValue(), ((d2 == null)? null:d2.getValue()));
-   			} else {
-   				d2 = desc2.get(i-1);
-   		   		tuple = new ComparingTableTuple<Object>(d2.getAttribute(), null, d2.getValue());
-   			}
+		for (Descriptor<Object> d: desc1) {			
+			d2 = this.getDescriptor(desc2, d.getAttribute());
+			
+			tuple = new ComparingTableTuple<Object>(d.getAttribute(), d.getValue(), ((d2 == null)? null:d2.getValue()));
    			
 			this.add(tuple);
 		}
+		
+		for (Descriptor<Object> d: desc2) {			
+			d2 = this.getDescriptor(desc1, d.getAttribute());
+			
+			if (d2 == null) {
+				tuple = new ComparingTableTuple<Object>(d.getAttribute(), null, d.getValue());
+   				this.add(tuple);
+			}
+		}		
 	}
-
-	/**
-	 * @see "Método copyDescription:into: del protocolo reading en SUKIA SmallTalk"
-	 * @param anInputDescription
-	 * @param anOutputDescription
-	 */
-	/*public void copyDescription(List<Descriptor<Object>> anInputDescription, List<Descriptor<Object>> anOutputDescription) {
-		for (int i = 1; i <= anInputDescription.size(); i++)
-			anOutputDescription.add(anInputDescription.get(i-1));
-	}*/
 	
 	/**
+	 * Remueve el primer elemento 
 	 * @see "Método extractTuple del protocolo removing en SUKIA SmallTalk"
-	 * @return
+	 * @return El primer elemento
 	 */
 	public ComparingTableTuple<Object> extractTuple() {
 		if (this.isEmpty()) return null;
@@ -72,12 +64,13 @@ public class ComparingTable extends ArrayList<ComparingTableTuple<Object>> {
 	}
 	
 	/**
+	 * Obtiene el descriptor de aDescription que posee el atributo anAttribute
 	 * @see "Método removeDescriptorIn:with: del protocolo removing en SUKIA SmallTalk"
-	 * @param aDescription
-	 * @param anAttribute
-	 * @return
+	 * @param aDescription La descripci&oacute;n en la que se busca 
+	 * @param anAttribute El atributo a buscar
+	 * @return El descriptor de aDescription que posee el atributo anAttribute o null si no existe
 	 */
-	public Descriptor<Object> getDescriptor(List<Descriptor<Object>> aDescription, String anAttribute) {
+	private Descriptor<Object> getDescriptor(List<Descriptor<Object>> aDescription, String anAttribute) {
 		if (aDescription.isEmpty()) return null;
 
 		for (int i = 1; i <= aDescription.size(); i++) {

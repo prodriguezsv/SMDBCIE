@@ -6,7 +6,7 @@ package ontology.values;
 import java.util.ArrayList;
 import java.util.List;
 
-import ontology.taxonomy.TaxonomicLevels;
+import ontology.taxonomy.TaxonomicRank;
 
 
 /**
@@ -22,7 +22,7 @@ public class Value extends ArrayList<List<ValueDescriptor>> {
 	public Value() {
 		List<ValueDescriptor> level;
 
-		for (int i = 1; i <= TaxonomicLevels.getNomenclaturalLevelsNumber(); i++) {
+		for (int i = 1; i <= TaxonomicRank.getNomenclaturalRanksNumber(); i++) {
 			level = new ArrayList<ValueDescriptor>();
 			this.add(level);
 		}
@@ -46,7 +46,7 @@ public class Value extends ArrayList<List<ValueDescriptor>> {
 	 * @param aLevel
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends ValueDescriptor> ValueDescriptor getValueDescriptors(T aDescriptor, String aLevel) {
+	public <T extends ValueDescriptor> ValueDescriptor getValueDescriptors(T aDescriptor, TaxonomicRank aLevel) {
 		List<ValueDescriptor> vdList;
 		
 		if (aDescriptor instanceof SingleDescriptor)			
@@ -77,12 +77,12 @@ public class Value extends ArrayList<List<ValueDescriptor>> {
 	 * @param aLevel
 	 * @return
 	 */
-	public List<ValueDescriptor> getValueDescriptors(String aLevel) {
+	public List<ValueDescriptor> getValueDescriptors(TaxonomicRank aLevel) {
 		int levelNumber;
 		
 		// Get the level-list index (in self) corresponding to aLevel
-		levelNumber = TaxonomicLevels.getLevels().indexOf(aLevel);
-		if (levelNumber == -1 || levelNumber == 0) return null;
+		levelNumber = TaxonomicRank.getIndex(aLevel);
+		if (levelNumber == 0) return null;
 
 		// Return the level-list indexed in self (i.e, Value) by levelNumber
 		return (this.get(levelNumber-1));
@@ -97,7 +97,7 @@ public class Value extends ArrayList<List<ValueDescriptor>> {
 	 * @param aNumber
 	 * @param aLevel
 	 */
-	public List<ValueDescriptor> getRangeDescriptorsWithNumber(double aNumber, String aLevel) {
+	public List<ValueDescriptor> getRangeDescriptorsWithNumber(double aNumber, TaxonomicRank aLevel) {
 		int levelNumber;
 		List<ValueDescriptor> vdList;
 		ValueDescriptor vd;
@@ -105,8 +105,8 @@ public class Value extends ArrayList<List<ValueDescriptor>> {
 		double n;
 		
 		//Get the level-list index (in self) corresponding to aLevel
-		levelNumber = TaxonomicLevels.getLevels().indexOf(aLevel);
-		if (levelNumber == -1 || levelNumber == 0) return null;
+		levelNumber = TaxonomicRank.getIndex(aLevel);
+		if (levelNumber == 0) return null;
 	
 		n = aNumber;
 		vdList = new ArrayList<ValueDescriptor>();
@@ -136,7 +136,7 @@ public class Value extends ArrayList<List<ValueDescriptor>> {
 	 * @param aLevel
 	 * @return
 	 */
-	public List<ValueDescriptor> getRangeDescriptorsWithRange(double aLowerBound, double anUpperBound, String aLevel) {
+	public List<ValueDescriptor> getRangeDescriptorsWithRange(double aLowerBound, double anUpperBound, TaxonomicRank aLevel) {
 		int levelNumber;
 		List<ValueDescriptor> vdList;
 		ValueDescriptor vd;
@@ -144,8 +144,8 @@ public class Value extends ArrayList<List<ValueDescriptor>> {
 		double lb, ub;
 		
 		// Get the level-list index (in self) corresponding to aLevel
-		levelNumber = TaxonomicLevels.getLevels().indexOf(aLevel);
-		if (levelNumber == -1  || levelNumber == 0) return null;
+		levelNumber = TaxonomicRank.getIndex(aLevel);
+		if (levelNumber == 0) return null;
 		
 		lb = aLowerBound;
 		ub = anUpperBound;
@@ -176,15 +176,15 @@ public class Value extends ArrayList<List<ValueDescriptor>> {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> List<ValueDescriptor> getSingleDescriptors(T aValue, String aLevel) {
+	public <T> List<ValueDescriptor> getSingleDescriptors(T aValue, TaxonomicRank aLevel) {
 		int levelNumber;
 		ValueDescriptor vd;
 		SingleDescriptor<T> svd;
 		List<ValueDescriptor> vdList;
 
 		// Get the level-list index (in self) corresponding to aLevel
-		levelNumber = TaxonomicLevels.getLevels().indexOf(aLevel);
-		if (levelNumber == -1  || levelNumber == 0) return null;
+		levelNumber = TaxonomicRank.getIndex(aLevel);
+		if (levelNumber == 0) return null;
 
 		// Create the output ValueDescriptor list (vdList)
 		vdList = new ArrayList<ValueDescriptor>();
@@ -216,7 +216,7 @@ public class Value extends ArrayList<List<ValueDescriptor>> {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> List<ValueDescriptor> getSingleDescriptorsWithWeightInRange(T aValue, String aLevel, double aLowerBound, double anUpperBound) {
+	public <T> List<ValueDescriptor> getSingleDescriptorsWithWeightInRange(T aValue, TaxonomicRank aLevel, double aLowerBound, double anUpperBound) {
 		int levelNumber;
 		ValueDescriptor vd;
 		SingleDescriptor<T> svd;
@@ -224,8 +224,8 @@ public class Value extends ArrayList<List<ValueDescriptor>> {
 		double lb, ub;
 
 		// Get the level-list index (in self) corresponding to aLevel
-		levelNumber = TaxonomicLevels.getLevels().indexOf(aLevel);
-		if (levelNumber == -1  || levelNumber == 0) return null;
+		levelNumber = TaxonomicRank.getIndex(aLevel);
+		if (levelNumber == 0) return null;
 
 		// Make a copy of the lower and upper bound arguments
 		lb = aLowerBound;
@@ -263,7 +263,7 @@ public class Value extends ArrayList<List<ValueDescriptor>> {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> List<ValueDescriptor> getSingleDescriptors(T aValue, double aWeight, String aLevel, String anOperator) {
+	public <T> List<ValueDescriptor> getSingleDescriptors(T aValue, double aWeight, TaxonomicRank aLevel, String anOperator) {
 		int levelNumber, i;
 		ValueDescriptor vd;
 		SingleDescriptor<T> svd;
@@ -272,8 +272,8 @@ public class Value extends ArrayList<List<ValueDescriptor>> {
 		boolean stop, flag;
 
 		// Get the level-list index (in self) corresponding to aLevel
-		levelNumber = TaxonomicLevels.getLevels().indexOf(aLevel);
-		if (levelNumber == -1  || levelNumber == 0) return null;
+		levelNumber = TaxonomicRank.getIndex(aLevel);
+		if (levelNumber == 0) return null;
 
 		// Make a copy of the argument aWeight and make sure that it is a Float
 		w = aWeight;
@@ -336,7 +336,7 @@ public class Value extends ArrayList<List<ValueDescriptor>> {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> List<ValueDescriptor> getSingleDescriptors(double aWeight, String aLevel, double aLowerBound, double anUpperBound) {
+	public <T> List<ValueDescriptor> getSingleDescriptors(double aWeight, TaxonomicRank aLevel, double aLowerBound, double anUpperBound) {
 		int levelNumber;
 		ValueDescriptor vd;
 		SingleDescriptor<T> svd;
@@ -344,9 +344,8 @@ public class Value extends ArrayList<List<ValueDescriptor>> {
 		double lb, ub;
 
 		// Get the level-list index (in self) corresponding to aLevel
-		// Get the level-list index (in self) corresponding to aLevel
-		levelNumber = TaxonomicLevels.getLevels().indexOf(aLevel);
-		if (levelNumber == -1  || levelNumber == 0) return null;
+		levelNumber = TaxonomicRank.getIndex(aLevel);
+		if (levelNumber == 0) return null;
 
 		// Make a copy of the lower and upper bound arguments
 		lb = aLowerBound;
@@ -382,7 +381,7 @@ public class Value extends ArrayList<List<ValueDescriptor>> {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> List<ValueDescriptor> getSingleDescriptors(double aWeight, String aLevel, String anOperator) {
+	public <T> List<ValueDescriptor> getSingleDescriptors(double aWeight, TaxonomicRank aLevel, String anOperator) {
 		int levelNumber, i;
 		ValueDescriptor vd;
 		SingleDescriptor<T> svd;
@@ -391,8 +390,8 @@ public class Value extends ArrayList<List<ValueDescriptor>> {
 		boolean stop, flag;
 
 		// Get the level-list index (in self) corresponding to aLevel
-		levelNumber = TaxonomicLevels.getLevels().indexOf(aLevel);
-		if (levelNumber == -1  || levelNumber == 0) return null;
+		levelNumber = TaxonomicRank.getIndex(aLevel);
+		if (levelNumber == 0) return null;
 
 		// Make a copy of the argument aWeight and make sure that it is a Float
 		w = aWeight;
@@ -442,7 +441,7 @@ public class Value extends ArrayList<List<ValueDescriptor>> {
 	 * @param aValueDescriptor
 	 * @param aLevel
 	 */
-	public void addValueDescriptor(ValueDescriptor aValueDescriptor, String aLevel) {
+	public void addValueDescriptor(ValueDescriptor aValueDescriptor, TaxonomicRank aLevel) {
 		int levelNumber;
 
 		/* Adds a ValueDescriptor to a level-list in self.  This method makes sure that: a) if aDescriptor is not a range,
@@ -452,8 +451,8 @@ public class Value extends ArrayList<List<ValueDescriptor>> {
 					self - Process OK.
 		NOTE: This method should be used when creating the StructureIndex for Taxonomy */
 	
-		levelNumber = TaxonomicLevels.getLevels().indexOf(aLevel);
-		if (levelNumber == -1  || levelNumber == 0) return;
+		levelNumber = TaxonomicRank.getIndex(aLevel);
+		if (levelNumber == 0) return;
 
 		/* IMPORTANT ACTION TO ENSURE THE ADDITION OF DESCRIPTORS WITH UNIQUE VALUE-WEIGHTS OR RANGES:
 		 Make sure that aDescriptor DOES NOT exist in aLevel.  NOTE: Since the argument for includes: is levelNumber, the return 
@@ -469,7 +468,7 @@ public class Value extends ArrayList<List<ValueDescriptor>> {
 	 * @param aValueDescriptor
 	 * @param aLevel
 	 */
-	public void addValueDescriptorWithUniqueValue(ValueDescriptor aValueDescriptor, String aLevel) {
+	public void addValueDescriptorWithUniqueValue(ValueDescriptor aValueDescriptor, TaxonomicRank aLevel) {
 		int levelNumber;
 		
 		/* Adds a ValueDescriptor to a level-list in self.  This method makes sure that: a) if aDescriptor is not a range,
@@ -479,8 +478,8 @@ public class Value extends ArrayList<List<ValueDescriptor>> {
 					self - Process OK.
 		NOTE: This method should be used when creating a Taxon's SAV or GH description */
 		
-		levelNumber = TaxonomicLevels.getLevels().indexOf(aLevel);
-		if (levelNumber == -1  || levelNumber == 0) return;
+		levelNumber = TaxonomicRank.getIndex(aLevel);
+		if (levelNumber == 0) return;
 		
 		/* IMPORTANT ACTION TO ENSURE THE ADDITION OF DESCRIPTORS WITH UNIQUE VALUES OR RANGES:
 		 Make sure that the value of aDescriptor DOES NOT exist in aLevel.  NOTE: Since the argument for the method

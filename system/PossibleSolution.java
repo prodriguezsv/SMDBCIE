@@ -10,7 +10,7 @@ import java.util.List;
 import ontology.CBR.Case;
 import ontology.common.Descriptor;
 import ontology.taxonomy.Taxon;
-import ontology.taxonomy.TaxonomicLevels;
+import ontology.taxonomy.TaxonomicRank;
 
 
 /**
@@ -415,7 +415,7 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 		 }
 	}
 	
-	public String getLevel() {
+	public TaxonomicRank getLevel() {
 		if (this.getSolution() == null) return null;
 		
 		if (this.getSolution() instanceof Case)
@@ -453,7 +453,7 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 	 */
 	// OJo
 	public int compareTo(PossibleSolution aPossibleSolution) {
-		return (TaxonomicLevels.getLevels().indexOf(aPossibleSolution.getLevel()) - 
-				TaxonomicLevels.getLevels().indexOf(this.getLevel()));
+		return (TaxonomicRank.getIndex(aPossibleSolution.getLevel()) - 
+				TaxonomicRank.getIndex(this.getLevel()));
 	}
 }

@@ -11,11 +11,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class DescriptorTest {
-	private static Descriptor<Object> d1;
+	private static Descriptor<Object> d;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		d1 = new Descriptor<Object>("Estructura1", "Atributo1", "Estado1");
+		d = new Descriptor<Object>("Cuerpo", "Conformación", "Tiene cerata");
 	}
 
 	@AfterClass
@@ -34,23 +34,23 @@ public class DescriptorTest {
 	public final void testCompareTo() {
 		Descriptor<Object> d2;
 
-		d2 = new Descriptor<Object>("Estructura1", "Atributo1", "Estado1");
-		assertEquals(0, d1.compareTo(d2));
-		d2 = new Descriptor<Object>("Estructura1", "Atributo2", "Estado1");
-		assertEquals(-1, d1.compareTo(d2));
-		d2 = new Descriptor<Object>("Estructura1", "Atributo0", "Estado1");
-		assertEquals(1, d1.compareTo(d2));
+		d2 = new Descriptor<Object>("Cuerpo", "Conformación", "Tiene cerata");
+		assertEquals(0, d.compareTo(d2));
+		d2 = new Descriptor<Object>("Cuerpo", "Forma", "Alargado");
+		assertTrue(d.compareTo(d2)<0);
+		d2 = new Descriptor<Object>("Branquias", "Número de hojas branquiales", 6);
+		assertTrue(d.compareTo(d2)>0);
 	}
 
 	@Test
 	public final void testEquals() {
 		Descriptor<Object> d2;
 		
-		assertFalse(d1.equals(null));
-		d2 = new Descriptor<Object>("Estructura1", "Atributo1", "Estado1");
-		assertTrue(d1.equals(d2));
-		d2 = new Descriptor<Object>("Estructura1", "Atributo1", "Estado2");
-		assertFalse(d1.equals(d2));
+		assertFalse(d.equals(null));
+		d2 = new Descriptor<Object>("Cuerpo", "Conformación", "Tiene cerata");
+		assertTrue(d.equals(d2));
+		d2 = new Descriptor<Object>("Pie", "Disposición", "Sobresale al manto");
+		assertFalse(d.equals(d2));
 	}
 
 }

@@ -8,7 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Collections;
 
-import ontology.taxonomy.TaxonomicLevels;
+import ontology.taxonomy.TaxonomicRank;
 
 
 /**
@@ -20,7 +20,7 @@ public class PossibleSolutionSelector {
 	private List<Hypothesis> failedStructConflictSet;
 	private List<ProposedSolution> generalSolutions;
 	private List<ProposedSolution> goalSolutions;
-	private String identificationGoal;
+	private TaxonomicRank identificationGoal;
 	private int maxNumberSolutions;
 	private boolean showFailedSolutions;
 	private List<ProposedSolution> specificSolutions;
@@ -40,7 +40,7 @@ public class PossibleSolutionSelector {
 	 * USER EXPECTATION: showFailed is a boolean argument, that determines whether or not to show failed solutions to the user.
 	 * @see "Método initializeWith:and:and:and:and:and:and: del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public PossibleSolutionSelector(String anIdentGoal, List<Hypothesis> aSuccSList, List<Hypothesis> aFailSList,
+	public PossibleSolutionSelector(TaxonomicRank anIdentGoal, List<Hypothesis> aSuccSList, List<Hypothesis> aFailSList,
 			List<Hypothesis> aSuccGHList,  List<Hypothesis> aFailGHList, int aNumberOfSolutions, boolean showFailed) {
 		setIdentificationGoal(anIdentGoal);
 		setSuccessfulStructConflictSet(aSuccSList);
@@ -134,7 +134,7 @@ public class PossibleSolutionSelector {
 	 * Método de instancia agregado
 	 * @param identificationGoal
 	 */
-	public void setIdentificationGoal(String identificationGoal) {
+	public void setIdentificationGoal(TaxonomicRank identificationGoal) {
 		this.identificationGoal = identificationGoal;
 	}
 	
@@ -151,7 +151,7 @@ public class PossibleSolutionSelector {
 	 * @see "Método identificationGoal del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public String getIdentificationGoal() {
+	public TaxonomicRank getIdentificationGoal() {
 		return identificationGoal;
 	}
 
@@ -294,7 +294,7 @@ public class PossibleSolutionSelector {
 		else max = this.getMaxNumberSolutions();
 
 		// Get the identification goal as number
-		goalLevel = TaxonomicLevels.getLevels().indexOf(this.getIdentificationGoal());
+		goalLevel = TaxonomicRank.getIndex(this.getIdentificationGoal());
 
 		i = 1;
 		while (i <= max) {
@@ -306,7 +306,7 @@ public class PossibleSolutionSelector {
 			if (ps.getSolution().getPoints() == 0) ps.setDegreeOfCertainty("doubtful");
 			if (ps.getSolution().getPoints() > 0) ps.setDegreeOfCertainty("certain");
 			
-			psLevel = TaxonomicLevels.getLevels().indexOf(ps.getSolution().getLevel());
+			psLevel = TaxonomicRank.getIndex(ps.getSolution().getLevel());
 
 			// If applicable, insert the new proposed solution to the general solutions list
 			if ((psLevel < goalLevel) && (this.getGeneralSolutions().size() < this.getMaxNumberSolutions()))

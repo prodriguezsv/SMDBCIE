@@ -19,7 +19,7 @@ import ontology.common.Descriptor;
 import ontology.common.Structure;
 import ontology.taxonomy.StructureIndex;
 import ontology.taxonomy.Taxon;
-import ontology.taxonomy.TaxonomicLevels;
+import ontology.taxonomy.TaxonomicRank;
 import ontology.values.RangeDescriptor;
 import ontology.values.Value;
 import ontology.values.ValueDescriptor;
@@ -367,7 +367,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
 		//If the argument's value is not ByteSymbol, then it MUST be a number. If so, search for a match using value descriptor ranges. If the search was unsuccessful, reset vd to nil
                 //TODO check the real instance that it should be.
                 if ((aDescriptor.getValue() instanceof String) != true){
-                    vdList = attrValues.getRangeDescriptorsWithNumber((Double)aDescriptor.getValue(), TaxonomicLevels.getLevels().get(i));
+                    vdList = attrValues.getRangeDescriptorsWithNumber((Double)aDescriptor.getValue(), TaxonomicRank.values()[i]);
                     if (vdList == null) {return false;}
                     if (vdList.isEmpty()) {vdList = null;}
                 }
@@ -376,7 +376,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
                 setValueDescriptors(vdList);
             }else{
                 //At this point, either: a) the argument's value is a ByteSymbol, or a range search was unsuccessful. Do then an exact match search
-                vdList = attrValues.getRangeDescriptorsWithNumber((Double)aDescriptor.getValue(),TaxonomicLevels.getLevels().get(i));
+                vdList = attrValues.getRangeDescriptorsWithNumber((Double)aDescriptor.getValue(), TaxonomicRank.values()[i]);
                 if (vdList == null) {return -1;}
                 if (vdList.isEmpty()!=true){setValueDescriptors(vdList);}
             }

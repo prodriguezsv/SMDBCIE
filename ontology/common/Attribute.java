@@ -6,7 +6,7 @@ package ontology.common;
 import java.util.List;
 
 import ontology.taxonomy.Taxon;
-import ontology.taxonomy.TaxonomicLevels;
+import ontology.taxonomy.TaxonomicRank;
 import ontology.values.RangeDescriptor;
 import ontology.values.SingleDescriptor;
 import ontology.values.Value;
@@ -95,7 +95,7 @@ public class Attribute implements Comparable<Attribute>{
 				
 				nvd.addValues(ovd, taxon);
 				if (this.getValues().size() == attribute.getValues().size())
-					this.getValues().addValueDescriptor(nvd, TaxonomicLevels.getLevels().get(l.indexOf(ovd)+1));
+					this.getValues().addValueDescriptor(nvd, TaxonomicRank.values()[l.indexOf(ovd)+1]);
 				else
 					this.getValues().addValueDescriptor(nvd, taxon.getLevel());
 			}

@@ -67,7 +67,7 @@ public class GroupingHeuristicIndex extends ArrayList<GroupingHeuristic> {
 		ValueDescriptor vd, pvd;
 		Taxon pt;
 		
-		if (aParentTaxon.getLevel().equals(TaxonomicLevels.getRoot()))
+		if (aParentTaxon.getLevel().equals(TaxonomicRank.ROOT))
 			return true;
 		
 		// Parse the receiver's grouping heuristic (GH) description
@@ -81,7 +81,7 @@ public class GroupingHeuristicIndex extends ArrayList<GroupingHeuristic> {
 					/* The grouping heuristic's value descriptor is a range value.  Get the receiver's predecessor 
 					 and loop while the predecessor's level is not ROOT*/
 					pt = aParentTaxon;
-					while(!(pt.getLevel().equals(TaxonomicLevels.getRoot()))) {
+					while(!(pt.getLevel().equals(TaxonomicRank.ROOT))) {
 						/* Find a grouping heuristic, in the predecessor's GH description, such that its name matches the
 		 				 receiver's retrieved grouping heuristic*/
 						pgh = pt.getGHDescription().getGroupingHeuristic(gh.getName());

@@ -3,7 +3,6 @@
  */
 package system;
 
-import ontology.taxonomy.TaxonomicLevels;
 import ontology.taxonomy.Taxonomy;
 import redundantDiscriminationNet.RDMultiNet;
 import searchHintsBase.HintsBase;
@@ -28,10 +27,6 @@ public class System {
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
 	public System() {
-		// Initialize auxiliary classes
-		TaxonomicLevels.initialize();
-		// SimilarityDegree.initialize();
-
 		// Initialize scope classes
 		StructureScopes.initialize();
 		AttributeScopes.initialize();

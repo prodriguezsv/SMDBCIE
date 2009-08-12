@@ -18,7 +18,7 @@ import ontology.common.Descriptor;
 import ontology.common.GroupingHeuristic;
 import ontology.common.Structure;
 import ontology.taxonomy.Taxon;
-import ontology.taxonomy.TaxonomicLevels;
+import ontology.taxonomy.TaxonomicRank;
 import ontology.taxonomy.Taxonomy;
 import ontology.values.RangeDescriptor;
 import ontology.values.SingleDescriptor;
@@ -42,7 +42,7 @@ import system.similarityAssessment.SimAssessor;
 public class GoalApproachingDialog {
 
     private Hypothesis hypothesis;
-    private String goal;
+    private TaxonomicRank goal;
     private Taxonomy taxonomy;
     private List<PossibleSolution> processList;
     private String status;
@@ -59,7 +59,7 @@ public class GoalApproachingDialog {
     	
     }
     
-    public GoalApproachingDialog(String aGoal,Hypothesis aHypothesis,Taxonomy aTaxonomy, SimilarityDegree minSimilarityDegree){
+    public GoalApproachingDialog(TaxonomicRank aGoal,Hypothesis aHypothesis,Taxonomy aTaxonomy, SimilarityDegree minSimilarityDegree){
         if ((aHypothesis.getDescriptiveElement() instanceof Structure) == true){
             initializeGoal(aGoal, aHypothesis, aTaxonomy, minSimilarityDegree);
         }
@@ -70,7 +70,7 @@ public class GoalApproachingDialog {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public String getGoal(){
+    public TaxonomicRank getGoal(){
         return goal;
     }
 
@@ -148,7 +148,7 @@ public class GoalApproachingDialog {
         if (hypothesis.getPossibleSolutions().isEmpty()){return null;}
 
         //Transform the stated identification goal to a numeric value
-        int goalAsIndex = TaxonomicLevels.getLevels().indexOf(goal);
+        int goalAsIndex = TaxonomicRank.getIndex(goal);
 
 	//Scan the associated hypothesis possible solutions list
 
@@ -157,7 +157,7 @@ public class GoalApproachingDialog {
             PossibleSolution ps = hypothesis.getPossibleSolutions().get(i);
 
             //Transform the possible solution level to a numeric value
-            int psLevelAsIndex = TaxonomicLevels.getLevels().indexOf(ps.getLevel());
+            int psLevelAsIndex = TaxonomicRank.getIndex(ps.getLevel());
 
             //If the possible solution's level is equal to, or more specific than the goal, ignore it
 
@@ -170,7 +170,7 @@ public class GoalApproachingDialog {
                     //If the taxon's status is positive, continue processing it. Else, ignore it
                     if (((Case)ps.getSolution()).getState()){
                         //Solution is a positive case. Retrieve the corresponding taxon from the taxonomy
-                        Taxon taxon = taxonomy.getTaxonFromLevelIndex(ps.getName(), TaxonomicLevels.getLevels().get(psLevelAsIndex));
+                        Taxon taxon = taxonomy.getTaxonFromLevelIndex(ps.getName(), TaxonomicRank.values()[psLevelAsIndex]);
 
                         //If the taxon is not found, there is an error. set ba tate of error and return
                         if (taxon == null){status = "error"; return  null;}
@@ -230,7 +230,7 @@ public class GoalApproachingDialog {
                         //Make sure this attribute is not already processed (i.e., included in the solution or confirmed descriptions of ANY item in the processList)
                         if (isAttributeAlreadyProcessed(attribute) != true){
                             //get the attribute's list of values
-                            List<ValueDescriptor> valueList  = attribute.getValues().getValueDescriptors(TaxonomicLevels.getLevels().get(Attribute.oneLevel()));
+                            List<ValueDescriptor> valueList  = attribute.getValues().getValueDescriptors(TaxonomicRank.values()[Attribute.oneLevel()]);
                             if (valueList == null){
                             	status= "error";
                             	return false;
@@ -404,7 +404,7 @@ public class GoalApproachingDialog {
         if (processList.size() == 0){return true;}
 
         //get the level of the first element
-        String level = processList.get(0).getLevel();
+        TaxonomicRank level = processList.get(0).getLevel();
 
         //Starting with the second element, process the list
         int i = 1;
@@ -508,7 +508,7 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void initializeGoal(String aGoal,Hypothesis aHypothesis,Taxonomy aTaxonomy, SimilarityDegree simRangesList){        
+    public void initializeGoal(TaxonomicRank aGoal,Hypothesis aHypothesis,Taxonomy aTaxonomy, SimilarityDegree simRangesList){        
     	//The argument aGoal MUST be a value valid for TaxonomicLevels (e.g., #genus)
         goal = aGoal;
 

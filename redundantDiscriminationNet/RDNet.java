@@ -5,13 +5,13 @@ package redundantDiscriminationNet;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import javax.swing.JOptionPane;
 
 import ontology.CBR.Case;
 import ontology.common.Descriptor;
 
-import redundantDiscriminationNet.auxiliary.CBRStack;
 import redundantDiscriminationNet.auxiliary.ComparingTable;
 import redundantDiscriminationNet.auxiliary.ComparingTableTuple;
 import redundantDiscriminationNet.auxiliary.ProblemSolutions;
@@ -24,10 +24,10 @@ import redundantDiscriminationNet.auxiliary.ProblemSolutions;
  */
 public class RDNet {
 	private RootNorm root; 		// Instance of class RootNorm.  This is the main entry structure to the rest of the net.
-	private CBRStack<String> route; 	// Control structure (CBRStack) used by the case-adding methods.  As new Norm's are reached during net traversal,
+	private Stack<String> route; 	// Control structure (CBRStack) used by the case-adding methods.  As new Norm's are reached during net traversal,
 								// their attributes are placed in this stack to make sure that no indices will be duplicated.
 	private Case caseInsert;	// Pointer to the Case to be inserted into the net.
-	private CBRStack<Case> caseCompare; 	// A CBRStack that contains instances of Case's found during net traversal.
+	private Stack<Case> caseCompare; 	// A CBRStack that contains instances of Case's found during net traversal.
 	private List<Descriptor<Object>> ciDesc;	// Case-To-Insert description, used to traverse the net, and create new Norms and indices.
 	private Norm currNorm; 				// Pointer to the current Norm during net traversal.
 	private ProblemSolutions problemSolutions;	// Instance of a Problem Case to be resolved.
@@ -38,9 +38,9 @@ public class RDNet {
 	 */
 	public RDNet() {
 		setRoot(new RootNorm());
-		setRoute(new CBRStack<String>());
+		setRoute(new Stack<String>());
 		setCaseToInsert(null);
-		setCaseCompare(new CBRStack<Case>());
+		setCaseCompare(new Stack<Case>());
 		setCiDesc(new ArrayList<Descriptor<Object>>());
 		setCurrNorm(null);
 		setProblemSolutions(new ProblemSolutions());
@@ -59,11 +59,11 @@ public class RDNet {
 		return root;
 	}
 
-	public void setRoute(CBRStack<String> route) {
+	public void setRoute(Stack<String> route) {
 		this.route = route;
 	}
 
-	public CBRStack<String> getRoute() {
+	public Stack<String> getRoute() {
 		return route;
 	}
 	
@@ -91,7 +91,7 @@ public class RDNet {
 		return caseInsert;
 	}
 
-	public void setCaseCompare(CBRStack<Case> caseCompare) {
+	public void setCaseCompare(Stack<Case> caseCompare) {
 		this.caseCompare = caseCompare;
 	}
 
@@ -99,7 +99,7 @@ public class RDNet {
 	 * Método de instancia agregado
 	 * @return
 	 */
-	public CBRStack<Case> getCaseCompare() {
+	public Stack<Case> getCaseCompare() {
 		return caseCompare;
 	}
 	

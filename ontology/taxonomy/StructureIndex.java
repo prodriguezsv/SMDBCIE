@@ -69,7 +69,7 @@ public class StructureIndex extends ArrayList<Structure> {
 		Taxon pt;
 		Attribute a, pa;
 		
-		if (aParentTaxon.getLevel().equals(TaxonomicLevels.getRoot()))
+		if (aParentTaxon.getLevel().equals(TaxonomicRank.ROOT))
 			return true;
 		
 		// Parse the receiver's SAV (structure) description
@@ -86,7 +86,7 @@ public class StructureIndex extends ArrayList<Structure> {
 						/*The attribute's value descriptor is a range value.  Get the receiver's predecessor and loop while the 
 						 predecessor's level is not ROOT*/
 						pt = aParentTaxon;
-						while(!(pt.getLevel().equals(TaxonomicLevels.getRoot()))) {
+						while(!(pt.getLevel().equals(TaxonomicRank.ROOT))) {
 
 							/*Find a structure, in the predecessor's SAV description, such that its name matches the
 		 					 receiver's retrieved structure*/

@@ -12,7 +12,7 @@ import ontology.common.Descriptor;
 import ontology.common.GroupingHeuristic;
 import ontology.taxonomy.GroupingHeuristicIndex;
 import ontology.taxonomy.Taxon;
-import ontology.taxonomy.TaxonomicLevels;
+import ontology.taxonomy.TaxonomicRank;
 import ontology.values.Value;
 import ontology.values.ValueDescriptor;
 import system.PossibleSolution;
@@ -234,7 +234,7 @@ import system.PossibleSolution;
         for (int i=0;(i <= attrValues.size());i++){
         	List<ValueDescriptor> vd = null;
             if ((aDescriptor.getValue() instanceof String) != true){
-                 vd = attrValues.getRangeDescriptorsWithNumber((Double)aDescriptor.getValue(), TaxonomicLevels.getLevels().get(i));
+                 vd = attrValues.getRangeDescriptorsWithNumber((Double)aDescriptor.getValue(), TaxonomicRank.values()[i]);
                  if (vd == null){return false;}
                  if (vd.isEmpty()){vd = null;}
             }
@@ -245,7 +245,7 @@ import system.PossibleSolution;
             }else{
                 //At this point, either: a) the argument's value is a ByteSymbol, or a range search was
                 //unsuccessful. Do then an exact match search
-                vd = attrValues.getSingleDescriptors(aDescriptor.getValue(), TaxonomicLevels.getLevels().get(i));
+                vd = attrValues.getSingleDescriptors(aDescriptor.getValue(), TaxonomicRank.values()[i]);
                 if (vd == null){return false;}
 		if (vd.isEmpty() != true){setValueDescriptors(vd);}
             }

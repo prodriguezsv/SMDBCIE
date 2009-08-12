@@ -3,6 +3,7 @@
  */
 package redundantDiscriminationNet.auxiliary;
 
+
 /**
  * Purpose: Implements the tuples that will be added to a ComparingTable.  A ComparingTableTuple is a list (i.e., OrderedCollection) of three items
  * that represent the following information:
@@ -102,5 +103,34 @@ public class ComparingTableTuple<T> {
 		this.setAttribute(anAttribute);
 		this.setACCValue(aCCValue);
 		this.setACIValue(aCIValue);
+	}
+	
+	/**
+	 * Método agregado
+	 * @param aDescriptor
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public boolean equals(Object aComparingTableTuple) {
+		if (aComparingTableTuple == null) return false;
+		if (!(aComparingTableTuple instanceof ComparingTableTuple)) return false;
+		
+		if (this.getAttribute().equals(((ComparingTableTuple<T>)aComparingTableTuple).getAttribute())) {
+			if (this.getACCValue() != null) {
+				if (!this.getACCValue().equals(((ComparingTableTuple<T>)aComparingTableTuple).getACCValue()))
+					return false;
+			} else if (((ComparingTableTuple<T>)aComparingTableTuple).getACCValue() != null)
+					return false;
+			
+			if (this.getACIValue() != null) {
+				if (!this.getACIValue().equals(((ComparingTableTuple<T>)aComparingTableTuple).getACIValue()))
+					return false;
+			} else if (((ComparingTableTuple<T>)aComparingTableTuple).getACIValue() != null)
+					return false;
+			
+			return true;
+		}
+				
+		return false;
 	}
 }

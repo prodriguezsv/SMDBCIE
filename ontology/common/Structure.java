@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 import ontology.taxonomy.Taxon;
-import ontology.taxonomy.TaxonomicLevels;
+import ontology.taxonomy.TaxonomicRank;
 import ontology.values.RangeDescriptor;
 import ontology.values.SingleDescriptor;
 import ontology.values.ValueDescriptor;
@@ -171,7 +171,7 @@ public class Structure implements Comparable<Structure> {
 		for (int i = 1; i <= this.getAttributes().size(); i++) {
 			// Get the next attribute and set of value descriptors
 			a = this.getAttributes().get(i-1);
-			vdList = a.getValues().getValueDescriptors(TaxonomicLevels.getLevels().get(Attribute.oneLevel()));
+			vdList = a.getValues().getValueDescriptors(TaxonomicRank.values()[Attribute.oneLevel()]);
 
 			// Make sure that the value descriptor list only contains ONE item
 			if (!(vdList.size() == 1)) return null;
