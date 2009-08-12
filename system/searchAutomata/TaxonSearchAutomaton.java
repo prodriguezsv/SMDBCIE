@@ -4,12 +4,12 @@ package system.searchAutomata;
 import java.util.ArrayList;
 import java.util.List;
 
-import ontology.CBR.PossibleSolution;
 import ontology.common.Descriptor;
 import ontology.taxonomy.StructureIndex;
 import ontology.taxonomy.Taxon;
 import ontology.values.ValueDescriptor;
 
+import system.PossibleSolution;
 import system.searchAutomata.output.TaxonAutomatonOutput;
 
 /**

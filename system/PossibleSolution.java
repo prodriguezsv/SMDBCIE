@@ -1,12 +1,13 @@
 /**
  * @see "Categoría Sukia Reasoner en SUKIA SmallTalk"
  */
-package ontology.CBR;
+package system;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import ontology.CBR.Case;
 import ontology.common.Descriptor;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicLevels;
@@ -18,14 +19,14 @@ import ontology.taxonomy.TaxonomicLevels;
  */
 public class PossibleSolution implements Comparable<PossibleSolution> {
 	private List<Descriptor<Object>> confirmedDescription;
+	private List<Descriptor<Object>> unconfirmedDescription;
 	private List<Descriptor<Object>> contradictions;
 	private List<Descriptor<Object>> doubtfulDescription;
-	private boolean evaluated;
-	private Hypothesis hypothesis;
-	private double points;
-	private Object solution;
 	private List<Descriptor<Object>> solutionDescription;
-	private List<Descriptor<Object>> unconfirmedDescription;
+	private Hypothesis hypothesis;
+	private Object solution;
+	private boolean evaluated;
+	private double points;
 
 	/**
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"

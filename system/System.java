@@ -10,7 +10,6 @@ import searchHintsBase.HintsBase;
 import system.scopes.AttributeScopes;
 import system.scopes.GroupingHeuristicScopes;
 import system.scopes.StructureScopes;
-import system.similarityAssessment.SimRanges;
 
 /**
  * @see "Clase Sukia en SUKIA SmallTalk"
@@ -31,7 +30,7 @@ public class System {
 	public System() {
 		// Initialize auxiliary classes
 		TaxonomicLevels.initialize();
-		SimRanges.initialize();
+		// SimilarityDegree.initialize();
 
 		// Initialize scope classes
 		StructureScopes.initialize();

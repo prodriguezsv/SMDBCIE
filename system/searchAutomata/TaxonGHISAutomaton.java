@@ -8,7 +8,6 @@ package system.searchAutomata;
 
 import java.util.List;
 
-import ontology.CBR.PossibleSolution;
 import ontology.common.Descriptor;
 import ontology.common.GroupingHeuristic;
 import ontology.taxonomy.GroupingHeuristicIndex;
@@ -16,6 +15,7 @@ import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicLevels;
 import ontology.values.Value;
 import ontology.values.ValueDescriptor;
+import system.PossibleSolution;
 
 
 

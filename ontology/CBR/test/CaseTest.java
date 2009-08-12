@@ -60,7 +60,7 @@ public class CaseTest {
 	 */
 	@After
 	public void tearDown() throws Exception {
-		aCase.getDescription().clear();
+		aCase.getProblem().getDescription().clear();
 	}
 
 	/**

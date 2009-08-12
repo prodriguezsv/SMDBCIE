@@ -11,7 +11,6 @@ import redundantDiscriminationNet.RootNorm;
 import java.util.ArrayList;
 import java.util.List;
 
-import ontology.CBR.PossibleSolution;
 import ontology.common.Descriptor;
 
 
@@ -19,6 +18,7 @@ import redundantDiscriminationNet.Index;
 import redundantDiscriminationNet.Node;
 import redundantDiscriminationNet.Norm;
 import redundantDiscriminationNet.SheetNode;
+import system.PossibleSolution;
 import system.searchAutomata.output.DFSAutomatonOutput;
 
 /**

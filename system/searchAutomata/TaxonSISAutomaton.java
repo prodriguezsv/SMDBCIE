@@ -6,12 +6,14 @@
 package system.searchAutomata;
 
 
+import system.PossibleSolution;
 import system.similarityAssessment.SimAssessor;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
-import ontology.CBR.PossibleSolution;
+import ontology.CBR.SimilarityDegree;
 import ontology.common.Attribute;
 import ontology.common.Descriptor;
 import ontology.common.Structure;
@@ -19,7 +21,6 @@ import ontology.taxonomy.StructureIndex;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicLevels;
 import ontology.values.RangeDescriptor;
-import ontology.values.SingleDescriptor;
 import ontology.values.Value;
 import ontology.values.ValueDescriptor;
 
@@ -39,7 +40,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
     //private String status;
     private List<PossibleSolution> taxonList;
     private PossibleSolution compSolution;
-    private List<String> similarityRanges;
+    private SimilarityDegree minSimilarityDegree;
 
 
 /*
@@ -62,11 +63,11 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
  * @param my parameters list
  * @return my return values
  */
- public TaxonSISAutomaton(StructureIndex aStructureIndex,List<String> aSimilarityRangeList){
+ public TaxonSISAutomaton(StructureIndex aStructureIndex,SimilarityDegree minSimilarityDegree){
  
         //Index searchIndex = aStructureIndex;
         setSearchIndex(aStructureIndex);
-        similarityRanges = aSimilarityRangeList;
+        this.minSimilarityDegree = minSimilarityDegree;
         resetStructure();
         resetAttribute();
 
@@ -156,7 +157,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
 /*similarityRanges
 
 	^similarityRanges.*/
-        return similarityRanges;
+        return minSimilarityDegree;
 }
 
 /**
@@ -274,8 +275,11 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
 	^aTaxon.*/
         List<ValueDescriptor> weightedValues = ((aTaxon.getSAVDescription().getStructure(aDescriptor.getStructure())
         		.getAttribute(aDescriptor.getAttribute())).getValues().get(Attribute.oneLevel()));
-        String similarity = SimAssessor.similarityRangeOf(aDescriptor.getValue(),weightedValues);
-        if (similarityRanges.contains(similarity)){return null;}
+        
+        SimilarityDegree similarity = SimAssessor.similarityRangeOf(aDescriptor.getValue(), weightedValues);
+        if (EnumSet.range(minSimilarityDegree, SimilarityDegree.IGUAL).contains(similarity) != true)
+        	return null;
+        
         return aTaxon;
 }
 

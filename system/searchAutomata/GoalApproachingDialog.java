@@ -6,13 +6,13 @@ package system.searchAutomata;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 
 import javax.swing.JOptionPane;
 
 import ontology.CBR.Case;
-import ontology.CBR.Hypothesis;
-import ontology.CBR.PossibleSolution;
+import ontology.CBR.SimilarityDegree;
 import ontology.common.Attribute;
 import ontology.common.Descriptor;
 import ontology.common.GroupingHeuristic;
@@ -24,6 +24,8 @@ import ontology.values.RangeDescriptor;
 import ontology.values.SingleDescriptor;
 import ontology.values.ValueDescriptor;
 
+import system.Hypothesis;
+import system.PossibleSolution;
 import system.similarityAssessment.SimAssessor;
 
 /**
@@ -45,7 +47,7 @@ public class GoalApproachingDialog {
     private List<PossibleSolution> processList;
     private String status;
     private List<PossibleSolution> OKList;
-    private List<String> similarityRanges;
+    private SimilarityDegree minSimilarityDegree;
 
 	 /**
 	 * Category instance creation
@@ -57,9 +59,9 @@ public class GoalApproachingDialog {
     	
     }
     
-    public GoalApproachingDialog(String aGoal,Hypothesis aHypothesis,Taxonomy aTaxonomy,List<String> simRangesList){
+    public GoalApproachingDialog(String aGoal,Hypothesis aHypothesis,Taxonomy aTaxonomy, SimilarityDegree minSimilarityDegree){
         if ((aHypothesis.getDescriptiveElement() instanceof Structure) == true){
-            initializeGoal(aGoal, aHypothesis, aTaxonomy, simRangesList);
+            initializeGoal(aGoal, aHypothesis, aTaxonomy, minSimilarityDegree);
         }
     }
 
@@ -104,8 +106,8 @@ public class GoalApproachingDialog {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public List<String> getSimilarityRanges(){
-        return similarityRanges;
+    public SimilarityDegree getSimilarityRanges(){
+        return minSimilarityDegree;
     }
 
 	/**
@@ -506,12 +508,12 @@ public class GoalApproachingDialog {
  * @param my parameters list
  * @return my return values
  */
-    public void initializeGoal(String aGoal,Hypothesis aHypothesis,Taxonomy aTaxonomy, List<String> simRangesList){        
+    public void initializeGoal(String aGoal,Hypothesis aHypothesis,Taxonomy aTaxonomy, SimilarityDegree simRangesList){        
     	//The argument aGoal MUST be a value valid for TaxonomicLevels (e.g., #genus)
         goal = aGoal;
 
         //The elements of simrangesList MUST be defined in SimRanges
-        similarityRanges = simRangesList;
+        minSimilarityDegree = simRangesList;
 
         hypothesis = aHypothesis;
         taxonomy = aTaxonomy;
@@ -597,9 +599,10 @@ public class GoalApproachingDialog {
         List<ValueDescriptor> weightedValues = (aTaxon.getSAVDescription().getStructure(aSAVDescriptor.getStructure()))
         	.getAttribute(aSAVDescriptor.getAttribute()).getValues().get(Attribute.oneLevel());
         
-        String similarity = SimAssessor.similarityRangeOf(aSAVDescriptor.getValue(), weightedValues);
+        SimilarityDegree similarity = SimAssessor.similarityRangeOf(aSAVDescriptor.getValue(), weightedValues);
         
-        if (similarityRanges.contains(similarity) != true){return null;}
+        if (EnumSet.range(minSimilarityDegree, SimilarityDegree.IGUAL).contains(similarity) != true)
+        	return null;
         
         return aTaxon;
         

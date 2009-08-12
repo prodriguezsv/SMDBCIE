@@ -1,7 +1,7 @@
 /**
  * @see "Categoría Sukia Reasoner en SUKIA SmallTalk"
  */
-package ontology.CBR;
+package system;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,10 +19,9 @@ import ontology.common.Structure;
 public class Hypothesis {
 	private Object descriptiveElement;
 	private List<Descriptor<Object>> justification;
-	private double points;
-	private List<PossibleSolution> possibleSolutions;
 	private List<Descriptor<Object>> unmatchedDescription;
-
+	private List<PossibleSolution> possibleSolutions;
+	private double points;
 
 	/**
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"

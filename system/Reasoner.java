@@ -6,9 +6,7 @@ package system;
 import java.util.ArrayList;
 import java.util.List;
 
-import ontology.CBR.Hypothesis;
-import ontology.CBR.PossibleSolution;
-import ontology.CBR.ProposedSolution;
+import ontology.CBR.SimilarityDegree;
 import ontology.common.Descriptor;
 import ontology.common.GroupingHeuristic;
 import ontology.common.Structure;
@@ -24,7 +22,6 @@ import system.searchAutomata.SAVCaseDFSAutomaton;
 import system.searchAutomata.TaxonGHISAutomaton;
 import system.searchAutomata.TaxonSISAutomaton;
 import system.searchAutomata.output.DFSAutomatonOutput;
-import system.similarityAssessment.SimRanges;
 
 /**
  * @author Armando
@@ -38,7 +35,7 @@ public class Reasoner {
 	private String identGoal;
 	private System identSystem;
 	private int maxNumberSolutions;
-	private List<String> minSimilarityDegree;
+	private SimilarityDegree minSimilarityDegree;
 	private List<Hypothesis> noResultsSet;
 	private boolean presentFailedSolutions;
 	private List<ProposedSolution> proposedSolutions;
@@ -83,8 +80,8 @@ public class Reasoner {
 
 		/* USER EXPECTATION: Minimal similarity degree used in comparisons. 
 		 Default: moderately similar to equal*/
-		this.setMinSimilarityDegree("medianamenteSimilar");
-		if (this.getMinSimilarityDegree().isEmpty()) return;
+		this.setMinSimilarityDegree(SimilarityDegree.MEDIANAMENTESIMILAR);
+		//if (this.getMinSimilarityDegree().isEmpty()) return;
 
 		// List with Structures that constitute the morphological description given by the user
 		setStructDescription(new ArrayList<Structure>());
@@ -283,15 +280,15 @@ public class Reasoner {
 	 * @see "Método minSimilarityDegree: del protocolo adding en SUKIA SmallTalk"
 	 * @param aSimRangesValue
 	 */
-	public void setMinSimilarityDegree(String aSimRangesValue) {
-		minSimilarityDegree = SimRanges.rangesStartingAt(aSimRangesValue);
+	public void setMinSimilarityDegree(SimilarityDegree aSimRangesValue) {
+		minSimilarityDegree = aSimRangesValue;
 	}
 
 	/**
 	 * @see "Método minSimilarityDegree del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<String> getMinSimilarityDegree() {
+	public SimilarityDegree getMinSimilarityDegree() {
 		return minSimilarityDegree;
 	}
 

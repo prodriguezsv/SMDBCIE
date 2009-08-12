@@ -6,8 +6,6 @@ package system;
 import java.util.ArrayList;
 import java.util.List;
 
-import ontology.CBR.Hypothesis;
-import ontology.CBR.PossibleSolution;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.Taxonomy;
 

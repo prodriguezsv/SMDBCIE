@@ -1,5 +1,6 @@
 /**
- * @see "Categora Main de SUKIA Smalltalk"
+ * Paquete que reune los conceptos CBR, sus relaciones y sus restricciones de uso
+ * @see "Categor&iacute;a Main de SUKIA Smalltalk"
  */
 package ontology.CBR;
 
@@ -14,80 +15,75 @@ import ontology.common.Descriptor;
 
 
 /**
- * Case representa un caso que es una representaciï¿½n de una situaciï¿½n, donde una descripciï¿½n
- * (i.e., un conjunto de objetos Descriptor) y una soluciï¿½n ilustra como un problema particular fue resuelto
- * Ademï¿½s, una justificaciï¿½n explica las razones de soluciï¿½n del caso.  Cuando un caso (problema) se resuelve,
- * se agrega a una red para referencia futura vï¿½a mï¿½todos de bï¿½squeda heuristica
- * @see "Categorï¿½a Main de SUKIA Smalltalk"
+ * Case representa un caso que es una representaci&oacute;n de una situaci&oacute;n, donde una
+ * descripci&oacute;n (i.e., un conjunto de objetos Descriptor) y una soluci&oacute;n ilustra como un
+ * problema particular fue resuelto. Adem&aacute;s, una justificaci&oacute;n explica las razones de la
+ * soluci&oacute;n del caso. Cuando un caso (problema) se resuelve, este se agrega a una red para referencia
+ * futura v&iacute;a m&eacute;todos de b&uacute;squeda heur&íacute;stica
+ * @see "Categor&iacute;a Main de SUKIA Smalltalk"
  * @author Armando
  *
  */
 public class Case {
-	private CaseSolution solution; // An object that represents the solution to the case.  Such object may be a text string, or a compund object with more associated information.
-	private List<Descriptor<Object>> description; // A list containing a set of Descriptor's (a description of the problem)
-	private List<Descriptor<Object>> justification; // A list containing a set of Descriptor's (the solution path of the case, i.e., the result of the traversal across the net and other reference structures).  
-	private boolean state; // A case may be "positive" (i.e., the given solution is correct) or "negative" (i.e., the given solution is incorrect)
+	/**
+	 * A list containing a set of Descriptor's (a description of the problem)
+	 */
+	private Problem problem;
+	/**
+	 * An object that represents the solution to the case.  Such object may be a text string, or a compound
+	 * object with more associated information.
+	 */
+	private Solution solution;
+	/**
+	 * A case may be "positive" (i.e., the given solution is correct) or "negative" (i.e., the given
+	 * solution is incorrect)
+	 */
+	private boolean state; 
 	
 	/**
-	 * @see "Mï¿½todo initialize del protocolo initializing en SUKIA SmallTalk"
+	 * Constructor por defecto de la clase
+	 * @see "M&eacute;todo initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
 	public Case() {
 		solution = null;
-		description = new ArrayList<Descriptor<Object>>();
-		justification = new ArrayList<Descriptor<Object>>();
+		problem = new Problem();
 		state = false;
 	}
 	
 	/**
-	 * @see "Mï¿½todo solution del protocolo adding en SUKIA SmallTalk"
+	 * @see "M&eacute;todo solution del protocolo adding en SUKIA SmallTalk"
 	 * @param solution
 	 */
-	public void setSolution(CaseSolution solution) {
+	public void setSolution(Solution solution) {
 		this.solution = solution;
 	}
 	
 	/**
-	 * @see "Mï¿½todo solution del protocolo accessing en SUKIA SmallTalk"
+	 * @see "M&eacute;todo solution del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public CaseSolution getSolution() {
+	public Solution getSolution() {
 		return solution;
 	}
 	
 	/**
-	 * Mï¿½todo de instancia agregado
+	 * M&eacute;todo de instancia agregado
 	 * @param description
 	 */
-	public void setDescription(List<Descriptor<Object>> description) {
-		this.description = description;
+	public void setProblem(Problem problem) {
+		this.problem = problem;
 	}
 	
 	/**
-	 * @see "Mï¿½todo description del protocolo accessing en SUKIA SmallTalk"
+	 * @see "M&eacute;todo description del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Descriptor<Object>> getDescription() {
-		return description;
+	public Problem getProblem() {
+		return this.problem;
 	}
-
+	
 	/**
-	 * Mï¿½todo de instancia agregado
-	 * @param justification
-	 */
-	public void setJustification(List<Descriptor<Object>> justification) {
-		this.justification = justification;
-	}
-
-	/**
-	 * @see "Mï¿½todo justification del protocolo accessing en SUKIA SmallTalk"
-	 * @return
-	 */
-	public List<Descriptor<Object>> getJustification() {
-		return justification;
-	}
-
-	/**
-	 * @see "Mï¿½todo state del protocolo adding en SUKIA SmallTalk"
+	 * @see "M&eacute;todo state del protocolo adding en SUKIA SmallTalk"
 	 * @param state
 	 */
 	public void setState(boolean state) {
@@ -95,7 +91,7 @@ public class Case {
 	}
 
 	/**
-	 * @see "Mï¿½todo state del protocolo accessing en SUKIA SmallTalk"
+	 * @see "M&eacute;todo state del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
 	public boolean getState() {
@@ -104,57 +100,83 @@ public class Case {
 	
 	/**
 	 * Appends aDescriptor to the variable description
-	 * @see "Mï¿½todo addToDescription: del protocolo adding en SUKIA SmallTalk"
+	 * @see "M&eacute;todo addToDescription: del protocolo adding en SUKIA SmallTalk"
 	 * @param aDescriptor
-	 * @return
+	 * @return Valor de verdad true indicando que la adici&oacute;n se llev&oacute; a cabo
+	 * @return Valor de verdad false indicando que la adici&oacute;n no se llev&oacute; a cabo
 	 */
 	public boolean addToDescription(Descriptor<Object> aDescriptor) {
 		if (aDescriptor == null) return false;
 		
-		if (this.getDescription().contains(aDescriptor))
+		if (this.getProblem().getDescription().contains(aDescriptor))
 			return false;
-		this.getDescription().add(aDescriptor);
+		this.getProblem().getDescription().add(aDescriptor);
 		
 		return true;
+	}
+	
+	/**
+	 * Removes aDescriptor from the variable description
+	 * @param aDescriptor
+	 * @return Valor de verdad true indicando que la remoci&oacute;n se llev&oacute; a cabo
+	 * @return Valor de verdad false indicando que la remoci&oacute;n no se llev&oacute; a cabo
+	 */
+	public boolean removeFromDescription(Descriptor<Object> aDescriptor) {
+		if (aDescriptor == null) return false;
+		
+		return this.getProblem().getDescription().remove(aDescriptor);
 	}
 	
 	/**
 	 * Appends aDescriptor to the variable description
-	 * @see "Mï¿½todo addToJustification: del protocolo adding en SUKIA SmallTalk"
+	 * @see "M&eacute;todo addToJustification: del protocolo adding en SUKIA SmallTalk"
 	 * @param aDescriptor
-	 * @return
+	 * @return Valor de verdad true indicando que la adici&oacute;n se llev&oacute; a cabo
+	 * @return Valor de verdad false indicando que la adici&oacute;n no se llev&oacute; a cabo
 	 */
 	public boolean addToJustification(Descriptor<Object> aDescriptor) {
 		if (aDescriptor == null) return false;
 		
-		if (this.getDescription().contains(aDescriptor))
+		if (this.getSolution().getJustification().contains(aDescriptor))
 			return false;
-		this.getJustification().add(aDescriptor);
+		this.getSolution().getJustification().add(aDescriptor);
 		
 		return true;
 	}
 	
 	/**
-	 * Clears and resets all of the case's instance variables
-	 * @see "Mï¿½todo flush del protocolo resetting en SUKIA SmallTalk"
+	 * Removes aDescriptor from the variable description
+	 * @param aDescriptor
+	 * @return Valor de verdad true indicando que la remoci&oacute;n se llev&oacute; a cabo
+	 * @return Valor de verdad false indicando que la remoci&oacute;n no se llev&oacute; a cabo
 	 */
-	public void clear() {
-		this.getDescription().clear();
+	public boolean removeFromJustification(Descriptor<Object> aDescriptor) {
+		if (aDescriptor == null) return false;
+		
+		return this.getSolution().getJustification().remove(aDescriptor);
+	}
+	
+	/**
+	 * Clears and resets all of the case's instance variables
+	 * @see "M&eacute;todo flush del protocolo resetting en SUKIA SmallTalk"
+	 */
+	public void setToDefault() {
+		this.getProblem().getDescription().clear();
 		this.setSolution(null);
-		this.getJustification().clear();
+		this.getSolution().getJustification().clear();
 		this.setState(false);
 	}
 	
 	/**
-	 * Mï¿½todo de instancia agregado
-	 * @return
+	 * M&eacute;todo de instancia agregado
+	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
 	public List<String> getStructuresList() {
 		List<String> structuresList;
 		
 		structuresList = new ArrayList<String>();
 		
-		for(Descriptor<Object> d: this.getDescription()) {
+		for(Descriptor<Object> d: this.getProblem().getDescription()) {
 			// Determine if the structure name in Deescriptor has already been included in structureList
 			if (!(structuresList.contains(d.getStructure()))) {
 				// The structure name was not found in structureList. Append it to structureList
@@ -166,15 +188,15 @@ public class Case {
 	}
 	
 	/**
-	 * Mï¿½todo de instancia agregado
-	 * @return
+	 * M&eacute;todo de instancia agregado
+	 * @return una lista de descriptores relacionados a aStructureName
 	 */
 	public List<Descriptor<Object>> getDescription(String aStructureName) {
 		List<Descriptor<Object>> description;
 		
 		description = new ArrayList<Descriptor<Object>>();
 		
-		for(Descriptor<Object> d: this.getDescription()) {
+		for(Descriptor<Object> d: this.getProblem().getDescription()) {
 			// Determine if the structure name in Deescriptor has already been included in structureList
 			if (d.getStructure().equals(aStructureName)) {
 				description.add(d);

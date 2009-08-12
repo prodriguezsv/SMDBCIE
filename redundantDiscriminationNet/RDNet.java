@@ -9,13 +9,12 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 import ontology.CBR.Case;
-import ontology.CBR.ProblemCase;
-import ontology.CBR.Solution;
 import ontology.common.Descriptor;
 
 import redundantDiscriminationNet.auxiliary.CBRStack;
 import redundantDiscriminationNet.auxiliary.ComparingTable;
 import redundantDiscriminationNet.auxiliary.ComparingTableTuple;
+import redundantDiscriminationNet.auxiliary.ProblemSolutions;
 
 /**
  * Purpose: Entry access structure to a redundant discrimination net.  This class implements all necessary methods to establish a net root,
@@ -31,8 +30,7 @@ public class RDNet {
 	private CBRStack<Case> caseCompare; 	// A CBRStack that contains instances of Case's found during net traversal.
 	private List<Descriptor<Object>> ciDesc;	// Case-To-Insert description, used to traverse the net, and create new Norms and indices.
 	private Norm currNorm; 				// Pointer to the current Norm during net traversal.
-	private ProblemCase problemCase;	// Instance of a Problem Case to be resolved.
-	private Solution solution;			// Solution object obtained from the adaptation of a Case found.
+	private ProblemSolutions problemSolutions;	// Instance of a Problem Case to be resolved.
 	private int recursionCount; 	// Controls the number of recusrive calls during case-to-insert and case-to-compare comparisons, in the cas-adding methods.
 	
 	/**
@@ -45,8 +43,7 @@ public class RDNet {
 		setCaseCompare(new CBRStack<Case>());
 		setCiDesc(new ArrayList<Descriptor<Object>>());
 		setCurrNorm(null);
-		setProblemCase(new ProblemCase());
-		setSolution(new Solution());
+		setProblemSolutions(new ProblemSolutions());
 		setRecursionCount(0);
 	}
 
@@ -138,28 +135,16 @@ public class RDNet {
 		return currNorm;
 	}
 
-	public void setProblemCase(ProblemCase problemCase) {
-		this.problemCase = problemCase;
+	public void setProblemSolutions(ProblemSolutions problemSolutions) {
+		this.problemSolutions = problemSolutions;
 	}
 
 	/**
 	 * @see "Método problemCase del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public ProblemCase getProblemCase() {
-		return problemCase;
-	}
-
-	public void setSolution(Solution solution) {
-		this.solution = solution;
-	}
-
-	/**
-	 * @see "Método solution del protocolo accessing en SUKIA SmallTalk"
-	 * @return
-	 */
-	public Solution getSolution() {
-		return solution;
+	public ProblemSolutions getProblemSolutions() {
+		return problemSolutions;
 	}
 
 	public void setRecursionCount(int recursionCount) {
@@ -213,7 +198,6 @@ public class RDNet {
 		String str;
 		
 		this.getRoute().clear();
-		this.setSolution(null);
 		this.setCurrNorm(this.getRoot());
 		
 		this.readProblemCase();
@@ -221,12 +205,12 @@ public class RDNet {
 		this.nextBestMatch();
 
 		// Actualiza la solucion del caso problema
-		this.getProblemCase().setSolutionCases(this.getSolution());
+		// this.getProblemSolutions().setSolutionCases(this.getSolutions()); OJO verificar esta linea
 		
 		str = "";
 
-		for( int i = 1; i <= this.getProblemCase().getSolutionCases().size(); i++) {
-			str = str +  " " + this.getProblemCase().getSolutionCases().get(i-1).getSolution();
+		for( int i = 1; i <= this.getProblemSolutions().getSolutionCases().size(); i++) {
+			str = str +  " " + this.getProblemSolutions().getSolutionCases().get(i-1).getSolution();
 			
 		}
 
@@ -245,25 +229,25 @@ public class RDNet {
 		Node successor;
 		
 		// Para cada par (atributo, valor) del caso problema
-		for( int i = 1; i <= this.getProblemCase().getDescription().size(); i++) {
-			descriptorAct = this.getProblemCase().getDescription().get(i-1);
+		for( int i = 1; i <= this.getProblemSolutions().getProblemCase().getProblem().getDescription().size(); i++) {
+			descriptorAct = this.getProblemSolutions().getProblemCase().getProblem().getDescription().get(i-1);
 			// ( ( ( (problemCase weightAt: caract )  = -1) not)  & ( (route containsTheObject: ( descriptorAct attribute ) ) not ) )
 			if (!(this.getRoute().contains(descriptorAct.getAttribute()))) { 
 				// Indice correspondiente a descriptor del caso problema. 
       		 	indiceAct =  this.getCurrNorm().getSuccessorIndex(descriptorAct.getAttribute(), descriptorAct.getValue());
 				// Si el indice para el atributo del caso problema no existe
 	  			if (indiceAct == null) {
-	  				this.getProblemCase().weightsAt(i-1, -1); 
+	  				this.getProblemSolutions().setWeight(i-1, -1); 
 	  			} else {
 					// OJO: HAY QUE ARREGLAR ESTA PARTE
 					successor = indiceAct.getSuccessor(descriptorAct.getValue());
 					if (successor == null) {
-						this.getProblemCase().weightsAt(i-1, -1);
+						this.getProblemSolutions().setWeight(i-1, -1);
 					} else {
 						if (!(successor instanceof Norm)) 
-							this.getProblemCase().weightsAt(i-1, 1);
+							this.getProblemSolutions().setWeight(i-1, 1);
 						else
-							this.getProblemCase().weightsAt(i-1, ((Norm)successor).getNumCases());
+							this.getProblemSolutions().setWeight(i-1, ((Norm)successor).getNumCases());
 					}
 				}	  					
 	  		}
@@ -286,11 +270,11 @@ public class RDNet {
 		
 		for(Index n1: indexes) {
 			// Si no existe el atributo en el caso problema, es una posible ruta a visitar.
-			if (this.getProblemCase().valueOf( n1.getLabel()) == null ) {
+			if (this.getProblemSolutions().getValue( n1.getLabel()) == null ) {
 				sucesoresIndice = n1.getSuccessors();
 				for(Node n2: sucesoresIndice) {
 					if (n2 instanceof SheetNode) {
-							this.getSolution().add(((SheetNode)n2).getCase(), this.getProblemCase());
+						this.getProblemSolutions().getSolutionCases().add(((SheetNode)n2).getCase());
 					} else {
 						this.gotDeadEnd((Norm) n2);
 					}
@@ -311,9 +295,9 @@ public class RDNet {
 		posicion = 0;
 		min = this.getRoot().getNumCases();
 
-		for( int i = 1; i <= this.getProblemCase().getDescription().size(); i++) {
-			valor = this.getProblemCase().getWeightAt(i-1);
-			if (!(this.getRoute().contains(this.getProblemCase().getDescription().get(i-1).getAttribute())) && 
+		for( int i = 1; i <= this.getProblemSolutions().getProblemCase().getProblem().getDescription().size(); i++) {
+			valor = this.getProblemSolutions().getWeightAt(i-1);
+			if (!(this.getRoute().contains(this.getProblemSolutions().getProblemCase().getProblem().getDescription().get(i-1).getAttribute())) && 
 					( valor <= min)    &&	!( valor == -1 )) {
 				min = valor;
 				posicion = i;
@@ -339,7 +323,7 @@ public class RDNet {
 		posMasPredictivo =  this.lowestWeight();
 
 		if (!(posMasPredictivo == -1 )) {
-			descriptorMasPredictivo = this.getProblemCase().getDescription().get(posMasPredictivo-1);
+			descriptorMasPredictivo = this.getProblemSolutions().getProblemCase().getProblem().getDescription().get(posMasPredictivo-1);
 			// Indice correspondiente al descriptor mas predictivo del caso problema. 
   		 	indicePredictivo = this.getCurrNorm().getSuccessorIndex(descriptorMasPredictivo.getAttribute(), descriptorMasPredictivo.getValue());
   		 	
@@ -350,7 +334,7 @@ public class RDNet {
 
 				/* Como la red es redundantisima no es necesario utilizar mas de una vez un atributo
 				self problemCase weightsAt: posMasPredictivo  modifiedWith: -1.*/
-				this.getSolution().add(((SheetNode)successor).getCase(), this.getProblemCase());
+				this.getProblemSolutions().getSolutionCases().add(((SheetNode)successor).getCase());
 				
 				posMasPredictivo =  this.lowestWeight();
 				if (!(posMasPredictivo == -1)) {
@@ -363,7 +347,7 @@ public class RDNet {
 				this.getRoute().push(descriptorMasPredictivo.getAttribute());
 
 				// Como la red es redundantisima no es necesario utilizar mas de una vez un atributo
-			 	this.getProblemCase().weightsAt(posMasPredictivo, -1);
+			 	this.getProblemSolutions().setWeight(posMasPredictivo, -1);
 
 			 	this.setCurrNorm((Norm)successor);
 			 	this.nextBestMatch();																															
@@ -384,7 +368,7 @@ public class RDNet {
 		indicesRaiz = this.getRoot().successorIndexes();
 
 		// Limpia el vector de deficion del csao problema
-		this.problemCase.clear();
+		this.problemSolutions.setToDefault();
 
 		desc = new Descriptor<Object>();
 
@@ -395,7 +379,7 @@ public class RDNet {
 					valorSimbolo =  valor;
 				else valorSimbolo =  Double.parseDouble(valor);
 				desc.set(this.getRoot().getStructure(), ix.getLabel(), valorSimbolo);
-				this.getProblemCase().addToDescription(desc);
+				this.getProblemSolutions().addToDescription(desc);
 			}
 		}
 	}
@@ -829,8 +813,7 @@ public class RDNet {
 		this.getCaseCompare().clear();
 		this.getCiDesc().clear();
 		this.setCurrNorm(null);
-		this.getProblemCase().clear();
-		this.setSolution(null);
+		this.getProblemSolutions().setToDefault();
 		this.setRecursionCount(0);
 	}
 	

@@ -8,8 +8,8 @@ package system.searchAutomata.output;
 
 import java.util.List;
 
-import ontology.CBR.PossibleSolution;
 import ontology.common.Descriptor;
+import system.PossibleSolution;
 
 
 /**

@@ -3,6 +3,8 @@
  */
 package system.similarityAssessment;
 
+import ontology.CBR.SimilarityDegree;
+
 /**
  * Clase agregada
  * @author Armando
@@ -11,7 +13,7 @@ package system.similarityAssessment;
 public class ValuedRange {
 	private int lowerBound;
 	private int upperBound;
-	private String categoria;
+	private SimilarityDegree categoria;
 	
 	public void setLowerBound(int lowerBound) {
 		this.lowerBound = lowerBound;
@@ -29,11 +31,11 @@ public class ValuedRange {
 		return upperBound;
 	}
 
-	public void setCategoria(String categoria) {
+	public void setCategoria(SimilarityDegree categoria) {
 		this.categoria = categoria;
 	}
 
-	public String getCategoria() {
+	public SimilarityDegree getCategoria() {
 		return categoria;
 	}
 	

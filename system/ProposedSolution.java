@@ -1,7 +1,8 @@
 /**
  * @see "Categoría Sukia Reasoner en SUKIA SmallTalk"
  */
-package ontology.CBR;
+package system;
+
 
 
 /**
