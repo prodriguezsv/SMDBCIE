@@ -85,9 +85,9 @@ public enum TaxonomicRank {
 	 */
 	public static int getIndex(TaxonomicRank taxonomicRank) {
 		int i = 0;
-		
+                if (taxonomicRank == null){return -1;}
 		for (TaxonomicRank tr: TaxonomicRank.values()) {
-			if (tr.getRank().equals(taxonomicRank))
+			if (tr.getRank().equals(taxonomicRank.getRank()))
 				break;
 			i++;
 		}

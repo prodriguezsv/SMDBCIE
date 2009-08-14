@@ -300,6 +300,7 @@ public class Taxon implements Comparable<Taxon>{
 	/**
 	 * Método de instancia agregado
 	 */
+    @Override
 	public int compareTo(Taxon aTaxon) {
 		return this.getName().compareTo(aTaxon.getName());
 	}
