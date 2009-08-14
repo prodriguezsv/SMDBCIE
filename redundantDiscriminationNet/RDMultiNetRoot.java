@@ -63,11 +63,8 @@ public class RDMultiNetRoot {
 	 */
 	public void addRDNet(String aStructureName) {
 		RDNet aRDNet;
-		RootNorm aRoot;
 		
-		aRDNet = new RDNet();
-		aRoot = new RootNorm(aStructureName);
-		aRDNet.setRoot(aRoot);
+		aRDNet = new RDNet(new RootNorm(aStructureName));
 		
 		if (this.nets == null)
 			this.nets = new ArrayList<RDNet>();

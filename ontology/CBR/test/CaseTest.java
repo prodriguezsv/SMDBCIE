@@ -74,16 +74,15 @@ public class CaseTest {
 		
 		System.out.println("Iniciando pruebas para el método AddToDescription()");
 		
-		System.out.println("Verificar que no se agregue un referencia a null");
+		System.out.println("Verificar que no se agregue una referencia a null");
 		assertFalse(aCase.addToDescription(null));
 		
-		System.out.println("Verificar que no se agregue un descriptor duplicado");
-		aDescriptor = new Descriptor<Object>("Cuerpo", "Longitud", 0.3);
-		assertFalse(aCase.addToDescription(aDescriptor));
-		aDescriptor = new Descriptor<Object>("Pie", "Disposición", "Sobresale al manto");
-		assertFalse(aCase.addToDescription(aDescriptor));
+		System.out.println("Verificar que no haya contradicciones en la descripción o duplicados");
+		assertFalse(aCase.addToDescription(new Descriptor<Object>("Cuerpo", "Longitud", 0.3)));
+		assertFalse(aCase.addToDescription(new Descriptor<Object>("Pie", "Disposición", "Sobresale al manto")));
+		assertFalse(aCase.addToDescription(new Descriptor<Object>("Cuerpo", "Longitud", 1)));
 		
-		System.out.println("Verificar que se agregue un descriptor correctamente");
+		System.out.println("Verificar que se agregue un descriptor válido");
 		aDescriptor = new Descriptor<Object>("Cuerpo", "Conformación", "Tiene cerata");
 		assertTrue(aCase.addToDescription(aDescriptor));
 		aDescriptor = new Descriptor<Object>("Branquias", "Número de hojas branquiales", 6);
@@ -102,11 +101,10 @@ public class CaseTest {
 		System.out.println("Verificar que no se agregue un referencia a null");
 		assertFalse(aCase.addToDescription(null));
 		
-		System.out.println("Verificar que no se agregue un descriptor duplicado");
-		aDescriptor = new Descriptor<Object>("Cuerpo", "Longitud", 0.3);
-		assertFalse(aCase.addToDescription(aDescriptor));
-		aDescriptor = new Descriptor<Object>("Pie", "Disposición", "Sobresale al manto");
-		assertFalse(aCase.addToDescription(aDescriptor));
+		System.out.println("Verificar que no haya contradicciones en la descripción o duplicados");
+		assertFalse(aCase.addToDescription(new Descriptor<Object>("Cuerpo", "Longitud", 0.3)));
+		assertFalse(aCase.addToDescription(new Descriptor<Object>("Pie", "Disposición", "Sobresale al manto")));
+		assertFalse(aCase.addToDescription(new Descriptor<Object>("Cuerpo", "Longitud", 1)));
 		
 		System.out.println("Verificar que se agregue un descriptor correctamente");
 		aDescriptor = new Descriptor<Object>("Cuerpo", "Conformación", "Tiene cerata");

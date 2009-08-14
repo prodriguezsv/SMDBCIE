@@ -17,7 +17,7 @@ import ontology.common.Descriptor;
 import redundantDiscriminationNet.Index;
 import redundantDiscriminationNet.Node;
 import redundantDiscriminationNet.Norm;
-import redundantDiscriminationNet.SheetNode;
+import redundantDiscriminationNet.SheetCase;
 import system.PossibleSolution;
 import system.searchAutomata.output.DFSAutomatonOutput;
 
@@ -318,7 +318,7 @@ public class SAVCaseDFSAutomaton {
 	 * @return my return values
 	 */
     public String processPreviousNorm(){
-        currentNorm = currentNorm.getPredecessorNorm();
+        currentNorm = currentNorm.getNearestPredecessorNorm();
         setPreviousLevel();
         if ((currentLevel < stopLevel) || (currentNorm == netRoot)){
             return null;
@@ -569,7 +569,7 @@ public class SAVCaseDFSAutomaton {
             Descriptor<Object> d = aProblemDescription.remove(0);
             //Look for a matching index
 
-            Index idx = currentNorm.getSuccessorIndex(d.getAttribute(), d.getValue());
+            Index idx = currentNorm.getSuccessorIndex(d);
 
 
             //If the descriptor did not match any index, take it out of the problem description and
@@ -582,7 +582,7 @@ public class SAVCaseDFSAutomaton {
                 if (result.equals("success")){setTUnmatchedDescription(d);}
             }else{
                 //Index found. get the IndexValue successor
-                Node succ = idx.getSuccessor(d.getValue()).getSuccessors().get(0);
+                Node succ = idx.getSuccessor(d).getSuccessors().get(0);
 
                 //If a matched index points to a Norm, don't process it. Place the descriptor in a temporary list
                 if (succ instanceof Norm){
@@ -704,14 +704,14 @@ public class SAVCaseDFSAutomaton {
         //Create the temporary process lists
 
         List<Descriptor<Object>> tempList = new ArrayList<Descriptor<Object>>();
-        List<SheetNode> pSolutionList = new ArrayList<SheetNode>();
+        List<SheetCase> pSolutionList = new ArrayList<SheetCase>();
 
         //Scan the the Descriptor list of the problem description. Look for indices that strictly point to cases
         while (aProblemDescription.isEmpty() != true){
             //Remove the next Descriptor<Object>
             Descriptor<Object> d = aProblemDescription.get(0);
             //Look for a matching index
-            Index idx = currentNorm.getSuccessorIndex(d.getAttribute(),d.getValue());
+            Index idx = currentNorm.getSuccessorIndex(d);
 
             //If the descriptor did not match any index, take it out of the problem description and
             //place it in the unmatched descriptor list
@@ -728,7 +728,7 @@ public class SAVCaseDFSAutomaton {
 
             }else{
                 //Index found. get the IndexValue successor
-                Object succ = idx.getSuccessor(d.getValue()).getSuccessors().get(0);
+                Object succ = idx.getSuccessor(d).getSuccessors().get(0);
 
                 if (succ instanceof Norm){
                     tempList.add(d);
@@ -1010,7 +1010,7 @@ public class SAVCaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    private List<PossibleSolution> associateCasesToPossibleSolutions(List<SheetNode> aCaseList){
+    private List<PossibleSolution> associateCasesToPossibleSolutions(List<SheetCase> aCaseList){
         //<body>associateCasesToPossibleSolutions: aCaseList
         //
         //	"This method is used in conjuntion with prepareSuccessfulOutput.  The purpose
@@ -1022,7 +1022,7 @@ public class SAVCaseDFSAutomaton {
         //	 Automaton reference: none."
 
         List<PossibleSolution> psList = new ArrayList<PossibleSolution>();
-        for (SheetNode mycase: aCaseList){
+        for (SheetCase mycase: aCaseList){
             PossibleSolution ps = new PossibleSolution();
             ps.setSolution(mycase);
             ps.copy(getTSolutionDescription(), ps.getSolutionDescription());
@@ -1085,7 +1085,7 @@ public class SAVCaseDFSAutomaton {
         while (aNormAlternativeList.isEmpty() != true){
             Node normAlternative = aNormAlternativeList.remove(0);
             //n := (normAlternative last successors) first.
-            if ((normAlternative instanceof SheetNode)){return null;}
+            if ((normAlternative instanceof SheetCase)){return null;}
 
             if (((Norm)normAlternative).successorCases().isEmpty() != true){
                 newList.add((Norm)normAlternative);
@@ -1173,7 +1173,7 @@ public class SAVCaseDFSAutomaton {
         //	^true.</body>
 
         Node n = anAlternative.getNode().getSuccessors().get(0);
-        if ((n instanceof SheetNode)){return false;}
+        if ((n instanceof SheetCase)){return false;}
         if (((Norm)n).successorCases().isEmpty() != true){return false;}
         //First, get the list of successors for the current norm
         List<Index> successorList = ((Norm)n).successorIndexes();
@@ -1840,7 +1840,7 @@ public class SAVCaseDFSAutomaton {
         //	ifFalse: [ ^(self prepareSuccessfulOutputWith: (self associateCasesToPossibleSolutions: caseList)) ].
         //
         //	^(self indexDialog).</body>
-        List<SheetNode> caseList = currentNorm.successorCases();
+        List<SheetCase> caseList = currentNorm.successorCases();
         if (caseList.isEmpty() != true){
 
             return prepareSuccessfulOutputWith(associateCasesToPossibleSolutions(caseList));
@@ -1923,7 +1923,7 @@ public class SAVCaseDFSAutomaton {
         while (i<=aProblemDescription.size()){
             //Search for a norm whose descriptor matches the scanned descriptor. If found,
             //remove the descriptor from the problem case and stop the loop
-            nextNorm = currentNorm.getSuccessorNorm(aProblemDescription.get(i));
+            nextNorm = currentNorm.getNearestSuccessorNorm(aProblemDescription.get(i));
 
             if (nextNorm == null){
                 i += 1;

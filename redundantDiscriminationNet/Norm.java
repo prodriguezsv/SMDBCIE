@@ -1,4 +1,6 @@
 /**
+ * Paquete que implementa una red de discriminaci&oacute;n redundante que representa el mecanismo de
+ * identificaci&oacute;n de las llaves taxon&oacute;micas
  * @see "Categoría Main de SUKIA Smalltalk"
  */
 package redundantDiscriminationNet;
@@ -9,12 +11,10 @@ import java.util.List;
 import ontology.common.Descriptor;
 
 
-
-
 /**
- * Purpose: Structure that groups (generalizes) a set of cases that share a common Descriptor.  Such cases may be
- * linked directly to the norm (when the cases' descriptions terminate at the Norm), or accessed via indices.  A Norm
- * may NOT directly point to another Norm.
+ * Structure that groups (generalizes) a set of cases that share a common Descriptor.  Such cases may be
+ * linked directly to the norm (when the cases' descriptions terminate at the Norm), or accessed via indices.
+ * A Norm may NOT directly point to another Norm.
  * IMPORTANT NOTES:
  * 1. There shall be no Index or Case duplication in the Norm's list of successors.
  * 3. A Norm may exist only in the context of a net.
@@ -23,73 +23,103 @@ import ontology.common.Descriptor;
  *
  */
 public class Norm extends Node {
-	private Descriptor<Object> descriptor; //depicting the grouping (generalizing) concept
-	private int numCases; // Number of cases grouped by the Norm, whether linked directly or located levels below.
-
 	/**
-	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
+	 * Depicting the grouping (generalizing) concept
 	 */
-	public Norm() {
-		descriptor = null;
+	private Descriptor<Object> descriptor;
+	/**
+	 * Number of cases grouped by the Norm, whether linked directly or located levels below.
+	 */
+	private int numCases;
+	
+	/**
+	 * Constructor alternativo
+	 * @see "M&eacute;todo initialize del protocolo initializing en SUKIA SmallTalk"
+	 */
+	public Norm(Descriptor<Object> descriptor) {
+		super.setPredecessors(new ArrayList<Node>());
+		super.setSuccessors(new ArrayList<Node>());
+		this.descriptor = descriptor;
 		numCases = 0;
 	}
 
 	/**
-	 * @see "Método descriptor del protocolo accessing en SUKIA SmallTalk"
+	 * Constructor alternativo
+	 * @see "M&eacute;todo initialize del protocolo initializing en SUKIA SmallTalk"
+	 */
+	public Norm(Descriptor<Object> descriptor, Index predecessor) {
+		super.setSuccessors(new ArrayList<Node>());
+		this.setPredecessor(predecessor);
+		this.descriptor = descriptor;
+		numCases = 0;
+	}
+	
+	/**
+	 * M&eacute;todo accesor de lectura
+	 * @see "M&eacute;todo descriptor del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
 	public Descriptor<Object> getDescriptor() {
 		return descriptor;
 	}
-
-	/**
-	 * Sets the variable descriptor with the value of aDescriptor
-	 * @see "Método descriptor: del protocolo adding en SUKIA SmallTalk"
-	 * @param descriptor
-	 */
-	public void setDescriptor(Descriptor<Object> descriptor) {
-		this.descriptor = descriptor;
-	}
 	
 	/**
-	 * @see "Método predecessor del protocolo navigating en SUKIA SmallTalk"
+	 * M&eacute;todo accesor de lectura
+	 * @see "M&eacute;todo numCases del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
+	public int getNumCases() {
+		return numCases;
+	}
+
+	/**
+	 * Incrementa el valor de numCases
+	 * @see "M&eacute;todo incrementNumCasesBy: del protocolo adding en SUKIA SmallTalk"
+	 * @param anInteger Valor de incremento del n&uacute;mero de casos
+	 */
+	public void incrementNumCasesBy(int anInteger) {
+		numCases = (numCases + anInteger);
+	}
+
+	
+	/**
+	 * Recupera el &iacute;ndice predecesor de la norma
+	 * @see "M&eacute;todo predecessor del protocolo navigating en SUKIA SmallTalk"
+	 * @return El &iacute;ndice predecesor si existe o null de lo contrario
+	 */
 	public Index getPredecessor() {
-		if (super.getSuccessors() != null) {
-			if (!(super.getPredecessors().isEmpty()))
-				return (Index) super.getPredecessors().get(0);
-		}
+		if (!(super.getPredecessors().isEmpty()))
+			return (Index) super.getPredecessors().get(0);
 		
 		return null;
 	}
 	
 	/**
-	 * @see "Método predecessor del protocolo navigating en SUKIA SmallTalk"
+	 * Actualiza el índice predecesor de la norma
+	 * @see "M&eacute;todo predecessor del protocolo navigating en SUKIA SmallTalk"
 	 * @return
 	 */
-	public void setPredecessor(Node aSuccessor) {
-		if (super.getSuccessors() == null)
-			super.addSuccessor(aSuccessor);
-		else {
-			super.getSuccessors().clear();
-			super.addSuccessor(aSuccessor);
+	public boolean setPredecessor(Index aPredecessor) {
+		if (aPredecessor == null) {
+			super.getPredecessors().clear();
+			return true;
 		}
-	}
-	
-	/**
-	 * @see "Método predecessor: del protocolo adding en SUKIA SmallTalk"
-	 * @param predecessorIndex
-	 */
-	public void setPredecessors(List<Node> predecessors) {
 		
+		if (!this.getDescriptor().getAttribute().equals(aPredecessor.getLabel()))
+			return false;
+		
+		super.getPredecessors().clear();
+		
+		return super.addPredecessor(aPredecessor);
 	}
 	
 	/**
-	 * @see "Método addSuccessor: del protocolo adding en SUKIA SmallTalk"
+	 * Agrega un nodo sucesor a la norma
+	 * @see "M&eacute;todo addSuccessor: del protocolo adding en SUKIA SmallTalk"
+	 * @return true si se agrega aSuccessor o false de lo contrario
 	 */
 	public boolean addSuccessor(Node aSuccessor) {	
-		if (!(aSuccessor instanceof Index || aSuccessor instanceof SheetNode)) return false;
+		if (!(aSuccessor instanceof Index || aSuccessor instanceof SheetCase)) return false;
 		
 		// If aSuccessor is an Index, make sure that all Index-labels are unique
 		if (aSuccessor instanceof Index) {
@@ -102,154 +132,114 @@ public class Norm extends Node {
 					 else continue;
 				}
 			}
+		} else {
+			// Si es un SheetCase asegurarse que los descriptores de la norma y aSuccessor sean iguales
+			if (!this.getDescriptor().equals(((SheetCase)aSuccessor).getDescriptor()))
+				return false;
 		}
 		
-		return this.getSuccessors().add(aSuccessor);
-	}
-
-	/**
-	 * @see "Método numCases del protocolo accessing en SUKIA SmallTalk"
-	 * @return
-	 */
-	public int getNumCases() {
-		return numCases;
-	}
-
-	/**
-	 * @see "Método incrementNumCasesBy: del protocolo adding en SUKIA SmallTalk"
-	 * @param anInteger
-	 */
-	public void incrementNumCasesBy(int anInteger) {
-		numCases = (numCases + anInteger);
+		return super.addSuccessor(aSuccessor);
 	}
 	
 	/**
-	 * @see "Método predecessor del protocolo navigating en SUKIA SmallTalk"
+	 * Recupera la norma predecesor m&aacute;s cercana a la norma actual
+	 * @see "M&eacute;todo predecessor del protocolo navigating en SUKIA SmallTalk"
 	 * @return
 	 */
-	public Norm getPredecessorNorm() {
+	public Norm getNearestPredecessorNorm() {
 		if (this.getPredecessor() == null) return null;
 		
 		return this.getPredecessor().getPredecessor();
 	}
 
 	/**
-	 * This method returns a collection of cases that are immediate successors of this Norm.  That is, all retrieved cases
-	 * are generalized by the Norm's Descriptor
-	 * @see "Método successorCases del protocolo navigating en SUKIA SmallTalk"
-	 * @return
+	 * This method returns a collection of cases that are immediate successors of this Norm.  That is,
+	 * all retrieved cases are generalized by the Norm's Descriptor
+	 * @see "M&eacute;todo successorCases del protocolo navigating en SUKIA SmallTalk"
+	 * @return La lista de casos sucesores de la norma o una lista vac&iacute;a si no tiene casos sucesores
 	 */
-	public List<SheetNode> successorCases() {
-		List<SheetNode> s;
+	public List<SheetCase> successorCases() {
+		List<SheetCase> s;
 		
-		if (super.getSuccessors() != null) {
-			s = new ArrayList<SheetNode>();
-	
-			for (Node n: this.getSuccessors()) {
-				if ((n instanceof SheetNode))
-					s.add((SheetNode)n);
-			}
-			
-			return s;
+		s = new ArrayList<SheetCase>();
+
+		for (Node n: super.getSuccessors()) {
+			if ((n instanceof SheetCase))
+				s.add((SheetCase)n);
 		}
 		
-		return null;
+		return s;
 	}
 
 	/**
-	 * This method returns a collection of cases that are immediate successors of this Norm.  That is, all retrieved cases
-	 * are generalized by the Norm's Descriptor
-	 * @see "Método successorCases del protocolo navigating en SUKIA SmallTalk"
-	 * @return
+	 * This method returns a collection of indices that are immediate successors of this Norm.
+	 * @see "M&eacute;todo successorCases del protocolo navigating en SUKIA SmallTalk"
+	 * @return La lista de &iacute;ndices sucesores de la norma o una lista vac&iacute;a si no tiene
+	 * &iacute;ndices sucesores
 	 */
 	public List<Index> successorIndexes() {
 		List<Index> s;
 		
-		if (super.getSuccessors() != null) {
-			s = new ArrayList<Index>();
-	
-			for (Node n: this.getSuccessors()) {
-				if (n instanceof Index)
-					s.add((Index)n);
-			}
-			
-			return s;
+		s = new ArrayList<Index>();
+
+		for (Node n: super.getSuccessors()) {
+			if (n instanceof Index)
+				s.add((Index)n);
 		}
 		
-		return null;
+		return s;
 	}
+	
 	/**
-	 * Given a Descriptor, this method searches for an Index that matches the attribute-value parameters, and returns:
-	 * - the successor Norm, or
-	 * - nil, otherwise
-	 * @see "Método successorWith del protocolo navigating en SUKIA SmallTalk"
+	 * Given a Descriptor, this method searches for the nearest predecessor norm that matches aDescriptor
+	 * @see "M&eacute;todo successorWith del protocolo navigating en SUKIA SmallTalk"
 	 * @param aDescriptor
-	 * @return
+	 * @return The successor Norm, or null, otherwise
 	 */
-	public Norm getSuccessorNorm(Descriptor<Object> aDescriptor) {
+	public Norm getNearestSuccessorNorm(Descriptor<Object> aDescriptor) {
 		Index index;
 
 		index = this.getSuccessorIndex(aDescriptor.getAttribute());
-		if (!(index == null)) {
-			return this.getSuccessorNorm(index, aDescriptor.getValue());
-		}
+		if (!(index == null))
+			return index.getSuccessorNorm(aDescriptor);
 
 		return null;
 	}
 	
 	/**
-	 * @see "Método getIndexWith: del protocolo searching en SUKIA SmallTalk"
-	 * @param aLabel
-	 * @return
+	 * Obtiene el &iacutendice sucesor de la norma con etiqueta aLabel
+	 * @see "M&eacute;todo getIndexWith: del protocolo searching en SUKIA SmallTalk"
+	 * @param aLabel la etiqueta del &iacutendice sucesor a buscar 
+	 * @return el &iacutendice sucesor de la norma con etiqueta aLabel o null si no existe
 	 */
 	public Index getSuccessorIndex(String aLabel) {
-		if (super.getSuccessors() != null) {
-			for (Node n: this.getSuccessors()) {
-				if (n instanceof Index)
-					if (aLabel.equals(((Index)n).getLabel()))
+		for (Node n: this.getSuccessors()) {
+			if (n instanceof Index)
+				if (aLabel.equals(((Index)n).getLabel()))
+					return ((Index)n);
+		}
+		
+		return null;
+	}
+
+	/**
+	 * Obtiene el &iacutendice sucesor de la norma con etiqueta aLabel y un valor se&ntilde;alado aValue
+	 * @see "M&eacute;todo getIndexWith:and: del protocolo searching en SUKIA SmallTalk"
+	 * @param anAttribute La etiqueta del &iacutendice sucesor a buscar
+	 * @param aValue El valor se&ntilde;alado a buscar
+	 * @return
+	 */
+	public Index getSuccessorIndex(Descriptor<Object> aDescriptor) {
+		for (Node n: this.getSuccessors()) {
+			if (n instanceof Index)
+				if (aDescriptor.getAttribute().equals(((Index)n).getLabel()) 
+						&& !(((Index)n).getSuccessor(aDescriptor) == null)) 
 						return ((Index)n);
-			}
 		}
 		
 		return null;
 	}
-
-	/**
-	 * @see "Método getIndexWith:and: del protocolo searching en SUKIA SmallTalk"
-	 * @param anAttribute
-	 * @param aValue
-	 * @return
-	 */
-	public Index getSuccessorIndex(String anAttribute, Object aValue) {
-		if (super.getSuccessors() != null) {
-			for (Node n: this.getSuccessors()) {
-				if (n instanceof Index)
-					if (anAttribute.equals(((Index)n).getLabel()) 
-							&& !(((Index)n).getSuccessor(aValue) == null)) 
-							return ((Index)n);
-			}
-		}
 		
-		return null;
-	}
-	
-	/**
-	 * @see "Método getSuccessorNormFor:with del protocolo searching en SUKIA SmallTalk"
-	 * @param anIndex
-	 * @param aValue
-	 * @return
-	 */
-	public Norm getSuccessorNorm(Index anIndex, Object aValue) {
-		Node successor;
-
-		successor = anIndex.getSuccessor(aValue);
-		if (successor != null) {
-			if (successor instanceof Norm) return (Norm)successor;
-		}
-		
-		return null;
-	}
-	
 	/**
 	 * @see "Método value del protocolo accessing en SUKIA SmallTalk"
 	 * @return

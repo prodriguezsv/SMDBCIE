@@ -1,55 +1,41 @@
 /**
- * 
+ * Paquete que implementa una red de discriminaci&oacute;n redundante que representa el mecanismo de
+ * identificaci&oacute;n de las llaves taxon&oacute;micas
+ * @see "Categoría Main de SUKIA Smalltalk"
  */
 package redundantDiscriminationNet;
-
-import java.util.List;
 
 import ontology.common.Descriptor;
 
 
 
 /**
- * Purpose: Specialization of a Norm, and its mission is to act as a net's entry point.  The two most important features
- * of a RootNorm are: 1. it does not have a predecessor, and 2. its Descriptor is of the form ( nil nil ).
+ * Specialization of a Norm, and its mission is to act as a net's entry point.  The two most important
+ * features of a RootNorm are: 1. it does not have a predecessor, and 2. its Descriptor is of the form
+ * (structure nil nil ).
  * @author Armando
  *
  */
 public class RootNorm extends Norm {
-
-	/**
-	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
-	 */
-	public RootNorm() {
-		
-	}
 	
 	/**
-	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
+	 * Constructor de la clase
+	 * @see "M&eacute;todo initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
 	public RootNorm(String aStructureName) {
-		this.setStructure(aStructureName);
+		super(new Descriptor<Object>(aStructureName, null, null));
 	}
 	
 	/**
-	 * @see "Método descriptor del protocolo accessing en SUKIA SmallTalk"
+	 * @see "M&eacute;todo descriptor del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
 	public Descriptor<Object> getDescriptor() {
 		return null;
 	}
-
-	/**
-	 * Sets the variable descriptor with the value of aDescriptor
-	 * @see "Método descriptor: del protocolo adding en SUKIA SmallTalk"
-	 * @param descriptor
-	 */
-	public void setDescriptor(Descriptor<Object> descriptor) {
-
-	}
 	
 	/**
-	 * @see "Método predecessor del protocolo navigating en SUKIA SmallTalk"
+	 * @see "M&eacute;todo predecessor del protocolo navigating en SUKIA SmallTalk"
 	 * @return
 	 */
 	public void setPredecessor(Node aSuccessor) {
@@ -57,15 +43,7 @@ public class RootNorm extends Norm {
 	}
 	
 	/**
-	 * @see "Método predecessor: del protocolo adding en SUKIA SmallTalk"
-	 * @param predecessorIndex
-	 */
-	public void setPredecessors(List<Node> predecessors) {
-		
-	}
-	
-	/**
-	 * @see "Método addStructure: del protocolo adding-private en SUKIA SmallTalk"
+	 * @see "M&eacute;todo addStructure: del protocolo adding-private en SUKIA SmallTalk"
 	 * @param structure
 	 */
 	public void setStructure(String structure) {
@@ -73,7 +51,7 @@ public class RootNorm extends Norm {
 	}
 	
 	/**
-	 * @see "Método structure del protocolo accessing en SUKIA SmallTalk"
+	 * @see "M&eacute;todo structure del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
 	public String getStructure() {

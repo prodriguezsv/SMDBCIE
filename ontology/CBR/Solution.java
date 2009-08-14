@@ -104,33 +104,4 @@ public class Solution {
 	public void setTaxonName(String taxonName) {
 		this.taxonName = taxonName;
 	}
-	
-	/**
-	 * Appends aDescriptor to the variable description
-	 * @see "M&eacute;todo addToJustification: del protocolo adding en SUKIA SmallTalk"
-	 * @param aDescriptor
-	 * @return Valor de verdad true indicando que la adici&oacute;n se llev&oacute; a cabo
-	 * @return Valor de verdad false indicando que la adici&oacute;n no se llev&oacute; a cabo
-	 */
-	public boolean addToJustification(Descriptor<Object> aDescriptor) {
-		if (aDescriptor == null) return false;
-		
-		if (this.getJustification().contains(aDescriptor))
-			return false;
-		this.getJustification().add(aDescriptor);
-		
-		return true;
-	}
-	
-	/**
-	 * Removes aDescriptor from the variable description
-	 * @param aDescriptor
-	 * @return Valor de verdad true indicando que la remoci&oacute;n se llev&oacute; a cabo
-	 * @return Valor de verdad false indicando que la remoci&oacute;n no se llev&oacute; a cabo
-	 */
-	public boolean removeFromJustification(Descriptor<Object> aDescriptor) {
-		if (aDescriptor == null) return false;
-		
-		return this.getJustification().remove(aDescriptor);
-	}
 }

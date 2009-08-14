@@ -35,6 +35,15 @@ public class Problem {
 		goalRank = null;
 		leastDegreeOfCertainty = null;
 	}
+	
+	/**
+	 * Constructor por defecto
+	 */
+	public Problem(List<Descriptor<Object>> description) {
+		this.description = description;
+		goalRank = null;
+		leastDegreeOfCertainty = null;
+	}
 
 	/**
 	 * M&eacute;todo accesor de escritura

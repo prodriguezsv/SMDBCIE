@@ -47,6 +47,15 @@ public class Case {
 	}
 	
 	/**
+	 * Constructor alternativo
+	 */
+	public Case(List<Descriptor<Object>> description) {
+		problem = new Problem(description);
+		solution = new Solution();
+		state = false;
+	}
+	
+	/**
 	 * @see "M&eacute;todo solution del protocolo adding en SUKIA SmallTalk"
 	 * @param solution
 	 */
@@ -104,8 +113,10 @@ public class Case {
 	public boolean addToDescription(Descriptor<Object> aDescriptor) {
 		if (aDescriptor == null) return false;
 		
-		if (this.getProblem().getDescription().contains(aDescriptor))
+		if (this.getProblem().getDescription().contains(aDescriptor) ||
+				this.areThereContradictions(aDescriptor))
 			return false;
+		
 		this.getProblem().getDescription().add(aDescriptor);
 		
 		return true;
@@ -133,8 +144,10 @@ public class Case {
 	public boolean addToJustification(Descriptor<Object> aDescriptor) {
 		if (aDescriptor == null) return false;
 		
-		if (this.getSolution().getJustification().contains(aDescriptor))
+		if (this.getSolution().getJustification().contains(aDescriptor)  ||
+				this.areThereContradictions(aDescriptor))
 			return false;
+		
 		this.getSolution().getJustification().add(aDescriptor);
 		
 		return true;
@@ -199,5 +212,25 @@ public class Case {
 		}
 		
 		return description;
+	}
+	
+	/**
+	 * Verifica si existen contradicciones entre los descriptores (estructura, atributo, valor) del caso
+	 * Se dice que existe contradiccion  si existe dos descripciones distitnas par el par
+	 * (estructura, atributo)
+	 * @see "M&eacute;todo thereAreContradictions: del protocolo testing en SUKIA SmallTalk"
+	 * @return
+	 */
+	private boolean areThereContradictions(Descriptor<Object> aDescriptor) {
+		
+		// Para cada par (atributo, valor) de aCase.
+		for(Descriptor<Object> d: this.getProblem().getDescription()) {
+			if (d.getStructure().equals(aDescriptor.getStructure()) &&
+					d.getAttribute().equals(aDescriptor.getAttribute())	) {
+					return true; // Hay contradiccion
+			}
+		}
+
+		return false;  //No hubo contradiccion
 	}
 }
