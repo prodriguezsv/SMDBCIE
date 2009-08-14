@@ -391,7 +391,9 @@ public class Value extends ArrayList<List<ValueDescriptor>> {
 
 		// Get the level-list index (in self) corresponding to aLevel
 		levelNumber = TaxonomicRank.getIndex(aLevel);
-		if (levelNumber == 0) return null;
+		if (levelNumber ==-1) return null;
+
+                if (anOperator == null) return null;
 
 		// Make a copy of the argument aWeight and make sure that it is a Float
 		w = aWeight;
