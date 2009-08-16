@@ -119,7 +119,7 @@ public class Norm extends Node {
 	 * @return true si se agrega aSuccessor o false de lo contrario
 	 */
 	public boolean addSuccessor(Node aSuccessor) {	
-		if (!(aSuccessor instanceof Index || aSuccessor instanceof SheetCase)) return false;
+		if (!(aSuccessor instanceof Index) && !(aSuccessor instanceof SheetCase)) return false;
 		
 		// If aSuccessor is an Index, make sure that all Index-labels are unique
 		if (aSuccessor instanceof Index) {

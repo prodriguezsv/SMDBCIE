@@ -216,7 +216,7 @@ public class Case {
 	
 	/**
 	 * Verifica si existen contradicciones entre los descriptores (estructura, atributo, valor) del caso
-	 * Se dice que existe contradiccion  si existe dos descripciones distitnas par el par
+	 * Se dice que existe contradiccion  si existe dos descripciones distintas para el mismo par
 	 * (estructura, atributo)
 	 * @see "M&eacute;todo thereAreContradictions: del protocolo testing en SUKIA SmallTalk"
 	 * @return

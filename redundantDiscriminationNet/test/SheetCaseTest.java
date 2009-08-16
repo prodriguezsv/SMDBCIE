@@ -63,7 +63,7 @@ public class SheetCaseTest {
 	 * Test method for {@link redundantDiscriminationNet.SheetCase#addPredecessor(redundantDiscriminationNet.Node)}.
 	 */
 	@Test
-	public final void testAddPredecessor() {
+	public void testAddPredecessor() {
 		Norm norm;
 		Index index;
 		
@@ -89,7 +89,7 @@ public class SheetCaseTest {
 	 * Test method for {@link redundantDiscriminationNet.SheetCase#addSuccessor(redundantDiscriminationNet.Node)}.
 	 */
 	@Test
-	public final void testAddSuccessor() {
+	public void testAddSuccessor() {
 		System.out.println("Iniciando pruebas para el método AddSuccessor()");
 		
 		System.out.println("Verificar que no es posbible agregar un sucesor");
@@ -100,7 +100,7 @@ public class SheetCaseTest {
 	 * Test method for {@link redundantDiscriminationNet.SheetCase#setCase(ontology.CBR.Case)}.
 	 */
 	@Test
-	public final void testSetCase() {
+	public void testSetCase() {
 		Case aCase;
 		List<Descriptor<Object>> dl;
 		

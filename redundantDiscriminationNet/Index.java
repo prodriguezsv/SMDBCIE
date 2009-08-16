@@ -74,7 +74,7 @@ public class Index extends Node {
 	 * @see "M&eacute;todo addSuccessor: del protocolo adding en SUKIA SmallTalk"
 	 */
 	public boolean addSuccessor(Node aSuccessor) {	
-		if (!(aSuccessor instanceof Norm || aSuccessor instanceof SheetCase)) return false;
+		if (!(aSuccessor instanceof Norm) && !(aSuccessor instanceof SheetCase)) return false;
 		
 		// If aSuccessor is an Norm, make sure that all Descriptors are unique
 		if (aSuccessor instanceof Norm) {
