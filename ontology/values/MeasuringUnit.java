@@ -39,6 +39,7 @@ public class MeasuringUnit {
 	 * @return
 	 */
 	public static boolean exists(String aMeasuringUnit) {
+                if (aMeasuringUnit == null) return false;
 		return (unitList.contains(aMeasuringUnit));
 	}
 }
