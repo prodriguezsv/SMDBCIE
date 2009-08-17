@@ -26,7 +26,7 @@ public class Taxon implements Comparable<Taxon>{
 	public Taxon() {
 		setLevel(null);
 		setName(null);
-		setPredecessor(null);
+		//setPredecessor(null);
 		//Pendiente ordenamiento
 		setSuccessors(new ArrayList<Taxon>());
 		//Pendiente ordenamiento
@@ -126,7 +126,9 @@ public class Taxon implements Comparable<Taxon>{
 	 * @param sucessor
 	 */
 	public void addSuccessor(Taxon successor) {
-		successor.setPredecessor(successor);
+                //TODO
+                //check circular dependency
+		//successor.setPredecessor(this);
 		this.successors.add(successor);
 		Collections.sort(this.successors);
 	}

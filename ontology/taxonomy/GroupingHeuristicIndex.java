@@ -118,4 +118,5 @@ public class GroupingHeuristicIndex extends ArrayList<GroupingHeuristic> {
 		// predecessors. Thus, assume there are no inconsistencies
 		return true;
 	}
+
 }

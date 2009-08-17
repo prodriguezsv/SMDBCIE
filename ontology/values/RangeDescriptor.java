@@ -31,9 +31,8 @@ public class RangeDescriptor extends ValueDescriptor {
 	 * @param measuringUnit
 	 */
 	public void setMeasuringUnit(String aMeasuringUnit) {
-		if (MeasuringUnit.exists(aMeasuringUnit))
+		if ((measuringUnit != null) && (MeasuringUnit.exists(aMeasuringUnit)))
 			return;
-
 		this.measuringUnit = aMeasuringUnit;
 	}
 

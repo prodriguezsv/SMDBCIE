@@ -27,7 +27,7 @@ public class StructureIndex extends ArrayList<Structure> {
 	 */
 	public Structure getStructure(String aStructureName) {
 		for (int i = 1; i <= this.size(); i++) {
-			if (this.get(i).getName().equals(aStructureName)) 
+			if (this.get(i-1).getName().equals(aStructureName))
 				return this.get(i-1);
 		}
 		return null;
@@ -108,7 +108,7 @@ public class StructureIndex extends ArrayList<Structure> {
 										if (pvd instanceof RangeDescriptor) {
 											/*Value descriptor found. If the measuring units for the receiver's retrieved range value and the 
 											 predecessor's range value are different, then there is an inconsistency*/
-											if (((RangeDescriptor) vd).getMeasuringUnit().equals(((RangeDescriptor) pvd).getMeasuringUnit()))
+											if (!((RangeDescriptor) vd).getMeasuringUnit().equals(((RangeDescriptor) pvd).getMeasuringUnit()))
 												return false;
 											else {
 												/* Measuring units are the same for both ranges.  Determine if the receiver's value descriptor

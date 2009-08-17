@@ -82,7 +82,7 @@ public class Structure implements Comparable<Structure> {
 	 * @param anAttribute
 	 */
 	public void addAttribute(Attribute anAttribute) {
-		if (getAttribute(anAttribute.getName())==null)
+		if (getAttribute(anAttribute.getName())!=null)
 			return;
 		
 		attributes.add(anAttribute);
