@@ -7,10 +7,10 @@ import java.util.List;
 
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
-import ontology.values.RangeDescriptor;
-import ontology.values.SingleDescriptor;
+import ontology.values.RangeValue;
+import ontology.values.SingleValue;
+import ontology.values.Values;
 import ontology.values.Value;
-import ontology.values.ValueDescriptor;
 
 
 
@@ -20,7 +20,7 @@ import ontology.values.ValueDescriptor;
  */
 public class Attribute implements Comparable<Attribute>{
 	private String name;
-	private Value values;
+	private Values values;
 
 	/**
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
@@ -28,7 +28,7 @@ public class Attribute implements Comparable<Attribute>{
 	 */
 	public Attribute() {
 		setName(null);
-		setValues(new Value());
+		setValues(new Values());
 	}
 	
 	/**
@@ -59,7 +59,7 @@ public class Attribute implements Comparable<Attribute>{
 	 * Metodo de instancia agregado
 	 * @param values
 	 */
-	public void setValues(Value values) {
+	public void setValues(Values values) {
 		this.values = values;
 	}
 
@@ -67,7 +67,7 @@ public class Attribute implements Comparable<Attribute>{
 	 * @see "Método values del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public Value getValues() {
+	public Values getValues() {
 		return values;
 	}
 
@@ -77,7 +77,7 @@ public class Attribute implements Comparable<Attribute>{
 	 * @param taxon
 	 */
 	public <T> boolean addValues(Attribute attribute, Taxon taxon) {
-		ValueDescriptor nvd;
+		Value nvd;
 
 		// Si this.value es de un unico nivel no se puede agregar valores
 		if (this.getValues().size() < attribute.getValues().size())
@@ -85,15 +85,15 @@ public class Attribute implements Comparable<Attribute>{
 
 		name = attribute.getName();
 		
-		for(List<ValueDescriptor> l: attribute.getValues()) {
-			for(ValueDescriptor ovd: l) {
-				if (ovd instanceof SingleDescriptor)
-					nvd = new SingleDescriptor<T>();
+		for(List<Value> l: attribute.getValues()) {
+			for(Value ovd: l) {
+				if (ovd instanceof SingleValue)
+					nvd = new SingleValue<T>();
 				else {
-					nvd = new RangeDescriptor();
+					nvd = new RangeValue();
 				}
 				
-				nvd.addValues(ovd, taxon);
+				nvd.addValues(ovd);
 				if (this.getValues().size() == attribute.getValues().size())
 					this.getValues().addValueDescriptor(nvd, TaxonomicRank.values()[l.indexOf(ovd)+1]);
 				else

@@ -6,14 +6,7 @@ package ontology.taxonomy;
 import java.util.ArrayList;
 import java.util.List;
 
-import ontology.common.Attribute;
-import ontology.common.GroupingHeuristic;
-import ontology.common.Structure;
-import ontology.values.MeasuringUnit;
-import ontology.values.RangeDescriptor;
-import ontology.values.SingleDescriptor;
-import ontology.values.ValueDescriptor;
-
+import ontology.common.Descriptor;
 
 
 /**
@@ -21,8 +14,7 @@ import ontology.values.ValueDescriptor;
  *
  */
 public class Taxonomy {
-	private StructureIndex structureIndex;
-	private GroupingHeuristicIndex groupingHeuristicIndex;
+	private DescriptorsIndex descriptorsIndex;
 	private Taxon rootTaxon;
 	private List<List<Taxon>> levelIndex;
 
@@ -32,8 +24,7 @@ public class Taxonomy {
 	public Taxonomy() {
 		List<Taxon> level;
 
-		setStructureIndex(new StructureIndex());
-		setGroupingHeuristicIndex(new GroupingHeuristicIndex());
+		setDescriptorsIndex(new DescriptorsIndex());
 		
 		rootTaxon = new Taxon();
 		rootTaxon.setName(null);
@@ -48,20 +39,11 @@ public class Taxonomy {
 	}
 	
 	/**
-	 * Initialize all classes needed by Taxonomy
-	 * @see "Método initializeClasses del protocolo de clase class initialization en SUKIA SmallTalk"
-	 */
-	public static void initializeParameters() {
-		//TaxonomicRank.initialize();
-		MeasuringUnit.initialize();
-	}
-	
-	/**
 	 * Método de instancia agregado
-	 * @param structureIndex
+	 * @param descriptorsIndex
 	 */
-	private void setStructureIndex(StructureIndex structureIndex) {
-		this.structureIndex = structureIndex;
+	private void setDescriptorsIndex(DescriptorsIndex descriptorsIndex) {
+		this.descriptorsIndex = descriptorsIndex;
 	}
 	
 	/**
@@ -69,71 +51,22 @@ public class Taxonomy {
 	 * @see "Método structureIndex: del protocolo adding-private en SUKIA SmallTalk"
 	 * @param aNewTaxon
 	 */
-	private void addTaxonToStructureIndex(Taxon aNewTaxon) {
-		Structure ns, s;
-		Attribute na, a;
-		ValueDescriptor nvd, vd;
-
-		for (int i = 1; i <= aNewTaxon.getSAVDescription().size(); i++) {
-			// Get the next structure from the new taxon's description
-			ns = aNewTaxon.getSAVDescription().get(i-1);
-
+	private void addToDescriptorsIndex(Taxon aNewTaxon) {
+		for (Descriptor<Object> d:aNewTaxon.getDescription()) {
 			// Find a structure, in the Structure Index, with a name that matches the new taxon's structure name
-			s = this.getStructureIndex().getStructure(ns.getName());
-			if (s == null) {
-				/* Structure not found.  Create a new structure, copy its contents from the new taxon's structure
-				 (referencing the new taxon in all the ValueDescriptor instances), and add it to the Structure Index*/
-				s = new Structure();
-				s.addAtributes(ns, aNewTaxon);
-				s.setWeight(0.0);
-				this.getStructureIndex().addStructure(s);
+			if (!this.getDescriptorsIndex().getDescriptorsIndex().contains(d)) {
+				this.getDescriptorsIndex().getDescriptorsIndex().add(d);
+				this.getDescriptorsIndex().getOtherTaxons().add(new ArrayList<Taxon>());
+				this.getDescriptorsIndex().getOtherTaxons().get(this.getDescriptorsIndex()
+						.getDescriptorsIndex().indexOf(d)).add(aNewTaxon);
 			} else {
-				// Structure found in the Structure Index
-				for (int j = 1; j <= ns.getAttributes().size(); j++) {
-					// Get the next attribute from the new taxon's structure
-					na = ns.getAttributes().get(j-1);
-
-					/* Find an attribute, belonging to the structure found in in the Structure Index, with a name 
-					 that matches the new taxon's structure attribute name*/
-					a = s.getAttribute((na.getName()));
-					if (a == null) {
-						/* Attribute not found.  Create a new attribute, copy its contents from the new taxon's structure
-						 attribute (referencing the new taxon in all the ValueDescriptor instances), and add it to the structure's
-						attribute list*/
-						a = new Attribute();
-						a.addValues(na, aNewTaxon);
-						s.addAttribute(a);
-					} else {
-						// Attribute found in the structure's list (the structure that belongs to the Structure Index)
-						for (int k = 1; k <= na.getValues().get(Attribute.oneLevel()).size(); k++) {
-							// Get the next value descriptor from the attribute that belongs to the new taxon's structure"
-							nvd = na.getValues().get(Attribute.oneLevel()).get(k-1);
-
-							/* Find a value descriptor for the attribute (that was found in the structure that belongs to the Structure Index), 
-							 with a descriptor matching that of the new taxon's structure-attribute descriptor*/
-							vd = a.getValues().getValueDescriptors(nvd, aNewTaxon.getLevel());
-
-							if (vd == null) {
-								/* ValueDescriptor not found.  Create a new value descriptor, copy its contents from the new taxon's structure
-								 attribute value descriptor (referencing the new taxon), and add it to the structure's attribute values list*/
-								if (nvd instanceof RangeDescriptor)
-									vd = new RangeDescriptor();
-								else
-									vd = new SingleDescriptor<Object>();
-								
-								vd.addValues(nvd, aNewTaxon);
-								a.getValues().addValueDescriptor(vd, aNewTaxon.getLevel());
-							} else {
-								/* ValueDescriptor found for the attribute (that belongs to the structure found in the Structure Index).
-								 Here, all that we need to do is reference the new taxon to this ValueDescriptor*/
-								vd.addTaxon(aNewTaxon);
-							}
-						}
-					}
-					
-				}
+				if (!this.getDescriptorsIndex().getDescriptorsIndex().get(this.getDescriptorsIndex()
+						.getDescriptorsIndex().indexOf(d)).getAssociatedObject().equals(aNewTaxon) &&
+						!this.getDescriptorsIndex().getOtherTaxons().get(this.getDescriptorsIndex()
+								.getDescriptorsIndex().indexOf(d)).contains(aNewTaxon));
+					this.getDescriptorsIndex().getOtherTaxons().get(this.getDescriptorsIndex()
+							.getDescriptorsIndex().indexOf(d)).add(aNewTaxon);				
 			}
-			
 		}
 	}
 
@@ -141,74 +74,8 @@ public class Taxonomy {
 	 * @see "Método structureIndex del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public StructureIndex getStructureIndex() {
-		return structureIndex;
-	}
-
-	/**
-	 * Método de instancia agregado
-	 * @param groupingHeuristicIndex
-	 */
-	private void setGroupingHeuristicIndex(GroupingHeuristicIndex groupingHeuristicIndex) {
-		this.groupingHeuristicIndex = groupingHeuristicIndex;
-	}
-	
-	/**
-	 * Precondition: all attributes included in the structures of aNewTaxon MUST have one-level values
-	 * @see "Método groupingHeuristicIndex: del protocolo adding-private en SUKIA SmallTalk"
-	 * @param aNewTaxon
-	 */
-	private void addTaxonToGroupingHeuristicIndex(Taxon aNewTaxon) {
-		GroupingHeuristic ngh, gh;
-		ValueDescriptor nvd, vd;
-
-		for (int i = 1; i <= aNewTaxon.getGHDescription().size(); i++) {
-			// Get the next grouping heuristic from the new taxon
-			ngh = aNewTaxon.getGHDescription().get(i-1);
-			// Find a grouping heuristic, in the Grouping Heuristic Index, with a name that matches the new taxon's heuristic name"
-			gh = this.getGroupingHeuristicIndex().getGroupingHeuristic(ngh.getName());
-			if (gh == null) {
-				/* Grouping heuristic not found.  Create a new grp. heuristic, copy its contents from the new taxon's grp. heurist.
-				 (referencing the new taxon in all the ValueDescriptor instances), and add it to the Grouping Heuristic Index*/
-				gh = new GroupingHeuristic();
-				gh.addValues(ngh, aNewTaxon);
-				gh.setWeight(0.0);
-				this.getGroupingHeuristicIndex().addGroupingHeuristic(gh);
-			} else {
-				// Grouping heuristic found in the Grouping Heuristic Index
-				for (int j = 1; j <= ngh.getValues().get(GroupingHeuristic.oneLevel()).size(); j++) {
-					// Get the next value descriptor that belongs to the new taxon's grouping heuristic
-					nvd = ngh.getValues().get(GroupingHeuristic.oneLevel()).get(j-1);
-
-					/* Find a value descriptor for the grouping heuristic (that was found in the Grouping Heuristic Index), 
-					 with a descriptor matching that of the new taxon's grouping heuristic descriptor*/
-					vd = gh.getValues().getValueDescriptors(nvd, aNewTaxon.getLevel());
-					if (vd == null) {
-						/* ValueDescriptor not found.  Create a new value descriptor, copy its contents from the new taxon's grouping
-						 heuristic value descriptor (referencing the new taxon), and add it to the grouping heuristic values list*/
-						if (nvd instanceof RangeDescriptor)
-							vd = new RangeDescriptor();
-						else
-							vd = new SingleDescriptor<Object>();
-						
-						vd.addValues(nvd, aNewTaxon);
-						gh.getValues().addValueDescriptor(vd, aNewTaxon.getLevel());
-					} else {
-						/* ValueDescriptor found for the grp. heurist. (that belongs to the Grouping Heuristic Index).
-						 Here, all that we need to do is reference the new taxon to this ValueDescriptor*/
-						vd.addTaxon(aNewTaxon);
-					}
-				}
-			}
-		}			
-	}
-
-	/**
-	 * @see "Método groupingHeuristicIndex del protocolo accessing en SUKIA SmallTalk"
-	 * @return
-	 */
-	public GroupingHeuristicIndex getGroupingHeuristicIndex() {
-		return groupingHeuristicIndex;
+	public DescriptorsIndex getDescriptorsIndex() {
+		return descriptorsIndex;
 	}
 	
 	/**
@@ -319,45 +186,10 @@ public class Taxonomy {
 			return false;
 		}
 		// Step 3: Reference the new taxon in structureIndex
-		this.addTaxonToStructureIndex(aNewTaxon);
-
-		// Step 4: Reference the new taxon in groupingHeuristicIndex
-		this.addTaxonToGroupingHeuristicIndex(aNewTaxon);
+		this.addToDescriptorsIndex(aNewTaxon);
 
 		return true;
 	}
-	
-	/**
-	 * @see "Método taxonInDividedList:with: del protocolo searching en SUKIA SmallTalk"
-	 * @param aListDividedByLevels
-	 * @param aTaxonName
-	 * @return
-	 */
-	/*public Taxon searchForTaxonInDividedList(List<List<Taxon>> aListDividedByLevels, String aTaxonName) {
-		for (int i = 1; i <= aListDividedByLevels.size(); i++) {
-			for (int j = 1; j <= aListDividedByLevels.get(i-1).size(); j++) {
-				if (aListDividedByLevels.get(i-1).get(j-1).getName().equals(aTaxonName))
-					return aListDividedByLevels.get(i-1).get(j-1);
-			}
-		}
-		
-		return null;
-	}*/	
-	
-	/**
-	 * @see "Método taxonInSimpleList:with: del protocolo searching en SUKIA SmallTalk"
-	 * @param aList
-	 * @param aTaxonName
-	 * @return
-	 */
-	/*public Taxon searchForTaxonInSimpleList(List<Taxon> aList, String aTaxonName) {
-		for (int i = 1; i <= aList.size(); i++) {
-			if ((aList.get(i-1).getName().equals(aTaxonName)))
-				return (aList.get(i-1));
-		}
-		
-		return null;
-	}*/
 	
 	/**
 	 * @see "Método processTaxonomicDependenciesBetween:and: del protocolo taxonomic dependencies en SUKIA SmallTalk"
@@ -368,7 +200,7 @@ public class Taxonomy {
 	public boolean areTaxonomicDependenciesOK(Taxon aParentTaxon, Taxon aSuccessorTaxon) {
 
 		//Step 1: Make sure that (at least) the SAV description of the successor taxon is not empty
-		if (aSuccessorTaxon.getSAVDescription().isEmpty())
+		if (aSuccessorTaxon.getDescription().isEmpty())
 			return false;		
 		
 		//Step 3: Make sure that the successor taxon can indeed be linked to the parent taxon
@@ -389,17 +221,9 @@ public class Taxonomy {
 		aSuccessorTaxon.setPredecessor(aParentTaxon);
 		/* Step 7: Make sure that all the value ranges specified in the SAV description of the successor taxon are
 		 consistent with those of its predecessors*/
-		if (!(aSuccessorTaxon.getSAVDescription().isRangesConsistent(aParentTaxon))) {
+		if (!(aSuccessorTaxon.isRangesConsistent(aParentTaxon))) {
 			aSuccessorTaxon.unlinkFromTheHierarchy();
 			return false;
-		}
-		//Step 8: Make sure that all the value ranges specified in the GH description of the successor taxon are
-		//consistent with those of its predecessors
-		if (!(aSuccessorTaxon.getGHDescription().isEmpty())) {
-			if (!(aSuccessorTaxon.getGHDescription().isRangesConsistent(aParentTaxon))) {
-				aSuccessorTaxon.unlinkFromTheHierarchy();
-				return false;
-			}
 		}
 		
 		return false;

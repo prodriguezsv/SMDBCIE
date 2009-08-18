@@ -7,7 +7,9 @@ package ontology.CBR;
 import java.util.ArrayList;
 import java.util.List;
 
+import ontology.common.CharacterDescriptor;
 import ontology.common.Descriptor;
+import ontology.common.HeuristicDescriptor;
 
 
 /**
@@ -118,6 +120,7 @@ public class Case {
 			return false;
 		
 		this.getProblem().getDescription().add(aDescriptor);
+		aDescriptor.setAssociatedObject(this);
 		
 		return true;
 	}
@@ -149,6 +152,7 @@ public class Case {
 			return false;
 		
 		this.getSolution().getJustification().add(aDescriptor);
+		aDescriptor.setAssociatedObject(this); // Ojo verificar si es necesario
 		
 		return true;
 	}
@@ -179,17 +183,41 @@ public class Case {
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
-	public List<String> getStructuresList() {
+	public List<String> getCharacterStructuresList() {
 		List<String> structuresList;
 		
 		structuresList = new ArrayList<String>();
 		
 		for(Descriptor<Object> d: this.getProblem().getDescription()) {
-			// Determine if the structure name in Deescriptor has already been included in structureList
-			if (!(structuresList.contains(d.getStructure()))) {
-				// The structure name was not found in structureList. Append it to structureList
-				structuresList.add(d.getStructure());
-			} else continue;
+			if (d instanceof CharacterDescriptor) { 
+				// Determine if the structure name in Deescriptor has already been included in structureList
+				if (!(structuresList.contains(d.getStructure()))) {
+					// The structure name was not found in structureList. Append it to structureList
+					structuresList.add(d.getStructure());
+				} else continue;
+			}
+		}
+		
+		return structuresList;
+	}
+	
+	/**
+	 * M&eacute;todo de instancia agregado
+	 * @return una lista de cadenas representando el nombre de las estructuras
+	 */
+	public List<String> getHeuristicStructuresList() {
+		List<String> structuresList;
+		
+		structuresList = new ArrayList<String>();
+		
+		for(Descriptor<Object> d: this.getProblem().getDescription()) {
+			if (d instanceof HeuristicDescriptor) { 
+				// Determine if the structure name in Deescriptor has already been included in structureList
+				if (!(structuresList.contains(d.getStructure()))) {
+					// The structure name was not found in structureList. Append it to structureList
+					structuresList.add(d.getStructure());
+				} else continue;
+			}
 		}
 		
 		return structuresList;

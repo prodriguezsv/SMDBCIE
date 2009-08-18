@@ -6,7 +6,7 @@ package redundantDiscriminationNet.auxiliary.test;
 import static org.junit.Assert.*;
 
 import ontology.CBR.Case;
-import ontology.common.Descriptor;
+import ontology.common.CharacterDescriptor;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -30,8 +30,8 @@ public class ProblemSolutionsTest {
 		System.out.println("Iniciando pruebas para la clase " + ProblemSolutions.class.getName());
 		aps = new ProblemSolutions(new Case());
 		
-		aps.addToDescription(new Descriptor<Object>("Cuerpo", "Longitud", 0.3));
-		aps.addToDescription(new Descriptor<Object>("Pie", "Disposición", "Sobresale al manto"));
+		aps.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
+		aps.addToDescription(new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto"));
 	}
 
 	/**
@@ -67,20 +67,20 @@ public class ProblemSolutionsTest {
 		asc = new Case();
 		
 		System.out.println("Verificar que no se agregue una solución con contradicciones con el caso problema");
-		asc.addToDescription(new Descriptor<Object>("Cuerpo", "Longitud", 1));
-		asc.addToDescription(new Descriptor<Object>("Pie", "Disposición", "Sobresale al manto"));
+		asc.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 1));
+		asc.addToDescription(new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto"));
 		assertFalse(aps.addSolutionCase(asc));
 		
 		System.out.println("Verificar que se agregue una solución sin contradicciones con el caso problema");
 		asc.setToDefault();
-		asc.addToDescription(new Descriptor<Object>("Cuerpo", "Longitud", 0.3));
-		asc.addToDescription(new Descriptor<Object>("Pie", "Disposición", "Sobresale al manto"));
+		asc.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
+		asc.addToDescription(new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto"));
 		assertTrue(aps.addSolutionCase(asc));
 		
 		System.out.println("Verificar que no se agregue una solución duplicada");
 		asc.setToDefault();
-		asc.addToDescription(new Descriptor<Object>("Cuerpo", "Longitud", 0.3));
-		asc.addToDescription(new Descriptor<Object>("Pie", "Disposición", "Sobresale al manto"));
+		asc.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
+		asc.addToDescription(new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto"));
 		assertFalse(aps.addSolutionCase(asc));
 	}
 

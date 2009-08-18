@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ontology.CBR.Case;
+import ontology.common.CharacterDescriptor;
 import ontology.common.Descriptor;
 
 import org.junit.After;
@@ -34,7 +35,7 @@ public class SheetCaseTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		System.out.println("Iniciando pruebas para la clase " + SheetCase.class.getName());
-		sheetcase = new SheetCase(new Descriptor<Object>("Pie", "Disposición", "Sobresale al manto"));
+		sheetcase = new SheetCase(new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto"));
 	}
 
 	/**
@@ -70,7 +71,7 @@ public class SheetCaseTest {
 		System.out.println("Iniciando pruebas para el método AddPredecessor()");
 		
 		System.out.println("Verificar que un predecesor válido se agregue");
-		norm = new Norm(new Descriptor<Object>("Pie", "Disposición", "Sobresale al manto"));
+		norm = new Norm(new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto"));
 		index = new Index("Disposición");
 		assertTrue(sheetcase.addPredecessor(norm));
 		assertTrue(sheetcase.addPredecessor(index));
@@ -108,13 +109,13 @@ public class SheetCaseTest {
 		
 		System.out.println("Verificar que un caso incompatible no se embebe");
 		dl = new ArrayList<Descriptor<Object>>();
-		dl.add(new Descriptor<Object>("Cuerpo", "Longitud", 0.3));
+		dl.add(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
 		aCase = new Case(dl);
 		assertFalse(sheetcase.setCase(aCase));
 		
 		System.out.println("Verificar que un caso compatible se embebe");
 		dl = new ArrayList<Descriptor<Object>>();
-		dl.add(new Descriptor<Object>("Pie", "Disposición", "Sobresale al manto"));
+		dl.add(new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto"));
 		aCase = new Case(dl);
 		assertTrue(sheetcase.setCase(aCase));
 		

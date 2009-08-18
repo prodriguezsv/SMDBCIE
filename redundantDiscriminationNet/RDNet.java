@@ -12,7 +12,9 @@ import java.util.Stack;
 import javax.swing.JOptionPane;
 
 import ontology.CBR.Case;
+import ontology.common.CharacterDescriptor;
 import ontology.common.Descriptor;
+import ontology.common.HeuristicDescriptor;
 
 import redundantDiscriminationNet.auxiliary.ComparingTable;
 import redundantDiscriminationNet.auxiliary.ComparingTableTuple;
@@ -509,20 +511,26 @@ public class RDNet {
 			if (!(arevaluesequal)) {
 				// If the case-to-insert value is non-null, attach it to the index
 				if (!(tuple.getACIValue() == null)) {
-					d = new Descriptor<Object>();
+					if (this.getRoot().getDescriptor() instanceof CharacterDescriptor)
+						d = new CharacterDescriptor<Object>();
+					else d = new HeuristicDescriptor<Object>();
 					d.set(this.getRoot().getStructure(), tuple.getAttribute(), tuple.getACIValue());
 					this.addSuccessorCase(this.getCaseToInsert(), ix, d);
 				}
 				
 				// If the case-to-compare value is non-nil, attach it to the index"
 				if (!(tuple.getACCValue() == null)) {
-					d = new Descriptor<Object>();
+					if (this.getRoot().getDescriptor() instanceof CharacterDescriptor)
+						d = new CharacterDescriptor<Object>();
+					else d = new HeuristicDescriptor<Object>();
 					d.set(this.getRoot().getStructure(), tuple.getAttribute(), tuple.getACCValue());
 					this.addSuccessorCase(this.getCaseToCompare(), ix, d);
 				}
 			} else {
 				// Create an empty norm and fill its values
-				d = new Descriptor<Object>();
+				if (this.getRoot().getDescriptor() instanceof CharacterDescriptor)
+					d = new CharacterDescriptor<Object>();
+				else d = new HeuristicDescriptor<Object>();
 				d.set(this.getRoot().getStructure(), tuple.getAttribute(), tuple.getACCValue());
 				norm = new Norm(d);
 				norm.incrementNumCasesBy(2);
@@ -869,7 +877,10 @@ public class RDNet {
 		// Limpia el vector de deficion del caso problema
 		this.problemSolutions.setToDefault();
 
-		desc = new Descriptor<Object>();
+		// Ojo verificar esta parte
+		if (this.getRoot().getDescriptor() instanceof CharacterDescriptor)
+			desc = new CharacterDescriptor<Object>();
+		else desc = new HeuristicDescriptor<Object>();
 
 		for(Index ix: rootIndexes) {
 			value =  JOptionPane.showInputDialog(ix.getLabel());

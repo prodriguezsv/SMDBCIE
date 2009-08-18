@@ -14,8 +14,8 @@ import ontology.taxonomy.GroupingHeuristicIndex;
 import ontology.taxonomy.StructureIndex;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
-import ontology.values.RangeDescriptor;
-import ontology.values.SingleDescriptor;
+import ontology.values.RangeValue;
+import ontology.values.SingleValue;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -102,12 +102,12 @@ t1 SAVdescription: s.
         Attribute aAttribute = new Attribute();
         aAttribute.setName("forma");
 
-        SingleDescriptor aSingleDescriptor = new SingleDescriptor();
+        SingleValue aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("alargado");
         aSingleDescriptor.setWeight(0.8);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("ovalado");
         aSingleDescriptor.setWeight(0.1);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
@@ -118,7 +118,7 @@ t1 SAVdescription: s.
         aAttribute = new Attribute();
         aAttribute.setName("longitud");
 
-        RangeDescriptor aRangeDescriptor = new RangeDescriptor();
+        RangeValue aRangeDescriptor = new RangeValue();
         aRangeDescriptor.setLowerBound(0.3);
         aRangeDescriptor.setUpperBound(4.0);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aRangeDescriptor, TaxonomicRank.FAMILY);
@@ -129,7 +129,7 @@ t1 SAVdescription: s.
         aAttribute = new Attribute();
         aAttribute.setName("conformacion");
         
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("tiene_cerata");
         aSingleDescriptor.setWeight(1.0);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
@@ -137,7 +137,7 @@ t1 SAVdescription: s.
         aStructure.addAttribute(aAttribute);
         aStructureIndex.add(aStructure);
         
-        taxon1.setSAVDescription(aStructureIndex);
+        taxon1.setDescription(aStructureIndex);
 
 
 /*
@@ -177,7 +177,7 @@ t1 SAVdescription: s.*/
         aAttribute = new Attribute();
         aAttribute.setName("disposicion");
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("sobresale_al_manto");
         aSingleDescriptor.setWeight(0.8);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
@@ -188,15 +188,15 @@ t1 SAVdescription: s.*/
         aAttribute = new Attribute();
         aAttribute.setName("coloracion");
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("blanquecino");
         aSingleDescriptor.setWeight(0.7);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("crema");
         aSingleDescriptor.setWeight(0.7);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("gris_oscuro_casi_negro");
         aSingleDescriptor.setWeight(0.2);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
@@ -204,7 +204,7 @@ t1 SAVdescription: s.*/
         aStructure.addAttribute(aAttribute);
         aStructureIndex.add(aStructure);
 
-        taxon1.setSAVDescription(aStructureIndex);
+        taxon1.setDescription(aStructureIndex);
 
 
 /*
@@ -252,7 +252,7 @@ t1 SAVdescription: s.*/
         aAttribute = new Attribute();
         aAttribute.setName("posicion_durante_desplazamiento");
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("hacia_atras");
         aSingleDescriptor.setWeight(0.8);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
@@ -263,7 +263,7 @@ t1 SAVdescription: s.*/
         aAttribute = new Attribute();
         aAttribute.setName("posicion_del_ano_con_respecto_a_la_branquia");
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("en_el_centro");
         aSingleDescriptor.setWeight(0.8);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
@@ -274,7 +274,7 @@ t1 SAVdescription: s.*/
         aAttribute = new Attribute();
         aAttribute.setName("numero_hojas_branquiales");
 
-        aRangeDescriptor = new RangeDescriptor();
+        aRangeDescriptor = new RangeValue();
         aRangeDescriptor.setLowerBound(6.0);
         aRangeDescriptor.setUpperBound(9.0);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aRangeDescriptor, TaxonomicRank.FAMILY);
@@ -285,12 +285,12 @@ t1 SAVdescription: s.*/
         aAttribute = new Attribute();
         aAttribute.setName("forma_hojas_branquiales");
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("bipinnada");
         aSingleDescriptor.setWeight(0.6);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("tripinnada");
         aSingleDescriptor.setWeight(0.4);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
@@ -298,7 +298,7 @@ t1 SAVdescription: s.*/
         aStructure.addAttribute(aAttribute);
         aStructureIndex.add(aStructure);
 
-        taxon1.setSAVDescription(aStructureIndex);
+        taxon1.setDescription(aStructureIndex);
 
 /*"-----------------------Structure No. 4---------------------"
 s := Structure new.
@@ -336,12 +336,12 @@ t1 SAVdescription: s.*/
         aAttribute = new Attribute();
         aAttribute.setName("textura");
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("lisa");
         aSingleDescriptor.setWeight(0.8);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("con_tuberculos");
         aSingleDescriptor.setWeight(0.4);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
@@ -352,7 +352,7 @@ t1 SAVdescription: s.*/
         aAttribute = new Attribute();
         aAttribute.setName("forma_del_borde");
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("ondulado");
         aSingleDescriptor.setWeight(0.3);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
@@ -363,7 +363,7 @@ t1 SAVdescription: s.*/
         aAttribute = new Attribute();
         aAttribute.setName("textura_del_borde");
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("lisa");
         aSingleDescriptor.setWeight(0.7);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
@@ -371,7 +371,7 @@ t1 SAVdescription: s.*/
         aStructure.addAttribute(aAttribute);
         aStructureIndex.add(aStructure);
 
-        taxon1.setSAVDescription(aStructureIndex);
+        taxon1.setDescription(aStructureIndex);
 
 /*"-----------------------Structure No. 5---------------------"
 s := Structure new.
@@ -399,17 +399,17 @@ t1 SAVdescription: s.*/
         aAttribute = new Attribute();
         aAttribute.setName("posicion");
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("delante");
         aSingleDescriptor.setWeight(0.2);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("delante_y_atras");
         aSingleDescriptor.setWeight(0.2);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("alrededor_del_manto");
         aSingleDescriptor.setWeight(0.4);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
@@ -417,7 +417,7 @@ t1 SAVdescription: s.*/
         aStructure.addAttribute(aAttribute);
         aStructureIndex.add(aStructure);
 
-        taxon1.setSAVDescription(aStructureIndex);
+        taxon1.setDescription(aStructureIndex);
 
         
 /*"-----------------------Structure No. 6---------------------"
@@ -446,7 +446,7 @@ t1 SAVdescription: s.*/
         aAttribute = new Attribute();
         aAttribute.setName("forma");
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("laminados");
         aSingleDescriptor.setWeight(1.0);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
@@ -457,7 +457,7 @@ t1 SAVdescription: s.*/
         aAttribute = new Attribute();
         aAttribute.setName("numero_de_laminillas");
 
-        aRangeDescriptor = new RangeDescriptor();
+        aRangeDescriptor = new RangeValue();
         aRangeDescriptor.setLowerBound(6.0);
         aRangeDescriptor.setUpperBound(20.0);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aRangeDescriptor, TaxonomicRank.FAMILY);
@@ -465,7 +465,7 @@ t1 SAVdescription: s.*/
         aStructure.addAttribute(aAttribute);
         aStructureIndex.add(aStructure);
 
-        taxon1.setSAVDescription(aStructureIndex);
+        taxon1.setDescription(aStructureIndex);
 
 /*"-----------------------Structure No. 7---------------------"
 s := Structure new.
@@ -490,12 +490,12 @@ t1 SAVdescription: s.*/
         aAttribute = new Attribute();
         aAttribute.setName("contextura");
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("macizo");
         aSingleDescriptor.setWeight(0.7);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("surcado");
         aSingleDescriptor.setWeight(0.2);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
@@ -503,7 +503,7 @@ t1 SAVdescription: s.*/
         aStructure.addAttribute(aAttribute);
         aStructureIndex.add(aStructure);
 
-        taxon1.setSAVDescription(aStructureIndex);
+        taxon1.setDescription(aStructureIndex);
         
 /*"-----------------------Grouping Heuristic No. 1---------------------"
 gh := GroupingHeuristic newWithOneLevel.
@@ -519,7 +519,7 @@ t1 GHdescription: gh.*/
         aGroupingHeuristic.setName("alimenatcion");
         aGroupingHeuristic.setWeight(1.0);
     
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("esponjas");
         aSingleDescriptor.setWeight(1.0);
         aGroupingHeuristic.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
@@ -542,7 +542,7 @@ t1 GHdescription: gh.*/
         aGroupingHeuristic.setWeight(1.0);
 
 
-        aRangeDescriptor = new RangeDescriptor();
+        aRangeDescriptor = new RangeValue();
         aRangeDescriptor.setLowerBound(0.0);
         aRangeDescriptor.setUpperBound(20.0);
         aGroupingHeuristic.getValues().addValueDescriptorWithUniqueValue(aRangeDescriptor, TaxonomicRank.FAMILY);
@@ -572,17 +572,17 @@ t1 GHdescription: gh.
         aGroupingHeuristic.setName("medio_de_preservacion_tenido");
         aGroupingHeuristic.setWeight(1.0);
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("azul_marino");
         aSingleDescriptor.setWeight(1.0);
         aGroupingHeuristic.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("celeste");
         aSingleDescriptor.setWeight(1.0);
         aGroupingHeuristic.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("amarillento");
         aSingleDescriptor.setWeight(0.2);
         aGroupingHeuristic.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
@@ -631,7 +631,7 @@ t2 SAVdescription: s.*/
         aAttribute = new Attribute();
         aAttribute.setName("posicion_de_la_banda_dorsal_continua");
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("centro");
         aSingleDescriptor.setWeight(1.0);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.GENUS);
@@ -642,7 +642,7 @@ t2 SAVdescription: s.*/
         aAttribute = new Attribute();
         aAttribute.setName("coloracion");
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("brillante_azul_rojo_blanco_anaranjado_purpura");
         aSingleDescriptor.setWeight(1.0);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.GENUS);
@@ -653,7 +653,7 @@ t2 SAVdescription: s.*/
         aAttribute = new Attribute();
         aAttribute.setName("forma_ventral");
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("aplanado");
         aSingleDescriptor.setWeight(0.6);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.GENUS);
@@ -661,7 +661,7 @@ t2 SAVdescription: s.*/
         aStructure.addAttribute(aAttribute);
         aStructureIndex.add(aStructure);
 
-        taxon2.setSAVDescription(aStructureIndex);
+        taxon2.setDescription(aStructureIndex);
 
 /*"-----------------------Structure No. 2---------------------"
 s := Structure new.
@@ -690,7 +690,7 @@ t2 SAVdescription: s.*/
         aAttribute = new Attribute();
         aAttribute.setName("forma");
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("elongado_y_ovalado");
         aSingleDescriptor.setWeight(0.7);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.GENUS);
@@ -701,7 +701,7 @@ t2 SAVdescription: s.*/
         aAttribute = new Attribute();
         aAttribute.setName("contextura");
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("con_glandulas");
         aSingleDescriptor.setWeight(0.8);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.GENUS);
@@ -709,7 +709,7 @@ t2 SAVdescription: s.*/
         aStructure.addAttribute(aAttribute);
         aStructureIndex.add(aStructure);
 
-        taxon2.setSAVDescription(aStructureIndex);
+        taxon2.setDescription(aStructureIndex);
 
 /*"-----------------------Structure No. 3---------------------"
 s := Structure new.
@@ -739,7 +739,7 @@ t2 SAVdescription: s.
         aAttribute = new Attribute();
         aAttribute.setName("forma_de_los_dientes");
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("denticulados");
         aSingleDescriptor.setWeight(1.0);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.GENUS);
@@ -750,7 +750,7 @@ t2 SAVdescription: s.
         aAttribute = new Attribute();
         aAttribute.setName("posicion_del_diente_mas_conspicuo");
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("centro");
         aSingleDescriptor.setWeight(0.5);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.GENUS);
@@ -758,7 +758,7 @@ t2 SAVdescription: s.
         aStructure.addAttribute(aAttribute);
         aStructureIndex.add(aStructure);
 
-        taxon2.setSAVDescription(aStructureIndex);
+        taxon2.setDescription(aStructureIndex);
 
 
 

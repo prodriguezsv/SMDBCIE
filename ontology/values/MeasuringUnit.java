@@ -1,45 +1,43 @@
 /**
- * @see "Categoría Sukia Values de SUKIA Smalltalk"
+ * @see "Categoría Sukia Domain Theory de SUKIA Smalltalk"
  */
 package ontology.values;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
+ * The first level MUST always be ROOT. All other level names MUST be added
+ * according to their hierarchical ordering.  Thus, the second name in the list represents the MOST general
+ * taxonomic rank, while the last name represents the most specific taxonomic rank.
+ * PRECONDITION: There must be at least two taxonomic level names: ROOR + aTaxonomicLevelName.
+ * @see "Método initialize del protocolo de clase class initialization en SUKIA SmallTalk"
  * @author Armando
  *
  */
-public class MeasuringUnit {
-	static List<String> unitList;
+public enum MeasuringUnit {
+	/**
+	 * Constantes de la enumeraci&oacute;n
+	 */
+	MM("mm"),
+	CM("cm"),
+	INCH("inch");
 	
 	/**
-	 * @see "Método initialize del protocolo de clase class initialization en SUKIA SmallTalk"
+	 * Variable para manejar el valor de la constante
 	 */
-	public MeasuringUnit() {
-		initialize();
+	private final String unit;
+	
+	/**
+	 * Contructor de la enumeraci&oacute;n
+	 * @param similaryDegree
+	 */
+	MeasuringUnit(String unit) {
+		this.unit = unit; 
 	}
 	
 	/**
-	 * @see "Método initialize del protocolo de clase class initialization en SUKIA SmallTalk"
-	 */
-	public static void initialize() {
-		if (unitList == null) {
-			unitList = new ArrayList<String>();
-			
-			unitList.add("mm");
-			unitList.add("cm");
-			unitList.add("inch");
-		}
-	}
-	
-	/**
-	 * @see "Método exists: del protocolo de clase testing en SUKIA SmallTalk"
-	 * @param aMeasuringUnit
+	 * M&eacute;todo accesor de lectura
 	 * @return
 	 */
-	public static boolean exists(String aMeasuringUnit) {
-                if (aMeasuringUnit == null) return false;
-		return (unitList.contains(aMeasuringUnit));
-	}
+	public String getMeasuringUnit() {
+		return unit;
+	}			
 }

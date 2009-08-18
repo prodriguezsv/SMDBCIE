@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import ontology.CBR.Case;
+import ontology.common.CharacterDescriptor;
 import ontology.common.Descriptor;
 
 import org.junit.After;
@@ -51,9 +52,9 @@ public class CaseTest {
 	public void setUp() throws Exception {
 		Descriptor<Object> aDescriptor;
 		
-		aDescriptor = new Descriptor<Object>("Cuerpo", "Longitud", 0.3);
+		aDescriptor = new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3);
 		aCase.addToDescription(aDescriptor);
-		aDescriptor = new Descriptor<Object>("Pie", "Disposición", "Sobresale al manto");
+		aDescriptor = new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto");
 		aCase.addToDescription(aDescriptor);
 	}
 
@@ -78,14 +79,14 @@ public class CaseTest {
 		assertFalse(aCase.addToDescription(null));
 		
 		System.out.println("Verificar que no haya contradicciones en la descripción o duplicados");
-		assertFalse(aCase.addToDescription(new Descriptor<Object>("Cuerpo", "Longitud", 0.3)));
-		assertFalse(aCase.addToDescription(new Descriptor<Object>("Pie", "Disposición", "Sobresale al manto")));
-		assertFalse(aCase.addToDescription(new Descriptor<Object>("Cuerpo", "Longitud", 1)));
+		assertFalse(aCase.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3)));
+		assertFalse(aCase.addToDescription(new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto")));
+		assertFalse(aCase.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 1)));
 		
 		System.out.println("Verificar que se agregue un descriptor válido");
-		aDescriptor = new Descriptor<Object>("Cuerpo", "Conformación", "Tiene cerata");
+		aDescriptor = new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata");
 		assertTrue(aCase.addToDescription(aDescriptor));
-		aDescriptor = new Descriptor<Object>("Branquias", "Número de hojas branquiales", 6);
+		aDescriptor = new CharacterDescriptor<Object>("Branquias", "Número de hojas branquiales", 6);
 		assertTrue(aCase.addToDescription(aDescriptor));
 	}
 
@@ -102,19 +103,19 @@ public class CaseTest {
 		assertFalse(aCase.addToDescription(null));
 		
 		System.out.println("Verificar que no haya contradicciones en la descripción o duplicados");
-		assertFalse(aCase.addToDescription(new Descriptor<Object>("Cuerpo", "Longitud", 0.3)));
-		assertFalse(aCase.addToDescription(new Descriptor<Object>("Pie", "Disposición", "Sobresale al manto")));
-		assertFalse(aCase.addToDescription(new Descriptor<Object>("Cuerpo", "Longitud", 1)));
+		assertFalse(aCase.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3)));
+		assertFalse(aCase.addToDescription(new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto")));
+		assertFalse(aCase.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 1)));
 		
 		System.out.println("Verificar que se agregue un descriptor correctamente");
-		aDescriptor = new Descriptor<Object>("Cuerpo", "Conformación", "Tiene cerata");
+		aDescriptor = new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata");
 		assertTrue(aCase.addToDescription(aDescriptor));
-		aDescriptor = new Descriptor<Object>("Branquias", "Número de hojas branquiales", 6);
+		aDescriptor = new CharacterDescriptor<Object>("Branquias", "Número de hojas branquiales", 6);
 		assertTrue(aCase.addToDescription(aDescriptor));
 	}
 
 	/**
-	 * Test method for {@link ontology.CBR.Case#getStructuresList()}.
+	 * Test method for {@link ontology.CBR.Case#getCharacterStructuresList()}.
 	 */
 	@Test
 	public final void testGetStructuresList() {
@@ -126,7 +127,7 @@ public class CaseTest {
 		sl = new ArrayList<String>();
 		sl.addAll(Arrays.asList("Cuerpo", "Pie"));
 		
-		assertEquals(sl, aCase.getStructuresList());
+		assertEquals(sl, aCase.getCharacterStructuresList());
 	}
 
 	/**
@@ -139,7 +140,7 @@ public class CaseTest {
 		System.out.println("Iniciando pruebas para el método GetDescription()");
 		
 		System.out.println("Verificar que se obtenga una descripción asociada a una estructura");
-		dl.add(new Descriptor<Object>("Cuerpo", "Longitud", 0.3));
+		dl.add(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
 		assertEquals(dl, aCase.getDescription("Cuerpo"));
 	}
 }

@@ -1033,7 +1033,7 @@ public class Reasoner {
 			if (problemDescription == null) return false;
 	
 			// Perform a taxonomic search (Ojo)
-			searchAutomaton2 = new TaxonSISAutomaton(this.getTaxonomy().getStructureIndex(), this.getMinSimilarityDegree());
+			searchAutomaton2 = new TaxonSISAutomaton(this.getTaxonomy().getDescriptorsIndex(), this.getMinSimilarityDegree());
 			searchAutomaton2.beginWith(problemDescription);
 			status = searchAutomaton2.getStatus();
 	
@@ -1221,7 +1221,7 @@ public class Reasoner {
 			if (problemDescription == null) return false;
 
 			// Perform a taxonomic search
-			searchAutomaton = new TaxonSISAutomaton(this.getTaxonomy().getStructureIndex(), this.getMinSimilarityDegree());
+			searchAutomaton = new TaxonSISAutomaton(this.getTaxonomy().getDescriptorsIndex(), this.getMinSimilarityDegree());
 			searchAutomaton.beginWith(problemDescription);
 			status = searchAutomaton.getStatus();
 

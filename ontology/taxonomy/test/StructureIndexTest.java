@@ -10,8 +10,9 @@ import ontology.common.Structure;
 import ontology.taxonomy.StructureIndex;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
-import ontology.values.RangeDescriptor;
-import ontology.values.SingleDescriptor;
+import ontology.values.MeasuringUnit;
+import ontology.values.RangeValue;
+import ontology.values.SingleValue;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -59,7 +60,7 @@ public class StructureIndexTest {
         Attribute aAttribute = new Attribute();
         aAttribute.setName("forma");
 
-        SingleDescriptor aSingleDescriptor = new SingleDescriptor();
+        SingleValue aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("alargado");
         aSingleDescriptor.setWeight(0.8);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
@@ -72,16 +73,16 @@ public class StructureIndexTest {
         aAttribute = new Attribute();
         aAttribute.setName("anchura");
 
-        RangeDescriptor aRangeDescriptor = new RangeDescriptor();
+        RangeValue aRangeDescriptor = new RangeValue();
         aRangeDescriptor.setLowerBound(0.3);
         aRangeDescriptor.setUpperBound(4.0);
-        aRangeDescriptor.setMeasuringUnit("metros");
+        aRangeDescriptor.setMeasuringUnit(MeasuringUnit.MM);
        aAttribute.getValues().addValueDescriptorWithUniqueValue(aRangeDescriptor, TaxonomicRank.FAMILY);
 
         aStructure.addAttribute(aAttribute);
         aStructureIndex.add(aStructure);
 
-        taxon1.setSAVDescription(aStructureIndex);
+        taxon1.setDescription(aStructureIndex);
 
         taxon2.setName("Chromodoris");
         taxon2.setLevel(TaxonomicRank.GENUS);
@@ -95,16 +96,16 @@ public class StructureIndexTest {
         aAttribute = new Attribute();
         aAttribute.setName("longitud");
 
-        aRangeDescriptor = new RangeDescriptor();
+        aRangeDescriptor = new RangeValue();
         aRangeDescriptor.setLowerBound(0.3);
         aRangeDescriptor.setUpperBound(4.0);
-        aRangeDescriptor.setMeasuringUnit("metros");
+        aRangeDescriptor.setMeasuringUnit(MeasuringUnit.MM);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aRangeDescriptor, TaxonomicRank.GENUS);
 
         aStructure.addAttribute(aAttribute);
         aStructureIndex2.add(aStructure);
 
-        taxon2.setSAVDescription(aStructureIndex2);
+        taxon2.setDescription(aStructureIndex2);
 
         taxon3.setName("Chromodoris_sphoni");
         taxon3.setLevel(TaxonomicRank.SPECIES);
@@ -162,11 +163,11 @@ public class StructureIndexTest {
         aAttribute = new Attribute();
         aAttribute.setName("anchura");
 
-        RangeDescriptor aRangeDescriptor = new RangeDescriptor();
+        RangeValue aRangeDescriptor = new RangeValue();
         aRangeDescriptor.setLowerBound(0.3);
         aRangeDescriptor.setUpperBound(4.0);
         /* inconsistence*/
-        aRangeDescriptor.setMeasuringUnit("kilometros");
+        aRangeDescriptor.setMeasuringUnit(MeasuringUnit.CM);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aRangeDescriptor, TaxonomicRank.FAMILY);
 
         aStructure.addAttribute(aAttribute);
@@ -189,11 +190,11 @@ public class StructureIndexTest {
         aAttribute = new Attribute();
         aAttribute.setName("anchura");
 
-        aRangeDescriptor = new RangeDescriptor();
+        aRangeDescriptor = new RangeValue();
         /* inconsistence because is smaller than father.*/
         aRangeDescriptor.setLowerBound(0.0);
         aRangeDescriptor.setUpperBound(4.0);
-        aRangeDescriptor.setMeasuringUnit("metros");
+        aRangeDescriptor.setMeasuringUnit(MeasuringUnit.MM);
         aAttribute.getValues().addValueDescriptorWithUniqueValue(aRangeDescriptor, TaxonomicRank.FAMILY);
 
         aStructure.addAttribute(aAttribute);

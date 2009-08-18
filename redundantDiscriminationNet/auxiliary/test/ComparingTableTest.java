@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import ontology.common.CharacterDescriptor;
 import ontology.common.Descriptor;
 
 import org.junit.After;
@@ -72,13 +73,13 @@ public class ComparingTableTest {
 		System.out.println("Iniciando pruebas para el método fill()");
 		
 		System.out.println("Verificar que ComparingTable se llene correctamente");
-		d1.add(new Descriptor<Object>("Cuerpo", "Longitud", 0.3));
-		d1.add(new Descriptor<Object>("Pie", "Disposición", "Sobresale al manto"));
-		d1.add(new Descriptor<Object>("Cuerpo", "Conformación", "Tiene cerata"));
-		d1.add(new Descriptor<Object>("Branquias", "Número de hojas branquiales", 6));
+		d1.add(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
+		d1.add(new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto"));
+		d1.add(new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata"));
+		d1.add(new CharacterDescriptor<Object>("Branquias", "Número de hojas branquiales", 6));
 		
-		d2.add(new Descriptor<Object>("Cuerpo", "Longitud", 1));
-		d2.add(new Descriptor<Object>("Cuerpo", "Forma", "Alargado"));
+		d2.add(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 1));
+		d2.add(new CharacterDescriptor<Object>("Cuerpo", "Forma", "Alargado"));
 	
 		act.fill(d1, d2);
 		
@@ -110,10 +111,10 @@ public class ComparingTableTest {
 		assertNull(act.extractTuple());
 		
 		System.out.println("Verificar que devuelve el primer elemento de ComparingTable");
-		d1.add(new Descriptor<Object>("Cuerpo", "Longitud", 0.3));
+		d1.add(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
 		
-		d2.add(new Descriptor<Object>("Cuerpo", "Longitud", 1));
-		d2.add(new Descriptor<Object>("Cuerpo", "Forma", "Alargado"));
+		d2.add(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 1));
+		d2.add(new CharacterDescriptor<Object>("Cuerpo", "Forma", "Alargado"));
 	
 		act.fill(d1, d2);
 		

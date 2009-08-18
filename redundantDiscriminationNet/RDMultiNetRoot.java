@@ -67,16 +67,16 @@ public class RDMultiNetRoot {
 	 * newly-created RDNet is changed for one belonging to the class SAVRoot (a subclass of RootNorm).
 	 * This way, the 'structure' attribute in the changed root can be accessed
 	 * @see "M&eacute;todo addRDNetWith: del protocolo adding en SUKIA SmallTalk"
-	 * @param aStructureName
+	 * @param aRootNorm
 	 */
-	public boolean addRDNet(String aStructureName) {
+	public boolean addRDNet(RootNorm aRootNorm) {
 		RDNet aRDNet;
 		
 		if (this.nets == null)
 			this.nets = new ArrayList<RDNet>();
 		
-		if (!this.contains(aStructureName)) {
-			aRDNet = new RDNet(new RootNorm(aStructureName));
+		if (!this.contains(aRootNorm.getStructure())) {
+			aRDNet = new RDNet(aRootNorm);
 			return this.getNets().add(aRDNet);
 		}
 		

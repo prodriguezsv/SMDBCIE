@@ -44,17 +44,6 @@ public class TaxonomyTest {
     }
 
     /**
-     * Test of initializeParameters method, of class Taxonomy.
-     */
-    @Test
-    public void testInitializeParameters() {
-        System.out.println("initializeParameters");
-        Taxonomy.initializeParameters();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
      * Test of getGroupingHeuristicIndex method, of class Taxonomy.
      */
     @Test

@@ -13,7 +13,7 @@ import ontology.taxonomy.Taxon;
  * ya que ningún par attribute-value particular generaliza todos los casos bajo ellos.
  * 
 */
-public class Descriptor<T> implements Comparable<Descriptor<T>> {
+public abstract class Descriptor<T> implements Comparable<Descriptor<T>> {
 	private Object associatedObject;
 	private String structure;
 	private String attribute;

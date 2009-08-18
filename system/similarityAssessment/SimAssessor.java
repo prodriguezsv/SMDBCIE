@@ -8,8 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import ontology.CBR.SimilarityDegree;
-import ontology.values.SingleDescriptor;
-import ontology.values.ValueDescriptor;
+import ontology.values.SingleValue;
+import ontology.values.Value;
 
 
 /**
@@ -25,7 +25,7 @@ public class SimAssessor {
 	 * @param aValueWeightList
 	 * @return
 	 */
-	public static double distanceBetween(Object aValue1, Object aValue2, List<ValueDescriptor> aValueWeightList) {
+	public static double distanceBetween(Object aValue1, Object aValue2, List<Value> aValueWeightList) {
 		double w1, w2;
 		
 		w1 = getTheWeightOf(aValue1, aValueWeightList);
@@ -49,11 +49,11 @@ public class SimAssessor {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static double getTheWeightOf(Object aValue, List<ValueDescriptor> aValueWeightList) {
+	public static double getTheWeightOf(Object aValue, List<Value> aValueWeightList) {
 		for( int i = 1; i <= aValueWeightList.size(); i++) {
-			if (aValueWeightList.get(i-1) instanceof SingleDescriptor)
-				if (((SingleDescriptor<Object>)aValueWeightList.get(i-1)).getValue().equals(aValue))
-					((SingleDescriptor<Object>)aValueWeightList.get(i-1)).getWeight();
+			if (aValueWeightList.get(i-1) instanceof SingleValue)
+				if (((SingleValue<Object>)aValueWeightList.get(i-1)).getValue().equals(aValue))
+					((SingleValue<Object>)aValueWeightList.get(i-1)).getWeight();
 		}
 		
 		return -1;
@@ -65,7 +65,7 @@ public class SimAssessor {
 	 * @param aValueWeightList
 	 * @return
 	 */
-	public static double similarityDegreeOf(Object aValue, List<ValueDescriptor> aValueWeightList) {
+	public static double similarityDegreeOf(Object aValue, List<Value> aValueWeightList) {
 		double d;
 		
 		d = distanceBetween(maxValueWeightOf(aValueWeightList).getValue(), aValue, aValueWeightList);
@@ -81,7 +81,7 @@ public class SimAssessor {
 	 * @param aValueWeightList
 	 * @return
 	 */
-	public static SimilarityDegree similarityRangeOf(Object aValue, List<ValueDescriptor> aValueWeightList) {
+	public static SimilarityDegree similarityRangeOf(Object aValue, List<Value> aValueWeightList) {
 		double sd, lb, ub;
 		List<ValuedRange> sr;
 		ValuedRange r;
@@ -109,25 +109,25 @@ public class SimAssessor {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static SingleDescriptor<Object> maxValueWeightOf(List<ValueDescriptor> aValueWeightList) {
+	public static SingleValue<Object> maxValueWeightOf(List<Value> aValueWeightList) {
 		double maxWeight, w;
 		int idx;
 		
-		if (aValueWeightList.get(0) instanceof SingleDescriptor)
-			maxWeight = ((SingleDescriptor<Object>)aValueWeightList.get(0)).getWeight();
+		if (aValueWeightList.get(0) instanceof SingleValue)
+			maxWeight = ((SingleValue<Object>)aValueWeightList.get(0)).getWeight();
 		else maxWeight = -1;
 		
 		idx = 1;
 
 		for( int i = 2; i <= aValueWeightList.size(); i++) {
-			if (aValueWeightList.get(i-1) instanceof SingleDescriptor)
-				w = ((SingleDescriptor<Object>)aValueWeightList.get(i-1)).getWeight();
+			if (aValueWeightList.get(i-1) instanceof SingleValue)
+				w = ((SingleValue<Object>)aValueWeightList.get(i-1)).getWeight();
 			else w = -1;
 			
 			if (w > maxWeight)  idx = i-1 ;
 		}
 
-		return (SingleDescriptor<Object>)aValueWeightList.get(idx);
+		return (SingleValue<Object>)aValueWeightList.get(idx);
 	}
 	
 	/**
@@ -136,16 +136,16 @@ public class SimAssessor {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static double maxWeightOf(List<ValueDescriptor> aValueWeightList) {
+	public static double maxWeightOf(List<Value> aValueWeightList) {
 		double maxWeight, w;
 		
-		if (aValueWeightList.get(0) instanceof SingleDescriptor)
-			maxWeight = ((SingleDescriptor<Object>)aValueWeightList.get(0)).getWeight();
+		if (aValueWeightList.get(0) instanceof SingleValue)
+			maxWeight = ((SingleValue<Object>)aValueWeightList.get(0)).getWeight();
 		else maxWeight = -1;
 		
 		for( int i = 2; i <= aValueWeightList.size(); i++) {
-			if (aValueWeightList.get(i-1) instanceof SingleDescriptor)
-				w = ((SingleDescriptor<Object>)aValueWeightList.get(i-1)).getWeight();
+			if (aValueWeightList.get(i-1) instanceof SingleValue)
+				w = ((SingleValue<Object>)aValueWeightList.get(i-1)).getWeight();
 			else w = -1;
 			if (w > maxWeight) maxWeight = w;
 		}
@@ -164,7 +164,7 @@ public class SimAssessor {
 	 * @param aValueWeightList
 	 * @return
 	 */
-	public static List<ValuedRange> assignValuesUsing(List<ValueDescriptor> aValueWeightList) {
+	public static List<ValuedRange> assignValuesUsing(List<Value> aValueWeightList) {
 		List<SimilarityDegree> rCopy;
 		List<ValuedRange> valuedRangesList;
 		ValuedRange vrInstance;

@@ -13,8 +13,8 @@ import ontology.common.GroupingHeuristic;
 import ontology.taxonomy.GroupingHeuristicIndex;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
+import ontology.values.Values;
 import ontology.values.Value;
-import ontology.values.ValueDescriptor;
 import system.PossibleSolution;
 
 
@@ -228,11 +228,11 @@ import system.PossibleSolution;
  * @return my return values
  */
     public boolean searchValueDescriptors(Descriptor<Object> aDescriptor){
-        Value attrValues = groupingHeuristic.getValues();
+        Values attrValues = groupingHeuristic.getValues();
 
 
         for (int i=0;(i <= attrValues.size());i++){
-        	List<ValueDescriptor> vd = null;
+        	List<Value> vd = null;
             if ((aDescriptor.getValue() instanceof String) != true){
                  vd = attrValues.getRangeDescriptorsWithNumber((Double)aDescriptor.getValue(), TaxonomicRank.values()[i]);
                  if (vd == null){return false;}
@@ -256,7 +256,7 @@ import system.PossibleSolution;
         setTSolutionDescription(aDescriptor);
 
         while(getValueDescriptors().isEmpty() != true){
-        	ValueDescriptor vd = getValueDescriptors().remove(0);
+        	Value vd = getValueDescriptors().remove(0);
             List<Taxon> taxa = vd.getTaxonList();
             List<PossibleSolution> ps = associateTaxaToPossibleSolutions(taxa);
             while(ps.isEmpty() != true){

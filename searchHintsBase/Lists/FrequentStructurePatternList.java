@@ -9,10 +9,11 @@ import java.util.Comparator;
 import java.util.List;
 
 import ontology.common.Attribute;
+import ontology.common.CharacterDescriptor;
 import ontology.common.Descriptor;
 import ontology.common.Structure;
-import ontology.values.SingleDescriptor;
-import ontology.values.Value;
+import ontology.values.SingleValue;
+import ontology.values.Values;
 
 
 import searchHintsBase.Elements.DescriptorPattern;
@@ -214,7 +215,7 @@ public class FrequentStructurePatternList extends HintsList<StructurePatterns> {
 	private List<Descriptor<Object>> convertAttributesToDescriptorsOf(Structure aStructure) {
 		List<Descriptor<Object>> aDescriptorList;
 		Attribute a;
-		Value vdList;
+		Values vdList;
 		Descriptor<Object> d;
 		
 		aDescriptorList = new ArrayList<Descriptor<Object>>();
@@ -224,10 +225,10 @@ public class FrequentStructurePatternList extends HintsList<StructurePatterns> {
 			vdList = a.getValues().getValueDescriptors();
 			
 			if (vdList.size() == 1 &&
-				vdList.get(Attribute.oneLevel()).get(Attribute.oneLevel()) instanceof SingleDescriptor) {
-				d = new Descriptor<Object>();
+				vdList.get(Attribute.oneLevel()).get(Attribute.oneLevel()) instanceof SingleValue) {
+				d = new CharacterDescriptor<Object>();
 				
-				d.set(aStructure.getName(), a.getName(), ((SingleDescriptor<Object>)vdList.get(Attribute.oneLevel()).get(Attribute.oneLevel())).getValue());
+				d.set(aStructure.getName(), a.getName(), ((SingleValue<Object>)vdList.get(Attribute.oneLevel()).get(Attribute.oneLevel())).getValue());
 				aDescriptorList.add(d);
 			} else return null;
 		}

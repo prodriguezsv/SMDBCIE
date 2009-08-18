@@ -8,10 +8,10 @@ import java.util.List;
 
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
-import ontology.values.RangeDescriptor;
-import ontology.values.SingleDescriptor;
+import ontology.values.RangeValue;
+import ontology.values.SingleValue;
+import ontology.values.Values;
 import ontology.values.Value;
-import ontology.values.ValueDescriptor;
 
 
 
@@ -22,7 +22,7 @@ import ontology.values.ValueDescriptor;
 public class GroupingHeuristic implements Comparable<GroupingHeuristic> {
 	private String name;
 	private double weight;
-	private Value values;
+	private Values values;
 	
 
 	/**
@@ -32,7 +32,7 @@ public class GroupingHeuristic implements Comparable<GroupingHeuristic> {
 	public GroupingHeuristic() {
 		setName(null);
 		setWeight(0.0);
-		setValues(new Value());
+		setValues(new Values());
 	}
 	
 	/**
@@ -80,7 +80,7 @@ public class GroupingHeuristic implements Comparable<GroupingHeuristic> {
 	 * Método de intancia agregado
 	 * @param values
 	 */
-	private void setValues(Value values) {
+	private void setValues(Values values) {
 		this.values = values;
 	}
 
@@ -88,7 +88,7 @@ public class GroupingHeuristic implements Comparable<GroupingHeuristic> {
 	 * @see "Método values del protocolo accesing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public Value getValues() {
+	public Values getValues() {
 		return values;
 	}
 	
@@ -98,8 +98,8 @@ public class GroupingHeuristic implements Comparable<GroupingHeuristic> {
 	 * @param aTaxon
 	 */
 	public <T> void addValues(GroupingHeuristic aGroupingHeuristic, Taxon aTaxon) {
-		List<ValueDescriptor> vList;
-		ValueDescriptor ovd, nvd;
+		List<Value> vList;
+		Value ovd, nvd;
 
 		if (values.size() < aGroupingHeuristic.getValues().size())
 			return;
@@ -112,13 +112,13 @@ public class GroupingHeuristic implements Comparable<GroupingHeuristic> {
 			
 			for (int j = 1; j <= vList.size(); j++) {
 				ovd = vList.get(j-1);
-				if (ovd instanceof SingleDescriptor)
-					nvd = new SingleDescriptor<T>();
+				if (ovd instanceof SingleValue)
+					nvd = new SingleValue<T>();
 				else {
-					nvd = new RangeDescriptor();
+					nvd = new RangeValue();
 				}
 				
-				nvd.addValues(ovd, aTaxon);
+				nvd.addValues(ovd);
 				if (this.getValues().size() == aGroupingHeuristic.getValues().size())
 					this.getValues().addValueDescriptor(nvd, TaxonomicRank.values()[i+1]);
 				else
@@ -146,8 +146,8 @@ public class GroupingHeuristic implements Comparable<GroupingHeuristic> {
 	@SuppressWarnings("unchecked")
 	public List<Descriptor<Object>> createSAVDescription(String aTaxonomicGroupName) {
 		List<Descriptor<Object>> description;
-		List<ValueDescriptor> vdList;
-		ValueDescriptor vd;
+		List<Value> vdList;
+		Value vd;
 		Descriptor<Object> d;
 		
 		// Check if its value has more than one value descriptor container
@@ -166,11 +166,11 @@ public class GroupingHeuristic implements Comparable<GroupingHeuristic> {
 		// Get the value descriptor and make sure it isn't a range descriptor
 		vd = vdList.get(0);
 		
-		if (vd instanceof RangeDescriptor) return null;
+		if (vd instanceof RangeValue) return null;
 		
 		// Create the new SAVDescriptor and assign its values
-		d = new Descriptor<Object>();
-		d.set(aTaxonomicGroupName, this.getName(), ((SingleDescriptor<Object>)vd).getValue());
+		d = new HeuristicDescriptor<Object>();
+		d.set(aTaxonomicGroupName, this.getName(), ((SingleValue<Object>)vd).getValue());
 					
 		description.add(d);
 		

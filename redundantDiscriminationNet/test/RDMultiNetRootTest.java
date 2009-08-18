@@ -5,6 +5,8 @@ package redundantDiscriminationNet.test;
 
 import static org.junit.Assert.*;
 
+import ontology.common.CharacterDescriptor;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -12,6 +14,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import redundantDiscriminationNet.RDMultiNetRoot;
+import redundantDiscriminationNet.RootNorm;
 
 /**
  * @author Armando
@@ -63,7 +66,7 @@ public class RDMultiNetRootTest {
 		assertNull(rdmultinetroot.getRDNet("Pie"));
 		
 		System.out.println("Verificar que se obtiene no null para una estructura");
-		rdmultinetroot.addRDNet("Pie");
+		rdmultinetroot.addRDNet(new RootNorm(new CharacterDescriptor<Object>("Pie", null, null)));
 		assertNotNull(rdmultinetroot.getRDNet("Pie"));
 		
 		System.out.println("Verificar que se obtiene null para una nueva estructura");
@@ -78,10 +81,10 @@ public class RDMultiNetRootTest {
 		System.out.println("Iniciando pruebas para el método AddRDNet()");
 		
 		System.out.println("Verificar que se agrega una red para una nueva estructura");
-		assertTrue(rdmultinetroot.addRDNet("Pie"));
+		assertTrue(rdmultinetroot.addRDNet(new RootNorm(new CharacterDescriptor<Object>("Pie", null, null))));
 		
 		System.out.println("Verificar que no se agrega una red para una estructura duplicada");
-		assertFalse(rdmultinetroot.addRDNet("Pie"));
+		assertFalse(rdmultinetroot.addRDNet(new RootNorm(new CharacterDescriptor<Object>("Pie", null, null))));
 	}
 
 	/**
@@ -92,7 +95,7 @@ public class RDMultiNetRootTest {
 		System.out.println("Iniciando pruebas para el método Contains()");
 		
 		System.out.println("Verificar que contiene una red para una estructura dada");
-		rdmultinetroot.addRDNet("Pie");
+		rdmultinetroot.addRDNet(new RootNorm(new CharacterDescriptor<Object>("Pie", null, null)));
 		assertTrue(rdmultinetroot.contains("Pie"));
 		
 		System.out.println("Verificar que no contiene una red para una estructura dada");

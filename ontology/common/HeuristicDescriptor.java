@@ -10,11 +10,7 @@ package ontology.common;
  * ya que ningún par attribute-value particular generaliza todos los casos bajo ellos.
  * 
 */
-public class HeuristicDescriptor<T> implements Comparable<HeuristicDescriptor<T>> {
-	private String structure;
-	private String attribute;
-	private T value;
-	
+public class HeuristicDescriptor<T> extends Descriptor<T> {
 	/**
 	 * Class instance invariant: self MUST always have exactly two values. The first
 	 * element corresponds to the descriptor's attribute, and the second one to the value.
@@ -22,101 +18,20 @@ public class HeuristicDescriptor<T> implements Comparable<HeuristicDescriptor<T>
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
 	public HeuristicDescriptor() {
-		this.setStructure(null);
-		this.setAttribute(null);
-		this.setValue(null);
+		super();
 	}
 	
 	/**
 	 * Método agregado
 	 */
 	public HeuristicDescriptor(String aStructure, String aAttribute, T aValue) {
-		this.setStructure(aStructure);
-		this.setAttribute(aAttribute);
-		this.setValue(aValue);
-	}
-
-	/**
-	 * @see "Método addStructure:Attribute:Value: del protocolo adding en SUKIA SmallTalk"
-	 * @param aStructure
-	 * @param anAttribute
-	 * @param aValue
-	 */
-	public void set(String aStructure, String anAttribute, T aValue) {
-		this.setStructure(aStructure);
-		this.setAttribute(anAttribute);
-		this.setValue(aValue);
-	}
-	
-	/**
-	 * @see "Método addStructure: del protocolo adding-private en SUKIA SmallTalk"
-	 * @param structure
-	 */
-	public void setStructure(String structure) {
-		this.structure = structure;
-	}
-	
-	/**
-	 * @see "Método structure del protocolo accessing en SUKIA SmallTalk"
-	 * @return
-	 */
-	public String getStructure() {
-		return structure;
-	}
-    
-	/**
-	 * @see "Método addAttribute: del protocolo adding-private en SUKIA SmallTalk"
-	 * @param attribute
-	 */
-    public void setAttribute(String attribute) {
-    	this.attribute = attribute;
-    }
-    
-    /**
-     * @see "Método attribute del protocolo accessing en SUKIA SmallTalk"
-     * @return
-     */
-    public String getAttribute() {
-    	return attribute;
-    }
-
-    /**
-     * @see "Método value del protocolo accessing en SUKIA SmallTalk"
-     * @return
-     */
-	public T getValue() {
-		return value;
-	}
-
-	/**
-	 * @see "Método addValue: del protocolo adding-private en SUKIA SmallTalk"
-	 * @param value
-	 */
-	public void setValue(T value) {
-		this.value = value;
-	}
-	
-	/**
-	 * Método de instancia agregado
-	 */
-	public int compareTo(HeuristicDescriptor<T> aDescriptor) {
-		return this.getStructure().concat(this.getAttribute()).compareTo(aDescriptor.getStructure().concat(aDescriptor.getAttribute()));
+		super(aStructure, aAttribute, aValue);
 	}
 	
 	/**
 	 * Método agregado
-	 * @param aDescriptor
-	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	public boolean equals(Object aDescriptor) {
-		if (aDescriptor == null) return false;
-		if (!(aDescriptor instanceof HeuristicDescriptor)) return false;
-		
-		if (this.getStructure().equals(((HeuristicDescriptor<Object>)aDescriptor).getStructure()) &&
-				this.getAttribute().equals(((HeuristicDescriptor<Object>)aDescriptor).getAttribute()) &&
-				this.getValue().equals(((HeuristicDescriptor<Object>)aDescriptor).getValue()))
-			return true;
-		else return false;
+	public HeuristicDescriptor(Object associatedObject, String aStructure, String aAttribute, T aValue) {
+		super(associatedObject, aStructure, aAttribute, aValue);
 	}
 }

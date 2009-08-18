@@ -9,7 +9,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import ontology.common.GroupingHeuristic;
-import ontology.values.SingleDescriptor;
+import ontology.values.SingleValue;
 
 import searchHintsBase.Elements.HeuristicPattern;
 
@@ -124,11 +124,11 @@ public class FrequentGroupingHeuristicList extends HintsList<HeuristicPattern> {
 
 	@SuppressWarnings("unchecked")
 	public boolean contains(GroupingHeuristic aGroupingHeuristic) {
-		SingleDescriptor<Object> svd;
+		SingleValue<Object> svd;
 		
 		if (aGroupingHeuristic.getValues().get(GroupingHeuristic.oneLevel()).size() == 1 &&
-				aGroupingHeuristic.getValues().get(GroupingHeuristic.oneLevel()).get(GroupingHeuristic.oneLevel()) instanceof SingleDescriptor) {
-			svd = (SingleDescriptor<Object>)aGroupingHeuristic.getValues().get(GroupingHeuristic.oneLevel()).get(GroupingHeuristic.oneLevel());
+				aGroupingHeuristic.getValues().get(GroupingHeuristic.oneLevel()).get(GroupingHeuristic.oneLevel()) instanceof SingleValue) {
+			svd = (SingleValue<Object>)aGroupingHeuristic.getValues().get(GroupingHeuristic.oneLevel()).get(GroupingHeuristic.oneLevel());
 		
 			for (int i = 1; i <= this.size(); i++) {
 				if (this.get(i-1).getGroupingHeuristicName().equals(aGroupingHeuristic.getName()) &&
@@ -160,7 +160,7 @@ public class FrequentGroupingHeuristicList extends HintsList<HeuristicPattern> {
 		FrequentGroupingHeuristicList sortedList;
 		GroupingHeuristic gh;
 		HeuristicPattern ghElt;
-		SingleDescriptor<Object> svd;
+		SingleValue<Object> svd;
 		int numElements, numProcessedElts, i;
 		
 		
@@ -181,7 +181,7 @@ public class FrequentGroupingHeuristicList extends HintsList<HeuristicPattern> {
 			gh = aHeuristicsList.remove(0);
 			ghElt = null;
 			if (this.contains(gh)) {
-				svd = (SingleDescriptor<Object>)gh.getValues().get(GroupingHeuristic.oneLevel()).get(GroupingHeuristic.oneLevel());
+				svd = (SingleValue<Object>)gh.getValues().get(GroupingHeuristic.oneLevel()).get(GroupingHeuristic.oneLevel());
 				ghElt = this.getListElement(gh.getName(), svd.getValue());
 			} 
 			
@@ -200,7 +200,7 @@ public class FrequentGroupingHeuristicList extends HintsList<HeuristicPattern> {
 			ghElt = sortedList.remove(0);
 			i = 1;
 			while (i <= tempList.size()) {
-				svd = (SingleDescriptor<Object>)tempList.get(i-1).getValues().get(GroupingHeuristic.oneLevel()).get(GroupingHeuristic.oneLevel());
+				svd = (SingleValue<Object>)tempList.get(i-1).getValues().get(GroupingHeuristic.oneLevel()).get(GroupingHeuristic.oneLevel());
 				if (tempList.get(i-1).getName().equals(ghElt.getGroupingHeuristicName()) && 
 						svd.getValue().equals(ghElt.getValue())) {
 					aHeuristicsList.add(tempList.remove(i-1));

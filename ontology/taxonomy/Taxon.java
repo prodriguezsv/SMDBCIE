@@ -3,9 +3,13 @@
  */
 package ontology.taxonomy;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import ontology.common.Descriptor;
+import ontology.values.RangeValue;
 
 
 /**
@@ -17,8 +21,8 @@ public class Taxon implements Comparable<Taxon>{
 	private String name;
 	private Taxon predecessor;
 	private List<Taxon> successors;
-	private StructureIndex SAVDescription;
-	private GroupingHeuristicIndex GHDescription;
+	private List<Descriptor<Object>> description;
+	private List<Modifier> modifiers;
 
 	/**
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
@@ -30,9 +34,9 @@ public class Taxon implements Comparable<Taxon>{
 		//Pendiente ordenamiento
 		setSuccessors(new ArrayList<Taxon>());
 		//Pendiente ordenamiento
-		setGHDescription(new GroupingHeuristicIndex());
+		setModifiers(new ArrayList<Modifier>());
 		//Pendiente ordenamiento
-		setSAVDescription(new StructureIndex());
+		setDescription(new ArrayList<Descriptor<Object>>());
 	}
 
 	/**
@@ -135,88 +139,36 @@ public class Taxon implements Comparable<Taxon>{
 
 	/***
 	 * Método de instancia agregado
-	 * @param gHDescription
-	 */
-	public void setGHDescription(GroupingHeuristicIndex aGHDescription) {
-		GHDescription = aGHDescription;
-	}
-
-	/**
-	 * @see "Método GHdescription del protocolo accessing en SUKIA SmallTalk"
-	 * @return
-	 */
-	public GroupingHeuristicIndex getGHDescription() {
-		return GHDescription;
-	}
-	
-	/**
-	 * @see "Método GHDescription: del protocolo adding en SUKIA SmallTalk"
-	 * @param aGroupingHeuristic
-	 */
-	/*public void addGHDescription(GroupingHeuristic aGroupingHeuristic) {
-		if (includesGroupingHeuristic(aGroupingHeuristic.getName(), GHDescription))
-			return;
-		
-		GHDescription.add(aGroupingHeuristic);
-	}*/
-
-	/***
-	 * Método de instancia agregado
 	 * @param sAVDescription
 	 */
-	public void setSAVDescription(StructureIndex aSAVDescription) {
-		SAVDescription = aSAVDescription;
+	public void setDescription(List<Descriptor<Object>> aDescription) {
+		this.description = aDescription;
 	}
 
 	/**
 	 * @see "Método SAVdescription del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public StructureIndex getSAVDescription() {
-		return SAVDescription;
+	public List<Descriptor<Object>> getDescription() {
+		return description;
+	}	
+	
+	/**
+	 * 
+	 * @param modifiers
+	 */
+	public void setModifiers(List<Modifier> modifiers) {
+		this.modifiers = modifiers;
 	}
 
 	/**
-	 * @see "Método SAVdescription: del protocolo adding en SUKIA SmallTalk"
-	 * @param aStructure
-	 */
-	/*public void addSAVDescription(Structure aStructure) {
-		if (includesStructure(aStructure.getName(), SAVDescription))
-			return;
-		
-		SAVDescription.add(aStructure);
-	}*/
-	
-	/**
-	 * @see "Método includes:in: del protocolo testing en SUKIA SmallTalk"
-	 * @param aName
-	 * @param aDescription
+	 * 
 	 * @return
 	 */
-	/*public boolean includesStructure(String aName, List<Structure> aDescription) {
-		for (int i = 1; i <= aDescription.size(); i++) {
-			if (aDescription.get(i-1).getName().equals(aName))
-				return true;
-		}
-		
-		return false;
-	}*/
-	
-	/**
-	 * @see "Método includes:in: del protocolo testing en SUKIA SmallTalk"
-	 * @param aName
-	 * @param aDescription
-	 * @return
-	 */
-	/*public boolean includesGroupingHeuristic(String aName, List<GroupingHeuristic> aDescription) {
-		for (int i = 1; i <= aDescription.size(); i++) {
-			if (aDescription.get(i-1).getName().equals(aName))
-				return true;
-		}
-		
-		return false;
-	}*/
-	
+	public List<Modifier> getModifiers() {
+		return modifiers;
+	}
+
 	/**
 	 * @see "Método isSuccessorOf: del protocolo inhetitence en SUKIA SmallTalk"
 	 */
@@ -262,32 +214,50 @@ public class Taxon implements Comparable<Taxon>{
 	}
 	
 	/**
-	 * @see "Método getAnObjectWith:in: del protocolo searching en SUKIA SmallTalk"
-	 * @param aName
-	 * @param aDescription
+	 * Appends aDescriptor to the variable description
+	 * @see "M&eacute;todo addToDescription: del protocolo adding en SUKIA SmallTalk"
+	 * @param aDescriptor
+	 * @return Valor de verdad true indicando que la adici&oacute;n se llev&oacute; a cabo
+	 * @return Valor de verdad false indicando que la adici&oacute;n no se llev&oacute; a cabo
 	 */
-	/*public Structure getAStructureWith(String aName, List<Structure> aDescription) {
-		for (int i = 1; i <= aDescription.size(); i++) {
-			if (aDescription.get(i).getName().equals(aName)) 
-				return aDescription.get(i-1);
-		}
+	public boolean addToDescription(Descriptor<Object> aDescriptor) {
+		if (aDescriptor == null) return false;
 		
-		return null;
-	}*/
+		if (this.getDescription().contains(aDescriptor))
+			return false;
+		
+		this.getDescription().add(aDescriptor);
+		aDescriptor.setAssociatedObject(this);
+		this.getModifiers().add(new Modifier());
+		
+		return true;
+	}
+	
+	public boolean addToDescription(Descriptor<Object> aDescriptor, Modifier aModifier) {
+		if (aDescriptor == null) return false;
+		
+		if (this.getDescription().contains(aDescriptor))
+			return false;
+		
+		this.getDescription().add(aDescriptor);
+		aDescriptor.setAssociatedObject(this);
+		this.getModifiers().add(aModifier);
+		
+		return true;
+	}
 	
 	/**
-	 * @see "Método getAnObjectWith:in: del protocolo searching en SUKIA SmallTalk"
-	 * @param aName
-	 * @param aDescription
+	 * Removes aDescriptor from the variable description
+	 * @param aDescriptor
+	 * @return Valor de verdad true indicando que la remoci&oacute;n se llev&oacute; a cabo
+	 * @return Valor de verdad false indicando que la remoci&oacute;n no se llev&oacute; a cabo
 	 */
-	/*public GroupingHeuristic getAGroupingHeuristicWith(String aName, List<GroupingHeuristic> aDescription) {
-		for (int i = 1; i <= aDescription.size(); i++) {
-			if (aDescription.get(i).getName().equals(aName)) 
-				return aDescription.get(i);
-		}
+	public boolean removeFromDescription(Descriptor<Object> aDescriptor) {
+		if (aDescriptor == null) return false;
 		
-		return null;
-	}*/
+		this.getModifiers().remove(this.getDescription().indexOf(aDescriptor));
+		return this.getDescription().remove(aDescriptor);
+	}
 	
 	/**
 	 * @see "Método isLinkOKBetween:and: del protocolo de clase testing en SUKIA SmallTalk"
@@ -305,5 +275,58 @@ public class Taxon implements Comparable<Taxon>{
     @Override
 	public int compareTo(Taxon aTaxon) {
 		return this.getName().compareTo(aTaxon.getName());
+	}
+    
+	/**
+	 * If the receiver's SAV description contains structures with attributes that have range values, then, for each one of those structures:
+	 * seek a structure in the receiver's predecessor's SAV description whose name matches the (receiver's) structure name;
+	 * if the structure is found, seek in the attributes of the found structure for an attribute that matches the (receiver's structure) attribute name;
+	 * if the attribute is found, seek a ValueDescriptor that is a range value;
+	 * if the ValueDescriptor is found, determine if the measuring units are the same, and if the receiver's range value lies within the ValueDescriptor
+	 * range just found.
+	 * If the ranges are consistent, return true. Else, return false (i.e., inconsistent ranges).
+	 * If neither the first nor the second steps are satisfied, get the receiver's predecessor's predecessor, and start again.
+	 * This method will stop when the predecessor's level is ROOT
+	 * @see "Método SAVRangesConsistentWith: del protocolo testing en SUKIA SmallTalk"
+	 * @param aParentTaxon
+	 * @return
+	 */
+	public boolean isRangesConsistent(Taxon aParentTaxon) {
+		Taxon pt;
+		
+		if (aParentTaxon.getLevel().equals(TaxonomicRank.ROOT))
+			return true;
+		
+		// Parse the receiver's SAV (structure) description
+		for (Descriptor<Object> d:this.getDescription()) {
+			if (d.getValue() instanceof RangeValue) {
+				/*The attribute's value descriptor is a range value.  Get the receiver's predecessor and loop while the 
+				 predecessor's level is not ROOT*/
+				pt = aParentTaxon;
+				while(!(pt.getLevel().equals(TaxonomicRank.ROOT))) {
+					for (Descriptor<Object> d2:pt.getDescription()) {
+						if (d2.getValue() instanceof RangeValue) {
+							/*Value descriptor found. If the measuring units for the receiver's retrieved range value and the 
+							 predecessor's range value are different, then there is an inconsistency*/
+							if (!((RangeValue) d2.getValue()).getMeasuringUnit()
+									.equals(((RangeValue) d.getValue()).getMeasuringUnit()))
+								return false;
+							else {
+								/* Measuring units are the same for both ranges.  Determine if the receiver's value descriptor
+								 range lies within the predecessor's value descriptor range */
+								if (((RangeValue) d2.getValue()).isRangeWithin(((RangeValue) d.getValue())
+										.getLowerBound(), ((RangeValue) d.getValue()).getUpperBound())) 
+									return true;
+								else return false; 
+							}
+						}
+					}
+				}
+			}
+		}
+											
+		/*"The entire SAV decription of the receiver was parsed and nothing was found in the SAV description of all its
+		 predecessors. Thus, assume there are no inconsistencies*/
+		return true;
 	}
 }

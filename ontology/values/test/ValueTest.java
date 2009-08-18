@@ -7,9 +7,9 @@ package ontology.values.test;
 
 import java.util.List;
 import ontology.taxonomy.TaxonomicRank;
-import ontology.values.SingleDescriptor;
+import ontology.values.SingleValue;
+import ontology.values.Values;
 import ontology.values.Value;
-import ontology.values.ValueDescriptor;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -22,8 +22,8 @@ import static org.junit.Assert.*;
  * @author pabloq
  */
 public class ValueTest {
-    Value aValue;
-    Value aUniqueValue;
+    Values aValue;
+    Values aUniqueValue;
 
     public ValueTest() {
     }
@@ -38,11 +38,11 @@ public class ValueTest {
 
     @Before
     public void setUp() {
-        aValue = new Value ();
-        aUniqueValue = new Value (true);
-        SingleDescriptor aSingleDescriptor = new SingleDescriptor();
+        aValue = new Values ();
+        aUniqueValue = new Values (true);
+        SingleValue aSingleDescriptor = new SingleValue();
         aSingleDescriptor.addTaxon(null);
-        SingleDescriptor aSingleDescriptor2 = new SingleDescriptor();
+        SingleValue aSingleDescriptor2 = new SingleValue();
     }
 
     @After
@@ -68,7 +68,7 @@ public class ValueTest {
         /*
          * It should return 0 level when it is created without levels
          */
-         assertEquals(0, (new Value(false)).getValueDescriptors().size());
+         assertEquals(0, (new Values(false)).getValueDescriptors().size());
         
     }
 
@@ -78,11 +78,11 @@ public class ValueTest {
     @Test
     public void testGetValueDescriptors_GenericType_TaxonomicRank() {
         System.out.println("getValueDescriptors");
-        ValueDescriptor aDescriptor = null;
+        Value aDescriptor = null;
         TaxonomicRank aLevel = null;
-        Value instance = new Value();
-        ValueDescriptor expResult = null;
-        ValueDescriptor result = instance.getValueDescriptors(aDescriptor, aLevel);
+        Values instance = new Values();
+        Value expResult = null;
+        Value result = instance.getValueDescriptors(aDescriptor, aLevel);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
@@ -94,9 +94,9 @@ public class ValueTest {
     @Test
     public void testGetValueDescriptors_0args() {
         System.out.println("getValueDescriptors");
-        Value instance = new Value();
-        Value expResult = null;
-        Value result = instance.getValueDescriptors();
+        Values instance = new Values();
+        Values expResult = null;
+        Values result = instance.getValueDescriptors();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
@@ -109,7 +109,7 @@ public class ValueTest {
     public void testGetValueDescriptors_TaxonomicRank() {
         System.out.println("getValueDescriptors");
         TaxonomicRank aLevel = null;
-        Value instance = new Value();
+        Values instance = new Values();
         List expResult = null;
         List result = instance.getValueDescriptors(aLevel);
         assertEquals(expResult, result);
@@ -125,7 +125,7 @@ public class ValueTest {
         System.out.println("getRangeDescriptorsWithNumber");
         double aNumber = 0.0;
         TaxonomicRank aLevel = null;
-        Value instance = new Value();
+        Values instance = new Values();
         List expResult = null;
         List result = instance.getRangeDescriptorsWithNumber(aNumber, aLevel);
         assertEquals(expResult, result);
@@ -142,7 +142,7 @@ public class ValueTest {
         double aLowerBound = 0.0;
         double anUpperBound = 0.0;
         TaxonomicRank aLevel = null;
-        Value instance = new Value();
+        Values instance = new Values();
         List expResult = null;
         List result = instance.getRangeDescriptorsWithRange(aLowerBound, anUpperBound, aLevel);
         assertEquals(expResult, result);
@@ -158,7 +158,7 @@ public class ValueTest {
         System.out.println("getSingleDescriptors");
         Object aValue = null;
         TaxonomicRank aLevel = null;
-        Value instance = new Value();
+        Values instance = new Values();
         List expResult = null;
         List result = instance.getSingleDescriptors(aValue, aLevel);
         assertEquals(expResult, result);
@@ -176,7 +176,7 @@ public class ValueTest {
         TaxonomicRank aLevel = null;
         double aLowerBound = 0.0;
         double anUpperBound = 0.0;
-        Value instance = new Value();
+        Values instance = new Values();
         List expResult = null;
         List result = instance.getSingleDescriptorsWithWeightInRange(aValue, aLevel, aLowerBound, anUpperBound);
         assertEquals(expResult, result);
@@ -194,7 +194,7 @@ public class ValueTest {
         double aWeight = 0.0;
         TaxonomicRank aLevel = null;
         String anOperator = "";
-        Value instance = new Value();
+        Values instance = new Values();
         List expResult = null;
         List result = instance.getSingleDescriptors(aValue, aWeight, aLevel, anOperator);
         assertEquals(expResult, result);
@@ -212,7 +212,7 @@ public class ValueTest {
         TaxonomicRank aLevel = null;
         double aLowerBound = 0.0;
         double anUpperBound = 0.0;
-        Value instance = new Value();
+        Values instance = new Values();
         List expResult = null;
         List result = instance.getSingleDescriptors(aWeight, aLevel, aLowerBound, anUpperBound);
         assertEquals(expResult, result);
@@ -229,7 +229,7 @@ public class ValueTest {
         double aWeight = 0.0;
         TaxonomicRank aLevel = TaxonomicRank.FAMILY;
         String anOperator = "";
-        Value instance = new Value();
+        Values instance = new Values();
         List expResult = null;
         List result;
         //assertEquals(expResult, result);
@@ -254,9 +254,9 @@ public class ValueTest {
     @Test
     public void testAddValueDescriptor() {
         System.out.println("addValueDescriptor");
-        ValueDescriptor aValueDescriptor = null;
+        Value aValueDescriptor = null;
         TaxonomicRank aLevel = null;
-        Value instance = new Value();
+        Values instance = new Values();
         instance.addValueDescriptor(aValueDescriptor, aLevel);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
@@ -268,9 +268,9 @@ public class ValueTest {
     @Test
     public void testAddValueDescriptorWithUniqueValue() {
         System.out.println("addValueDescriptorWithUniqueValue");
-        ValueDescriptor aValueDescriptor = null;
+        Value aValueDescriptor = null;
         TaxonomicRank aLevel = null;
-        Value instance = new Value();
+        Values instance = new Values();
         instance.addValueDescriptorWithUniqueValue(aValueDescriptor, aLevel);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
@@ -282,9 +282,9 @@ public class ValueTest {
     @Test
     public void testIncludes() {
         System.out.println("includes");
-        ValueDescriptor aDescriptor = null;
+        Value aDescriptor = null;
         int aNumberLevel = 0;
-        Value instance = new Value();
+        Values instance = new Values();
         boolean expResult = false;
         boolean result = instance.includes(aDescriptor, aNumberLevel);
         assertEquals(expResult, result);
@@ -298,9 +298,9 @@ public class ValueTest {
     @Test
     public void testIncludesUniqueValue() {
         System.out.println("includesUniqueValue");
-        ValueDescriptor aDescriptor = null;
+        Value aDescriptor = null;
         int aNumberLevel = 0;
-        Value instance = new Value();
+        Values instance = new Values();
         boolean expResult = false;
         boolean result = instance.includesUniqueValue(aDescriptor, aNumberLevel);
         assertEquals(expResult, result);

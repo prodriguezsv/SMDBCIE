@@ -2,6 +2,7 @@ package ontology.common.test;
 
 import static org.junit.Assert.*;
 
+import ontology.common.CharacterDescriptor;
 import ontology.common.Descriptor;
 
 import org.junit.After;
@@ -15,7 +16,7 @@ public class DescriptorTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		d = new Descriptor<Object>("Cuerpo", "Conformación", "Tiene cerata");
+		d = new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata");
 	}
 
 	@AfterClass
@@ -34,11 +35,11 @@ public class DescriptorTest {
 	public final void testCompareTo() {
 		Descriptor<Object> d2;
 
-		d2 = new Descriptor<Object>("Cuerpo", "Conformación", "Tiene cerata");
+		d2 = new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata");
 		assertEquals(0, d.compareTo(d2));
-		d2 = new Descriptor<Object>("Cuerpo", "Forma", "Alargado");
+		d2 = new CharacterDescriptor<Object>("Cuerpo", "Forma", "Alargado");
 		assertTrue(d.compareTo(d2)<0);
-		d2 = new Descriptor<Object>("Branquias", "Número de hojas branquiales", 6);
+		d2 = new CharacterDescriptor<Object>("Branquias", "Número de hojas branquiales", 6);
 		assertTrue(d.compareTo(d2)>0);
 	}
 
@@ -47,9 +48,9 @@ public class DescriptorTest {
 		Descriptor<Object> d2;
 		
 		assertFalse(d.equals(null));
-		d2 = new Descriptor<Object>("Cuerpo", "Conformación", "Tiene cerata");
+		d2 = new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata");
 		assertTrue(d.equals(d2));
-		d2 = new Descriptor<Object>("Pie", "Disposición", "Sobresale al manto");
+		d2 = new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto");
 		assertFalse(d.equals(d2));
 	}
 

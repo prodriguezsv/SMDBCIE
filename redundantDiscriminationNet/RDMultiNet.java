@@ -8,6 +8,8 @@ package redundantDiscriminationNet;
 import java.util.List;
 
 import ontology.CBR.Case;
+import ontology.common.CharacterDescriptor;
+import ontology.common.HeuristicDescriptor;
 
 
 
@@ -70,14 +72,32 @@ public class RDMultiNet {
 		 * in separate Descriptor lists
 		 * represented each of the structures
 		 */
-		structuresList = aCase.getStructuresList();
+		structuresList = aCase.getCharacterStructuresList();
 		
 		for(String s: structuresList) {	
 			/* For every (structure-defined) list: a) Copy the segregated description list to the case's
 			 * description. b) Create a new NetRoot. c) Add the case to the structure-defined network.
 			 */
 			if (!(this.getRoot().contains(s)))
-				this.getRoot().addRDNet(s);
+				this.getRoot().addRDNet(new RootNorm(new CharacterDescriptor<Object>(s, null, null)));
+			
+			aRDNet = this.getRoot().getRDNet(s);
+		
+			aRDNet.add(aCase);
+		}
+		
+		/* Segregate the case's description components (.i.e., the tuples (structure, attribute, value))
+		 * in separate Descriptor lists
+		 * represented each of the structures
+		 */
+		structuresList = aCase.getHeuristicStructuresList();
+		
+		for(String s: structuresList) {	
+			/* For every (structure-defined) list: a) Copy the segregated description list to the case's
+			 * description. b) Create a new NetRoot. c) Add the case to the structure-defined network.
+			 */
+			if (!(this.getRoot().contains(s)))
+				this.getRoot().addRDNet(new RootNorm(new HeuristicDescriptor<Object>(s, null, null)));
 			
 			aRDNet = this.getRoot().getRDNet(s);
 		

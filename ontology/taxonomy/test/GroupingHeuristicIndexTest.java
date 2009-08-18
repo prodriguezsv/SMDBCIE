@@ -9,8 +9,8 @@ import ontology.common.GroupingHeuristic;
 import ontology.taxonomy.GroupingHeuristicIndex;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
-import ontology.values.RangeDescriptor;
-import ontology.values.SingleDescriptor;
+import ontology.values.RangeValue;
+import ontology.values.SingleValue;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -51,7 +51,7 @@ public class GroupingHeuristicIndexTest {
         aGroupingHeuristic.setName("alimentacion");
         aGroupingHeuristic.setWeight(1.0);
 
-        SingleDescriptor aSingleDescriptor = new SingleDescriptor();
+        SingleValue aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("esponjas");
         aSingleDescriptor.setWeight(1.0);
         aGroupingHeuristic.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
@@ -65,7 +65,7 @@ public class GroupingHeuristicIndexTest {
         aGroupingHeuristic2.setWeight(1.0);
 
 
-        RangeDescriptor aRangeDescriptor = new RangeDescriptor();
+        RangeValue aRangeDescriptor = new RangeValue();
         aRangeDescriptor.setLowerBound(0.0);
         aRangeDescriptor.setUpperBound(20.0);
         aGroupingHeuristic2.getValues().addValueDescriptorWithUniqueValue(aRangeDescriptor, TaxonomicRank.FAMILY);
@@ -76,17 +76,17 @@ public class GroupingHeuristicIndexTest {
         aGroupingHeuristic3.setName("medio_de_preservacion_tenido");
         aGroupingHeuristic3.setWeight(1.0);
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("azul_marino");
         aSingleDescriptor.setWeight(1.0);
         aGroupingHeuristic3.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("celeste");
         aSingleDescriptor.setWeight(1.0);
         aGroupingHeuristic3.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        aSingleDescriptor = new SingleDescriptor();
+        aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("amarillento");
         aSingleDescriptor.setWeight(0.2);
         aGroupingHeuristic3.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);

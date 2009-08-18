@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ontology.CBR.Case;
+import ontology.common.CharacterDescriptor;
 import ontology.common.Descriptor;
 
 import org.junit.After;
@@ -29,7 +30,7 @@ import redundantDiscriminationNet.auxiliary.ComparingTableTuple;
 public class RDNetTest extends RDNet {
 	
 	public RDNetTest() {
-		super(new RootNorm("Cuerpo"));
+		super(new RootNorm(new CharacterDescriptor<Object>("Cuerpo", null, null)));
 	}
 
 	/**
@@ -73,50 +74,50 @@ public class RDNetTest extends RDNet {
 		
 		System.out.println("Verificar que se agrega un caso correctamente");
 		c1 = new Case();
-		c1.addToDescription(new Descriptor<Object>("Cuerpo", "Longitud", 0.3));
-		c1.addToDescription(new Descriptor<Object>("Cuerpo", "Forma", "Alargado"));
+		c1.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
+		c1.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Forma", "Alargado"));
 		this.add(c1);
-		assertNotNull(this.getRoot().getSuccessorIndex(new Descriptor<Object>("Cuerpo", "Longitud", 0.3)));
-		assertNotNull(this.getRoot().getSuccessorIndex(new Descriptor<Object>("Cuerpo", "Forma", "Alargado")));
+		assertNotNull(this.getRoot().getSuccessorIndex(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3)));
+		assertNotNull(this.getRoot().getSuccessorIndex(new CharacterDescriptor<Object>("Cuerpo", "Forma", "Alargado")));
 		
 		System.out.println("Verificar que se agrega un caso similar correctamente");
 		c1 = new Case();
-		c1.addToDescription(new Descriptor<Object>("Cuerpo", "Longitud", 0.3));
-		c1.addToDescription(new Descriptor<Object>("Cuerpo", "Forma", "Alargado"));
+		c1.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
+		c1.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Forma", "Alargado"));
 		this.add(c1);
-		assertNotNull(this.getRoot().getSuccessorIndex(new Descriptor<Object>("Cuerpo", "Longitud", 0.3)));
-		assertNotNull(this.getRoot().getNearestSuccessorNorm(new Descriptor<Object>("Cuerpo", "Longitud", 0.3)));
-		assertNotNull(this.getRoot().getNearestSuccessorNorm(new Descriptor<Object>("Cuerpo", "Longitud", 0.3))
-				.getNearestSuccessorNorm(new Descriptor<Object>("Cuerpo", "Forma", "Alargado")));
-		assertNotNull(this.getRoot().getNearestSuccessorNorm(new Descriptor<Object>("Cuerpo", "Forma", "Alargado")));
+		assertNotNull(this.getRoot().getSuccessorIndex(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3)));
+		assertNotNull(this.getRoot().getNearestSuccessorNorm(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3)));
+		assertNotNull(this.getRoot().getNearestSuccessorNorm(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3))
+				.getNearestSuccessorNorm(new CharacterDescriptor<Object>("Cuerpo", "Forma", "Alargado")));
+		assertNotNull(this.getRoot().getNearestSuccessorNorm(new CharacterDescriptor<Object>("Cuerpo", "Forma", "Alargado")));
 		
 		c1 = new Case();
-		c1.addToDescription(new Descriptor<Object>("Cuerpo", "Longitud", 0.3));
+		c1.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
 		this.add(c1);
-		assertNotNull(this.getRoot().getNearestSuccessorNorm(new Descriptor<Object>("Cuerpo", "Longitud", 0.3)));
-		assertEquals(3, this.getRoot().getNearestSuccessorNorm(new Descriptor<Object>("Cuerpo", "Longitud", 0.3)).getNumCases());
-		assertEquals(2, this.getRoot().getNearestSuccessorNorm(new Descriptor<Object>("Cuerpo", "Longitud", 0.3))
-				.getNearestSuccessorNorm(new Descriptor<Object>("Cuerpo", "Forma", "Alargado")).getNumCases());
+		assertNotNull(this.getRoot().getNearestSuccessorNorm(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3)));
+		assertEquals(3, this.getRoot().getNearestSuccessorNorm(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3)).getNumCases());
+		assertEquals(2, this.getRoot().getNearestSuccessorNorm(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3))
+				.getNearestSuccessorNorm(new CharacterDescriptor<Object>("Cuerpo", "Forma", "Alargado")).getNumCases());
 		
 		c1 = new Case();
-		c1.addToDescription(new Descriptor<Object>("Cuerpo", "Longitud", 0.3));
-		c1.addToDescription(new Descriptor<Object>("Cuerpo", "Conformación", "Tiene cerata"));
+		c1.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
+		c1.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata"));
 		this.add(c1);
-		assertNotNull(this.getRoot().getNearestSuccessorNorm(new Descriptor<Object>("Cuerpo", "Longitud", 0.3)));
-		assertEquals(4, this.getRoot().getNearestSuccessorNorm(new Descriptor<Object>("Cuerpo", "Longitud", 0.3)).getNumCases());
-		assertNotNull(this.getRoot().getSuccessorIndex(new Descriptor<Object>("Cuerpo", "Conformación", "Tiene cerata")));
+		assertNotNull(this.getRoot().getNearestSuccessorNorm(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3)));
+		assertEquals(4, this.getRoot().getNearestSuccessorNorm(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3)).getNumCases());
+		assertNotNull(this.getRoot().getSuccessorIndex(new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata")));
 		
 		c1 = new Case();
-		c1.addToDescription(new Descriptor<Object>("Cuerpo", "Longitud", 0.3));
-		c1.addToDescription(new Descriptor<Object>("Cuerpo", "Forma", "Alargado"));
-		c1.addToDescription(new Descriptor<Object>("Cuerpo", "Conformación", "Tiene cerata"));
+		c1.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
+		c1.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Forma", "Alargado"));
+		c1.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata"));
 		this.add(c1);
-		assertNotNull(this.getRoot().getNearestSuccessorNorm(new Descriptor<Object>("Cuerpo", "Longitud", 0.3)));
-		assertEquals(5, this.getRoot().getNearestSuccessorNorm(new Descriptor<Object>("Cuerpo", "Longitud", 0.3)).getNumCases());
-		assertNotNull(this.getRoot().getNearestSuccessorNorm(new Descriptor<Object>("Cuerpo", "Forma", "Alargado")));
-		assertEquals(3, this.getRoot().getNearestSuccessorNorm(new Descriptor<Object>("Cuerpo", "Forma", "Alargado")).getNumCases());
-		assertNotNull(this.getRoot().getNearestSuccessorNorm(new Descriptor<Object>("Cuerpo", "Conformación", "Tiene cerata")));
-		assertEquals(2, this.getRoot().getNearestSuccessorNorm(new Descriptor<Object>("Cuerpo", "Conformación", "Tiene cerata")).getNumCases());
+		assertNotNull(this.getRoot().getNearestSuccessorNorm(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3)));
+		assertEquals(5, this.getRoot().getNearestSuccessorNorm(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3)).getNumCases());
+		assertNotNull(this.getRoot().getNearestSuccessorNorm(new CharacterDescriptor<Object>("Cuerpo", "Forma", "Alargado")));
+		assertEquals(3, this.getRoot().getNearestSuccessorNorm(new CharacterDescriptor<Object>("Cuerpo", "Forma", "Alargado")).getNumCases());
+		assertNotNull(this.getRoot().getNearestSuccessorNorm(new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata")));
+		assertEquals(2, this.getRoot().getNearestSuccessorNorm(new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata")).getNumCases());
 	}
 	
 	/**
@@ -130,10 +131,10 @@ public class RDNetTest extends RDNet {
 		
 		System.out.println("Verificar que la descripción del caso a insertar no ha sido utilizada por completo");
 		c1 = new Case();
-		c1.addToDescription(new Descriptor<Object>("Cuerpo", "Longitud", 0.3));
+		c1.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
 		assertFalse(this.isCaseDescriptionUsedUp(c1));
 		this.getRoute().push("Longitud");
-		c1.addToDescription(new Descriptor<Object>("Cuerpo", "Forma", "Alargado"));
+		c1.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Forma", "Alargado"));
 		assertFalse(this.isCaseDescriptionUsedUp(c1));
 		
 		System.out.println("Verificar que la descripción del caso a insertar ya ha sido utilizada por completo");
@@ -154,12 +155,12 @@ public class RDNetTest extends RDNet {
 		d1 = new ArrayList<Descriptor<Object>>();
 		d2 = new ArrayList<Descriptor<Object>>();
 		assertFalse(this.moveDescElements(d1, d2));
-		d2.add(new Descriptor<Object>("Cuerpo", "Forma", "Alargado"));
+		d2.add(new CharacterDescriptor<Object>("Cuerpo", "Forma", "Alargado"));
 		assertFalse(this.moveDescElements(d1, d2));
 		
 		System.out.println("Verificar que mueve los elementos si se cumplen las precondiciones");
-		d1.add(new Descriptor<Object>("Cuerpo", "Longitud", 0.3));
-		d1.add(new Descriptor<Object>("Cuerpo", "Forma", "Alargado"));
+		d1.add(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
+		d1.add(new CharacterDescriptor<Object>("Cuerpo", "Forma", "Alargado"));
 		d2.clear();
 		d3 = new ArrayList<Descriptor<Object>>(d1);
 		assertTrue(this.moveDescElements(d1, d2));
@@ -201,14 +202,14 @@ public class RDNetTest extends RDNet {
 		
 		System.out.println("Verificar que devuelve el mismo objeto cuando no existe una ruta");
 		d1 = new ArrayList<Descriptor<Object>>();
-		d1.add(new Descriptor<Object>("Cuerpo", "Longitud", 0.3));
-		d1.add(new Descriptor<Object>("Cuerpo", "Forma", "Alargado"));
+		d1.add(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
+		d1.add(new CharacterDescriptor<Object>("Cuerpo", "Forma", "Alargado"));
 		assertEquals(d1, removeMatchingElementsInTheRoute(d1));
 		
 		System.out.println("Verificar que remueve los descriptores apropiados si existe una ruta");
 		this.getRoute().push("Longitud");
 		d2 = new ArrayList<Descriptor<Object>>();
-		d2.add(new Descriptor<Object>("Cuerpo", "Forma", "Alargado"));
+		d2.add(new CharacterDescriptor<Object>("Cuerpo", "Forma", "Alargado"));
 		assertEquals(d2, removeMatchingElementsInTheRoute(d1));
 	}
 
@@ -223,16 +224,16 @@ public class RDNetTest extends RDNet {
 		
 		System.out.println("Verificar dos casos con descripciones distintas");
 		c1 = new Case();
-		c1.addToDescription(new Descriptor<Object>("Cuerpo", "Longitud", 0.3));
+		c1.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
 		c2 = new Case();
-		c2.addToDescription(new Descriptor<Object>("Cuerpo", "Forma", "Alargado"));
+		c2.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Forma", "Alargado"));
 		assertFalse(c1.getDescription(this.getRoot().getStructure()).equals(c2.getDescription(this.getRoot().getStructure())));
-		c2.addToDescription(new Descriptor<Object>("Cuerpo", "Longitud", 0.3));
+		c2.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
 		assertFalse(c1.getDescription(this.getRoot().getStructure()).equals(c2.getDescription(this.getRoot().getStructure())));
 		
 		System.out.println("Verificar dos casos con descripciones iguales");
 		c2 = new Case();
-		c2.addToDescription(new Descriptor<Object>("Cuerpo", "Longitud", 0.3));
+		c2.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
 		assertTrue(c1.getDescription(this.getRoot().getStructure()).equals(c2.getDescription(this.getRoot().getStructure())));
 	}
 

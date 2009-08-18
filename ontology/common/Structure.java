@@ -9,9 +9,9 @@ import java.util.List;
 
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
-import ontology.values.RangeDescriptor;
-import ontology.values.SingleDescriptor;
-import ontology.values.ValueDescriptor;
+import ontology.values.RangeValue;
+import ontology.values.SingleValue;
+import ontology.values.Value;
 
 
 
@@ -152,8 +152,8 @@ public class Structure implements Comparable<Structure> {
 	public List<Descriptor<Object>> createDescription(String aDummyName) {
 		List<Descriptor<Object>> description;
 		Attribute a;
-		List<ValueDescriptor> vdList;
-		ValueDescriptor vd;
+		List<Value> vdList;
+		Value vd;
 		Descriptor<Object> d;
 		
 		// Make sure there's at least one attribute
@@ -178,11 +178,11 @@ public class Structure implements Comparable<Structure> {
 
 			// Get the value descriptor and make sure it isn't a range descriptor
 			vd = vdList.get(0);
-			if (vd instanceof RangeDescriptor) return null;
+			if (vd instanceof RangeValue) return null;
 
 			// Create the new SAVDescriptor and assign its values
-			d = new Descriptor<Object>();
-			d.set(this.getName(), a.getName(), ((SingleDescriptor<Object>)vd).getValue());
+			d = new CharacterDescriptor<Object>();
+			d.set(this.getName(), a.getName(), ((SingleValue<Object>)vd).getValue());
 					
 			description.add(d);
 		}

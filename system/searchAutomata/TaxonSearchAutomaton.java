@@ -7,7 +7,7 @@ import java.util.List;
 import ontology.common.Descriptor;
 import ontology.taxonomy.StructureIndex;
 import ontology.taxonomy.Taxon;
-import ontology.values.ValueDescriptor;
+import ontology.values.Value;
 
 import system.PossibleSolution;
 import system.searchAutomata.output.TaxonAutomatonOutput;
@@ -18,7 +18,7 @@ import system.searchAutomata.output.TaxonAutomatonOutput;
  */
 
 public class TaxonSearchAutomaton {
-    private List<ValueDescriptor> valueDescriptors;
+    private List<Value> valueDescriptors;
     private List<Descriptor<Object>> tSolutionDesc;
     private List<Descriptor<Object>> tUnmatchedDesc;
     private List<Descriptor<Object>> justification;
@@ -99,7 +99,7 @@ public class TaxonSearchAutomaton {
 //        Collections.sort(taxonList,comparator);
 
         
-        valueDescriptors = new ArrayList<ValueDescriptor>();
+        valueDescriptors = new ArrayList<Value>();
         tSolutionDesc = new ArrayList<Descriptor<Object>>();
         tUnmatchedDesc = new ArrayList<Descriptor<Object>>();
         //justification = new ArrayList<SAVDescriptor>();
@@ -214,7 +214,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public boolean setValueDescriptors(List<ValueDescriptor> aValueDescriptorList){
+    public boolean setValueDescriptors(List<Value> aValueDescriptorList){
 /**valueDescriptors: aValueDescriptorList
 
 	[ aValueDescriptorList isEmpty ]
@@ -319,7 +319,7 @@ public class TaxonSearchAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public List<ValueDescriptor> getValueDescriptors(){
+    public List<Value> getValueDescriptors(){
 /**valueDescriptors
 
 	^valueDescriptors.*/

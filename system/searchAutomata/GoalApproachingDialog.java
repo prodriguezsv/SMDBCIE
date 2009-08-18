@@ -20,9 +20,9 @@ import ontology.common.Structure;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
 import ontology.taxonomy.Taxonomy;
-import ontology.values.RangeDescriptor;
-import ontology.values.SingleDescriptor;
-import ontology.values.ValueDescriptor;
+import ontology.values.RangeValue;
+import ontology.values.SingleValue;
+import ontology.values.Value;
 
 import system.Hypothesis;
 import system.PossibleSolution;
@@ -221,7 +221,7 @@ public class GoalApproachingDialog {
                 Taxon nextLevelTaxon = taxon.getSuccessors().get(i);
 
                 //get the related structure from the successor taxon's SAV description
-                Structure structure = nextLevelTaxon.getSAVDescription().getStructure(((Taxon)hypothesis.getDescriptiveElement()).getName());
+                Structure structure = nextLevelTaxon.getDescription().getStructure(((Taxon)hypothesis.getDescriptiveElement()).getName());
                 if (structure != null){
                     //get the attributes from the retrieved structure
                     List<Attribute> attributeList = structure.getAttributes();
@@ -230,7 +230,7 @@ public class GoalApproachingDialog {
                         //Make sure this attribute is not already processed (i.e., included in the solution or confirmed descriptions of ANY item in the processList)
                         if (isAttributeAlreadyProcessed(attribute) != true){
                             //get the attribute's list of values
-                            List<ValueDescriptor> valueList  = attribute.getValues().getValueDescriptors(TaxonomicRank.values()[Attribute.oneLevel()]);
+                            List<Value> valueList  = attribute.getValues().getValueDescriptors(TaxonomicRank.values()[Attribute.oneLevel()]);
                             if (valueList == null){
                             	status= "error";
                             	return false;
@@ -240,14 +240,14 @@ public class GoalApproachingDialog {
                             returnValues = new ArrayList<Object>();
                             //Scan the value descriptor list: valueList with range value descriptors: only ONE element.
                             //valueList with non-range value descriptors: at least one element
-                            for (ValueDescriptor vd: valueList){
+                            for (Value vd: valueList){
                                 //If the value decriptor is a range, do a range-driven dialog
-                                if ((vd instanceof RangeDescriptor)){
+                                if ((vd instanceof RangeValue)){
                                     while (OKSAVDescriptorList.isEmpty() != true){
                                         OKSAVDescriptorList.remove(0);
                                     }
 
-                                    result = rangeValueDescriptorDialogWith((RangeDescriptor)vd, attribute);
+                                    result = rangeValueDescriptorDialogWith((RangeValue)vd, attribute);
 
                                     if (result.getResponse().equals("cancel") || result.getResponse().equals("error")){
                                         status = (String)result.getResponse();
@@ -273,7 +273,7 @@ public class GoalApproachingDialog {
                                 } else {
                                     //Create a SAV descriptor for each [structure-attribute]-value
                                     Descriptor<Object> savDescriptor = new Descriptor<Object>();
-                                    savDescriptor.set(((Structure)hypothesis.getDescriptiveElement()).getName(), attribute.getName(), ((SingleDescriptor<Object>)vd).getValue());
+                                    savDescriptor.set(((Structure)hypothesis.getDescriptiveElement()).getName(), attribute.getName(), ((SingleValue<Object>)vd).getValue());
                                     //Make sure the SAV descriptor is not already processed (i.e., included in the unconfirmed,
                                     //doubtful, or unmatched descriptions of ANY item in the processList. The reason for this
                                     //check is to avoid asking the user questions previously answered
@@ -424,7 +424,7 @@ public class GoalApproachingDialog {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public ReturnValue rangeValueDescriptorDialogWith(RangeDescriptor vd,Attribute anAttribute){
+    public ReturnValue rangeValueDescriptorDialogWith(RangeValue vd,Attribute anAttribute){
     	ReturnValue returnValues;
     	String msg, name, result;
     	double suggestedValue, value;
@@ -596,7 +596,7 @@ public class GoalApproachingDialog {
 
 	^aTaxon.*/
 
-        List<ValueDescriptor> weightedValues = (aTaxon.getSAVDescription().getStructure(aSAVDescriptor.getStructure()))
+        List<Value> weightedValues = (aTaxon.getDescription().getStructure(aSAVDescriptor.getStructure()))
         	.getAttribute(aSAVDescriptor.getAttribute()).getValues().get(Attribute.oneLevel());
         
         SimilarityDegree similarity = SimAssessor.similarityRangeOf(aSAVDescriptor.getValue(), weightedValues);

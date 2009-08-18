@@ -22,8 +22,8 @@ public class RootNorm extends Norm {
 	 * Constructor de la clase
 	 * @see "M&eacute;todo initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public RootNorm(String aStructureName) {
-		super(new Descriptor<Object>(aStructureName, null, null));
+	public RootNorm(Descriptor<Object> aDescriptor) {
+		super(aDescriptor);
 	}
 	
 	/**

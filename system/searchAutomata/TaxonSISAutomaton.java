@@ -20,9 +20,9 @@ import ontology.common.Structure;
 import ontology.taxonomy.StructureIndex;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
-import ontology.values.RangeDescriptor;
+import ontology.values.RangeValue;
+import ontology.values.Values;
 import ontology.values.Value;
-import ontology.values.ValueDescriptor;
 
 /*
  *
@@ -273,7 +273,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
 	(self similarityRanges includes: similarity) ifFalse: [ ^nil ].
 
 	^aTaxon.*/
-        List<ValueDescriptor> weightedValues = ((aTaxon.getSAVDescription().getStructure(aDescriptor.getStructure())
+        List<Value> weightedValues = ((aTaxon.getDescription().getStructure(aDescriptor.getStructure())
         		.getAttribute(aDescriptor.getAttribute())).getValues().get(Attribute.oneLevel()));
         
         SimilarityDegree similarity = SimAssessor.similarityRangeOf(aDescriptor.getValue(), weightedValues);
@@ -293,7 +293,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
     	List<PossibleSolution> tps;
 
         List<Taxon> tempList = new ArrayList<Taxon>();
-        for (ValueDescriptor vd: getValueDescriptors()){
+        for (Value vd: getValueDescriptors()){
             taxa = (List<Taxon>)vd.getTaxonList();
             if (taxa.size()<1){return false;}
             while (taxa.size()>0){
@@ -352,12 +352,12 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
  * @return my return values
  */
     public Object searchValueDescriptors(Descriptor<Object> aDescriptor){
-    	List<ValueDescriptor> vdList;
-    	ValueDescriptor vd;
+    	List<Value> vdList;
+    	Value vd;
     	List<Taxon> taxa;
     	List<PossibleSolution> tps;
 
-        Value attrValues = attribute.getValues();
+        Values attrValues = attribute.getValues();
         
         int i = 0;
         //set the list of possible value descriptors to nil
@@ -388,11 +388,11 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
             return null;
         }
         //Separate the range descriptors from the exact-match descriptors
-        List<ValueDescriptor> tempList = new ArrayList<ValueDescriptor>();
+        List<Value> tempList = new ArrayList<Value>();
         
         while (getValueDescriptors().isEmpty()!=true){
         	vd = getValueDescriptors().remove(0);
-                if (vd instanceof RangeDescriptor){
+                if (vd instanceof RangeValue){
                     //Value desscriptor is a range. Associate all taxa to possible solutions, place them in the taxon list
 
         			
