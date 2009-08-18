@@ -15,22 +15,22 @@ import ontology.values.SingleDescriptor;
 import ontology.values.Value;
 
 
-import searchHintsBase.Elements.FrequentDescriptorPattern;
-import searchHintsBase.Elements.FrequentStructurePatternElt;
+import searchHintsBase.Elements.DescriptorPattern;
+import searchHintsBase.Elements.StructurePatterns;
 
 /**
  * @author Armando
  *
  */
 @SuppressWarnings("serial")
-public class FrequentStructurePatternList extends HintsList<FrequentStructurePatternElt> {
+public class FrequentStructurePatternList extends HintsList<StructurePatterns> {
 
 	/**
 	 * @see "Método add: del protocolo adding en SUKIA SmallTalk"
 	 * @return
 	 */
-	public boolean add(FrequentStructurePatternElt aListElement) {
-		FrequentStructurePatternElt elt;
+	public boolean add(StructurePatterns aListElement) {
+		StructurePatterns elt;
 				
 		if (aListElement.getStructureName() == null)
 			return false;
@@ -61,8 +61,8 @@ public class FrequentStructurePatternList extends HintsList<FrequentStructurePat
 	 */
 	public List<Structure> sortByFrecuencyCriteria(List<Structure> aStructureList) {
 		return this.getSortedStructureList(aStructureList, 
-				new Comparator<FrequentStructurePatternElt>() {
-					public int compare(FrequentStructurePatternElt elem1, FrequentStructurePatternElt elem2) {
+				new Comparator<StructurePatterns>() {
+					public int compare(StructurePatterns elem1, StructurePatterns elem2) {
 						return (elem2.getFrequentDescriptorPatternList().get(0).getFrequency()
 								- elem1.getFrequentDescriptorPatternList().get(0).getFrequency());
 					}
@@ -74,7 +74,7 @@ public class FrequentStructurePatternList extends HintsList<FrequentStructurePat
 	 * @see "Método includes: del protocolo testing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public boolean contains(FrequentStructurePatternElt aListElement) {
+	public boolean contains(StructurePatterns aListElement) {
 		for (int i = 1; i <= this.size(); i++) {
 			if (this.get(i-1).getStructureName().equals(aListElement.getStructureName()))
 				return true;
@@ -87,7 +87,7 @@ public class FrequentStructurePatternList extends HintsList<FrequentStructurePat
 	 * Método de instancia agregado
 	 * @return
 	 */
-	public FrequentStructurePatternElt getListElement(String aStructureName) {
+	public StructurePatterns getListElement(String aStructureName) {
 		for (int i = 1; i <= this.size(); i++) {
 			if (this.get(i-1).getStructureName().equals(aStructureName))
 				return this.get(i-1);
@@ -142,8 +142,8 @@ public class FrequentStructurePatternList extends HintsList<FrequentStructurePat
 		List<Structure> tempList, leftOvers;
 		FrequentStructurePatternList sortedList;
 		Structure s;
-		FrequentStructurePatternElt fsp, fspSinglePattern;
-		FrequentDescriptorPattern p;
+		StructurePatterns fsp, fspSinglePattern;
+		DescriptorPattern p;
 		List<Descriptor<Object>> descriptors;
 		int numElements, numProcessedElts, i;
 		
@@ -179,7 +179,7 @@ public class FrequentStructurePatternList extends HintsList<FrequentStructurePat
 				if (p == null) leftOvers.add(s);
 				else {
 					tempList.add(s);
-					fspSinglePattern = new FrequentStructurePatternElt();
+					fspSinglePattern = new StructurePatterns();
 					fspSinglePattern.setStructureName(fsp.getStructureName());
 					fspSinglePattern.addPattern(p);
 					sortedList.add(fspSinglePattern);

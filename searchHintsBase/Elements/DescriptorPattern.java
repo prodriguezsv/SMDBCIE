@@ -13,14 +13,15 @@ import ontology.common.Descriptor;
  * @author Armando
  *
  */
-public class FrequentDescriptorPattern {
-	private int frequency;
+public class DescriptorPattern {
 	private List<Descriptor<Object>> pattern;
+	private int failureFrequency;
+	private int successFrequency;
 
 	/**
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public FrequentDescriptorPattern() {
+	public DescriptorPattern() {
 		setPattern(new ArrayList<Descriptor<Object>>());
 		setFrequency(0);
 	}
@@ -30,23 +31,23 @@ public class FrequentDescriptorPattern {
 	 * @param frequency
 	 */
 	public void setFrequency(int frequency) {
-		this.frequency = frequency;
+		this.successFrequency = frequency;
 	}
 
 	/**
 	 * @see "Método incrementFrequencyBy: del protocolo adding en SUKIA SmallTalk"
-	 * @param frequency
+	 * @param successFrequency
 	 */
 	public void incrementFrequencyBy(int anInteger) {
-		this.frequency = this.frequency + anInteger;
+		this.successFrequency = this.successFrequency + anInteger;
 	}
 	
 	/**
 	 * @see "Método incrementFrequency del protocolo adding en SUKIA SmallTalk"
-	 * @param frequency
+	 * @param successFrequency
 	 */
 	public void incrementFrequency() {
-		this.frequency = this.frequency + 1;
+		this.successFrequency = this.successFrequency + 1;
 	}
 	
 	/**
@@ -54,7 +55,7 @@ public class FrequentDescriptorPattern {
 	 * @return
 	 */
 	public int getFrequency() {
-		return frequency;
+		return successFrequency;
 	}
 
 	/**

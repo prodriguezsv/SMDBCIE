@@ -3,9 +3,6 @@
  */
 package ontology.common;
 
-import ontology.CBR.Case;
-import ontology.taxonomy.Taxon;
-
 /**
  * Descriptor es un elemento descriptivo de una descripción de un caso: el par attribute-value.
  * Generaliza conceptos en normas.
@@ -13,8 +10,7 @@ import ontology.taxonomy.Taxon;
  * ya que ningún par attribute-value particular generaliza todos los casos bajo ellos.
  * 
 */
-public class Descriptor<T> implements Comparable<Descriptor<T>> {
-	private Object associatedObject;
+public class HeuristicDescriptor<T> implements Comparable<HeuristicDescriptor<T>> {
 	private String structure;
 	private String attribute;
 	private T value;
@@ -25,7 +21,7 @@ public class Descriptor<T> implements Comparable<Descriptor<T>> {
 	 * Extreme care should be taken when using this method, as it assumes an empty self."
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public Descriptor() {
+	public HeuristicDescriptor() {
 		this.setStructure(null);
 		this.setAttribute(null);
 		this.setValue(null);
@@ -34,17 +30,7 @@ public class Descriptor<T> implements Comparable<Descriptor<T>> {
 	/**
 	 * Método agregado
 	 */
-	public Descriptor(String aStructure, String aAttribute, T aValue) {
-		this.setStructure(aStructure);
-		this.setAttribute(aAttribute);
-		this.setValue(aValue);
-	}
-	
-	/**
-	 * Método agregado
-	 */
-	public Descriptor(Object associatedObject, String aStructure, String aAttribute, T aValue) {
-		this.setAssociatedObject(associatedObject);
+	public HeuristicDescriptor(String aStructure, String aAttribute, T aValue) {
 		this.setStructure(aStructure);
 		this.setAttribute(aAttribute);
 		this.setValue(aValue);
@@ -60,38 +46,6 @@ public class Descriptor<T> implements Comparable<Descriptor<T>> {
 		this.setStructure(aStructure);
 		this.setAttribute(anAttribute);
 		this.setValue(aValue);
-	}
-
-	/**
-	 * @see "Método addStructure:Attribute:Value: del protocolo adding en SUKIA SmallTalk"
-	 * @param aStructure
-	 * @param anAttribute
-	 * @param aValue
-	 */
-	public void set(Object associatedObject, String aStructure, String anAttribute, T aValue) {
-		this.setAssociatedObject(associatedObject);
-		this.setStructure(aStructure);
-		this.setAttribute(anAttribute);
-		this.setValue(aValue);
-	}
-	
-	/**
-	 * 
-	 * @param associatedObject
-	 */
-	public void setAssociatedObject(Object associatedObject) {
-		if ((associatedObject instanceof Case) || (associatedObject instanceof Taxon))
-			return;
-		
-		this.associatedObject = associatedObject;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public Object getAssociatedObject() {
-		return associatedObject;
 	}
 	
 	/**
@@ -145,7 +99,7 @@ public class Descriptor<T> implements Comparable<Descriptor<T>> {
 	/**
 	 * Método de instancia agregado
 	 */
-	public int compareTo(Descriptor<T> aDescriptor) {
+	public int compareTo(HeuristicDescriptor<T> aDescriptor) {
 		return this.getStructure().concat(this.getAttribute()).compareTo(aDescriptor.getStructure().concat(aDescriptor.getAttribute()));
 	}
 	
@@ -157,11 +111,11 @@ public class Descriptor<T> implements Comparable<Descriptor<T>> {
 	@SuppressWarnings("unchecked")
 	public boolean equals(Object aDescriptor) {
 		if (aDescriptor == null) return false;
-		if (!(aDescriptor instanceof Descriptor)) return false;
+		if (!(aDescriptor instanceof HeuristicDescriptor)) return false;
 		
-		if (this.getStructure().equals(((Descriptor<Object>)aDescriptor).getStructure()) &&
-				this.getAttribute().equals(((Descriptor<Object>)aDescriptor).getAttribute()) &&
-				this.getValue().equals(((Descriptor<Object>)aDescriptor).getValue()))
+		if (this.getStructure().equals(((HeuristicDescriptor<Object>)aDescriptor).getStructure()) &&
+				this.getAttribute().equals(((HeuristicDescriptor<Object>)aDescriptor).getAttribute()) &&
+				this.getValue().equals(((HeuristicDescriptor<Object>)aDescriptor).getValue()))
 			return true;
 		else return false;
 	}

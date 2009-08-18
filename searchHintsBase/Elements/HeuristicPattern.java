@@ -7,10 +7,10 @@ package searchHintsBase.Elements;
  * @author Armando
  *
  */
-public class FrequentGroupingHeuristicElt implements Comparable<FrequentGroupingHeuristicElt> {
+public class HeuristicPattern implements Comparable<HeuristicPattern> {
+	private int successFrequency;
 	private int failureFrequency;
 	private String groupingHeuristicName;
-	private int successFrequency;
 	private Object value;
 
 
@@ -20,7 +20,7 @@ public class FrequentGroupingHeuristicElt implements Comparable<FrequentGrouping
 	 * the contents of the variable value will be a discreet symbol (no ranges).
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public FrequentGroupingHeuristicElt() {
+	public HeuristicPattern() {
 		setGroupingHeuristicName(null);
 		setValue(0);
 		setSuccessFrequency(0);
@@ -30,7 +30,7 @@ public class FrequentGroupingHeuristicElt implements Comparable<FrequentGrouping
 	/**
 	 * Método de instancia agregado
 	 */
-	public int compareTo(FrequentGroupingHeuristicElt aFrequentGroupingHeuristicElt) {
+	public int compareTo(HeuristicPattern aFrequentGroupingHeuristicElt) {
 		return (this.getFailureFrequency() - aFrequentGroupingHeuristicElt.getFailureFrequency());
 	}
 

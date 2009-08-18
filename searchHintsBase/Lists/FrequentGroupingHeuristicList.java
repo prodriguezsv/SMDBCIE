@@ -11,21 +11,21 @@ import java.util.List;
 import ontology.common.GroupingHeuristic;
 import ontology.values.SingleDescriptor;
 
-import searchHintsBase.Elements.FrequentGroupingHeuristicElt;
+import searchHintsBase.Elements.HeuristicPattern;
 
 /**
  * @author Armando
  *
  */
 @SuppressWarnings("serial")
-public class FrequentGroupingHeuristicList extends HintsList<FrequentGroupingHeuristicElt> {
+public class FrequentGroupingHeuristicList extends HintsList<HeuristicPattern> {
 
 	/**
 	 * @see "Método add: del protocolo adding en SUKIA SmallTalk"
 	 * @return
 	 */
-	public boolean add(FrequentGroupingHeuristicElt aListElement) {
-		FrequentGroupingHeuristicElt elt;
+	public boolean add(HeuristicPattern aListElement) {
+		HeuristicPattern elt;
 		
 		if ((aListElement.getSuccessFrequency() < 1) &&
 		 	(aListElement.getFailureFrequency() < 1))
@@ -54,8 +54,8 @@ public class FrequentGroupingHeuristicList extends HintsList<FrequentGroupingHeu
 	 */
 	public List<GroupingHeuristic> sortByFailureCriteria(List<GroupingHeuristic> aHeuristicsList) {
 		return this.getSortedGroupingHeuristicList(aHeuristicsList, 
-				new Comparator<FrequentGroupingHeuristicElt>() {
-					public int compare(FrequentGroupingHeuristicElt elem1, FrequentGroupingHeuristicElt elem2) {
+				new Comparator<HeuristicPattern>() {
+					public int compare(HeuristicPattern elem1, HeuristicPattern elem2) {
 						return (elem1.getFailureFrequency() - elem2.getFailureFrequency());
 					}
 				}
@@ -69,8 +69,8 @@ public class FrequentGroupingHeuristicList extends HintsList<FrequentGroupingHeu
 	 */
 	public List<GroupingHeuristic> sortBySuccessCriteria(List<GroupingHeuristic> aHeuristicsList) {
 		return this.getSortedGroupingHeuristicList(aHeuristicsList, 
-				new Comparator<FrequentGroupingHeuristicElt>() {
-					public int compare(FrequentGroupingHeuristicElt elem1, FrequentGroupingHeuristicElt elem2) {
+				new Comparator<HeuristicPattern>() {
+					public int compare(HeuristicPattern elem1, HeuristicPattern elem2) {
 						return (elem2.getSuccessFrequency() - elem1.getSuccessFrequency());
 					}
 				}
@@ -81,7 +81,7 @@ public class FrequentGroupingHeuristicList extends HintsList<FrequentGroupingHeu
 	 * @see "Método includes: del protocolo testing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public boolean contains(FrequentGroupingHeuristicElt aListElement) {
+	public boolean contains(HeuristicPattern aListElement) {
 		for (int i = 1; i <= this.size(); i++) {
 			if (this.get(i-1).getGroupingHeuristicName().equals(aListElement.getGroupingHeuristicName()) &&
 					(this.get(i-1).getValue().equals(aListElement.getValue())))
@@ -95,7 +95,7 @@ public class FrequentGroupingHeuristicList extends HintsList<FrequentGroupingHeu
 	 * Método de instancia agregado
 	 * @return
 	 */
-	public FrequentGroupingHeuristicElt getListElement(String aGroupingHeuristicName, Object aValue) {
+	public HeuristicPattern getListElement(String aGroupingHeuristicName, Object aValue) {
 		for (int i = 1; i <= this.size(); i++) {
 			if (this.get(i-1).getGroupingHeuristicName().equals(aGroupingHeuristicName) &&
 					(this.get(i-1).getValue().equals(aValue)))
@@ -159,7 +159,7 @@ public class FrequentGroupingHeuristicList extends HintsList<FrequentGroupingHeu
 		List<GroupingHeuristic> tempList, leftOvers;
 		FrequentGroupingHeuristicList sortedList;
 		GroupingHeuristic gh;
-		FrequentGroupingHeuristicElt ghElt;
+		HeuristicPattern ghElt;
 		SingleDescriptor<Object> svd;
 		int numElements, numProcessedElts, i;
 		

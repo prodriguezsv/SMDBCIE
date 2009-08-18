@@ -13,22 +13,22 @@ import ontology.common.Descriptor;
  * @author Armando
  *
  */
-public class FrequentStructurePatternElt implements Comparable<FrequentStructurePatternElt> {
+public class StructurePatterns implements Comparable<StructurePatterns> {
 	private String structureName;
-	private List<FrequentDescriptorPattern> frequentDescriptorPatternList;
+	private List<DescriptorPattern> descriptorPatterns;
 
 	/**
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public FrequentStructurePatternElt() {
+	public StructurePatterns() {
 		setStructureName(null);
-		setFrequentDescriptorPatternList(new ArrayList<FrequentDescriptorPattern>());
+		setFrequentDescriptorPatternList(new ArrayList<DescriptorPattern>());
 	}
 
 	/**
 	 * Método de instancia agregado
 	 */
-	public int compareTo(FrequentStructurePatternElt aFrequentStructurePatternElt) {
+	public int compareTo(StructurePatterns aFrequentStructurePatternElt) {
 		return (aFrequentStructurePatternElt.getFrequentDescriptorPatternList().get(0).getFrequency()-
 				this.getFrequentDescriptorPatternList().get(0).getFrequency());
 	}
@@ -54,16 +54,16 @@ public class FrequentStructurePatternElt implements Comparable<FrequentStructure
 	 * @param frequentDescriptorPatternList
 	 */
 	public void setFrequentDescriptorPatternList(
-			List<FrequentDescriptorPattern> frequentDescriptorPatternList) {
-		this.frequentDescriptorPatternList = frequentDescriptorPatternList;
+			List<DescriptorPattern> frequentDescriptorPatternList) {
+		this.descriptorPatterns = frequentDescriptorPatternList;
 	}
 
 	/**
 	 * @see "Método frequentDescriptorPatternList del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<FrequentDescriptorPattern> getFrequentDescriptorPatternList() {
-		return frequentDescriptorPatternList;
+	public List<DescriptorPattern> getFrequentDescriptorPatternList() {
+		return descriptorPatterns;
 	}
 	
 	/**
@@ -71,8 +71,8 @@ public class FrequentStructurePatternElt implements Comparable<FrequentStructure
 	 * @param aFrequentDescriptorPattern
 	 * @return
 	 */
-	public boolean addPattern(FrequentDescriptorPattern aFrequentDescriptorPattern) {
-		FrequentDescriptorPattern fdp;
+	public boolean addPattern(DescriptorPattern aFrequentDescriptorPattern) {
+		DescriptorPattern fdp;
 		
 		fdp = this.getFDPattern(aFrequentDescriptorPattern.getPattern());
 		if (fdp == null) {
@@ -97,7 +97,7 @@ public class FrequentStructurePatternElt implements Comparable<FrequentStructure
 	 * @return
 	 */
 	public boolean contains(List<Descriptor<Object>> aPattern) {
-		FrequentDescriptorPattern fdp;
+		DescriptorPattern fdp;
 		int c;
 		
 		if (this.getFrequentDescriptorPatternList().isEmpty())
@@ -137,8 +137,8 @@ public class FrequentStructurePatternElt implements Comparable<FrequentStructure
 	 * @param aPattern
 	 * @return
 	 */
-	public FrequentDescriptorPattern getFDPattern(List<Descriptor<Object>> aPattern) {
-		FrequentDescriptorPattern fdp;
+	public DescriptorPattern getFDPattern(List<Descriptor<Object>> aPattern) {
+		DescriptorPattern fdp;
 		int c;
 		
 		if (this.getFrequentDescriptorPatternList().isEmpty())
@@ -179,7 +179,7 @@ public class FrequentStructurePatternElt implements Comparable<FrequentStructure
 	 * @return
 	 */
 	public boolean hasAPatternSimilarTo(List<Descriptor<Object>> aPattern) {
-		FrequentDescriptorPattern p;
+		DescriptorPattern p;
 		
 		p = this.whatPatternIsMostSimilarTo(aPattern);
 		
@@ -197,7 +197,7 @@ public class FrequentStructurePatternElt implements Comparable<FrequentStructure
 	 * @param aPattern
 	 * @return
 	 */
-	public FrequentDescriptorPattern whatPatternIsMostSimilarTo(List<Descriptor<Object>> aPattern) {
+	public DescriptorPattern whatPatternIsMostSimilarTo(List<Descriptor<Object>> aPattern) {
 		int min, max;
 		double simThreshold, simRate;
 
