@@ -11,35 +11,35 @@ import java.util.List;
 import ontology.common.GroupingHeuristic;
 import ontology.common.Structure;
 
-import searchHintsBase.Elements.WeightedIndicator;
+import searchHintsBase.Elements.WeightedDescriptorPattern;
 
 /**
  * @author Armando
  *
  */
 @SuppressWarnings("serial")
-public class WeightedList<T extends WeightedIndicator> extends HintsList<T> {
+public class WeightedPatternsList extends HintsList<WeightedDescriptorPattern> {
 
 	/**
 	 * @see "Método add: del protocolo adding en SUKIA SmallTalk"
 	 * @return
 	 */
-	public boolean add(T aListElement) {
-		T elt;
+	public boolean add(WeightedDescriptorPattern aPattern) {
+		WeightedDescriptorPattern pattern;
 		
-		if (aListElement.getAccumulatedWeight() <= 0)
+		if (aPattern.getAccumulatedWeight() <= 0)
 			return false;
 
-		if (!(this.contains(aListElement))) {
-			super.add(aListElement);
+		if (!(this.contains(aPattern))) {
+			super.add(aPattern);
 			return true;
 		}
 		
-		elt = getListElement(aListElement.getIndicatorName());
-		elt.incrementAccumulatedWeight(aListElement.getAccumulatedWeight());
-		elt.incrementNumberTaxa();
+		pattern = this.getWeightedDescriptorPattern(aPattern.getPattern().getStructure());
+		pattern.incrementAccumulatedWeight(aPattern.getAccumulatedWeight());
+		pattern.incrementNumberTaxa();
 
-		return false;
+		return true;
 	}
 	
 	/**
@@ -51,8 +51,8 @@ public class WeightedList<T extends WeightedIndicator> extends HintsList<T> {
 	 */
 	public List<Object> sortBySuccessCriteria(List<Object> aObjectList) {
 		return this.getSortedStructureList(aObjectList, 
-				new Comparator<T>() {
-					public int compare(T elem1, T elem2) {
+				new Comparator<WeightedDescriptorPattern>() {
+					public int compare(WeightedDescriptorPattern elem1, WeightedDescriptorPattern elem2) {
 						if ((elem2.meanWeight()	- elem1.meanWeight()) > 0)
 							return 1;
 						else if ((elem2.meanWeight() - elem1.meanWeight()) < 0)
@@ -67,16 +67,12 @@ public class WeightedList<T extends WeightedIndicator> extends HintsList<T> {
 	 * @see "Método includes: del protocolo testing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public boolean contains(Object aListElement) {
-		
-		for (int i = 1; i <= this.size(); i++) {
-			if (aListElement instanceof GroupingHeuristic)
-				if (this.get(i-1).getIndicatorName().equals(((GroupingHeuristic)aListElement).getName()))
-					return true;
-			else if (aListElement instanceof Structure)
-				if (this.get(i-1).getIndicatorName().equals(((Structure)aListElement).getName()))
-					return true;
-		}
+	public boolean contains(Object aDescriptiveElement) {
+		for (WeightedDescriptorPattern wdp:this)
+			if (aDescriptiveElement instanceof GroupingHeuristic)
+				wdp.getPattern().getStructure().equals(((GroupingHeuristic) aDescriptiveElement).getName());
+			else if (aDescriptiveElement instanceof Structure)
+				wdp.getPattern().getStructure().equals(((Structure) aDescriptiveElement).getName());
 		
 		return false;
 	}
@@ -85,35 +81,37 @@ public class WeightedList<T extends WeightedIndicator> extends HintsList<T> {
 	 * Método de instancia agregado
 	 * @return
 	 */
-	public T getListElement(String aIndicatorName) {
-		for (int i = 1; i <= this.size(); i++) {
-			if (this.get(i-1).getIndicatorName().equals(aIndicatorName))
-				return this.get(i-1);
-		}
+	public WeightedDescriptorPattern getWeightedDescriptorPattern(String aStructureName) {
+		for (WeightedDescriptorPattern wdp:this)
+			if (wdp.getPattern().getStructure().equals(aStructureName))
+				return wdp;
 		
 		return null;
 	}
 		
 	/**
-	 * This method takes as argument a list of EITHER grouping heuristics OR structures, and sorts them according
-	 * to their mean weight when compared to the elements in self.  The process is as follows: 1. all elements that can
-	 * be compared against the elements in self are first introduced in a temporary list (i.e., tempList), while the corresponding
-	 * references in self are passed to a SortedCollection (which is setup to sort by mean weight -- the sort block).; 2. all elements
-	 * in the argument list that can NOT be compared against the elements in self are stored in another temporary list (i.e., leftOvers);
-	 * 3. all elements in tempList are put back into the argument list, BUT in the order dictated by the references in the
-	 * SortedCollection; 4. all elements in the list called LeftOvers are appended to the end of the argument list.
-	 * PRECONDITION: (self isEmpty not) and (anUnsorted isEmpty not)
-	 * RETURNS:	An empty list, if either self or the argument list are empty;
-	 * The argument list possibly sorted by mean weight."
+	 * This method takes as argument a list of EITHER grouping heuristics OR structures, and sorts them
+	 * according to their mean weight when compared to the elements in this list.  The process is as follows:
+	 * 1. all elements that can be compared against the elements in this list are first introduced in a
+	 * temporary list (i.e., tempList), while the corresponding references in this list are passed to a
+	 * sorted list (which is setup to sort by mean weight);
+	 * 2. all elements in the argument list that can NOT be compared against the elements in this list are
+	 * stored in another temporary list (i.e., leftOvers);
+	 * 3. all elements in tempList are put back into the argument list, BUT in the order dictated by the
+	 * references in the sorted list;
+	 * 4. all elements in the list called LeftOvers are appended to the end of the argument list.
+	 * PRECONDITION: (this list isEmpty not) and (anUnsorted isEmpty not)
 	 * @see "Método sortList:withBlock: del protocolo private en SUKIA SmallTalk"
+	 * @return An empty list, if either this list or the argument list are empty; The argument list possibly
+	 * sorted by mean weight.
 	 */
 	// Pendiente de traducir
 	@SuppressWarnings("unchecked")
 	private List<Object> getSortedStructureList(List<Object> aObjectList, Comparator c) {
 		List<Object> tempList, leftOvers;
-		WeightedList<T> sortedList;
+		WeightedPatternsList sortedList;
 		Object ule;
-		T wlElt;
+		WeightedDescriptorPattern wlElt;
 		int numElements, numProcessedElts, i;
 		
 		this.resetPercentageItemsProcessed();
@@ -125,7 +123,7 @@ public class WeightedList<T extends WeightedIndicator> extends HintsList<T> {
 			return tempList;
 		
 		numElements = aObjectList.size();
-		sortedList = new WeightedList<T>();
+		sortedList = new WeightedPatternsList();
 		leftOvers = new ArrayList<Object>();
 		
 		while (!(aObjectList.isEmpty())) {
@@ -133,9 +131,9 @@ public class WeightedList<T extends WeightedIndicator> extends HintsList<T> {
 			wlElt = null;
 			if (this.contains(ule)) {
 				if (ule instanceof GroupingHeuristic)
-					wlElt = this.getListElement(((GroupingHeuristic)ule).getName());
+					wlElt = this.getWeightedDescriptorPattern(((GroupingHeuristic)ule).getName());
 				else if (ule instanceof Structure)
-					wlElt = this.getListElement(((Structure)ule).getName());
+					wlElt = this.getWeightedDescriptorPattern(((Structure)ule).getName());
 			} 
 			
 			if (wlElt == null) leftOvers.add(ule);
@@ -154,12 +152,12 @@ public class WeightedList<T extends WeightedIndicator> extends HintsList<T> {
 			i = 1;
 			while (i <= tempList.size()) {
 				if (tempList.get(i-1) instanceof GroupingHeuristic) {
-					if (((GroupingHeuristic)tempList.get(i-1)).getName().equals(wlElt.getIndicatorName())) {
+					if (((GroupingHeuristic)tempList.get(i-1)).getName().equals(wlElt.getPattern().getStructure())) {
 						aObjectList.add(tempList.remove(i-1));
 						i = tempList.size();
 					}
 				} else if (tempList.get(i-1) instanceof Structure) {
-					if (((Structure)tempList.get(i-1)).getName().equals(wlElt.getIndicatorName())) {
+					if (((Structure)tempList.get(i-1)).getName().equals(wlElt.getPattern().getStructure())) {
 						aObjectList.add(tempList.remove(i-1));
 						i = tempList.size();
 					}

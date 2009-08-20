@@ -3,38 +3,40 @@
  */
 package searchHintsBase.Elements;
 
+import ontology.common.Descriptor;
+
 /**
  * @author Armando
  *
  */
-public class WeightedIndicator {
-	private String indicatorName;
+public class WeightedDescriptorPattern {
+	private Descriptor<Object> pattern;
 	private double accumulatedWeight;
 	private int numberTaxa;
 
 	/**
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public WeightedIndicator() {
-		setIndicatorName(null);
+	public WeightedDescriptorPattern(Descriptor<Object> descriptor) {
+		setPattern(descriptor);
 		setAccumulatedWeight(0);
 		setNumberTaxa(0);
 	}
 
 	/**
-	 * @see "Método indicatorName: del protocolo adding en SUKIA SmallTalk"
-	 * @param indicatorName
+	 * Método de instancia agregado
+	 * @param pattern
 	 */
-	public void setIndicatorName(String indicatorName) {
-		this.indicatorName = indicatorName;
+	public void setPattern(Descriptor<Object> pattern) {
+		this.pattern = pattern;
 	}
 
 	/**
-	 * @see "Método name del protocolo accessing en SUKIA SmallTalk"
+	 * @see "Método pattern del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public String getIndicatorName() {
-		return indicatorName;
+	public Descriptor<Object> getPattern() {
+		return pattern;
 	}
 
 	/**

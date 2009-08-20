@@ -6,16 +6,14 @@ package searchHintsBase.Elements;
 import java.util.ArrayList;
 import java.util.List;
 
-import ontology.common.Attribute;
-
 
 /**
  * @author Armando
  *
  */
-public class SpecificStructureAttributeElt {
+public class SpecificPatternsbyStructure {
 	private String structureName;
-	private List<SpecificAttribute> specificAttributeList;
+	private List<SpecificDescriptorPattern> specificDescriptorPatterns;
 
 
 	/**
@@ -24,9 +22,9 @@ public class SpecificStructureAttributeElt {
 	 * the contents of the variable value will be a discreet symbol (no ranges).
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public SpecificStructureAttributeElt() {
-		setStructureName(null);
-		setAttributes(new ArrayList<SpecificAttribute>()); 
+	public SpecificPatternsbyStructure(String structureName) {
+		setStructureName(structureName);
+		setSpecificDescriptorPatterns(new ArrayList<SpecificDescriptorPattern>()); 
 	}
 
 	/**
@@ -47,18 +45,18 @@ public class SpecificStructureAttributeElt {
 
 	/**
 	 * Método de instancia agregado
-	 * @param specificAttributeList
+	 * @param patterns
 	 */
-	public void setAttributes(List<SpecificAttribute> specificAttributeList) {
-		this.specificAttributeList = specificAttributeList;
+	public void setSpecificDescriptorPatterns(List<SpecificDescriptorPattern> patterns) {
+		this.specificDescriptorPatterns = patterns;
 	}
 
 	/**
 	 * @see "Método specificAttribute del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<SpecificAttribute> getAttributes() {
-		return specificAttributeList;
+	public List<SpecificDescriptorPattern> getSpecificDescriptorPatterns() {
+		return specificDescriptorPatterns;
 	}
 	
 	/**
@@ -66,34 +64,37 @@ public class SpecificStructureAttributeElt {
 	 * If the attribute name already exists, then its frequency is incremented by the frequency value
 	 * contained in the argument. Else, the argument is included in the specific attributes list.
 	 * @see "Método specificAttribute: del protocolo adding en SUKIA SmallTalk"
-	 * @param aSpecificAttribute
+	 * @param asdp
 	 * @return
 	 */
-	public boolean addAttribute(SpecificAttribute aSpecificAttribute) {
-		for (int i = 1; i <= this.getAttributes().size(); i++) {
-			if (aSpecificAttribute.getName().equals(this.getAttributes().get(i-1).getName())) {
-				this.getAttributes().get(i-1).incrementFrequencyBy(aSpecificAttribute.getFrequency());
-				return false;
+	public boolean addSpecificDescriptorPattern(SpecificDescriptorPattern asdp) {
+		if (!asdp.getPattern().getStructure().equals(this.getStructureName()))
+			return false;
+		
+		for (SpecificDescriptorPattern sdp:this.getSpecificDescriptorPatterns()) {
+			if (asdp.getPattern().getAttribute().equals(sdp.getPattern().getAttribute())) {
+				sdp.incrementFrequencyBy(asdp.getFrequency());
+				return true;
 			}
 		}
-		this.getAttributes().add(aSpecificAttribute);
+		this.getSpecificDescriptorPatterns().add(asdp);
 		
 		return true;
 	}
 	
-	public boolean contains(Attribute anAttribute) {
-		for (int i = 1; i <= this.getAttributes().size(); i++) {
-			if (this.getAttributes().get(i-1).getName().equals(anAttribute.getName()))
+	public boolean contains(SpecificDescriptorPattern asdp) {
+		for (SpecificDescriptorPattern sdp:this.getSpecificDescriptorPatterns()) {
+			if (sdp.getPattern().getAttribute().equals(asdp.getPattern().getAttribute()))
 				return true;
 		}
 		
 		return false;
 	}
 	
-	public SpecificAttribute getListElement(String anAttributeName) {
-		for (int i = 1; i <= this.getAttributes().size(); i++) {
-			if (this.getAttributes().get(i-1).getName().equals(anAttributeName))
-				return this.getAttributes().get(i-1);
+	public SpecificDescriptorPattern getSpecificDescriptorPattern(String anAttributeName) {
+		for (SpecificDescriptorPattern sdp:this.getSpecificDescriptorPatterns()) {
+			if (sdp.getPattern().getAttribute().equals(anAttributeName))
+				return sdp;
 		}
 		
 		return null;

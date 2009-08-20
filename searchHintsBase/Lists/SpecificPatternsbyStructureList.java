@@ -11,15 +11,15 @@ import java.util.List;
 import ontology.common.Attribute;
 import ontology.common.Structure;
 
-import searchHintsBase.Elements.SpecificAttribute;
-import searchHintsBase.Elements.SpecificStructureAttributeElt;
+import searchHintsBase.Elements.SpecificDescriptorPattern;
+import searchHintsBase.Elements.SpecificPatternsbyStructure;
 
 /**
  * @author Armando
  *
  */
 @SuppressWarnings("serial")
-public class SpecificStructureAttributeList extends HintsList<SpecificStructureAttributeElt> {
+public class SpecificPatternsbyStructureList extends HintsList<SpecificPatternsbyStructure> {
 
 	/**
 	 * Performs one of two actions:
@@ -32,10 +32,10 @@ public class SpecificStructureAttributeList extends HintsList<SpecificStructureA
 	 * @see "Método add: del protocolo adding en SUKIA SmallTalk"
 	 * @return
 	 */
-	public boolean add(SpecificStructureAttributeElt aListElement) {
-		SpecificStructureAttributeElt elt;
+	public boolean add(SpecificPatternsbyStructure aListElement) {
+		SpecificPatternsbyStructure elt;
 
-		if (aListElement.getAttributes().isEmpty())
+		if (aListElement.getSpecificDescriptorPatterns().isEmpty())
 			return false;
 		
 		if (!(this.contains(aListElement))) {
@@ -46,8 +46,8 @@ public class SpecificStructureAttributeList extends HintsList<SpecificStructureA
 		elt = getListElement(aListElement.getStructureName());
 		
 		//Ojo
-		for (int i = 1; i <= aListElement.getAttributes().size(); i++) {
-			elt.addAttribute(aListElement.getAttributes().get(i-1));
+		for (int i = 1; i <= aListElement.getSpecificDescriptorPatterns().size(); i++) {
+			elt.addSpecificDescriptorPattern(aListElement.getSpecificDescriptorPatterns().get(i-1));
 		}
 		
 		return false;
@@ -60,8 +60,8 @@ public class SpecificStructureAttributeList extends HintsList<SpecificStructureA
 	 */
 	public List<Attribute> sortBySuccessCriteria(Structure aStructure) {
 		return this.getSortedSpecificStructureAttributeList(aStructure, 
-				new Comparator<SpecificAttribute>() {
-					public int compare(SpecificAttribute elem1, SpecificAttribute elem2) {
+				new Comparator<SpecificDescriptorPattern>() {
+					public int compare(SpecificDescriptorPattern elem1, SpecificDescriptorPattern elem2) {
 						// Ojo verificar
 						return (elem2.getFrequency() - elem1.getFrequency());
 					}
@@ -103,7 +103,7 @@ public class SpecificStructureAttributeList extends HintsList<SpecificStructureA
 	 * Método de instancia agregado
 	 * @return
 	 */
-	public SpecificStructureAttributeElt getListElement(String aName) {
+	public SpecificPatternsbyStructure getListElement(String aName) {
 		for (int i = 1; i <= this.size(); i++) {
 			if (this.get(i-1).getStructureName().equals(aName))
 				return this.get(i-1);
@@ -134,10 +134,10 @@ public class SpecificStructureAttributeList extends HintsList<SpecificStructureA
 	@SuppressWarnings("unchecked")
 	private List<Attribute> getSortedSpecificStructureAttributeList(Structure aStructure, Comparator c) {
 		List<Attribute> tempList, leftOvers, outList;
-		List<SpecificAttribute> sortedList;
-		SpecificStructureAttributeElt s;
+		List<SpecificDescriptorPattern> sortedList;
+		SpecificPatternsbyStructure s;
 		Attribute a;
-		SpecificAttribute aElt;
+		SpecificDescriptorPattern aElt;
 		int numElements, numProcessedElts, i;
 		
 		
@@ -153,7 +153,7 @@ public class SpecificStructureAttributeList extends HintsList<SpecificStructureA
 		numElements = aStructure.getAttributes().size();
 		s = this.getListElement(aStructure.getName());
 		if (s == null) return tempList;
-		sortedList = new ArrayList<SpecificAttribute>();
+		sortedList = new ArrayList<SpecificDescriptorPattern>();
 
 		/* Output list: all sorted attributes are stored in this list, as well as in the structure's attribute list.  However, outList
 		 is the list to be returned as result from this process because the structure's attribute list is sorted by name (default).*/
@@ -164,7 +164,7 @@ public class SpecificStructureAttributeList extends HintsList<SpecificStructureA
 			a = aStructure.getAttributes().remove(0);
 			aElt = null;
 			if (this.contains(a.getName())) {
-				aElt = s.getListElement(a.getName());
+				aElt = s.getSpecificDescriptorPattern(a.getName());
 			} 
 			
 			if (aElt == null) leftOvers.add(a);
@@ -182,7 +182,7 @@ public class SpecificStructureAttributeList extends HintsList<SpecificStructureA
 			aElt = sortedList.remove(0);
 			i = 1;
 			while (i <= tempList.size()) {
-				if (tempList.get(i-1).getName().equals(aElt.getName())) {
+				if (tempList.get(i-1).getName().equals(aElt.getPattern().getAttribute())) {
 					a = tempList.remove(i-1);
 					aStructure.getAttributes().add(a);
 					outList.add(a);

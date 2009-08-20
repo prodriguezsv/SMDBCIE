@@ -3,36 +3,38 @@
  */
 package searchHintsBase.Elements;
 
+import ontology.common.Descriptor;
+
 /**
  * @author Armando
  *
  */
-public class SpecificAttribute implements Comparable<SpecificAttribute>{
-	private String name;
+public class SpecificDescriptorPattern implements Comparable<SpecificDescriptorPattern>{
+	private Descriptor<Object> pattern;
 	private int frequency;
 
 	/**
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public SpecificAttribute() {
-		setName(null);
+	public SpecificDescriptorPattern(Descriptor<Object> descriptor) {
+		setPattern(descriptor);
 		setFrequency(0);
 	}
-
+	
 	/**
-	 * @see "Método attribute: del protocolo adding en SUKIA SmallTalk"
-	 * @param name
+	 * Método de instancia agregado
+	 * @param pattern
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setPattern(Descriptor<Object> pattern) {
+		this.pattern = pattern;
 	}
 
 	/**
-	 * @see "Método attribute del protocolo accessing en SUKIA SmallTalk"
+	 * @see "Método pattern del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public String getName() {
-		return name;
+	public Descriptor<Object> getPattern() {
+		return pattern;
 	}
 
 	/**
@@ -62,7 +64,7 @@ public class SpecificAttribute implements Comparable<SpecificAttribute>{
 	/**
 	 * Método de instancia agregado
 	 */
-	public int compareTo(SpecificAttribute aSpecificAttribute) {
+	public int compareTo(SpecificDescriptorPattern aSpecificAttribute) {
 		return (aSpecificAttribute.getFrequency()-this.getFrequency());
 	}
 }

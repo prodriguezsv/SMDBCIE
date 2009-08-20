@@ -1096,8 +1096,8 @@ public class Reasoner {
 		
 		hb = this.getHintsBase();
 		
-		if (!(hb.getWeightedGrpHeuristicList().sortBySuccessCriteria((List)this.getGroupHDescription()).isEmpty()))
-			if (hb.getWeightedGrpHeuristicList().getPercentageItemsProcessed() > 0.0) return false;
+		if (!(hb.getWeightedPatternsList().sortBySuccessCriteria((List)this.getGroupHDescription()).isEmpty()))
+			if (hb.getWeightedPatternsList().getPercentageItemsProcessed() > 0.0) return false;
 
 		hb.getFreqGrpHeuristicList().sortBySuccessCriteria(this.getGroupHDescription());
 		
@@ -1124,8 +1124,8 @@ public class Reasoner {
 		if (!(hb.getWeightedStructList().sortBySuccessCriteria((List)this.getStructDescription()).isEmpty()))
 				if (hb.getWeightedStructList().getPercentageItemsProcessed() > 0.0) return false;
 		
-		if (!(hb.getSuccessfulFreqStructPattList().sortByFrecuencyCriteria(this.getStructDescription()).isEmpty()))
-			if (hb.getSuccessfulFreqStructPattList().getPercentageItemsProcessed() > 0.0) return false;
+		if (!(hb.getPatternsbyStructureList().sortBySuccessFrecuencyCriteria(this.getStructDescription()).isEmpty()))
+			if (hb.getPatternsbyStructureList().getPercentageItemsProcessed() > 0.0) return false;
 
 		for( int i = 1; i <= this.getStructDescription().size(); i++) {
 			hb.getSpecStructAttrList().resetPercentageItemsProcessed();
