@@ -3,12 +3,12 @@
  */
 package ontology.taxonomy;
 
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import ontology.common.Descriptor;
+import ontology.common.Modifier;
 import ontology.values.RangeValue;
 
 
