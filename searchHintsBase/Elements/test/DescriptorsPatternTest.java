@@ -61,7 +61,7 @@ public class DescriptorsPatternTest {
 	}
 
 	/**
-	 * Test method for {@link searchHintsBase.Elements.DescriptorsPattern#addDescriptor(ontology.common.Descriptor)}.
+	 * Test method for {@link searchHintsBase.elements.DescriptorsPattern#addDescriptor(ontology.common.Descriptor)}.
 	 */
 	@Test
 	public void testAddDescriptor() {
@@ -84,7 +84,7 @@ public class DescriptorsPatternTest {
 	}
 
 	/**
-	 * Test method for {@link searchHintsBase.Elements.DescriptorsPattern#howSimilarTo(java.util.List)}.
+	 * Test method for {@link searchHintsBase.elements.DescriptorsPattern#howSimilarTo(java.util.List)}.
 	 */
 	@Test
 	public void testHowSimilarTo() {
@@ -110,7 +110,7 @@ public class DescriptorsPatternTest {
 	}
 	
 	/**
-	 * Test method for {@link searchHintsBase.Elements.DescriptorsPattern#compareTo(searchHintsBase.Elements.DescriptorsPattern)}.
+	 * Test method for {@link searchHintsBase.elements.DescriptorsPattern#compareTo(searchHintsBase.elements.DescriptorsPattern)}.
 	 */
 	@Test
 	public void testCompareTo() {

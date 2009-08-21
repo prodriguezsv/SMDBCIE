@@ -9,14 +9,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import ontology.common.Attribute;
-import ontology.common.CharacterDescriptor;
 import ontology.common.Descriptor;
-import ontology.common.GroupingHeuristic;
-import ontology.common.Structure;
-import ontology.values.SingleValue;
-import ontology.values.Values;
-
 
 import searchHintsBase.Elements.DescriptorsPattern;
 import searchHintsBase.Elements.PatternsbyStructure;
@@ -36,7 +29,7 @@ public class PatternsbyStructureList extends HintsList<PatternsbyStructure> {
 	public boolean add(PatternsbyStructure patterns) {
 		PatternsbyStructure pbs;
 				
-		if (patterns.getStructureName() == null)
+		if (patterns == null)
 			return false;
 
 		if (patterns.getDescriptorsPatterns().isEmpty())
@@ -62,8 +55,8 @@ public class PatternsbyStructureList extends HintsList<PatternsbyStructure> {
 	 * @return The same list but sorted (in descending order) according to the frequency of description
 	 * patterns found in the elements of this list that are similar to the Structures' descriptions
 	 */
-	public List<Object> sortBySuccessFrecuencyCriteria(List<Object> aStructureList) {
-		return this.getSortedStructureList(aStructureList, 
+	public List<String> sortBySuccessFrecuencyCriteria(List<Descriptor<Object>> aDescriptorList) {
+		return this.getSortedStructureList(aDescriptorList, 
 				new Comparator<PatternsbyStructure>() {
 					public int compare(PatternsbyStructure elem1, PatternsbyStructure elem2) {
 						return (elem2.getDescriptorsPatterns().get(0).getSuccessFrequency()
@@ -80,8 +73,8 @@ public class PatternsbyStructureList extends HintsList<PatternsbyStructure> {
 	 * @return The same list but sorted (in ascending order) according to the frequency of description
 	 * patterns found in the elements of this list that are similar to the Structures' descriptions
 	 */
-	public List<Object> sortByFailureFrecuencyCriteria(List<Object> aStructureList) {
-		return this.getSortedStructureList(aStructureList, 
+	public List<String> sortByFailureFrecuencyCriteria(List<Descriptor<Object>> aDescriptorList) {
+		return this.getSortedStructureList(aDescriptorList, 
 				new Comparator<PatternsbyStructure>() {
 					public int compare(PatternsbyStructure elem1, PatternsbyStructure elem2) {
 						return (elem1.getDescriptorsPatterns().get(0).getFailureFrequency()
@@ -95,9 +88,9 @@ public class PatternsbyStructureList extends HintsList<PatternsbyStructure> {
 	 * @see "M&eacute;todo includes: del protocolo testing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public boolean contains(PatternsbyStructure aListElement) {
-		for (int i = 1; i <= this.size(); i++) {
-			if (this.get(i-1).getStructureName().equals(aListElement.getStructureName()))
+	public boolean contains(PatternsbyStructure aPattern) {
+		for (PatternsbyStructure pbs:this) {
+			if (pbs.getStructureName().equals(aPattern.getStructureName()))
 				return true;
 		}
 		
@@ -109,9 +102,9 @@ public class PatternsbyStructureList extends HintsList<PatternsbyStructure> {
 	 * @return
 	 */
 	public PatternsbyStructure getPatternByStructure(String aStructureName) {
-		for (int i = 1; i <= this.size(); i++) {
-			if (this.get(i-1).getStructureName().equals(aStructureName))
-				return this.get(i-1);
+		for (PatternsbyStructure pbs:this) {
+			if (pbs.getStructureName().equals(aStructureName))
+				return pbs;
 		}
 		
 		return null;
@@ -122,21 +115,19 @@ public class PatternsbyStructureList extends HintsList<PatternsbyStructure> {
 	 * @param aStructure
 	 * @return
 	 */
-	public boolean contains(Object aDescriptiveElement) {
-		for (PatternsbyStructure wdp:this)
-			if (aDescriptiveElement instanceof GroupingHeuristic)
-				wdp.getStructureName().equals(((GroupingHeuristic) aDescriptiveElement).getName());
-			else if (aDescriptiveElement instanceof Structure)
-				wdp.getStructureName().equals(((Structure) aDescriptiveElement).getName());
+	public boolean contains(String aStructureName) {
+		for (PatternsbyStructure pbs:this)
+			if (pbs.getStructureName().equals(aStructureName))
+				return true;
 		
 		return false;
 	}
 			
 	/**
 	 * This method takes as argument an unsorted list of Structures, and sorts them in according to the
-	 * frequency rate of patterns in self that are similar or equal to the Structures' descriptions (i.e.,
-	 * their list of Attributes). The process is as follows:
-	 * 1. if the next Structure's name does not match the name of any the elements in self, such Structure
+	 * frequency rate of patterns in this list that are similar or equal to the Structures' descriptions
+	 * (i.e., their list of Attributes). The process is as follows:
+	 * 1. if the next Structure's name does not match the name of any the elements in this list, such Structure
 	 * is added to a leftOvers list (i.e., a list that contains all Structures that can't be processed);
 	 * 2. if the Structure's name matches an element in self, the Structure's description is checked against
 	 * the patterns contained in the retrieved element from self, to determine if there is a similar pattern;
@@ -152,10 +143,10 @@ public class PatternsbyStructureList extends HintsList<PatternsbyStructure> {
 	 * sorted by similar pattern frequency.
 	 */
 	@SuppressWarnings("unchecked")
-	private List<Object> getSortedStructureList(List<Object> aObjectList, Comparator c) {
-		List<Object> tempList, leftOvers;
+	private List<String> getSortedStructureList(List<Descriptor<Object>>  description, Comparator c) {
+		List<String> mainList, tempList, leftOvers;
 		PatternsbyStructureList sortedList;
-		Object object;
+		String aStructureName;
 		PatternsbyStructure pbs, singlepbs;
 		DescriptorsPattern dp;
 		List<Descriptor<Object>> descriptors;
@@ -165,44 +156,32 @@ public class PatternsbyStructureList extends HintsList<PatternsbyStructure> {
 		// First thing is to set the number of processed items to 0
 		this.resetPercentageItemsProcessed();
 
-		tempList = new ArrayList<Object>();
+		tempList = new ArrayList<String>();
+		mainList = this.getStructuresList(description);
 
 		// Check precondition
-		if (this.isEmpty() || aObjectList.isEmpty())
+		if (this.isEmpty() || mainList.isEmpty())
 			return tempList;
 
-		numElements = aObjectList.size();
+		numElements = mainList.size();
 		sortedList = new PatternsbyStructureList();
-		leftOvers = new ArrayList<Object>();
+		leftOvers = new ArrayList<String>();
 
-		while (!(aObjectList.isEmpty())) {
-			object = aObjectList.remove(0);
-			pbs = null;
-			if (this.contains(object)) {
-				if (object instanceof GroupingHeuristic)
-					pbs = this.getPatternByStructure(((GroupingHeuristic)object).getName());
-				else if (object instanceof Structure)
-					pbs = this.getPatternByStructure(((Structure)object).getName());
-			} 
-			
-			if (pbs == null) leftOvers.add(object);
-			else {
-				tempList.add(object);
-				sortedList.add(pbs);
-				
-				if (object instanceof GroupingHeuristic)
+		while (!(mainList.isEmpty())) {
+			aStructureName = mainList.remove(0);
+		
+			if ((pbs = this.getPatternByStructure(aStructureName)) == null)			
+				leftOvers.add(aStructureName);
+			else {							
+				descriptors = this.getDescription(description, aStructureName);
+				dp = pbs.whatPatternIsMostSimilarTo(descriptors);
+				if (dp == null) leftOvers.add(aStructureName);
+				else {
+					tempList.add(aStructureName);
+					singlepbs = new PatternsbyStructure(pbs.getStructureName());
+					singlepbs.addPattern(dp);
+					sortedList.add(singlepbs);
 					Collections.sort(sortedList, c);
-				else if (object instanceof Structure) {			
-					descriptors = this.convertAttributesToDescriptorsOf((Structure)object);
-					dp = pbs.whatPatternIsMostSimilarTo(descriptors);
-					if (dp == null) leftOvers.add(object);
-					else {
-						tempList.add(object);
-						singlepbs = new PatternsbyStructure(pbs.getStructureName());
-						singlepbs.addPattern(dp);
-						sortedList.add(singlepbs);
-						Collections.sort(sortedList, c);
-					}
 				}
 			}
 		}
@@ -214,51 +193,58 @@ public class PatternsbyStructureList extends HintsList<PatternsbyStructure> {
 			singlepbs = sortedList.remove(0);
 			i = 1;
 			while (i <= tempList.size()) {
-				if (tempList.get(i-1) instanceof GroupingHeuristic) {
-					if (((GroupingHeuristic)tempList.get(i-1)).getName().equals(singlepbs.getStructureName())) {
-						aObjectList.add(tempList.remove(i-1));
-						i = tempList.size();
-					}
-				} else if (tempList.get(i-1) instanceof Structure) {
-					if (((Structure)tempList.get(i-1)).getName().equals(singlepbs.getStructureName())) {
-						aObjectList.add(tempList.remove(i-1));
-						i = tempList.size();
-					}
+				if (tempList.get(i-1).equals(singlepbs.getStructureName())) {
+					mainList.add(tempList.remove(i-1));
+					i = tempList.size();
 				}
 				
 				i = i + 1;
 			}
 		}
 		if (!(leftOvers.isEmpty()))
-			aObjectList.addAll(leftOvers);
+			mainList.addAll(leftOvers);
 
 		// Determine the percentage of processed elements and return the processed list
 		this.setPercentageItemsProcessed(numProcessedElts / numElements);
-		return aObjectList;
+		return mainList;
 	}
 	
-	@SuppressWarnings("unchecked")
-	private List<Descriptor<Object>> convertAttributesToDescriptorsOf(Structure aStructure) {
-		List<Descriptor<Object>> aDescriptorList;
-		Attribute a;
-		Values vdList;
-		Descriptor<Object> d;
+	/**
+	 * M&eacute;todo de instancia agregado
+	 * @return una lista de descriptores relacionados a aStructureName
+	 */
+	private List<Descriptor<Object>> getDescription(List<Descriptor<Object>> descriptors, String aStructureName) {
+		List<Descriptor<Object>> description;
 		
-		aDescriptorList = new ArrayList<Descriptor<Object>>();
-
-		for (int i = 1; i <= aStructure.getAttributes().size(); i++) {
-			a = aStructure.getAttributes().get(i-1);
-			vdList = a.getValues().getValueDescriptors();
-			
-			if (vdList.size() == 1 &&
-				vdList.get(Attribute.oneLevel()).get(Attribute.oneLevel()) instanceof SingleValue) {
-				d = new CharacterDescriptor<Object>();
-				
-				d.set(aStructure.getName(), a.getName(), ((SingleValue<Object>)vdList.get(Attribute.oneLevel()).get(Attribute.oneLevel())).getValue());
-				aDescriptorList.add(d);
-			} else return null;
+		description = new ArrayList<Descriptor<Object>>();
+		
+		for(Descriptor<Object> d: descriptors) {
+			// Determine if the structure name in Deescriptor has already been included in structureList
+			if (d.getStructure().equals(aStructureName)) {
+				description.add(d);
+			} else continue;
 		}
-
-		return aDescriptorList;
+		
+		return description;
+	}
+	
+	/**
+	 * M&eacute;todo de instancia agregado
+	 * @return una lista de cadenas representando el nombre de las estructuras
+	 */
+	private List<String> getStructuresList(List<Descriptor<Object>>  descriptors) {
+		List<String> structuresList;
+		
+		structuresList = new ArrayList<String>();
+		
+		for(Descriptor<Object> d: descriptors) { 
+			// Determine if the structure name in Deescriptor has already been included in structureList
+			if (!(structuresList.contains(d.getStructure()))) {
+				// The structure name was not found in structureList. Append it to structureList
+				structuresList.add(d.getStructure());
+			} else continue;
+		}
+		
+		return structuresList;
 	}
 }

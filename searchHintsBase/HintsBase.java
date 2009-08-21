@@ -51,8 +51,7 @@ public class HintsBase {
 	 * Método de instancia agregado
 	 * @param successfulFreqStructPattList
 	 */
-	public void setPatternsbyStructureList(
-			PatternsbyStructureList patternsbyStructureList) {
+	public void setPatternsbyStructureList(PatternsbyStructureList patternsbyStructureList) {
 		this.patternsbyStructureList = patternsbyStructureList;
 	}
 

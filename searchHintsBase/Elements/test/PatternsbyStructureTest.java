@@ -60,7 +60,7 @@ public class PatternsbyStructureTest {
 	}
 
 	/**
-	 * Test method for {@link searchHintsBase.Elements.PatternsbyStructure#compareTo(searchHintsBase.Elements.PatternsbyStructure)}.
+	 * Test method for {@link searchHintsBase.elements.PatternsbyStructure#compareTo(searchHintsBase.elements.PatternsbyStructure)}.
 	 */
 	@Test
 	public void testCompareTo() {
@@ -98,7 +98,7 @@ public class PatternsbyStructureTest {
 	}
 
 	/**
-	 * Test method for {@link searchHintsBase.Elements.PatternsbyStructure#addPattern(searchHintsBase.Elements.DescriptorsPattern)}.
+	 * Test method for {@link searchHintsBase.elements.PatternsbyStructure#addPattern(searchHintsBase.elements.DescriptorsPattern)}.
 	 */
 	@Test
 	public void testAddPattern() {
@@ -133,7 +133,7 @@ public class PatternsbyStructureTest {
 	}
 
 	/**
-	 * Test method for {@link searchHintsBase.Elements.PatternsbyStructure#getDescriptorsPattern(java.util.List)}.
+	 * Test method for {@link searchHintsBase.elements.PatternsbyStructure#getDescriptorsPattern(java.util.List)}.
 	 */
 	@Test
 	public void testGetDescriptorsPattern() {
@@ -164,7 +164,7 @@ public class PatternsbyStructureTest {
 	}
 
 	/**
-	 * Test method for {@link searchHintsBase.Elements.PatternsbyStructure#hasAPatternSimilarTo(java.util.List)}.
+	 * Test method for {@link searchHintsBase.elements.PatternsbyStructure#hasAPatternSimilarTo(java.util.List)}.
 	 */
 	@Test
 	public void testHasAPatternSimilarTo() {
@@ -213,7 +213,7 @@ public class PatternsbyStructureTest {
 	}
 
 	/**
-	 * Test method for {@link searchHintsBase.Elements.PatternsbyStructure#whatPatternIsMostSimilarTo(java.util.List)}.
+	 * Test method for {@link searchHintsBase.elements.PatternsbyStructure#whatPatternIsMostSimilarTo(java.util.List)}.
 	 */
 	@Test
 	public void testWhatPatternIsMostSimilarTo() {

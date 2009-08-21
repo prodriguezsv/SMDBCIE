@@ -1,4 +1,6 @@
 /**
+ * Este paquete agrupa los elementos de las distintas listas que almacenan patrones de b&uacute;squeda
+ * de casos previamente resueltos
  * @see "Categoría Sukia Search Hints Elts de SUKIA Smalltalk"
  */
 package searchHintsBase.Elements;
@@ -14,7 +16,8 @@ public class SpecificDescriptorPattern implements Comparable<SpecificDescriptorP
 	private int frequency;
 
 	/**
-	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
+	 * M&eacute;todo constructor altenativo
+	 * @see "M&eacute;todo initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
 	public SpecificDescriptorPattern(Descriptor<Object> descriptor) {
 		setPattern(descriptor);
@@ -22,7 +25,16 @@ public class SpecificDescriptorPattern implements Comparable<SpecificDescriptorP
 	}
 	
 	/**
-	 * Método de instancia agregado
+	 * M&eacute;todo constructor alternativo
+	 * @see "M&eacute;todo initialize del protocolo initializing en SUKIA SmallTalk"
+	 */
+	public SpecificDescriptorPattern(Descriptor<Object> descriptor, int frecuency) {
+		setPattern(descriptor);
+		setFrequency(frecuency);
+	}
+	
+	/**
+	 * M&eacute;todo accesor de escritura
 	 * @param pattern
 	 */
 	public void setPattern(Descriptor<Object> pattern) {
@@ -30,7 +42,8 @@ public class SpecificDescriptorPattern implements Comparable<SpecificDescriptorP
 	}
 
 	/**
-	 * @see "Método pattern del protocolo accessing en SUKIA SmallTalk"
+	 * M&eacute;todo accesor de lectura
+	 * @see "M&eacute;todo pattern del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
 	public Descriptor<Object> getPattern() {
@@ -38,7 +51,8 @@ public class SpecificDescriptorPattern implements Comparable<SpecificDescriptorP
 	}
 
 	/**
-	 * @see "Método frequency: del protocolo adding en SUKIA SmallTalk"
+	 * M&eacute;todo accesor de escritura
+	 * @see "M&eacute;todo frequency: del protocolo adding en SUKIA SmallTalk"
 	 * @param frequency
 	 */
 	public void setFrequency(int frequency) {
@@ -46,7 +60,7 @@ public class SpecificDescriptorPattern implements Comparable<SpecificDescriptorP
 	}
 
 	/**
-	 * @see "Método incrementFrequencyBy: del protocolo adding en SUKIA SmallTalk"
+	 * @see "M&eacute;todo incrementFrequencyBy: del protocolo adding en SUKIA SmallTalk"
 	 * @param frequency
 	 */
 	public void incrementFrequencyBy(int incrementFrequency) {
@@ -54,7 +68,8 @@ public class SpecificDescriptorPattern implements Comparable<SpecificDescriptorP
 	}
 	
 	/**
-	 * @see "Método frequency del protocolo accessing en SUKIA SmallTalk"
+	 * M&eacute;todo accesor de lectura
+	 * @see "M&eacute;todo frequency del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
 	public int getFrequency() {
@@ -62,9 +77,9 @@ public class SpecificDescriptorPattern implements Comparable<SpecificDescriptorP
 	}
 
 	/**
-	 * Método de instancia agregado
+	 * Compara por criterio de frecuencia
 	 */
-	public int compareTo(SpecificDescriptorPattern aSpecificAttribute) {
-		return (aSpecificAttribute.getFrequency()-this.getFrequency());
+	public int compareTo(SpecificDescriptorPattern aSpecificPattern) {
+		return (aSpecificPattern.getFrequency()-this.getFrequency());
 	}
 }

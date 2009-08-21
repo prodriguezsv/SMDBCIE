@@ -1,5 +1,5 @@
 /**
- * @see "Categor�a Sukia Similarity Assessment de SUKIA Smalltalk"
+ * @see "Categor&iacute;a Sukia Similarity Assessment de SUKIA Smalltalk"
  */
 package system.similarityAssessment;
 
@@ -16,10 +16,10 @@ import ontology.values.Value;
  * @author Armando
  *
  */
-public class SimAssessor {
+public class SimilarityAssessor {
 
 	/**
-	 * @see "M�todo distanceBetween:and:in: del protocolo de clase class calculating en SUKIA SmallTalk"
+	 * @see "M&eacute;todo distanceBetween:and:in: del protocolo de clase class calculating en SUKIA SmallTalk"
 	 * @param aValue1
 	 * @param aValue2
 	 * @param aValueWeightList
@@ -43,17 +43,17 @@ public class SimAssessor {
 	/**
 	 * Returns the weight associated to aValue, if aValue exists in aValueWeightList.
 	 * If it doesn't exist, returns nil
-	 * @see "M�todo getTheWeightOf:in: del protocolo de clase class calculating en SUKIA SmallTalk"
+	 * @see "M&eacute;todo getTheWeightOf:in: del protocolo de clase class calculating en SUKIA SmallTalk"
 	 * @param aValue
 	 * @param aValueWeightList
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	public static double getTheWeightOf(Object aValue, List<Value> aValueWeightList) {
-		for( int i = 1; i <= aValueWeightList.size(); i++) {
-			if (aValueWeightList.get(i-1) instanceof SingleValue)
-				if (((SingleValue<Object>)aValueWeightList.get(i-1)).getValue().equals(aValue))
-					((SingleValue<Object>)aValueWeightList.get(i-1)).getWeight();
+		for( Value v:aValueWeightList) {
+			if (v instanceof SingleValue)
+				if (((SingleValue<Object>)v).getValue().equals(aValue))
+					((SingleValue<Object>)v).getWeight();
 		}
 		
 		return -1;
@@ -178,7 +178,7 @@ public class SimAssessor {
 		rCopy = new ArrayList<SimilarityDegree>(Arrays.asList(SimilarityDegree.values()));
 
 		// Compute the upper value for the #diferente range name
-		p1 = (int) Math.round(SimAssessor.maxWeightOf(aValueWeightList) * 100);
+		p1 = (int) Math.round(SimilarityAssessor.maxWeightOf(aValueWeightList) * 100);
 		p1 = 100 - p1;
 
 		// Compute the length of each range

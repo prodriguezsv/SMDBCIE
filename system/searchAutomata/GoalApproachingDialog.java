@@ -26,7 +26,7 @@ import ontology.values.Value;
 
 import system.Hypothesis;
 import system.PossibleSolution;
-import system.similarityAssessment.SimAssessor;
+import system.similarityAssessment.SimilarityAssessor;
 
 /**
  * Instances of this class are invoked when the search automatas have performed successfully (i.e., with at least one possible solution),
@@ -599,7 +599,7 @@ public class GoalApproachingDialog {
         List<Value> weightedValues = (aTaxon.getDescription().getStructure(aSAVDescriptor.getStructure()))
         	.getAttribute(aSAVDescriptor.getAttribute()).getValues().get(Attribute.oneLevel());
         
-        SimilarityDegree similarity = SimAssessor.similarityRangeOf(aSAVDescriptor.getValue(), weightedValues);
+        SimilarityDegree similarity = SimilarityAssessor.similarityRangeOf(aSAVDescriptor.getValue(), weightedValues);
         
         if (EnumSet.range(minSimilarityDegree, SimilarityDegree.IGUAL).contains(similarity) != true)
         	return null;

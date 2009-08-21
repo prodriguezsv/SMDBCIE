@@ -7,7 +7,7 @@ package system.searchAutomata;
 
 
 import system.PossibleSolution;
-import system.similarityAssessment.SimAssessor;
+import system.similarityAssessment.SimilarityAssessor;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -276,7 +276,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
         List<Value> weightedValues = ((aTaxon.getDescription().getStructure(aDescriptor.getStructure())
         		.getAttribute(aDescriptor.getAttribute())).getValues().get(Attribute.oneLevel()));
         
-        SimilarityDegree similarity = SimAssessor.similarityRangeOf(aDescriptor.getValue(), weightedValues);
+        SimilarityDegree similarity = SimilarityAssessor.similarityRangeOf(aDescriptor.getValue(), weightedValues);
         if (EnumSet.range(minSimilarityDegree, SimilarityDegree.IGUAL).contains(similarity) != true)
         	return null;
         

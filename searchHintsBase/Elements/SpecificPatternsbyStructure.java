@@ -1,9 +1,12 @@
 /**
- * @see "Categoría Sukia Search Hints Elts de SUKIA Smalltalk"
+ * Este paquete agrupa los elementos de las distintas listas que almacenan patrones de b&uacute;squeda
+ * de casos previamente resueltos
+ * @see "Categor&iacute;a Sukia Search Hints Elts de SUKIA Smalltalk"
  */
 package searchHintsBase.Elements;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -17,10 +20,11 @@ public class SpecificPatternsbyStructure {
 
 
 	/**
-	 * Initialize the frequent grouping heuristic element.  The instance variable 'value' will NOT be an instance of Value,
-	 * because (at least for now) it doesn't need to store extra information, such as value levels, weights or ranges. Thus,
-	 * the contents of the variable value will be a discreet symbol (no ranges).
-	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
+	 * Initialize the frequent grouping heuristic element.  The instance variable 'value' will NOT be an
+	 * instance of Value, because (at least for now) it doesn't need to store extra information, such as
+	 * value levels, weights or ranges. Thus, the contents of the variable value will be a discreet symbol
+	 * (no ranges).
+	 * @see "M&eacute;todo initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
 	public SpecificPatternsbyStructure(String structureName) {
 		setStructureName(structureName);
@@ -28,7 +32,8 @@ public class SpecificPatternsbyStructure {
 	}
 
 	/**
-	 * @see "Método structureName: del protocolo adding en SUKIA SmallTalk"
+	 * M&eacute;todo accesor de escritura
+	 * @see "M&eacute;todo structureName: del protocolo adding en SUKIA SmallTalk"
 	 * @param aStructureName
 	 */
 	public void setStructureName(String aStructureName) {
@@ -36,7 +41,8 @@ public class SpecificPatternsbyStructure {
 	}
 
 	/**
-	 * @see "Método structureName del protocolo accessing en SUKIA SmallTalk"
+	 * M&eacute;todo accesor de lectura
+	 * @see "M&eacute;todo structureName del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
 	public String getStructureName() {
@@ -44,7 +50,7 @@ public class SpecificPatternsbyStructure {
 	}
 
 	/**
-	 * Método de instancia agregado
+	 * M&eacute;todo accesor de escritura
 	 * @param patterns
 	 */
 	public void setSpecificDescriptorPatterns(List<SpecificDescriptorPattern> patterns) {
@@ -52,7 +58,8 @@ public class SpecificPatternsbyStructure {
 	}
 
 	/**
-	 * @see "Método specificAttribute del protocolo accessing en SUKIA SmallTalk"
+	 * M&eacute;todo accesor de lectura
+	 * @see "M&eacute;todo specificAttribute del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
 	public List<SpecificDescriptorPattern> getSpecificDescriptorPatterns() {
@@ -63,25 +70,37 @@ public class SpecificPatternsbyStructure {
 	 * Checks if the attribute name of the argument is already included in the specific attributes list.
 	 * If the attribute name already exists, then its frequency is incremented by the frequency value
 	 * contained in the argument. Else, the argument is included in the specific attributes list.
-	 * @see "Método specificAttribute: del protocolo adding en SUKIA SmallTalk"
-	 * @param asdp
+	 * @see "M&eacute;todo specificAttribute: del protocolo adding en SUKIA SmallTalk"
+	 * @param pattern
 	 * @return
 	 */
-	public boolean addSpecificDescriptorPattern(SpecificDescriptorPattern asdp) {
-		if (!asdp.getPattern().getStructure().equals(this.getStructureName()))
+	public boolean addPattern(SpecificDescriptorPattern pattern) {
+		SpecificDescriptorPattern sdp;
+		
+		if (pattern == null)
 			return false;
 		
-		for (SpecificDescriptorPattern sdp:this.getSpecificDescriptorPatterns()) {
-			if (asdp.getPattern().getAttribute().equals(sdp.getPattern().getAttribute())) {
-				sdp.incrementFrequencyBy(asdp.getFrequency());
-				return true;
-			}
-		}
-		this.getSpecificDescriptorPatterns().add(asdp);
+		if (pattern.getPattern() == null)
+			return false;
 		
+		if (!pattern.getPattern().getStructure().equals(this.getStructureName()))
+			return false;
+		
+		if ((sdp = this.getSpecificDescriptorPattern(pattern.getPattern().getAttribute())) != null)
+			sdp.incrementFrequencyBy(pattern.getFrequency());
+		else {
+			this.getSpecificDescriptorPatterns().add(pattern);
+			Collections.sort(this.getSpecificDescriptorPatterns());
+		}
+				
 		return true;
 	}
 	
+	/**
+	 * 
+	 * @param asdp
+	 * @return
+	 */
 	public boolean contains(SpecificDescriptorPattern asdp) {
 		for (SpecificDescriptorPattern sdp:this.getSpecificDescriptorPatterns()) {
 			if (sdp.getPattern().getAttribute().equals(asdp.getPattern().getAttribute()))
@@ -91,6 +110,11 @@ public class SpecificPatternsbyStructure {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param anAttributeName
+	 * @return
+	 */
 	public SpecificDescriptorPattern getSpecificDescriptorPattern(String anAttributeName) {
 		for (SpecificDescriptorPattern sdp:this.getSpecificDescriptorPatterns()) {
 			if (sdp.getPattern().getAttribute().equals(anAttributeName))

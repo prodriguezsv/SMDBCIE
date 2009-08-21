@@ -1,5 +1,6 @@
 /**
- * @see "Categoría Sukia Search Hints Lists de SUKIA Smalltalk"
+ * Este paquete agrupa las listas que almacenan patrones de b&uacute;squeda de casos previamente resueltos
+ * @see "Categor&iacute;a Sukia Search Hints Lists de SUKIA Smalltalk"
  */
 package searchHintsBase.Lists;
 
@@ -8,8 +9,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import ontology.common.GroupingHeuristic;
-import ontology.common.Structure;
+import ontology.common.Descriptor;
 
 import searchHintsBase.Elements.WeightedDescriptorPattern;
 
@@ -21,11 +21,17 @@ import searchHintsBase.Elements.WeightedDescriptorPattern;
 public class WeightedPatternsList extends HintsList<WeightedDescriptorPattern> {
 
 	/**
-	 * @see "Método add: del protocolo adding en SUKIA SmallTalk"
+	 * @see "M&eacute;todo add: del protocolo adding en SUKIA SmallTalk"
 	 * @return
 	 */
 	public boolean add(WeightedDescriptorPattern aPattern) {
-		WeightedDescriptorPattern pattern;
+		WeightedDescriptorPattern wdp;
+		
+		if (aPattern == null)
+			return false;
+		
+		if (aPattern.getPattern()==null)
+			return false;
 		
 		if (aPattern.getAccumulatedWeight() <= 0)
 			return false;
@@ -35,9 +41,9 @@ public class WeightedPatternsList extends HintsList<WeightedDescriptorPattern> {
 			return true;
 		}
 		
-		pattern = this.getWeightedDescriptorPattern(aPattern.getPattern().getStructure());
-		pattern.incrementAccumulatedWeight(aPattern.getAccumulatedWeight());
-		pattern.incrementNumberTaxa();
+		wdp = this.getWeightedDescriptorPattern(aPattern.getPattern());
+		wdp.incrementAccumulatedWeight(aPattern.getAccumulatedWeight());
+		wdp.incrementNumberTaxa();
 
 		return true;
 	}
@@ -46,11 +52,11 @@ public class WeightedPatternsList extends HintsList<WeightedDescriptorPattern> {
 	 * Return the argument list sorted by (highest) mean weight, if possible.
 	 * NOTE: The elements of anUnsortedList may be instances of ONE of the following classes:
 	 * GroupingHeuristic or Structure.
-	 * @see "Método sortByFailureCriteria: del protocolo sorting en SUKIA SmallTalk"
+	 * @see "M&eacute;todo sortByFailureCriteria: del protocolo sorting en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Object> sortBySuccessCriteria(List<Object> aObjectList) {
-		return this.getSortedStructureList(aObjectList, 
+	public List<Descriptor<Object>> sortByMeanWeightCriteria(List<Descriptor<Object>> descriptors) {
+		return this.getSortedDescriptorsList(descriptors, 
 				new Comparator<WeightedDescriptorPattern>() {
 					public int compare(WeightedDescriptorPattern elem1, WeightedDescriptorPattern elem2) {
 						if ((elem2.meanWeight()	- elem1.meanWeight()) > 0)
@@ -64,26 +70,25 @@ public class WeightedPatternsList extends HintsList<WeightedDescriptorPattern> {
 	}
 	
 	/**
-	 * @see "Método includes: del protocolo testing en SUKIA SmallTalk"
+	 * @see "M&eacute;todo includes: del protocolo testing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public boolean contains(Object aDescriptiveElement) {
-		for (WeightedDescriptorPattern wdp:this)
-			if (aDescriptiveElement instanceof GroupingHeuristic)
-				wdp.getPattern().getStructure().equals(((GroupingHeuristic) aDescriptiveElement).getName());
-			else if (aDescriptiveElement instanceof Structure)
-				wdp.getPattern().getStructure().equals(((Structure) aDescriptiveElement).getName());
+	public boolean contains(WeightedDescriptorPattern aPattern) {
+		for (WeightedDescriptorPattern wdp:this) {
+			if (wdp.getPattern().equals(aPattern.getPattern()))
+				return true;
+		}
 		
 		return false;
 	}
 			
 	/**
-	 * Método de instancia agregado
+	 * Obtiene un patr&oacute;n espec&iacute;fico con nombre de estructura aStructureName
 	 * @return
 	 */
-	public WeightedDescriptorPattern getWeightedDescriptorPattern(String aStructureName) {
+	public WeightedDescriptorPattern getWeightedDescriptorPattern(Descriptor<Object> aDescriptor) {
 		for (WeightedDescriptorPattern wdp:this)
-			if (wdp.getPattern().getStructure().equals(aStructureName))
+			if (wdp.getPattern().equals(aDescriptor))
 				return wdp;
 		
 		return null;
@@ -105,41 +110,35 @@ public class WeightedPatternsList extends HintsList<WeightedDescriptorPattern> {
 	 * @return An empty list, if either this list or the argument list are empty; The argument list possibly
 	 * sorted by mean weight.
 	 */
-	// Pendiente de traducir
 	@SuppressWarnings("unchecked")
-	private List<Object> getSortedStructureList(List<Object> aObjectList, Comparator c) {
-		List<Object> tempList, leftOvers;
+	private List<Descriptor<Object>> getSortedDescriptorsList(List<Descriptor<Object>> description, Comparator c) {
+		List<Descriptor<Object>> tempList, leftOvers;
 		WeightedPatternsList sortedList;
-		Object ule;
-		WeightedDescriptorPattern wlElt;
+		Descriptor<Object> descriptor;
+		WeightedDescriptorPattern wdp;
 		int numElements, numProcessedElts, i;
 		
+		// First thing is to set the number of processed items to 0
 		this.resetPercentageItemsProcessed();
 
-		tempList = new ArrayList<Object>();
+		tempList = new ArrayList<Descriptor<Object>>();
 
 		// Check precondition
-		if (this.isEmpty() || aObjectList.isEmpty())
+		if (this.isEmpty() || description.isEmpty())
 			return tempList;
 		
-		numElements = aObjectList.size();
+		numElements = description.size();
 		sortedList = new WeightedPatternsList();
-		leftOvers = new ArrayList<Object>();
 		
-		while (!(aObjectList.isEmpty())) {
-			ule = aObjectList.remove(0);
-			wlElt = null;
-			if (this.contains(ule)) {
-				if (ule instanceof GroupingHeuristic)
-					wlElt = this.getWeightedDescriptorPattern(((GroupingHeuristic)ule).getName());
-				else if (ule instanceof Structure)
-					wlElt = this.getWeightedDescriptorPattern(((Structure)ule).getName());
-			} 
-			
-			if (wlElt == null) leftOvers.add(ule);
+		leftOvers = new ArrayList<Descriptor<Object>>();
+		
+		while (!(description.isEmpty())) {			
+			descriptor = description.remove(0);
+			if ((wdp = this.getWeightedDescriptorPattern(descriptor)) == null)
+				leftOvers.add(descriptor);
 			else {
-				tempList.add(ule);
-				sortedList.add(wlElt);
+				tempList.add(descriptor);
+				sortedList.add(wdp);
 				Collections.sort(sortedList, c);
 			}
 		}
@@ -148,29 +147,23 @@ public class WeightedPatternsList extends HintsList<WeightedDescriptorPattern> {
 		numProcessedElts = tempList.size();
 
 		while (!(sortedList.isEmpty())) {
-			wlElt = sortedList.remove(0);
+			wdp = sortedList.remove(0);
 			i = 1;
 			while (i <= tempList.size()) {
-				if (tempList.get(i-1) instanceof GroupingHeuristic) {
-					if (((GroupingHeuristic)tempList.get(i-1)).getName().equals(wlElt.getPattern().getStructure())) {
-						aObjectList.add(tempList.remove(i-1));
-						i = tempList.size();
-					}
-				} else if (tempList.get(i-1) instanceof Structure) {
-					if (((Structure)tempList.get(i-1)).getName().equals(wlElt.getPattern().getStructure())) {
-						aObjectList.add(tempList.remove(i-1));
-						i = tempList.size();
-					}
+				if (tempList.get(i-1).equals(wdp.getPattern())) {
+					descriptor = tempList.remove(i-1);
+					description.add(descriptor);
+					i = tempList.size();
 				}
-				
 				i = i + 1;
 			}
+			
 		}
 		if (!(leftOvers.isEmpty()))
-			aObjectList.addAll(leftOvers);
+			description.addAll(leftOvers);
 
 		// Determine the percentage of processed elements and return the processed list
 		this.setPercentageItemsProcessed(numProcessedElts / numElements);
-		return aObjectList;
+		return description;
 	}
 }

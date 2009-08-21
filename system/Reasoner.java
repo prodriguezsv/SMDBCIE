@@ -1096,10 +1096,10 @@ public class Reasoner {
 		
 		hb = this.getHintsBase();
 		
-		if (!(hb.getWeightedPatternsList().sortBySuccessCriteria((List)this.getGroupHDescription()).isEmpty()))
+		if (!(hb.getWeightedPatternsList().sortByMeanWeightCriteria((List)this.getGroupHDescription()).isEmpty()))
 			if (hb.getWeightedPatternsList().getPercentageItemsProcessed() > 0.0) return false;
 
-		hb.getFreqGrpHeuristicList().sortBySuccessCriteria(this.getGroupHDescription());
+		hb.getFreqGrpHeuristicList().sortByMeanWeightCriteria(this.getGroupHDescription());
 		
 		return true;
 	}
@@ -1121,7 +1121,7 @@ public class Reasoner {
 		
 		hb = this.getHintsBase();
 
-		if (!(hb.getWeightedStructList().sortBySuccessCriteria((List)this.getStructDescription()).isEmpty()))
+		if (!(hb.getWeightedStructList().sortByMeanWeightCriteria((List)this.getStructDescription()).isEmpty()))
 				if (hb.getWeightedStructList().getPercentageItemsProcessed() > 0.0) return false;
 		
 		if (!(hb.getPatternsbyStructureList().sortBySuccessFrecuencyCriteria(this.getStructDescription()).isEmpty()))
@@ -1131,7 +1131,7 @@ public class Reasoner {
 			hb.getSpecStructAttrList().resetPercentageItemsProcessed();
 
 			s = this.getStructDescription().get(i-1);
-			hb.getSpecStructAttrList().sortBySuccessCriteria(s);
+			hb.getSpecStructAttrList().sortByMeanWeightCriteria(s);
 		}
 		
 		return true;
