@@ -8,14 +8,15 @@ package ontology.taxonomy.test;
 import java.util.ArrayList;
 import java.util.List;
 import ontology.common.Attribute;
+import ontology.common.CharacterDescriptor;
 import ontology.common.GroupingHeuristic;
+import ontology.common.HeuristicDescriptor;
 import ontology.common.Structure;
-import ontology.taxonomy.GroupingHeuristicIndex;
-import ontology.taxonomy.StructureIndex;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
 import ontology.values.RangeValue;
 import ontology.values.SingleValue;
+import ontology.values.Values;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -94,52 +95,51 @@ s attribute: a.
 t1 SAVdescription: s.
 */
 
-        StructureIndex aStructureIndex = new StructureIndex();
-        Structure aStructure = new Structure();
-        aStructure.setName("cuerpo");
-        aStructure.setWeight(1.0);
-
-        Attribute aAttribute = new Attribute();
-        aAttribute.setName("forma");
+        CharacterDescriptor aCDescriptor = new CharacterDescriptor();
+        aCDescriptor.setStructure("cuerpo");
+        aCDescriptor.setAttribute("forma");
 
         SingleValue aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("alargado");
-        aSingleDescriptor.setWeight(0.8);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
+
+        Values aValues = new Values();
 
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("ovalado");
-        aSingleDescriptor.setWeight(0.1);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        aStructure.addAttribute(aAttribute);
-        aStructureIndex.add(aStructure);
+        aValues.addValueDescriptor(aSingleDescriptor, TaxonomicRank.FAMILY);
+        aCDescriptor.setValue(aValues);
 
-        aAttribute = new Attribute();
-        aAttribute.setName("longitud");
+        taxon1.addToDescription(aCDescriptor);
+        
+        aCDescriptor = new CharacterDescriptor();
+        aCDescriptor.setStructure("cuerpo");
+        aCDescriptor.setAttribute("longitud");
+
+        aValues = new Values();
 
         RangeValue aRangeDescriptor = new RangeValue();
         aRangeDescriptor.setLowerBound(0.3);
         aRangeDescriptor.setUpperBound(4.0);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aRangeDescriptor, TaxonomicRank.FAMILY);
 
-        aStructure.addAttribute(aAttribute);
-        aStructureIndex.add(aStructure);
+        aValues.addValueDescriptor(aRangeDescriptor, TaxonomicRank.FAMILY);
+        aCDescriptor.setValue(aValues);
 
-        aAttribute = new Attribute();
-        aAttribute.setName("conformacion");
-        
+        taxon1.addToDescription(aCDescriptor);
+
+        aCDescriptor = new CharacterDescriptor();
+        aCDescriptor.setStructure("cuerpo");
+        aCDescriptor.setAttribute("conformacion");
+
+        aValues = new Values();
+
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("tiene_cerata");
-        aSingleDescriptor.setWeight(1.0);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        aStructure.addAttribute(aAttribute);
-        aStructureIndex.add(aStructure);
-        
-        taxon1.setDescription(aStructureIndex);
+        aValues.addValueDescriptor(aSingleDescriptor, TaxonomicRank.FAMILY);
+        aCDescriptor.setValue(aValues);
 
-
+        taxon1.addToDescription(aCDescriptor);
 /*
 "-----------------------Structure No. 2---------------------"
 s := Structure new.
@@ -169,43 +169,44 @@ vd weight: 0.2.
 s attribute: a.
 t1 SAVdescription: s.*/
 
-        aStructureIndex = new StructureIndex();
-        aStructure = new Structure();
-        aStructure.setName("pie");
-        aStructure.setWeight(0.8);
+        aCDescriptor = new CharacterDescriptor();
+        aCDescriptor.setStructure("pie");
+        aCDescriptor.setAttribute("disposicion");
 
-        aAttribute = new Attribute();
-        aAttribute.setName("disposicion");
+        aValues = new Values();
 
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("sobresale_al_manto");
-        aSingleDescriptor.setWeight(0.8);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        aStructure.addAttribute(aAttribute);
-        aStructureIndex.add(aStructure);
+        aValues.addValueDescriptor(aSingleDescriptor, TaxonomicRank.FAMILY);
+        aCDescriptor.setValue(aValues);
 
-        aAttribute = new Attribute();
-        aAttribute.setName("coloracion");
+        taxon1.addToDescription(aCDescriptor);
+
+        aCDescriptor = new CharacterDescriptor();
+        aCDescriptor.setStructure("pie");
+        aCDescriptor.setAttribute("coloracion");
+
+        aValues = new Values();
 
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("blanquecino");
-        aSingleDescriptor.setWeight(0.7);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
+
+        aValues.addValueDescriptor(aSingleDescriptor, TaxonomicRank.FAMILY);
+
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("crema");
-        aSingleDescriptor.setWeight(0.7);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
+
+        aValues.addValueDescriptor(aSingleDescriptor, TaxonomicRank.FAMILY);
+
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("gris_oscuro_casi_negro");
-        aSingleDescriptor.setWeight(0.2);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        aStructure.addAttribute(aAttribute);
-        aStructureIndex.add(aStructure);
+        aValues.addValueDescriptor(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        taxon1.setDescription(aStructureIndex);
+        aCDescriptor.setValue(aValues);
 
+        taxon1.addToDescription(aCDescriptor);
 
 /*
 "-----------------------Structure No. 3---------------------"
@@ -245,61 +246,72 @@ vd weight: 0.4.
 (a values) valueDescriptorWithUniqueValue: vd for: Smalltalk.Attribute oneLevel.
 s attribute: a.
 t1 SAVdescription: s.*/
-        aStructureIndex = new StructureIndex();
-        aStructure = new Structure();
-        aStructure.setName("branquia");
 
-        aAttribute = new Attribute();
-        aAttribute.setName("posicion_durante_desplazamiento");
+        aCDescriptor = new CharacterDescriptor();
+        aCDescriptor.setStructure("branquia");
+        aCDescriptor.setAttribute("posicion_durante_desplazamiento");
+
+        aValues = new Values();
 
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("hacia_atras");
-        aSingleDescriptor.setWeight(0.8);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        aStructure.addAttribute(aAttribute);
-        aStructureIndex.add(aStructure);
+        aValues.addValueDescriptor(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        aAttribute = new Attribute();
-        aAttribute.setName("posicion_del_ano_con_respecto_a_la_branquia");
+        aCDescriptor.setValue(aValues);
+
+        taxon1.addToDescription(aCDescriptor);
+
+        aCDescriptor = new CharacterDescriptor();
+        aCDescriptor.setStructure("branquia");
+        aCDescriptor.setAttribute("posicion_del_ano_con_respecto_a_la_branquia");
+
+        aValues = new Values();
 
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("en_el_centro");
-        aSingleDescriptor.setWeight(0.8);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        aStructure.addAttribute(aAttribute);
-        aStructureIndex.add(aStructure);
+        aValues.addValueDescriptor(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        aAttribute = new Attribute();
-        aAttribute.setName("numero_hojas_branquiales");
+        aCDescriptor.setValue(aValues);
+
+        taxon1.addToDescription(aCDescriptor);
+
+        aCDescriptor = new CharacterDescriptor();
+        aCDescriptor.setStructure("branquia");
+        aCDescriptor.setAttribute("numero_hojas_branquiales");
+
+        aValues = new Values();
 
         aRangeDescriptor = new RangeValue();
         aRangeDescriptor.setLowerBound(6.0);
         aRangeDescriptor.setUpperBound(9.0);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aRangeDescriptor, TaxonomicRank.FAMILY);
 
-        aStructure.addAttribute(aAttribute);
-        aStructureIndex.add(aStructure);
+        aValues.addValueDescriptor(aRangeDescriptor, TaxonomicRank.FAMILY);
 
-        aAttribute = new Attribute();
-        aAttribute.setName("forma_hojas_branquiales");
+        aCDescriptor.setValue(aValues);
+
+        taxon1.addToDescription(aCDescriptor);
+
+        aCDescriptor = new CharacterDescriptor();
+        aCDescriptor.setStructure("branquia");
+        aCDescriptor.setAttribute("numero_hojas_branquiales");
+
+        aValues = new Values();
 
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("bipinnada");
-        aSingleDescriptor.setWeight(0.6);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
+
+        aValues.addValueDescriptor(aSingleDescriptor, TaxonomicRank.FAMILY);
 
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("tripinnada");
-        aSingleDescriptor.setWeight(0.4);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        aStructure.addAttribute(aAttribute);
-        aStructureIndex.add(aStructure);
+        aValues.addValueDescriptor(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        taxon1.setDescription(aStructureIndex);
+        aCDescriptor.setValue(aValues);
 
+        taxon1.addToDescription(aCDescriptor);
 /*"-----------------------Structure No. 4---------------------"
 s := Structure new.
 s name: #manto.
@@ -329,50 +341,56 @@ vd weight: 0.7.
 (a values) valueDescriptorWithUniqueValue: vd for: Smalltalk.Attribute oneLevel.
 s attribute: a.
 t1 SAVdescription: s.*/
-        aStructureIndex = new StructureIndex();
-        aStructure = new Structure();
-        aStructure.setName("manto");
 
-        aAttribute = new Attribute();
-        aAttribute.setName("textura");
+        aCDescriptor = new CharacterDescriptor();
+        aCDescriptor.setStructure("manto");
+        aCDescriptor.setAttribute("textura");
+
+        aValues = new Values();
 
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("lisa");
-        aSingleDescriptor.setWeight(0.8);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
+
+        aValues.addValueDescriptor(aSingleDescriptor, TaxonomicRank.FAMILY);
 
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("con_tuberculos");
-        aSingleDescriptor.setWeight(0.4);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        aStructure.addAttribute(aAttribute);
-        aStructureIndex.add(aStructure);
-        
-        aAttribute = new Attribute();
-        aAttribute.setName("forma_del_borde");
+        aValues.addValueDescriptor(aSingleDescriptor, TaxonomicRank.FAMILY);
+
+        aCDescriptor.setValue(aValues);
+
+        taxon1.addToDescription(aCDescriptor);
+
+        aCDescriptor = new CharacterDescriptor();
+        aCDescriptor.setStructure("manto");
+        aCDescriptor.setAttribute("forma_del_borde");
+
+        aValues = new Values();
 
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("ondulado");
-        aSingleDescriptor.setWeight(0.3);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        aStructure.addAttribute(aAttribute);
-        aStructureIndex.add(aStructure);
+        aValues.addValueDescriptor(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        aAttribute = new Attribute();
-        aAttribute.setName("textura_del_borde");
+        aCDescriptor.setValue(aValues);
+
+        taxon1.addToDescription(aCDescriptor);
+
+        aCDescriptor = new CharacterDescriptor();
+        aCDescriptor.setStructure("manto");
+        aCDescriptor.setAttribute("textura_del_borde");
+
+        aValues = new Values();
 
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("lisa");
-        aSingleDescriptor.setWeight(0.7);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        aStructure.addAttribute(aAttribute);
-        aStructureIndex.add(aStructure);
+        aValues.addValueDescriptor(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        taxon1.setDescription(aStructureIndex);
+        aCDescriptor.setValue(aValues);
 
+        taxon1.addToDescription(aCDescriptor);
 /*"-----------------------Structure No. 5---------------------"
 s := Structure new.
 s name: #glandulas_del_manto.
@@ -392,34 +410,31 @@ vd weight: 0.4.
 (a values) valueDescriptorWithUniqueValue: vd for: Smalltalk.Attribute oneLevel.
 s attribute: a.
 t1 SAVdescription: s.*/
-        aStructureIndex = new StructureIndex();
-        aStructure = new Structure();
-        aStructure.setName("glandulas_del_manto");
 
-        aAttribute = new Attribute();
-        aAttribute.setName("posicion");
+        aCDescriptor = new CharacterDescriptor();
+        aCDescriptor.setStructure("glandulas_del_manto");
+        aCDescriptor.setAttribute("posicion");
+
+        aValues = new Values();
 
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("delante");
-        aSingleDescriptor.setWeight(0.2);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
+
+        aValues.addValueDescriptor(aSingleDescriptor, TaxonomicRank.FAMILY);
 
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("delante_y_atras");
-        aSingleDescriptor.setWeight(0.2);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
+
+        aValues.addValueDescriptor(aSingleDescriptor, TaxonomicRank.FAMILY);
 
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("alrededor_del_manto");
-        aSingleDescriptor.setWeight(0.4);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        aStructure.addAttribute(aAttribute);
-        aStructureIndex.add(aStructure);
+        aValues.addValueDescriptor(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        taxon1.setDescription(aStructureIndex);
+        aCDescriptor.setValue(aValues);
 
-        
+        taxon1.addToDescription(aCDescriptor);
 /*"-----------------------Structure No. 6---------------------"
 s := Structure new.
 s name: #rinoforos.
@@ -439,33 +454,37 @@ vd upperBound: 20.
 (a values) valueDescriptorWithUniqueValue: vd for: Smalltalk.Attribute oneLevel.
 s attribute: a.
 t1 SAVdescription: s.*/
-        aStructureIndex = new StructureIndex();
-        aStructure = new Structure();
-        aStructure.setName("rinoforos");
 
-        aAttribute = new Attribute();
-        aAttribute.setName("forma");
+        aCDescriptor = new CharacterDescriptor();
+        aCDescriptor.setStructure("rinoforos");
+        aCDescriptor.setAttribute("forma");
+
+        aValues = new Values();
 
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("laminados");
-        aSingleDescriptor.setWeight(1.0);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        aStructure.addAttribute(aAttribute);
-        aStructureIndex.add(aStructure);
+        aValues.addValueDescriptor(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        aAttribute = new Attribute();
-        aAttribute.setName("numero_de_laminillas");
+        aCDescriptor.setValue(aValues);
+
+        taxon1.addToDescription(aCDescriptor);
+
+        aCDescriptor = new CharacterDescriptor();
+        aCDescriptor.setStructure("rinoforos");
+        aCDescriptor.setAttribute("numero_de_laminillas");
+
+        aValues = new Values();
 
         aRangeDescriptor = new RangeValue();
         aRangeDescriptor.setLowerBound(6.0);
         aRangeDescriptor.setUpperBound(20.0);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aRangeDescriptor, TaxonomicRank.FAMILY);
 
-        aStructure.addAttribute(aAttribute);
-        aStructureIndex.add(aStructure);
+        aValues.addValueDescriptor(aRangeDescriptor, TaxonomicRank.FAMILY);
 
-        taxon1.setDescription(aStructureIndex);
+        aCDescriptor.setValue(aValues);
+
+        taxon1.addToDescription(aCDescriptor);
 
 /*"-----------------------Structure No. 7---------------------"
 s := Structure new.
@@ -482,29 +501,31 @@ vd weight: 0.2.
 (a values) valueDescriptorWithUniqueValue: vd for: Smalltalk.Attribute oneLevel.
 s attribute: a.
 t1 SAVdescription: s.*/
+        aCDescriptor = new CharacterDescriptor();
+        aCDescriptor.setStructure("tentaculos_orales");
+        aCDescriptor.setAttribute("contextura");
 
-        aStructureIndex = new StructureIndex();
-        aStructure = new Structure();
-        aStructure.setName("tentaculos_orales");
-
-        aAttribute = new Attribute();
-        aAttribute.setName("contextura");
+        aValues = new Values();
 
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("macizo");
-        aSingleDescriptor.setWeight(0.7);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
+
+        aValues.addValueDescriptor(aSingleDescriptor, TaxonomicRank.FAMILY);
+        
+        aSingleDescriptor = new SingleValue();
+        aSingleDescriptor.setValue("macizo");
+
+        aValues.addValueDescriptor(aSingleDescriptor, TaxonomicRank.FAMILY);
 
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("surcado");
-        aSingleDescriptor.setWeight(0.2);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        aStructure.addAttribute(aAttribute);
-        aStructureIndex.add(aStructure);
+        aValues.addValueDescriptor(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        taxon1.setDescription(aStructureIndex);
-        
+        aCDescriptor.setValue(aValues);
+
+        taxon1.addToDescription(aCDescriptor);
+
 /*"-----------------------Grouping Heuristic No. 1---------------------"
 gh := GroupingHeuristic newWithOneLevel.
 gh name: #alimenatcion.
@@ -514,18 +535,10 @@ vd value: #esponjas.
 vd weight: 1.0.
 (gh values) valueDescriptorWithUniqueValue: vd for: GroupingHeuristic oneLevel.
 t1 GHdescription: gh.*/
-        GroupingHeuristicIndex aGroupingHeuristicIndex = new GroupingHeuristicIndex();
-        GroupingHeuristic aGroupingHeuristic = new GroupingHeuristic();
-        aGroupingHeuristic.setName("alimenatcion");
-        aGroupingHeuristic.setWeight(1.0);
-    
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("esponjas");
-        aSingleDescriptor.setWeight(1.0);
-        aGroupingHeuristic.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        aGroupingHeuristicIndex.addGroupingHeuristic(aGroupingHeuristic);
-        taxon1.setGHDescription(aGroupingHeuristicIndex);
+        taxon1.addToDescription(new HeuristicDescriptor ("","alimenatcion",aSingleDescriptor));
 /*"-----------------------Grouping Heuristic No. 2---------------------"
 gh := GroupingHeuristic newWithOneLevel.
 gh name: #profundidad_donde_se_encuentra.
@@ -536,19 +549,11 @@ vd lowerBound: 0.
 vd upperBound: 20.
 (gh values) valueDescriptorWithUniqueValue: vd for: GroupingHeuristic oneLevel.
 t1 GHdescription: gh.*/
-        aGroupingHeuristicIndex = new GroupingHeuristicIndex();
-        aGroupingHeuristic = new GroupingHeuristic();
-        aGroupingHeuristic.setName("profundidad_donde_se_encuentra");
-        aGroupingHeuristic.setWeight(1.0);
-
-
         aRangeDescriptor = new RangeValue();
         aRangeDescriptor.setLowerBound(0.0);
         aRangeDescriptor.setUpperBound(20.0);
-        aGroupingHeuristic.getValues().addValueDescriptorWithUniqueValue(aRangeDescriptor, TaxonomicRank.FAMILY);
 
-        aGroupingHeuristicIndex.addGroupingHeuristic(aGroupingHeuristic);
-        taxon1.setGHDescription(aGroupingHeuristicIndex);
+        taxon1.addToDescription(new HeuristicDescriptor ("","profundidad_donde_se_encuentra",aRangeDescriptor));
 /*"-----------------------Grouping Heuristic No. 3---------------------"
 gh := GroupingHeuristic newWithOneLevel.
 gh name: #medio_de_preservacion_tenido.
@@ -567,29 +572,20 @@ vd weight: 0.2.
 (gh values) valueDescriptorWithUniqueValue: vd for: GroupingHeuristic oneLevel.
 t1 GHdescription: gh.
 */
-        aGroupingHeuristicIndex = new GroupingHeuristicIndex();
-        aGroupingHeuristic = new GroupingHeuristic();
-        aGroupingHeuristic.setName("medio_de_preservacion_tenido");
-        aGroupingHeuristic.setWeight(1.0);
-
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("azul_marino");
-        aSingleDescriptor.setWeight(1.0);
-        aGroupingHeuristic.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
+
+        taxon1.addToDescription(new HeuristicDescriptor ("","medio_de_preservacion_tenido",aRangeDescriptor));
 
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("celeste");
-        aSingleDescriptor.setWeight(1.0);
-        aGroupingHeuristic.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
+
+        taxon1.addToDescription(new HeuristicDescriptor ("","medio_de_preservacion_tenido",aRangeDescriptor));
 
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("amarillento");
-        aSingleDescriptor.setWeight(0.2);
-        aGroupingHeuristic.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.FAMILY);
 
-        aGroupingHeuristicIndex.addGroupingHeuristic(aGroupingHeuristic);
-        taxon1.setGHDescription(aGroupingHeuristicIndex);
-
+        taxon1.addToDescription(new HeuristicDescriptor ("","medio_de_preservacion_tenido",aRangeDescriptor));
 /*" +++++++++++++++++++++++++++++++++++++ Taxon No. 2 +++++++++++++++++++++++++++++++++++++ "
 t2 := Taxon new.
 t2 name: #Chromodoris.
@@ -623,46 +619,50 @@ vd weight: 0.6.
 (a values) valueDescriptorWithUniqueValue: vd for: Smalltalk.Attribute oneLevel.
 s attribute: a.
 t2 SAVdescription: s.*/
-        aStructureIndex = new StructureIndex();
-        aStructure = new Structure();
-        aStructure.setName("cuerpo");
-        aStructure.setWeight(1.0);
+        aCDescriptor = new CharacterDescriptor();
+        aCDescriptor.setStructure("cuerpo");
+        aCDescriptor.setAttribute("posicion_de_la_banda_dorsal_continua");
 
-        aAttribute = new Attribute();
-        aAttribute.setName("posicion_de_la_banda_dorsal_continua");
+        aValues = new Values();
 
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("centro");
-        aSingleDescriptor.setWeight(1.0);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.GENUS);
 
-        aStructure.addAttribute(aAttribute);
-        aStructureIndex.add(aStructure);
+        aValues.addValueDescriptor(aSingleDescriptor, TaxonomicRank.GENUS);
 
-        aAttribute = new Attribute();
-        aAttribute.setName("coloracion");
+        aCDescriptor.setValue(aValues);
+
+        taxon2.addToDescription(aCDescriptor);
+
+        aCDescriptor = new CharacterDescriptor();
+        aCDescriptor.setStructure("cuerpo");
+        aCDescriptor.setAttribute("coloracion");
+
+        aValues = new Values();
 
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("brillante_azul_rojo_blanco_anaranjado_purpura");
-        aSingleDescriptor.setWeight(1.0);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.GENUS);
 
-        aStructure.addAttribute(aAttribute);
-        aStructureIndex.add(aStructure);
+        aValues.addValueDescriptor(aSingleDescriptor, TaxonomicRank.GENUS);
 
-        aAttribute = new Attribute();
-        aAttribute.setName("forma_ventral");
+        aCDescriptor.setValue(aValues);
+
+        taxon2.addToDescription(aCDescriptor);
+
+        aCDescriptor = new CharacterDescriptor();
+        aCDescriptor.setStructure("cuerpo");
+        aCDescriptor.setAttribute("forma_ventral");
+
+        aValues = new Values();
 
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("aplanado");
-        aSingleDescriptor.setWeight(0.6);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.GENUS);
 
-        aStructure.addAttribute(aAttribute);
-        aStructureIndex.add(aStructure);
+        aValues.addValueDescriptor(aSingleDescriptor, TaxonomicRank.GENUS);
 
-        taxon2.setDescription(aStructureIndex);
+        aCDescriptor.setValue(aValues);
 
+        taxon2.addToDescription(aCDescriptor);
 /*"-----------------------Structure No. 2---------------------"
 s := Structure new.
 s name: #manto.
@@ -682,35 +682,36 @@ vd weight: 0.8.
 (a values) valueDescriptorWithUniqueValue: vd for: Smalltalk.Attribute oneLevel.
 s attribute: a.
 t2 SAVdescription: s.*/
-        aStructureIndex = new StructureIndex();
-        aStructure = new Structure();
-        aStructure.setName("manto");
-        aStructure.setWeight(0.8);
 
-        aAttribute = new Attribute();
-        aAttribute.setName("forma");
+        aCDescriptor = new CharacterDescriptor();
+        aCDescriptor.setStructure("manto");
+        aCDescriptor.setAttribute("forma");
+
+        aValues = new Values();
 
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("elongado_y_ovalado");
-        aSingleDescriptor.setWeight(0.7);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.GENUS);
 
-        aStructure.addAttribute(aAttribute);
-        aStructureIndex.add(aStructure);
+        aValues.addValueDescriptor(aSingleDescriptor, TaxonomicRank.GENUS);
 
-        aAttribute = new Attribute();
-        aAttribute.setName("contextura");
+        aCDescriptor.setValue(aValues);
+
+        taxon2.addToDescription(aCDescriptor);
+
+        aCDescriptor = new CharacterDescriptor();
+        aCDescriptor.setStructure("manto");
+        aCDescriptor.setAttribute("contextura");
+
+        aValues = new Values();
 
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("con_glandulas");
-        aSingleDescriptor.setWeight(0.8);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.GENUS);
 
-        aStructure.addAttribute(aAttribute);
-        aStructureIndex.add(aStructure);
+        aValues.addValueDescriptor(aSingleDescriptor, TaxonomicRank.GENUS);
 
-        taxon2.setDescription(aStructureIndex);
+        aCDescriptor.setValue(aValues);
 
+        taxon2.addToDescription(aCDescriptor);
 /*"-----------------------Structure No. 3---------------------"
 s := Structure new.
 s name: #radula.
@@ -731,38 +732,36 @@ vd weight: 0.5.
 s attribute: a.
 t2 SAVdescription: s.
 */
-        aStructureIndex = new StructureIndex();
-        aStructure = new Structure();
-        aStructure.setName("radula");
-        aStructure.setWeight(0.3);
 
-        aAttribute = new Attribute();
-        aAttribute.setName("forma_de_los_dientes");
+        aCDescriptor = new CharacterDescriptor();
+        aCDescriptor.setStructure("radula");
+        aCDescriptor.setAttribute("forma_de_los_dientes");
+
+        aValues = new Values();
 
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("denticulados");
-        aSingleDescriptor.setWeight(1.0);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.GENUS);
 
-        aStructure.addAttribute(aAttribute);
-        aStructureIndex.add(aStructure);
+        aValues.addValueDescriptor(aSingleDescriptor, TaxonomicRank.GENUS);
 
-        aAttribute = new Attribute();
-        aAttribute.setName("posicion_del_diente_mas_conspicuo");
+        aCDescriptor.setValue(aValues);
+
+        taxon2.addToDescription(aCDescriptor);
+
+        aCDescriptor = new CharacterDescriptor();
+        aCDescriptor.setStructure("radula");
+        aCDescriptor.setAttribute("posicion_del_diente_mas_conspicuo");
+
+        aValues = new Values();
 
         aSingleDescriptor = new SingleValue();
         aSingleDescriptor.setValue("centro");
-        aSingleDescriptor.setWeight(0.5);
-        aAttribute.getValues().addValueDescriptorWithUniqueValue(aSingleDescriptor, TaxonomicRank.GENUS);
 
-        aStructure.addAttribute(aAttribute);
-        aStructureIndex.add(aStructure);
+        aValues.addValueDescriptor(aSingleDescriptor, TaxonomicRank.GENUS);
 
-        taxon2.setDescription(aStructureIndex);
+        aCDescriptor.setValue(aValues);
 
-
-
-
+        taxon2.addToDescription(aCDescriptor);
 
 
         taxon3.setName("Chromodoris_sphoni");

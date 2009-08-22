@@ -80,7 +80,7 @@ public class GroupingHeuristic implements Comparable<GroupingHeuristic> {
 	 * Método de intancia agregado
 	 * @param values
 	 */
-	private void setValues(Values values) {
+	public void setValues(Values values) {
 		this.values = values;
 	}
 
