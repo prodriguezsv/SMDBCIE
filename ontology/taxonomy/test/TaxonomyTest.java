@@ -6,8 +6,7 @@
 package ontology.taxonomy.test;
 
 import java.util.List;
-import ontology.taxonomy.GroupingHeuristicIndex;
-import ontology.taxonomy.StructureIndex;
+import ontology.taxonomy.DescriptorsIndex;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
 import ontology.taxonomy.Taxonomy;
@@ -44,20 +43,46 @@ public class TaxonomyTest {
     }
 
     /**
-     * Test of getGroupingHeuristicIndex method, of class Taxonomy.
+     * Test of getDescriptorsIndex method, of class Taxonomy.
      */
     @Test
-    public void testGetGroupingHeuristicIndex() {
-        System.out.println("getGroupingHeuristicIndex");
+    public void testGetDescriptorsIndex() {
+        System.out.println("getDescriptorsIndex");
         Taxonomy instance = new Taxonomy();
-        GroupingHeuristicIndex expResult = null;
-        GroupingHeuristicIndex result = instance.getGroupingHeuristicIndex();
+        DescriptorsIndex expResult = null;
+        DescriptorsIndex result = instance.getDescriptorsIndex();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
+    /**
+     * Test of getLevelIndex method, of class Taxonomy.
+     */
+    @Test
+    public void testGetLevelIndex() {
+        System.out.println("getLevelIndex");
+        Taxonomy instance = new Taxonomy();
+        List expResult = null;
+        List result = instance.getLevelIndex();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
 
+    /**
+     * Test of getRootTaxon method, of class Taxonomy.
+     */
+    @Test
+    public void testGetRootTaxon() {
+        System.out.println("getRootTaxon");
+        Taxonomy instance = new Taxonomy();
+        Taxon expResult = null;
+        Taxon result = instance.getRootTaxon();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
 
     /**
      * Test of getTaxonListFromLevelIndex method, of class Taxonomy.
