@@ -38,7 +38,7 @@ public class SpecificPatternsbyStructureList extends HintsList<SpecificPatternsb
 		if (patterns == null)
 			return false;
 		
-		if (patterns.getSpecificDescriptorPatterns().isEmpty())
+		if (patterns.getPatterns().isEmpty())
 			return false;
 		
 		if (!(this.contains(patterns))) {
@@ -48,7 +48,7 @@ public class SpecificPatternsbyStructureList extends HintsList<SpecificPatternsb
 		
 		spbs = this.getSpecificPatternbyStructure(patterns.getStructureName());
 		
-		for (SpecificDescriptorPattern sdp:patterns.getSpecificDescriptorPatterns())
+		for (SpecificDescriptorPattern sdp:patterns.getPatterns())
 			spbs.addPattern(sdp);
 		
 		return true;
@@ -142,7 +142,6 @@ public class SpecificPatternsbyStructureList extends HintsList<SpecificPatternsb
 		SpecificDescriptorPattern sdp;
 		int numElements, numProcessedElts, i;
 		
-		
 		// First thing is to set the number of processed items to 0
 		this.resetPercentageItemsProcessed();
 
@@ -164,7 +163,7 @@ public class SpecificPatternsbyStructureList extends HintsList<SpecificPatternsb
 
 		while (!(outList.isEmpty())) {
 			descriptor = outList.remove(0);
-			if ((sdp = spbs.getSpecificDescriptorPattern(descriptor.getAttribute())) == null)			
+			if ((sdp = spbs.getPattern(descriptor)) == null)			
 				leftOvers.add(descriptor);
 			else {
 				tempList.add(descriptor);
@@ -189,7 +188,8 @@ public class SpecificPatternsbyStructureList extends HintsList<SpecificPatternsb
 			}
 		}
 		
-		outList.addAll(leftOvers); 
+		if (!(leftOvers.isEmpty()))
+			outList.addAll(leftOvers); 
 
 		// Determine the percentage of processed elements and return the processed list
 		this.setPercentageItemsProcessed(numProcessedElts / numElements);

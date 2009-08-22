@@ -56,7 +56,7 @@ public class PatternsbyStructureTest {
 	 */
 	@After
 	public void tearDown() throws Exception {
-		patternsbyStructure.getDescriptorsPatterns().clear();
+		patternsbyStructure.getPatterns().clear();
 	}
 
 	/**
@@ -85,14 +85,14 @@ public class PatternsbyStructureTest {
 		dl = new ArrayList<Descriptor<Object>>();
 		dl.add(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
 		dp = new DescriptorsPattern(dl, 10, 0);
-		pbs.getDescriptorsPatterns().clear();
+		pbs.getPatterns().clear();
 		pbs.addPattern(dp);
 		assertTrue(patternsbyStructure.compareTo(pbs) > 0);
 	
 		dl = new ArrayList<Descriptor<Object>>();
 		dl.add(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
 		dp = new DescriptorsPattern(dl, 0, 0);
-		pbs.getDescriptorsPatterns().clear();
+		pbs.getPatterns().clear();
 		pbs.addPattern(dp);
 		assertTrue(patternsbyStructure.compareTo(pbs) < 0);
 	}
@@ -114,13 +114,13 @@ public class PatternsbyStructureTest {
 		dl = new ArrayList<Descriptor<Object>>();
 		dl.add(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
 		assertTrue(patternsbyStructure.addPattern(new DescriptorsPattern(dl, 1, 0)));
-		assertTrue(patternsbyStructure.getDescriptorsPatterns().get(0).getSuccessFrequency() == 2);
+		assertTrue(patternsbyStructure.getPatterns().get(0).getSuccessFrequency() == 2);
 		
 		dl = new ArrayList<Descriptor<Object>>();
 		dl.add(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
 		dl.add(new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata"));
 		assertTrue(patternsbyStructure.addPattern(new DescriptorsPattern(dl, 10, 0)));
-		assertTrue(patternsbyStructure.getDescriptorsPatterns().get(0).getSuccessFrequency() == 10);
+		assertTrue(patternsbyStructure.getPatterns().get(0).getSuccessFrequency() == 10);
 		
 		System.out.println("Verificar que un patron de descriptores incompatible o incorrecto no se agrega");
 		assertFalse(patternsbyStructure.addPattern(null));
@@ -133,7 +133,7 @@ public class PatternsbyStructureTest {
 	}
 
 	/**
-	 * Test method for {@link searchHintsBase.elements.PatternsbyStructure#getDescriptorsPattern(java.util.List)}.
+	 * Test method for {@link searchHintsBase.elements.PatternsbyStructure#getPattern(java.util.List)}.
 	 */
 	@Test
 	public void testGetDescriptorsPattern() {
@@ -149,18 +149,18 @@ public class PatternsbyStructureTest {
 		dl.add(new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata"));
 		dp = new DescriptorsPattern(dl, 1, 0);
 		patternsbyStructure.addPattern(dp);
-		assertNotNull(patternsbyStructure.getDescriptorsPattern(dl));
-		assertSame(dp, patternsbyStructure.getDescriptorsPattern(dl));
+		assertNotNull(patternsbyStructure.getPattern(dl));
+		assertSame(dp, patternsbyStructure.getPattern(dl));
 		
 		System.out.println("Verificar que se obtiene null con una lista de descriptores especificado");
-		assertNull(patternsbyStructure.getDescriptorsPattern(null));
+		assertNull(patternsbyStructure.getPattern(null));
 		
 		dl = new ArrayList<Descriptor<Object>>();
 		dl.add(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
-		assertNull(patternsbyStructure.getDescriptorsPattern(dl));
+		assertNull(patternsbyStructure.getPattern(dl));
 		
 		dl.clear();
-		assertNull(patternsbyStructure.getDescriptorsPattern(dl));
+		assertNull(patternsbyStructure.getPattern(dl));
 	}
 
 	/**

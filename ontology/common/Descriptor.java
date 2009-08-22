@@ -165,4 +165,8 @@ public abstract class Descriptor<T> implements Comparable<Descriptor<T>> {
 			return true;
 		else return false;
 	}
+	
+	public int hashCode(){
+		return this.getStructure().hashCode() + this.getAttribute().hashCode() + this.getValue().hashCode();
+	}
 }

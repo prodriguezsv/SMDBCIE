@@ -5,7 +5,7 @@ package searchHintsBase;
 
 import searchHintsBase.Lists.PatternsbyStructureList;
 import searchHintsBase.Lists.SpecificPatternsbyStructureList;
-import searchHintsBase.Lists.WeightedPatternsList;
+import searchHintsBase.Lists.WeightedPatternsbyStructureList;
 
 /**
  * @author Armando
@@ -14,7 +14,7 @@ import searchHintsBase.Lists.WeightedPatternsList;
 public class HintsBase {
 	private PatternsbyStructureList patternsbyStructureList;
 	private SpecificPatternsbyStructureList specStructAttrList;
-	private WeightedPatternsList weightedPatternsList;
+	private WeightedPatternsbyStructureList weightedPatternsList;
 
 	/**
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
@@ -28,7 +28,7 @@ public class HintsBase {
 		this.setSpecificPatternsbyStructureList(new SpecificPatternsbyStructureList());
 
 		// This list must contain objects of class: WeightedStructureElt
-		this.setWeightedPatternsList(new WeightedPatternsList());
+		this.setWeightedPatternsList(new WeightedPatternsbyStructureList());
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class HintsBase {
 	 * @see "Método weightedGrpHeuristicList del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public WeightedPatternsList getWeightedPatternsList() {
+	public WeightedPatternsbyStructureList getWeightedPatternsList() {
 		return weightedPatternsList;
 	}
 
@@ -75,7 +75,7 @@ public class HintsBase {
 	 * Método de instancia agregado
 	 * @param weightedPatternsList
 	 */
-	public void setWeightedPatternsList(WeightedPatternsList weightedPatternsList) {
+	public void setWeightedPatternsList(WeightedPatternsbyStructureList weightedPatternsList) {
 		this.weightedPatternsList = weightedPatternsList;
 	}
 }

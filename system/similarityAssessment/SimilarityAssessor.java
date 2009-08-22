@@ -5,11 +5,11 @@ package system.similarityAssessment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import ontology.CBR.SimilarityDegree;
-import ontology.values.SingleValue;
-import ontology.values.Value;
 
 
 /**
@@ -25,38 +25,15 @@ public class SimilarityAssessor {
 	 * @param aValueWeightList
 	 * @return
 	 */
-	public static double distanceBetween(Object aValue1, Object aValue2, List<Value> aValueWeightList) {
-		double w1, w2;
+	public static double distanceBetween(Object aValue1, Object aValue2, Map<Object, Double> aValueWeightList) {
+		Double w1, w2;
 		
-		w1 = getTheWeightOf(aValue1, aValueWeightList);
-		// Ojo
-		if (w1 == -1) return -1;
+		w1 = aValueWeightList.get(aValue1);
 
-		w2 = getTheWeightOf(aValue2, aValueWeightList);
-		// Ojo
-		if (w2 == -1) return -1;
+		if ((w2 = aValueWeightList.get(aValue2)) == null)
+			return -1;
 		
-		// Ojo
 		return (Math.abs(Math.round(w1 * 100) - Math.round(w2 * 100)));
-	}
-	
-	/**
-	 * Returns the weight associated to aValue, if aValue exists in aValueWeightList.
-	 * If it doesn't exist, returns nil
-	 * @see "M&eacute;todo getTheWeightOf:in: del protocolo de clase class calculating en SUKIA SmallTalk"
-	 * @param aValue
-	 * @param aValueWeightList
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public static double getTheWeightOf(Object aValue, List<Value> aValueWeightList) {
-		for( Value v:aValueWeightList) {
-			if (v instanceof SingleValue)
-				if (((SingleValue<Object>)v).getValue().equals(aValue))
-					((SingleValue<Object>)v).getWeight();
-		}
-		
-		return -1;
 	}
 	
 	/**
@@ -65,10 +42,10 @@ public class SimilarityAssessor {
 	 * @param aValueWeightList
 	 * @return
 	 */
-	public static double similarityDegreeOf(Object aValue, List<Value> aValueWeightList) {
+	public static double similarityDegreeOf(Object aValue, Map<Object, Double> aValueWeightList) {
 		double d;
 		
-		d = distanceBetween(maxValueWeightOf(aValueWeightList).getValue(), aValue, aValueWeightList);
+		d = distanceBetween(maxValueWeightOf(aValueWeightList), aValue, aValueWeightList);
 		
 		if (d == -1) return -1;
 
@@ -81,15 +58,15 @@ public class SimilarityAssessor {
 	 * @param aValueWeightList
 	 * @return
 	 */
-	public static SimilarityDegree similarityRangeOf(Object aValue, List<Value> aValueWeightList) {
+	public static SimilarityDegree similarityRangeOf(Object aValue, Map<Object, Double> aValueWeightList) {
 		double sd, lb, ub;
-		List<ValuedRange> sr;
-		ValuedRange r;
+		List<SimilarityDegree> sr;
+		SimilarityDegree r;
 		
 		sd = similarityDegreeOf(aValue, aValueWeightList);
 		if (sd < 0) return SimilarityDegree.VALORNOCOMPARABLE;
 
-		sr = assignValuesUsing(aValueWeightList);
+		sr = assignValuesUsing(aValueWeightList.values());
 		
 		while (!(sr.isEmpty())) {
 			r = sr.remove(0);
@@ -97,7 +74,7 @@ public class SimilarityAssessor {
 			ub = r.getUpperBound();
 
 			if (sd >= lb && sd <= ub)
-				return r.getCategoria();
+				return r;
 		}
 		
 		return null;
@@ -108,47 +85,27 @@ public class SimilarityAssessor {
 	 * @param aValueWeightList
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	public static SingleValue<Object> maxValueWeightOf(List<Value> aValueWeightList) {
-		double maxWeight, w;
-		int idx;
-		
-		if (aValueWeightList.get(0) instanceof SingleValue)
-			maxWeight = ((SingleValue<Object>)aValueWeightList.get(0)).getWeight();
-		else maxWeight = -1;
-		
-		idx = 1;
+	public static Object maxValueWeightOf(Map<Object, Double> aValueWeightList) {
+		double maxWeight = 0;
+		Object idx = null;
 
-		for( int i = 2; i <= aValueWeightList.size(); i++) {
-			if (aValueWeightList.get(i-1) instanceof SingleValue)
-				w = ((SingleValue<Object>)aValueWeightList.get(i-1)).getWeight();
-			else w = -1;
-			
-			if (w > maxWeight)  idx = i-1 ;
-		}
+		for( Object key: aValueWeightList.keySet())
+			if ( aValueWeightList.get(key) > maxWeight)
+				idx = key ;
 
-		return (SingleValue<Object>)aValueWeightList.get(idx);
+		return aValueWeightList.get(idx);
 	}
 	
 	/**
 	 * @see "Mï¿½todo maxWeightOf: del protocolo de clase class weight assessment en SUKIA SmallTalk"
-	 * @param aValueWeightList
+	 * @param aWeightList
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	public static double maxWeightOf(List<Value> aValueWeightList) {
-		double maxWeight, w;
+	public static double maxWeightOf(Collection<Double> aWeightList) {
+		double maxWeight = 0;
 		
-		if (aValueWeightList.get(0) instanceof SingleValue)
-			maxWeight = ((SingleValue<Object>)aValueWeightList.get(0)).getWeight();
-		else maxWeight = -1;
-		
-		for( int i = 2; i <= aValueWeightList.size(); i++) {
-			if (aValueWeightList.get(i-1) instanceof SingleValue)
-				w = ((SingleValue<Object>)aValueWeightList.get(i-1)).getWeight();
-			else w = -1;
-			if (w > maxWeight) maxWeight = w;
-		}
+		for( Double weight: aWeightList)
+			if (weight > maxWeight) maxWeight = weight;
 		
 		return maxWeight;
 	}
@@ -161,24 +118,21 @@ public class SimilarityAssessor {
 	 * of floats (thus having a union of ranges from 0.0 to 1.0) is that floats
 	 * present a lot of (decimal digit) of precision problems.
 	 * see "Método assignValuesUsing del protocolo de clase class range-value assignment en SUKIA SmallTalk"
-	 * @param aValueWeightList
+	 * @param aWeightSet
 	 * @return
 	 */
-	public static List<ValuedRange> assignValuesUsing(List<Value> aValueWeightList) {
+	public static List<SimilarityDegree> assignValuesUsing(Collection<Double> aWeightSet) {
 		List<SimilarityDegree> rCopy;
-		List<ValuedRange> valuedRangesList;
-		ValuedRange vrInstance;
-		int p1, p2;
+		int p1, p2, size;
 		
 		// This algorithm will not work if self has less than 3 ranges defined
 		if (SimilarityDegree.values().length < 3) return null;
 
-		// Create the output list and make a copy of the ranges defines in self.
-		valuedRangesList = new ArrayList<ValuedRange>();
+		// Make a copy of the ranges defines in self.
 		rCopy = new ArrayList<SimilarityDegree>(Arrays.asList(SimilarityDegree.values()));
 
 		// Compute the upper value for the #diferente range name
-		p1 = (int) Math.round(SimilarityAssessor.maxWeightOf(aValueWeightList) * 100);
+		p1 = (int) Math.round(SimilarityAssessor.maxWeightOf(aWeightSet) * 100);
 		p1 = 100 - p1;
 
 		// Compute the length of each range
@@ -187,37 +141,26 @@ public class SimilarityAssessor {
 		/* Start with range name: #diferente.  This should always be the first range. The range values 
 		will go from 0 to p1. Once the range values have been established, increment p1 to be the 
 		start of the next range*/
-		vrInstance = new ValuedRange();
-		vrInstance.setLowerBound(0);
-		vrInstance.setLowerBound(p1);
-		vrInstance.setCategoria(rCopy.remove(0));
-		valuedRangesList.add(vrInstance);
+		rCopy.get(0).setLowerBound(0);
+		rCopy.get(0).setUpperBound(p1);		
 		p1 = p1 + 1;
 		
+		size = rCopy.size();
 		// So long as there are more than two range names, compute their associated range values
-		while (rCopy.size() > 2 ) {
-			vrInstance = new ValuedRange();
-			vrInstance.setLowerBound(p1);
-			vrInstance.setLowerBound(p1+p2);
-			vrInstance.setCategoria(rCopy.remove(0));
-			valuedRangesList.add(vrInstance);
+		for (int i = 1; i < size - 3; i++) {
+			rCopy.get(i).setLowerBound(p1);
+			rCopy.get(i).setUpperBound(p1+p2);
 			p1 = p1 + p2 + 1;
 		}
 		
-		// Compute the range values for the before-last range. Its upper bound will always be 99
-		vrInstance = new ValuedRange();
-		vrInstance.setLowerBound(p1);
-		vrInstance.setLowerBound(99);
-		vrInstance.setCategoria(rCopy.remove(0));
-		valuedRangesList.add(vrInstance);
+		rCopy.get(size - 3).setLowerBound(p1);
+		rCopy.get(size - 3).setUpperBound(99);
 		
 		// The last range name is always #igual.  Its values will always be the defaults 1.0 and 1.0
-		vrInstance = new ValuedRange();
-		vrInstance.setLowerBound(100);
-		vrInstance.setLowerBound(100);
-		vrInstance.setCategoria(rCopy.remove(0));
-		valuedRangesList.add(vrInstance);
+		// el [ultimo valor de rCopy es SimilarityDegree.VAlORNOCOMPARABLE
+		rCopy.get(size - 2).setLowerBound(100);
+		rCopy.get(size - 1).setUpperBound(100);
 		
-		return valuedRangesList; 
+		return rCopy; 
 	}
 }

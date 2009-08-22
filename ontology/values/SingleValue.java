@@ -54,4 +54,8 @@ public class SingleValue<E> extends Value{
 			return true;
 		else return false;
 	}
+	
+	public int hashCode(){
+		return this.getValue().hashCode() + this.getMeasuringUnit().hashCode();
+	}
 }

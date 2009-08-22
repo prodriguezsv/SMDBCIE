@@ -14,15 +14,6 @@ import ontology.common.Descriptor;
 public class SpecificDescriptorPattern implements Comparable<SpecificDescriptorPattern>{
 	private Descriptor<Object> pattern;
 	private int frequency;
-
-	/**
-	 * M&eacute;todo constructor altenativo
-	 * @see "M&eacute;todo initialize del protocolo initializing en SUKIA SmallTalk"
-	 */
-	public SpecificDescriptorPattern(Descriptor<Object> descriptor) {
-		setPattern(descriptor);
-		setFrequency(0);
-	}
 	
 	/**
 	 * M&eacute;todo constructor alternativo

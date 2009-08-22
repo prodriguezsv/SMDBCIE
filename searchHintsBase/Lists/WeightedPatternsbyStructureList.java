@@ -12,38 +12,37 @@ import java.util.List;
 import ontology.common.Descriptor;
 
 import searchHintsBase.Elements.WeightedDescriptorPattern;
+import searchHintsBase.Elements.WeightedPatternsbyStructure;
 
 /**
  * @author Armando
  *
  */
 @SuppressWarnings("serial")
-public class WeightedPatternsList extends HintsList<WeightedDescriptorPattern> {
+public class WeightedPatternsbyStructureList extends HintsList<WeightedPatternsbyStructure> {
 
 	/**
 	 * @see "M&eacute;todo add: del protocolo adding en SUKIA SmallTalk"
 	 * @return
 	 */
-	public boolean add(WeightedDescriptorPattern aPattern) {
-		WeightedDescriptorPattern wdp;
-		
-		if (aPattern == null)
-			return false;
-		
-		if (aPattern.getPattern()==null)
-			return false;
-		
-		if (aPattern.getAccumulatedWeight() <= 0)
-			return false;
+	public boolean add(WeightedPatternsbyStructure patterns) {
+		WeightedPatternsbyStructure wpbs;
 
-		if (!(this.contains(aPattern))) {
-			super.add(aPattern);
+		if (patterns == null)
+			return false;
+		
+		if (patterns.getPatterns().isEmpty())
+			return false;
+		
+		if (!(this.contains(patterns))) {
+			super.add(patterns);
 			return true;
 		}
 		
-		wdp = this.getWeightedDescriptorPattern(aPattern.getPattern());
-		wdp.incrementAccumulatedWeight(aPattern.getAccumulatedWeight());
-		wdp.incrementNumberTaxa();
+		wpbs = this.getPatterns(patterns.getStructureName());
+		
+		for (WeightedDescriptorPattern wdp:patterns.getPatterns())
+			wpbs.addPattern(wdp);
 
 		return true;
 	}
@@ -73,9 +72,24 @@ public class WeightedPatternsList extends HintsList<WeightedDescriptorPattern> {
 	 * @see "M&eacute;todo includes: del protocolo testing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public boolean contains(WeightedDescriptorPattern aPattern) {
-		for (WeightedDescriptorPattern wdp:this) {
-			if (wdp.getPattern().equals(aPattern.getPattern()))
+	public boolean contains(WeightedPatternsbyStructure aPattern) {		
+		for (WeightedPatternsbyStructure wpbs:this) {
+			if (wpbs.getStructureName().equals(aPattern.getStructureName()))
+				return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Determines if the argument's name (i.e., a Structure name or a SpecificStructureAttributeElt name)
+	 * is already included in self
+	 * @see "M&eacute;todo includes: del protocolo testing en SUKIA SmallTalk"
+	 * @return
+	 */
+	public boolean contains(String aName) {
+		for (WeightedPatternsbyStructure wpbs:this) {
+			if (wpbs.getStructureName().equals(aName))
 				return true;
 		}
 		
@@ -86,10 +100,11 @@ public class WeightedPatternsList extends HintsList<WeightedDescriptorPattern> {
 	 * Obtiene un patr&oacute;n espec&iacute;fico con nombre de estructura aStructureName
 	 * @return
 	 */
-	public WeightedDescriptorPattern getWeightedDescriptorPattern(Descriptor<Object> aDescriptor) {
-		for (WeightedDescriptorPattern wdp:this)
-			if (wdp.getPattern().equals(aDescriptor))
-				return wdp;
+	public WeightedPatternsbyStructure getPatterns(String aName) {
+		for (WeightedPatternsbyStructure wpbs:this) {
+			if (wpbs.getStructureName().equals(aName))
+				return wpbs;
+		}
 		
 		return null;
 	}
@@ -113,7 +128,8 @@ public class WeightedPatternsList extends HintsList<WeightedDescriptorPattern> {
 	@SuppressWarnings("unchecked")
 	private List<Descriptor<Object>> getSortedDescriptorsList(List<Descriptor<Object>> description, Comparator c) {
 		List<Descriptor<Object>> tempList, leftOvers;
-		WeightedPatternsList sortedList;
+		List<WeightedDescriptorPattern> sortedList;
+		WeightedPatternsbyStructure wpbs;
 		Descriptor<Object> descriptor;
 		WeightedDescriptorPattern wdp;
 		int numElements, numProcessedElts, i;
@@ -128,13 +144,15 @@ public class WeightedPatternsList extends HintsList<WeightedDescriptorPattern> {
 			return tempList;
 		
 		numElements = description.size();
-		sortedList = new WeightedPatternsList();
+		wpbs = this.getPatterns(description.get(0).getStructure());
+		if (wpbs == null) return tempList;
+		sortedList = new ArrayList<WeightedDescriptorPattern>();
 		
 		leftOvers = new ArrayList<Descriptor<Object>>();
 		
-		while (!(description.isEmpty())) {			
+		while (!(description.isEmpty())) {
 			descriptor = description.remove(0);
-			if ((wdp = this.getWeightedDescriptorPattern(descriptor)) == null)
+			if ((wdp = wpbs.getPattern(descriptor)) == null)
 				leftOvers.add(descriptor);
 			else {
 				tempList.add(descriptor);
@@ -146,11 +164,11 @@ public class WeightedPatternsList extends HintsList<WeightedDescriptorPattern> {
 		// Get the number of elements to be processed
 		numProcessedElts = tempList.size();
 
-		while (!(sortedList.isEmpty())) {
+		while (!(sortedList.isEmpty())) {		
 			wdp = sortedList.remove(0);
 			i = 1;
 			while (i <= tempList.size()) {
-				if (tempList.get(i-1).equals(wdp.getPattern())) {
+				if (tempList.get(i-1).getAttribute().equals(wdp.getPattern().getAttribute())) {
 					descriptor = tempList.remove(i-1);
 					description.add(descriptor);
 					i = tempList.size();
@@ -159,6 +177,7 @@ public class WeightedPatternsList extends HintsList<WeightedDescriptorPattern> {
 			}
 			
 		}
+				
 		if (!(leftOvers.isEmpty()))
 			description.addAll(leftOvers);
 

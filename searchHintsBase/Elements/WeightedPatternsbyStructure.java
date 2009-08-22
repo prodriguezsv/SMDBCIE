@@ -16,9 +16,9 @@ import ontology.common.Descriptor;
  * @author Armando
  *
  */
-public class SpecificPatternsbyStructure {
+public class WeightedPatternsbyStructure {
 	private String structureName;
-	private List<SpecificDescriptorPattern> patterns;
+	private List<WeightedDescriptorPattern> patterns;
 
 
 	/**
@@ -28,9 +28,9 @@ public class SpecificPatternsbyStructure {
 	 * (no ranges).
 	 * @see "M&eacute;todo initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public SpecificPatternsbyStructure(String structureName) {
+	public WeightedPatternsbyStructure(String structureName) {
 		setStructureName(structureName);
-		setPatterns(new ArrayList<SpecificDescriptorPattern>()); 
+		setPatterns(new ArrayList<WeightedDescriptorPattern>()); 
 	}
 
 	/**
@@ -55,7 +55,7 @@ public class SpecificPatternsbyStructure {
 	 * M&eacute;todo accesor de escritura
 	 * @param patterns
 	 */
-	public void setPatterns(List<SpecificDescriptorPattern> patterns) {
+	public void setPatterns(List<WeightedDescriptorPattern> patterns) {
 		this.patterns = patterns;
 	}
 
@@ -64,7 +64,7 @@ public class SpecificPatternsbyStructure {
 	 * @see "M&eacute;todo specificAttribute del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<SpecificDescriptorPattern> getPatterns() {
+	public List<WeightedDescriptorPattern> getPatterns() {
 		return patterns;
 	}
 	
@@ -76,8 +76,8 @@ public class SpecificPatternsbyStructure {
 	 * @param pattern
 	 * @return
 	 */
-	public boolean addPattern(SpecificDescriptorPattern pattern) {
-		SpecificDescriptorPattern sdp;
+	public boolean addPattern(WeightedDescriptorPattern pattern) {
+		WeightedDescriptorPattern wdp;
 		
 		if (pattern == null)
 			return false;
@@ -88,9 +88,13 @@ public class SpecificPatternsbyStructure {
 		if (!pattern.getPattern().getStructure().equals(this.getStructureName()))
 			return false;
 		
-		if ((sdp = this.getPattern(pattern.getPattern())) != null)
-			sdp.incrementFrequencyBy(pattern.getFrequency());
-		else {
+		if (pattern.getAccumulatedWeight() <= 0)
+			return false;
+		
+		if ((wdp = this.getPattern(pattern.getPattern())) != null) {
+			wdp.incrementAccumulatedWeight(pattern.getAccumulatedWeight());
+			wdp.incrementNumberTaxa(pattern.getNumberTaxa());
+		} else {
 			this.getPatterns().add(pattern);
 			Collections.sort(this.getPatterns());
 		}
@@ -103,9 +107,9 @@ public class SpecificPatternsbyStructure {
 	 * @param asdp
 	 * @return
 	 */
-	public boolean contains(SpecificDescriptorPattern asdp) {
-		for (SpecificDescriptorPattern sdp:this.getPatterns()) {
-			if (sdp.getPattern().equals(asdp.getPattern()))
+	public boolean contains(WeightedDescriptorPattern asdp) {
+		for (WeightedDescriptorPattern wdp:this.getPatterns()) {
+			if (wdp.getPattern().equals(asdp.getPattern()))
 				return true;
 		}
 		
@@ -117,10 +121,10 @@ public class SpecificPatternsbyStructure {
 	 * @param aDescriptor
 	 * @return
 	 */
-	public SpecificDescriptorPattern getPattern(Descriptor<Object> aDescriptor) {
-		for (SpecificDescriptorPattern sdp:this.getPatterns()) {
-			if (sdp.getPattern().equals(aDescriptor))
-				return sdp;
+	public WeightedDescriptorPattern getPattern(Descriptor<Object> aDescriptor) {
+		for (WeightedDescriptorPattern wdp:this.getPatterns()) {
+			if (wdp.getPattern().equals(aDescriptor))
+				return wdp;
 		}
 		
 		return null;

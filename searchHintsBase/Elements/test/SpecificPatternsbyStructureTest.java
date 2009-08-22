@@ -52,7 +52,7 @@ public class SpecificPatternsbyStructureTest {
 	 */
 	@After
 	public void tearDown() throws Exception {
-		patterns.getSpecificDescriptorPatterns().clear();
+		patterns.getPatterns().clear();
 	}
 
 	/**
@@ -67,14 +67,13 @@ public class SpecificPatternsbyStructureTest {
 		assertTrue(patterns.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3), 1)));
 		
 		assertTrue(patterns.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3), 1)));
-		assertTrue(patterns.getSpecificDescriptorPatterns().get(0).getFrequency() == 2);
+		assertTrue(patterns.getPatterns().get(0).getFrequency() == 2);
 	
 		assertTrue(patterns.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata"), 10)));
-		assertTrue(patterns.getSpecificDescriptorPatterns().get(0).getFrequency() == 10);
+		assertTrue(patterns.getPatterns().get(0).getFrequency() == 10);
 		
 		System.out.println("Verificar que un patron de descriptores incompatible o incorrecto no se agrega");
 		assertFalse(patterns.addPattern(null));
-		assertFalse(patterns.addPattern(new SpecificDescriptorPattern(null)));
 		
 		assertFalse(patterns.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Branquias", "Número de hojas branquiales", 6), 1)));
 	}
@@ -98,7 +97,7 @@ public class SpecificPatternsbyStructureTest {
 	}
 
 	/**
-	 * Test method for {@link searchHintsBase.Elements.SpecificPatternsbyStructure#getSpecificDescriptorPattern(java.lang.String)}.
+	 * Test method for {@link searchHintsBase.Elements.SpecificPatternsbyStructure#getPattern(java.lang.String)}.
 	 */
 	@Test
 	public void testGetSpecificDescriptorPattern() {
@@ -108,11 +107,11 @@ public class SpecificPatternsbyStructureTest {
 		
 		System.out.println("Verificar que no contiene una referencia");
 		specificDescriptorPattern = new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata"), 1);
-		assertNull(patterns.getSpecificDescriptorPattern(specificDescriptorPattern.getPattern().getAttribute()));
+		assertNull(patterns.getPattern(specificDescriptorPattern.getPattern()));
 		
 		System.out.println("Verificar que sí contiene una referencia");
 		assertTrue(patterns.addPattern(specificDescriptorPattern));
-		assertNotNull(patterns.getSpecificDescriptorPattern(specificDescriptorPattern.getPattern().getAttribute()));
+		assertNotNull(patterns.getPattern(specificDescriptorPattern.getPattern()));
 	}
 
 }

@@ -19,7 +19,7 @@ import ontology.common.Descriptor;
  */
 public class PatternsbyStructure implements Comparable<PatternsbyStructure> {
 	private String structureName;
-	private List<DescriptorsPattern> descriptorsPatterns;
+	private List<DescriptorsPattern> patterns;
 	
 	/**
 	 * Constructor alternativo
@@ -27,7 +27,7 @@ public class PatternsbyStructure implements Comparable<PatternsbyStructure> {
 	 */
 	public PatternsbyStructure(String structureName) {
 		setStructureName(structureName);
-		setDescriptorsPatterns(new ArrayList<DescriptorsPattern>());
+		setPatterns(new ArrayList<DescriptorsPattern>());
 	}
 
 	/**
@@ -50,16 +50,16 @@ public class PatternsbyStructure implements Comparable<PatternsbyStructure> {
 	 * @see "M&eacute;todo frequentDescriptorPatternList: del protocolo adding en SUKIA SmallTalk"
 	 * @param patterns
 	 */
-	public void setDescriptorsPatterns(List<DescriptorsPattern> patterns) {
-		this.descriptorsPatterns = patterns;
+	public void setPatterns(List<DescriptorsPattern> patterns) {
+		this.patterns = patterns;
 	}
 
 	/**
 	 * @see "M&eacute;todo frequentDescriptorPatternList del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<DescriptorsPattern> getDescriptorsPatterns() {
-		return descriptorsPatterns;
+	public List<DescriptorsPattern> getPatterns() {
+		return patterns;
 	}
 	
 	/**
@@ -68,8 +68,8 @@ public class PatternsbyStructure implements Comparable<PatternsbyStructure> {
 	 * de descriptores. Asi que aPattern.getDescriptorsPatterns().get(0) tiene el mayor tama&ntilde;o
 	 */
 	public int compareTo(PatternsbyStructure aPattern) {
-		return (aPattern.getDescriptorsPatterns().get(0).getSuccessFrequency()-
-				this.getDescriptorsPatterns().get(0).getSuccessFrequency());
+		return (aPattern.getPatterns().get(0).getSuccessFrequency()-
+				this.getPatterns().get(0).getSuccessFrequency());
 	}
 	
 	/**
@@ -89,11 +89,11 @@ public class PatternsbyStructure implements Comparable<PatternsbyStructure> {
 		if (!this.getStructureName().equals(pattern.getPattern().get(0).getStructure()))
 			return false;
 		
-		if ((dp = this.getDescriptorsPattern(pattern.getPattern())) != null)
+		if ((dp = this.getPattern(pattern.getPattern())) != null)
 			dp.incrementSuccessFrequencyBy(pattern.getSuccessFrequency());
 		else {
-			this.getDescriptorsPatterns().add(pattern);
-			Collections.sort(this.getDescriptorsPatterns());
+			this.getPatterns().add(pattern);
+			Collections.sort(this.getPatterns());
 		}
 		
 		return true;
@@ -110,20 +110,20 @@ public class PatternsbyStructure implements Comparable<PatternsbyStructure> {
 	 * @param aPattern
 	 * @return
 	 */
-	public DescriptorsPattern getDescriptorsPattern(List<Descriptor<Object>> aPattern) {
+	public DescriptorsPattern getPattern(List<Descriptor<Object>> aPattern) {
 		
 		if (aPattern == null)
 			return null;
-		if (this.getDescriptorsPatterns().isEmpty())
+		if (this.getPatterns().isEmpty())
 			return null;
 		
 		// If aPattern's size is greater than the largest pattern in this list, then aPattern is not included
 		// in this list
-		if (aPattern.size() > this.getDescriptorsPatterns().get(0).getPattern().size())
+		if (aPattern.size() > this.getPatterns().get(0).getPattern().size())
 			return null;
 		
 		// Scan the entire pattern in this list
-		for (DescriptorsPattern dp:this.getDescriptorsPatterns()) {
+		for (DescriptorsPattern dp:this.getPatterns()) {
 			// Both the retrieved FrequentDescriptorPattern and aPattern MUST be of the same length
 			if (dp.getPattern().equals(aPattern))
 					return dp;
@@ -164,11 +164,11 @@ public class PatternsbyStructure implements Comparable<PatternsbyStructure> {
 
 		if (aPattern == null)
 			return null;
-		if (this.getDescriptorsPatterns().isEmpty())
+		if (this.getPatterns().isEmpty())
 			return null;
 		
 		// Scan the entire pattern list in this list
-		for (DescriptorsPattern dp: this.getDescriptorsPatterns()) {
+		for (DescriptorsPattern dp: this.getPatterns()) {
 			// Get the max and min pattern lengths (number of Descriptors) between the current pattern and the argument
 			if (dp.getPattern().size() >= aPattern.size()) {
 				max = dp.getPattern().size();

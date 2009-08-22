@@ -32,7 +32,7 @@ public class PatternsbyStructureList extends HintsList<PatternsbyStructure> {
 		if (patterns == null)
 			return false;
 
-		if (patterns.getDescriptorsPatterns().isEmpty())
+		if (patterns.getPatterns().isEmpty())
 			return false;
 
 		if (!(this.contains(patterns))) {
@@ -42,7 +42,7 @@ public class PatternsbyStructureList extends HintsList<PatternsbyStructure> {
 		
 		pbs = this.getPatternByStructure(patterns.getStructureName());
 		
-		for (DescriptorsPattern dp:patterns.getDescriptorsPatterns())
+		for (DescriptorsPattern dp:patterns.getPatterns())
 			pbs.addPattern(dp);
 
 		return true;
@@ -59,8 +59,8 @@ public class PatternsbyStructureList extends HintsList<PatternsbyStructure> {
 		return this.getSortedStructureList(aDescriptorList, 
 				new Comparator<PatternsbyStructure>() {
 					public int compare(PatternsbyStructure elem1, PatternsbyStructure elem2) {
-						return (elem2.getDescriptorsPatterns().get(0).getSuccessFrequency()
-								- elem1.getDescriptorsPatterns().get(0).getSuccessFrequency());
+						return (elem2.getPatterns().get(0).getSuccessFrequency()
+								- elem1.getPatterns().get(0).getSuccessFrequency());
 					}
 				}
 		);
@@ -77,8 +77,8 @@ public class PatternsbyStructureList extends HintsList<PatternsbyStructure> {
 		return this.getSortedStructureList(aDescriptorList, 
 				new Comparator<PatternsbyStructure>() {
 					public int compare(PatternsbyStructure elem1, PatternsbyStructure elem2) {
-						return (elem1.getDescriptorsPatterns().get(0).getFailureFrequency()
-								- elem2.getDescriptorsPatterns().get(0).getFailureFrequency());
+						return (elem1.getPatterns().get(0).getFailureFrequency()
+								- elem2.getPatterns().get(0).getFailureFrequency());
 					}
 				}
 		);

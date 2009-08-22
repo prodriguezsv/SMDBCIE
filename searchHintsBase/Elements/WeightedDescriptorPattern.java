@@ -15,14 +15,15 @@ public class WeightedDescriptorPattern implements Comparable<WeightedDescriptorP
 	private Descriptor<Object> pattern;
 	private double accumulatedWeight;
 	private int numberTaxa;
-
+	
 	/**
+	 * Constructor alternativo
 	 * @see "M&eacute;todo initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public WeightedDescriptorPattern(Descriptor<Object> descriptor) {
+	public WeightedDescriptorPattern(Descriptor<Object> descriptor, double weight, int numberTaxa) {
 		setPattern(descriptor);
-		setAccumulatedWeight(0);
-		setNumberTaxa(0);
+		setAccumulatedWeight(weight);
+		setNumberTaxa(numberTaxa);
 	}
 
 	/**
@@ -72,7 +73,8 @@ public class WeightedDescriptorPattern implements Comparable<WeightedDescriptorP
 	 * @param numberTaxa
 	 */
 	public void setNumberTaxa(int numberTaxa) {
-		this.numberTaxa = numberTaxa;
+		if (numberTaxa > 0)
+			this.numberTaxa = numberTaxa;
 	}
 
 	/**
@@ -81,6 +83,14 @@ public class WeightedDescriptorPattern implements Comparable<WeightedDescriptorP
 	 */
 	public void incrementNumberTaxa() {
 		this.numberTaxa = this.numberTaxa + 1;
+	}
+	
+	/**
+	 * @see "M&eacute;todo numberTaxa: del protocolo adding en SUKIA SmallTalk"
+	 * @param numberTaxa
+	 */
+	public void incrementNumberTaxa(int increment) {
+		this.numberTaxa = this.numberTaxa + increment;
 	}
 	
 	/**
