@@ -141,8 +141,14 @@ public class ValuesTest {
     public void testGetRangeDescriptorsWithRange() {
         System.out.println("getRangeDescriptorsWithRange");
         double aLowerBound = 0.0;
-        double anUpperBound = 0.0;
-        TaxonomicRank aLevel = null;
+        double anUpperBound = 100.0;
+        TaxonomicRank aLevel = TaxonomicRank.FAMILY;
+
+        RangeValue aRangeValue = new RangeValue ();
+        aRangeValue.setLowerBound(aLowerBound);
+        aRangeValue.setUpperBound(anUpperBound);
+
+        
         Values instance = new Values();
         List expResult = null;
         List result = instance.getRangeDescriptorsWithRange(aLowerBound, anUpperBound, aLevel);

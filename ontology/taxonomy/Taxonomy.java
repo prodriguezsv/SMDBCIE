@@ -126,7 +126,7 @@ public class Taxonomy {
 	public List<Taxon> getTaxonListFromLevelIndex(TaxonomicRank aLevel) {
 		int levelNumber;
 
-		levelNumber = TaxonomicRank.getIndex(aLevel);
+		levelNumber = TaxonomicRank.getIndex(aLevel) -1;
 		if (levelNumber == -1) return null;
 
 		return (levelIndex.get(levelNumber));
@@ -139,16 +139,10 @@ public class Taxonomy {
 	 * @return
 	 */
 	public Taxon getTaxonFromLevelIndex(String aTaxonName, TaxonomicRank aLevel) {
-		List<Taxon> aList;
-		
-		aList = getTaxonListFromLevelIndex(aLevel);
-		
-		for (int i = 1; i <= aList.size(); i++) {
-			if ((aList.get(i-1).getName().equals(aTaxonName)))
-				return (aList.get(i-1));
-		}
-		
-		return null;
+            for (Taxon aTaxon: getTaxonListFromLevelIndex(aLevel)){
+                if (aTaxon.getName().equals(aTaxonName)) return aTaxon;
+            }
+            return null;
 	}
 	
 	/**
@@ -157,18 +151,12 @@ public class Taxonomy {
 	 * @return
 	 */
 	public Taxon getTaxonFromLevelIndex(String aTaxonName) {
-		List<List<Taxon>> aListDividedByLevels;
-		
-		aListDividedByLevels = levelIndex;
-		
-		for (int i = 1; i <= aListDividedByLevels.size(); i++) {
-			for (int j = 1; j <= aListDividedByLevels.get(i-1).size(); j++) {
-				if (aListDividedByLevels.get(i-1).get(j-1).getName().equals(aTaxonName))
-					return aListDividedByLevels.get(i-1).get(j-1);
-			}
-		}
-			
-		return null;
+                for (List<Taxon> aListTaxon: levelIndex){
+                    for (Taxon aTaxon: aListTaxon){
+                        if (aTaxon.getName().equals(aTaxonName)) return aTaxon;
+                    }
+                }
+                return null;
 	}
 	
 	/**
@@ -178,7 +166,7 @@ public class Taxonomy {
 	 */
 	public boolean addTaxon(Taxon aNewTaxon, Taxon aParentTaxon) {
 		// Step 1: link the new taxon to the existing taxon in the hierarchy, if all taxonomic dependencies are OK.
-		if (this.areTaxonomicDependenciesOK(aParentTaxon, aNewTaxon))
+		if (!this.areTaxonomicDependenciesOK(aParentTaxon, aNewTaxon))
 			return false;
 		//Step 2: Reference the new taxon in levelIndex (i.e., alphabetically by taxon name, by taxonomic level)
 		if (!(this.addTaxonToLevelIndex(aNewTaxon))) {
@@ -198,16 +186,15 @@ public class Taxonomy {
 	 * @return
 	 */
 	public boolean areTaxonomicDependenciesOK(Taxon aParentTaxon, Taxon aSuccessorTaxon) {
-
 		//Step 1: Make sure that (at least) the SAV description of the successor taxon is not empty
 		if (aSuccessorTaxon.getDescription().isEmpty())
 			return false;		
 		
 		//Step 3: Make sure that the successor taxon can indeed be linked to the parent taxon
-		if (aSuccessorTaxon.isOKDirectLink(aParentTaxon))
+		if (!aSuccessorTaxon.isOKDirectLink(aParentTaxon))
 			return false;
 		//Step 4: Make sure that a taxon with the successor's name does not already exist
-		if (this.getTaxonFromLevelIndex(aSuccessorTaxon.getName())==null)
+		if (this.getTaxonFromLevelIndex(aSuccessorTaxon.getName())!=null)
 				return false;
 		/*****     *****     ***** 
 		Step 5: Special case for SPECIES: Make sure that the associated genus does not contain another 
@@ -225,8 +212,7 @@ public class Taxonomy {
 			aSuccessorTaxon.unlinkFromTheHierarchy();
 			return false;
 		}
-		
-		return false;
+		return true;
 	}
 	
 	/**
@@ -241,26 +227,5 @@ public class Taxonomy {
 		if (this.getTaxonFromLevelIndex(aTaxon.getName()) ==null)
 			return false;
 		else return true;
-	}
-	
-	/**
-	 * This program assumes the name of a species as: taxon->species name + taxon->species predecessor name.
-	 * That's the reason why the species level is NOT scanned: epithets may repeat for different genera
-	 * @see "Método include_old: del protocolo testing en SUKIA SmallTalk"
-	 * @param aTaxon
-	 * @return
-	 */
-	public boolean includes_old(Taxon aTaxon) {
-		Taxon t;
-		for (int i = 1; i <= levelIndex.size(); i++) {
-			if (!(i == (TaxonomicRank.getIndex(TaxonomicRank.SPECIES)))) {
-				for (int j = 1; j <= levelIndex.get(i-1).size(); j++) {
-					t =  levelIndex.get(i).get(j-1);
-					if (t.getName().equals(aTaxon.getName())) 
-						return true;
-				}
-			}
-		}
-		return false;
 	}
 }

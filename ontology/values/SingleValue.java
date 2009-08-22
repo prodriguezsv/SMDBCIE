@@ -46,6 +46,7 @@ public class SingleValue<E> extends Value{
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
+    @Override
 	public boolean equals(Object aValue) {
 		if (aValue == null) return false;
 		if (!(aValue instanceof SingleValue)) return false;
