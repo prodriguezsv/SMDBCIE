@@ -41,26 +41,26 @@ public class RangeValueTest {
     public void tearDown() {
     }
 
-    /**
-     * Test of setMeasuringUnit method, of class RangeValue.
-     */
-    @Test
-    public void testSetMeasuringUnit() {
-        System.out.println("setMeasuringUnit");
-        MeasuringUnit a = MeasuringUnit.CM;
-        MeasuringUnit b = MeasuringUnit.INCH;
-        RangeValue aRangeDescriptor = new RangeValue();
-        aRangeDescriptor.setMeasuringUnit(a);
-        assertEquals(a,aRangeDescriptor.getMeasuringUnit());
-        /*
-         * keep the same mesure unit.
-         *
-         */
-        aRangeDescriptor.setMeasuringUnit(b);
-        assertEquals(a,aRangeDescriptor.getMeasuringUnit());
-
-        
-    }
+//    /**
+//     * Test of setMeasuringUnit method, of class RangeValue.
+//     */
+//    @Test
+//    public void testSetMeasuringUnit() {
+//        System.out.println("setMeasuringUnit");
+//        MeasuringUnit a = MeasuringUnit.CM;
+//        MeasuringUnit b = MeasuringUnit.INCH;
+//        RangeValue aRangeDescriptor = new RangeValue();
+//        aRangeDescriptor.setMeasuringUnit(a);
+//        assertEquals(a,aRangeDescriptor.getMeasuringUnit());
+//        /*
+//         * keep the same mesure unit.
+//         *
+//         */
+//        aRangeDescriptor.setMeasuringUnit(b);
+//        assertEquals(a,aRangeDescriptor.getMeasuringUnit());
+//
+//
+//    }
 
     /**
      * Test of addValues method, of class RangeValue.
