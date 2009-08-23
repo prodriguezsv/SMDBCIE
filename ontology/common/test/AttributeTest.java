@@ -63,9 +63,5 @@ public class AttributeTest {
         expResult = -1;
         result = instance.compareTo(aAttribute);
         assertEquals(expResult, result);
-
-        expResult = -1;
-        result = instance.compareTo(null);
-        assertEquals(expResult, result);
     }
 }

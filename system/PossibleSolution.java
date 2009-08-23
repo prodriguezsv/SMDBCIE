@@ -1,5 +1,5 @@
 /**
- * @see "Categoría Sukia Reasoner en SUKIA SmallTalk"
+ * @see "Categor&iacute;a Sukia Reasoner en SUKIA SmallTalk"
  */
 package system;
 
@@ -29,22 +29,22 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 	private double points;
 
 	/**
-	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
+	 * @see "M&eacute;todo initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
 	public PossibleSolution() {
-		setSolution(null);
 		setSolutionDescription(new ArrayList<Descriptor<Object>>());
 		setConfirmedDescription(new ArrayList<Descriptor<Object>>());
 		setUnconfirmedDescription(new ArrayList<Descriptor<Object>>());
 		setDoubtfulDescription(new ArrayList<Descriptor<Object>>());
 		setContradictions(new ArrayList<Descriptor<Object>>());
+		setHypothesis(null);
+		setSolution(null);
 		setEvaluated(false);
 		setPoints(0);
-		setHypothesis(null);
 	}
 
 	/**
-	 * Método de instancia agregado
+	 * M&eacute;todo accesor de escritura
 	 * @param confirmedDescription
 	 */
 	public void setConfirmedDescription(List<Descriptor<Object>> confirmedDescription) {
@@ -52,12 +52,12 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 	}
 	
 	/**
-	 * @see "Método confirmedDescription: del protocolo adding en SUKIA SmallTalk"
+	 * @see "M&eacute;todo confirmedDescription: del protocolo adding en SUKIA SmallTalk"
 	 * @param aDescriptor
 	 * @return
 	 */
 	public boolean addConfirmedDescription(Descriptor<Object> aDescriptor) {
-		if (contains(aDescriptor, this.getConfirmedDescription()))
+		if (this.getConfirmedDescription().contains(aDescriptor))
 			return false;
 
 		this.getConfirmedDescription().add(aDescriptor);
@@ -67,7 +67,8 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 	}
 
 	/**
-	 * @see "Método confirmedDescription del protocolo accessing en SUKIA SmallTalk"
+	 * M&eacute;todo accesor de lectura
+	 * @see "M&eacute;todo confirmedDescription del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
 	public List<Descriptor<Object>> getConfirmedDescription() {
@@ -75,7 +76,8 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 	}
 
 	/**
-	 * Método de instancia agregado
+	 * M&eacute;todo accesor de escritura
+	 * M&eacute;todo de instancia agregado
 	 * @param contradictions
 	 */
 	public void setContradictions(List<Descriptor<Object>> contradictions) {
@@ -83,12 +85,12 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 	}
 
 	/**
-	 * @see "Método contradictions: del protocolo adding en SUKIA SmallTalk"
+	 * @see "M&eacute;todo contradictions: del protocolo adding en SUKIA SmallTalk"
 	 * @param aDescriptor
 	 * @return
 	 */
 	public boolean addContradictions(Descriptor<Object> aDescriptor) {
-		if (contains(aDescriptor, this.getContradictions()))
+		if (this.getContradictions().contains(aDescriptor))
 			return false;
 
 		this.getContradictions().add(aDescriptor);
@@ -98,6 +100,7 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 	}
 	
 	/**
+	 * M&eacute;todo accesor de lectura
 	 * @see "Método contradictions del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
@@ -106,7 +109,7 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 	}
 
 	/**
-	 * Método de instancia agregado
+	 * M&eacute;todo accesor de escritura
 	 * @param doubtfulDescription
 	 */
 	public void setDoubtfulDescription(List<Descriptor<Object>> doubtfulDescription) {
@@ -119,7 +122,7 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 	 * @return
 	 */
 	public boolean addDoubtfulDescription(Descriptor<Object> aDescriptor) {
-		if (contains(aDescriptor, this.getDoubtfulDescription()))
+		if (this.getDoubtfulDescription().contains(aDescriptor))
 			return false;
 
 		this.getDoubtfulDescription().add(aDescriptor);
@@ -129,6 +132,7 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 	}
 	
 	/**
+	 * M&eacute;todo accesor de lectura
 	 * @see "Método doubtfulDescription del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
@@ -137,6 +141,7 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 	}
 
 	/**
+	 * M&eacute;todo accesor de escritura
 	 * @see "Método evaluated: del protocolo adding en SUKIA SmallTalk"
 	 * @param evaluated
 	 */
@@ -145,6 +150,7 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 	}
 
 	/**
+	 * M&eacute;todo accesor de lectura
 	 * @see "Método evaluated del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
@@ -153,6 +159,7 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 	}
 
 	/**
+	 * M&eacute;todo accesor de escritura
 	 * @see "Método hypothesis: del protocolo adding en SUKIA SmallTalk"
 	 * @param hypothesis
 	 */
@@ -161,6 +168,7 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 	}
 
 	/**
+	 * M&eacute;todo accesor de lectura
 	 * @see "Método hypothesis del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
@@ -169,7 +177,7 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 	}
 
 	/**
-	 * Métofo de instancia agregado
+	 * M&eacute;todo accesor de escritura
 	 * @param points
 	 */
 	public void setPoints(double points) {
@@ -192,6 +200,7 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 	}
 
 	/**
+	 * M&eacute;todo accesor de lectura
 	 * @see "Método points del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
@@ -200,11 +209,11 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 	}
 
 	/**
+	 * M&eacute;todo accesor de escritura
 	 * @see "Método solution: del protocolo adding en SUKIA SmallTalk"
 	 * @param solution
 	 */
 	public boolean setSolution(Object solution) {
-
 		// Make sure class of the PossibleSolution is OK
 		if (!(solution instanceof Case || solution instanceof Taxon))
 			return false;
@@ -215,6 +224,7 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 	}
 
 	/**
+	 * M&eacute;todo accesor de lectura
 	 * @see "Método solution del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
@@ -223,7 +233,7 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 	}
 
 	/**
-	 * Método de instancia agregado
+	 * M&eacute;todo accesor de escritura
 	 * @param solutionDescription
 	 */
 	public void setSolutionDescription(List<Descriptor<Object>> solutionDescription) {
@@ -236,7 +246,7 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 	 * @return
 	 */
 	public boolean addSolutionDescription(Descriptor<Object> aDescriptor) {
-		if (contains(aDescriptor, this.getSolutionDescription()))
+		if (this.getSolutionDescription().contains(aDescriptor))
 			return false;
 
 		this.getSolutionDescription().add(aDescriptor);
@@ -246,6 +256,7 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 	}
 
 	/**
+	 * M&eacute;todo accesor de lectura
 	 * @see "Método solutionDescription del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
@@ -254,7 +265,7 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 	}
 
 	/**
-	 * Método de instancia agregado
+	 * M&eacute;todo accesor de escritura
 	 * @param unconfirmedDescription
 	 */
 	public void setUnconfirmedDescription(List<Descriptor<Object>> unconfirmedDescription) {
@@ -267,7 +278,7 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 	 * @return
 	 */
 	public boolean addUnconfirmedDescription(Descriptor<Object> aDescriptor) {
-		if (contains(aDescriptor, this.getUnconfirmedDescription()))
+		if (this.getUnconfirmedDescription().contains(aDescriptor))
 			return false;
 
 		this.getUnconfirmedDescription().add(aDescriptor);
@@ -277,102 +288,12 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 	}
 		
 	/**
+	 * M&eacute;todo accesor de lectura
 	 * @see "Método unconfirmedDescription del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
 	public List<Descriptor<Object>> getUnconfirmedDescription() {
 		return unconfirmedDescription;
-	}
-	
-	/**
-	 * Determines if aSAVDescriptor is already a member of aDescriptionList. The argument aSAVDescriptor is a member of
-	 * aDescriptionList when its structure and attribute names match with the structure and attribute names of a list element.
-	 * Returns: 	-1 (error state): The argument aDescriptionList IS NOT a valid list for self.
-	 * nil: aSAVDescriptor IS NOT a member of aDescriptionList.
-	 * not nil: an element of aDescriptionList whose structure and attribute names match those of aSAVDescriptor
-	 * @see "Método includes:in: del protocolo testing en SUKIA SmallTalk"
-	 * @param aSAVDescriptor
-	 * @param aDescription
-	 * @return
-	 */
-	public boolean contains(Descriptor<Object> aSAVDescriptor, List<Descriptor<Object>> aDescription) {
-		// Make sure that aDescription is indeed one of my description lists. If not, return the -1 error value
-		 if (!(aDescription == this.getSolutionDescription() || 
-				 aDescription == this.getConfirmedDescription() || 
-				 aDescription == this.getUnconfirmedDescription() || 
-				 aDescription == getDoubtfulDescription() ||
-				 aDescription == getContradictions()))
-			 return false;
-
-		for( int i = 1; i <= aDescription.size(); i++) {
-			if (aDescription.get(i-1).getStructure() == aSAVDescriptor.getStructure() &&
-					aDescription.get(i-1).getAttribute() == aSAVDescriptor.getAttribute())
-				return true;
-
-			// Stop searching if the next descriptor's structure name is (alphabetically) greater than the argument's structure name
-			if (i < aDescription.size())
-				if (aSAVDescriptor.getStructure().compareTo(aDescription.get(i).getStructure()) < 0)
-					return false;
-		}
-
-		return false;
-	}
-
-	/**
-	 * Determines if a full aSAVDescriptor is already a member of aDescriptionList. The argument aSAVDescriptor is a member of
-	 * aDescriptionList when its structure, attribute and value match with the structure and attribute names of a list element.
-	 * Returns: 	-1 (error state): The argument aDescriptionList IS NOT a valid list for self.
-	 * nil: aSAVDescriptor IS NOT a member of aDescriptionList.
-	 * not nil: an element of aDescriptionList whose structure and attribute names match those of aSAVDescriptor
-	 * @see "Método includes:in: del protocolo testing en SUKIA SmallTalk"
-	 * @param aDescriptor
-	 * @param aDescription
-	 * @return
-	 */
-	public boolean containsFull(Descriptor<Object> aDescriptor, List<Descriptor<Object>> aDescription) {
-		// Make sure that aDescription is indeed one of my description lists. If not, return the -1 error value
-		 if (!(aDescription == this.getSolutionDescription() || 
-				 aDescription == this.getConfirmedDescription() || 
-				 aDescription == this.getUnconfirmedDescription() || 
-				 aDescription == getDoubtfulDescription() ||
-				 aDescription == getContradictions()))
-			 return false;
-
-		for( int i = 1; i <= aDescription.size(); i++) {
-			if (aDescription.get(i-1).getStructure() == aDescriptor.getStructure() &&
-					aDescription.get(i-1).getAttribute() == aDescriptor.getAttribute() &&
-					aDescription.get(i-1).getValue().equals(aDescriptor.getValue()))
-				return true;
-
-			// Stop searching if the next descriptor's structure name is (alphabetically) greater than the argument's structure name
-			if (i < aDescription.size())
-				if (aDescriptor.getStructure().compareTo(aDescription.get(i).getStructure()) < 0)
-					return false;
-		}
-
-		return false;
-	}
-	
-	/**
-	 * @see "Método copy:to: del protocolo copying en SUKIA SmallTalk"
-	 * @param anExternalDescription
-	 * @param aLocalDescription
-	 * @return
-	 */
-	public boolean copy(List<Descriptor<Object>> anExternalDescription, List<Descriptor<Object>> aLocalDescription) {
-		// Make sure that aDescription is indeed one of my description lists.
-		 if (!(aLocalDescription == this.getSolutionDescription() || 
-				 aLocalDescription == this.getConfirmedDescription() || 
-				 aLocalDescription == this.getUnconfirmedDescription() || 
-				 aLocalDescription == getDoubtfulDescription() ||
-				 aLocalDescription == getContradictions()))
-			 return false;
-		 
-		 for( int i = 1; i <= anExternalDescription.size(); i++) {
-			 aLocalDescription.add(anExternalDescription.get(i-1));
-		 }
-		 
-		 return true;
 	}
 
 	/**
@@ -415,6 +336,16 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 		 }
 	}
 	
+	/**
+	 * @see "Método appendToContradictions: del protocolo inheritance en SUKIA SmallTalk"
+	 * @param aDescription
+	 */
+	public void appendToContradictions(List<Descriptor<Object>> aDescription) {
+		for( int i = 1; i <= aDescription.size(); i++) {
+			 this.addContradictions(aDescription.get(i-1));
+		 }
+	}
+	
 	public TaxonomicRank getLevel() {
 		if (this.getSolution() == null) return null;
 		
@@ -451,7 +382,6 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 	/**
 	 * Método de instancia agregado
 	 */
-	// OJo
 	public int compareTo(PossibleSolution aPossibleSolution) {
 		return (TaxonomicRank.getIndex(aPossibleSolution.getLevel()) - 
 				TaxonomicRank.getIndex(this.getLevel()));

@@ -1,4 +1,5 @@
 /**
+ * Reune una clases que calcula la similaridad de un valor conr respecto a un conjunto de valores con peso
  * @see "Categor&iacute;a Sukia Similarity Assessment de SUKIA Smalltalk"
  */
 package system.similarityAssessment;
@@ -37,7 +38,7 @@ public class SimilarityAssessor {
 	}
 	
 	/**
-	 * @see "Mï¿½todo similarityDegreeOf:in: del protocolo de clase class calculating en SUKIA SmallTalk"
+	 * @see "M&eacute;todo similarityDegreeOf:in: del protocolo de clase class calculating en SUKIA SmallTalk"
 	 * @param aValue
 	 * @param aValueWeightList
 	 * @return
@@ -53,7 +54,7 @@ public class SimilarityAssessor {
 	}
 	
 	/**
-	 * @see "Mï¿½todo similarityRangeOf:in: del protocolo de clase class calculating en SUKIA SmallTalk"
+	 * @see "M&eacute;todo similarityRangeOf:in: del protocolo de clase class calculating en SUKIA SmallTalk"
 	 * @param aValue
 	 * @param aValueWeightList
 	 * @return
@@ -81,7 +82,7 @@ public class SimilarityAssessor {
 	}
 	
 	/**
-	 * @see "Mï¿½todo maxValueWeightOf: del protocolo de clase class weight assessment en SUKIA SmallTalk"
+	 * @see "M&eacute;todo maxValueWeightOf: del protocolo de clase class weight assessment en SUKIA SmallTalk"
 	 * @param aValueWeightList
 	 * @return
 	 */
@@ -90,14 +91,19 @@ public class SimilarityAssessor {
 		Object idx = null;
 
 		for( Object key: aValueWeightList.keySet())
-			if ( aValueWeightList.get(key) > maxWeight)
+			if ( aValueWeightList.get(key) > maxWeight) {
+				maxWeight = aValueWeightList.get(key);
 				idx = key ;
+			}
 
-		return aValueWeightList.get(idx);
+		if (idx == null)
+			return null;
+		
+		return idx;
 	}
 	
 	/**
-	 * @see "Mï¿½todo maxWeightOf: del protocolo de clase class weight assessment en SUKIA SmallTalk"
+	 * @see "M&eacute;todo maxWeightOf: del protocolo de clase class weight assessment en SUKIA SmallTalk"
 	 * @param aWeightList
 	 * @return
 	 */
@@ -117,13 +123,16 @@ public class SimilarityAssessor {
 	 * of ranges will go from 0 to 100.  The reason for having integers instead
 	 * of floats (thus having a union of ranges from 0.0 to 1.0) is that floats
 	 * present a lot of (decimal digit) of precision problems.
-	 * see "Método assignValuesUsing del protocolo de clase class range-value assignment en SUKIA SmallTalk"
+	 * see "M&eacute;todo assignValuesUsing del protocolo de clase class range-value assignment en SUKIA SmallTalk"
 	 * @param aWeightSet
 	 * @return
 	 */
 	public static List<SimilarityDegree> assignValuesUsing(Collection<Double> aWeightSet) {
 		List<SimilarityDegree> rCopy;
 		int p1, p2, size;
+		
+		if (aWeightSet.isEmpty())
+			return null;
 		
 		// This algorithm will not work if self has less than 3 ranges defined
 		if (SimilarityDegree.values().length < 3) return null;
@@ -157,9 +166,9 @@ public class SimilarityAssessor {
 		rCopy.get(size - 3).setUpperBound(99);
 		
 		// The last range name is always #igual.  Its values will always be the defaults 1.0 and 1.0
-		// el [ultimo valor de rCopy es SimilarityDegree.VAlORNOCOMPARABLE
+		// el último valor de rCopy es SimilarityDegree.VAlORNOCOMPARABLE
 		rCopy.get(size - 2).setLowerBound(100);
-		rCopy.get(size - 1).setUpperBound(100);
+		rCopy.get(size - 2).setUpperBound(100);
 		
 		return rCopy; 
 	}

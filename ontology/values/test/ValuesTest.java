@@ -5,12 +5,10 @@
 
 package ontology.values.test;
 
-import java.util.List;
 import ontology.taxonomy.TaxonomicRank;
 import ontology.values.MeasuringUnit;
 import ontology.values.RangeValue;
 import ontology.values.SingleValue;
-import ontology.values.Value;
 import ontology.values.Values;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -24,7 +22,7 @@ import static org.junit.Assert.*;
  * @author pabloq
  */
 public class ValuesTest {
-    SingleValue vd,vd2,vd3;
+    SingleValue<Object> vd,vd2,vd3;
     RangeValue vdr,vdr2,vdr3;
 
     public ValuesTest() {
@@ -40,9 +38,9 @@ public class ValuesTest {
 
     @Before
     public void setUp() {
-        vd = new SingleValue();
-        vd2 = new SingleValue();
-        vd3 = new SingleValue();
+        vd = new SingleValue<Object>();
+        vd2 = new SingleValue<Object>();
+        vd3 = new SingleValue<Object>();
         vd.setValue("alargado");
         //vd.setWeight(0.3);
 
@@ -71,90 +69,6 @@ public class ValuesTest {
 
     @After
     public void tearDown() {
-    }
-
-    /**
-     * Test of getValueDescriptors method, of class Values.
-     */
-    @Test
-    public void testGetValueDescriptors_GenericType_TaxonomicRank() {
-        System.out.println("getValueDescriptors");
-        Value aDescriptor = null;
-        TaxonomicRank aLevel = null;
-        Values instance = new Values();
-        Value expResult = null;
-        Value result = instance.getValueDescriptors(aDescriptor, aLevel);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getValueDescriptors method, of class Values.
-     */
-    @Test
-    public void testGetValueDescriptors_0args() {
-        System.out.println("getValueDescriptors");
-        Values instance = new Values();
-        Values expResult = null;
-        Values result = instance.getValueDescriptors();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getValueDescriptors method, of class Values.
-     */
-    @Test
-    public void testGetValueDescriptors_TaxonomicRank() {
-        System.out.println("getValueDescriptors");
-        TaxonomicRank aLevel = null;
-        Values instance = new Values();
-        List expResult = null;
-        List result = instance.getValueDescriptors(aLevel);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getRangeDescriptorsWithNumber method, of class Values.
-     */
-    @Test
-    public void testGetRangeDescriptorsWithNumber() {
-        System.out.println("getRangeDescriptorsWithNumber");
-        double aNumber = 0.0;
-        TaxonomicRank aLevel = null;
-        Values instance = new Values();
-        List expResult = null;
-        List result = instance.getRangeDescriptorsWithNumber(aNumber, aLevel);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getRangeDescriptorsWithRange method, of class Values.
-     */
-    @Test
-    public void testGetRangeDescriptorsWithRange() {
-        System.out.println("getRangeDescriptorsWithRange");
-        double aLowerBound = 0.0;
-        double anUpperBound = 100.0;
-        TaxonomicRank aLevel = TaxonomicRank.FAMILY;
-
-        RangeValue aRangeValue = new RangeValue ();
-        aRangeValue.setLowerBound(aLowerBound);
-        aRangeValue.setUpperBound(anUpperBound);
-
-        
-        Values instance = new Values();
-        List expResult = null;
-        List result = instance.getRangeDescriptorsWithRange(aLowerBound, anUpperBound, aLevel);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -246,8 +160,8 @@ public class ValuesTest {
         assertFalse(instance.includes(vd, TaxonomicRank.getIndex(TaxonomicRank.GENUS)-1));
         assertFalse(instance.includes(vdr2, TaxonomicRank.getIndex(TaxonomicRank.SPECIES)-1));
 
-        SingleValue tvd = new SingleValue();
-        SingleValue tvd2 = new SingleValue();
+        SingleValue<Object> tvd = new SingleValue<Object>();
+        SingleValue<Object> tvd2 = new SingleValue<Object>();
         tvd.setValue("alargado");
 
         tvd2.setValue("achatado");

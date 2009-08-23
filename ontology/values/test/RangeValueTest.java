@@ -68,7 +68,6 @@ public class RangeValueTest {
     @Test
     public void testAddValues() {
         System.out.println("addValues");
-        Object aDescriptor = null;
 
         Taxon aTaxon = new Taxon() ;
         aTaxon.setName("Chromodorididae");

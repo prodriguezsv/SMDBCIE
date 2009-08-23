@@ -38,7 +38,8 @@ public class TaxonTest {
     public static void tearDownClass() throws Exception {
     }
 
-    @Before
+    @SuppressWarnings("unchecked")
+	@Before
     public void setUp() {
         rootTaxon = new Taxon();
         rootTaxon.setName(null);

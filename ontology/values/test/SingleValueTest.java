@@ -44,7 +44,7 @@ public class SingleValueTest {
 
         aSingleValue.setValue(0.0);
 
-        SingleValue instance = new SingleValue();
+        SingleValue<Object> instance = new SingleValue<Object>();
 
         instance.addValues(aSingleValue);
         assertEquals(0.0,instance.getValue());
@@ -60,7 +60,7 @@ public class SingleValueTest {
 
         aSingleValue.setValue(0.0);
 
-        SingleValue instance = new SingleValue();
+        SingleValue<Object> instance = new SingleValue<Object>();
 
         instance.addValues(aSingleValue);
         /*

@@ -39,7 +39,8 @@ public class TaxonomyTest {
     public static void tearDownClass() throws Exception {
     }
 
-    @Before
+    @SuppressWarnings("unchecked")
+	@Before
     public void setUp() {
         taxonomy = new Taxonomy();
         rootTaxon = new Taxon();

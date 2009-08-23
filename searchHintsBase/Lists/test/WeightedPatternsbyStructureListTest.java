@@ -17,24 +17,24 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import searchHintsBase.Elements.SpecificDescriptorPattern;
-import searchHintsBase.Elements.SpecificPatternsbyStructure;
-import searchHintsBase.Lists.SpecificPatternsbyStructureList;
+import searchHintsBase.Elements.WeightedDescriptorPattern;
+import searchHintsBase.Elements.WeightedPatternsbyStructure;
+import searchHintsBase.Lists.WeightedPatternsbyStructureList;
 
 /**
  * @author Armando
  *
  */
-public class SpecificPatternsbyStructureListTest {
-	private static SpecificPatternsbyStructureList patterns;
+public class WeightedPatternsbyStructureListTest {
+	private static WeightedPatternsbyStructureList patterns;
 
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		System.out.println("Iniciando pruebas para la clase " + SpecificPatternsbyStructureList.class.getName());
-		patterns = new SpecificPatternsbyStructureList();
+		System.out.println("Iniciando pruebas para la clase " + WeightedPatternsbyStructureList.class.getName());
+		patterns = new WeightedPatternsbyStructureList();
 	}
 
 	/**
@@ -42,7 +42,7 @@ public class SpecificPatternsbyStructureListTest {
 	 */
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-		System.out.println("Teminando pruebas para la clase " + SpecificPatternsbyStructureList.class.getName());
+		System.out.println("Iniciando pruebas para la clase " + WeightedPatternsbyStructureList.class.getName());
 	}
 
 	/**
@@ -61,11 +61,11 @@ public class SpecificPatternsbyStructureListTest {
 	}
 
 	/**
-	 * Test method for {@link searchHintsBase.Lists.SpecificPatternsbyStructureList#add(searchHintsBase.Elements.SpecificPatternsbyStructure)}.
+	 * Test method for {@link searchHintsBase.Lists.WeightedPatternsbyStructureList#add(searchHintsBase.Elements.WeightedPatternsbyStructure)}.
 	 */
 	@Test
-	public void testAddSpecificPatternsbyStructure() {
-		SpecificPatternsbyStructure spbs;
+	public void testAddWeightedPatternsbyStructure() {
+		WeightedPatternsbyStructure spbs;
 		
 		System.out.println("Iniciando pruebas para el método Add()");
 		
@@ -73,68 +73,68 @@ public class SpecificPatternsbyStructureListTest {
 		assertFalse(patterns.add(null));
 		
 		System.out.println("Verificar que no se agregue una referencia Sin patronres");
-		assertFalse(patterns.add(new SpecificPatternsbyStructure("Pie")));
+		assertFalse(patterns.add(new WeightedPatternsbyStructure("Pie")));
 		
 		System.out.println("Verificar que se agregue una referencia válida");
-		spbs = new SpecificPatternsbyStructure("Branquias");
-		spbs.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Branquias", 
-				"Número de hojas branquiales", 6), 1));
+		spbs = new WeightedPatternsbyStructure("Branquias");
+		spbs.addPattern(new WeightedDescriptorPattern(new CharacterDescriptor<Object>("Branquias", 
+				"Número de hojas branquiales", 6), 0.5, 1));
 		assertTrue(patterns.add(spbs));
 		
-		spbs = new SpecificPatternsbyStructure("Branquias");
-		spbs.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Branquias",
-				"Número de hojas branquiales", 6), 10));
+		spbs = new WeightedPatternsbyStructure("Branquias");
+		spbs.addPattern(new WeightedDescriptorPattern(new CharacterDescriptor<Object>("Branquias",
+				"Número de hojas branquiales", 6), 9, 10));
 		assertTrue(patterns.add(spbs));
 	}
 
 	/**
-	 * Test method for {@link searchHintsBase.Lists.SpecificPatternsbyStructureList#sortBySuccessCriteria(java.util.List)}.
+	 * Test method for {@link searchHintsBase.Lists.WeightedPatternsbyStructureList#sortByMeanWeightCriteria(java.util.List)}.
 	 */
 	@Test
-	public void testSortBySuccessCriteria() {
+	public void testSortByMeanWeightCriteria() {
 		List<Descriptor<Object>> d1, d2;
-		SpecificPatternsbyStructure spbs;
+		WeightedPatternsbyStructure spbs;
 		
 		System.out.println("Iniciando pruebas para el método SortBySuccessCriteria()");
 		
 		System.out.println("Verificar que se obtiene una lista ordenada de forma descendente según criterio");
-		spbs = new SpecificPatternsbyStructure("Branquias");
-		spbs.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Branquias",
-				"Número de hojas branquiales", 6), 10));
+		spbs = new WeightedPatternsbyStructure("Branquias");
+		spbs.addPattern(new WeightedDescriptorPattern(new CharacterDescriptor<Object>("Branquias",
+				"Número de hojas branquiales", 6), 9, 10));
 		assertTrue(patterns.add(spbs));
 		
-		spbs = new SpecificPatternsbyStructure("Branquias");
-		spbs.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Branquias",
-				"Forma de hojas branquiales", "Tripinnada"), 5));
+		spbs = new WeightedPatternsbyStructure("Branquias");
+		spbs.addPattern(new WeightedDescriptorPattern(new CharacterDescriptor<Object>("Branquias",
+				"Forma de hojas branquiales", "Tripinnada"), 2, 5));
 		assertTrue(patterns.add(spbs));
 		
-		spbs.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Branquias", 
-				"Posición del ano con respecto a la branquia", "En el centro"), 3));
+		spbs.addPattern(new WeightedDescriptorPattern(new CharacterDescriptor<Object>("Branquias", 
+				"Posición del ano con respecto a la branquia", "En el centro"), 3, 10));
 		assertTrue(patterns.add(spbs));
 		
-		spbs = new SpecificPatternsbyStructure("Cuerpo");
-		spbs.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Cuerpo", 
-				"Forma", "Ovalado"), 8));
+		spbs = new WeightedPatternsbyStructure("Cuerpo");
+		spbs.addPattern(new WeightedDescriptorPattern(new CharacterDescriptor<Object>("Cuerpo", 
+				"Forma", "Ovalado"), 1, 8));
 		assertTrue(patterns.add(spbs));
 		
-		spbs = new SpecificPatternsbyStructure("Manto");
-		spbs.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Manto", 
-				"Textura", "Lisa"), 2));
+		spbs = new WeightedPatternsbyStructure("Manto");
+		spbs.addPattern(new WeightedDescriptorPattern(new CharacterDescriptor<Object>("Manto", 
+				"Textura", "Lisa"), 2, 6));
 		assertTrue(patterns.add(spbs));
 		
-		spbs.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Manto", 
-				"Forma del borde", "Ondulado"), 10));
+		spbs.addPattern(new WeightedDescriptorPattern(new CharacterDescriptor<Object>("Manto", 
+				"Forma del borde", "Ondulado"), 1, 10));
 		assertTrue(patterns.add(spbs));
 		
 		d1 = new ArrayList<Descriptor<Object>>();
 		d1.add(new CharacterDescriptor<Object>("Branquias", "Número de hojas branquiales", 6));
 		
-		assertEquals(d1, patterns.sortBySuccessCriteria(d1));
+		assertEquals(d1, patterns.sortByMeanWeightCriteria(d1));
 		d2 = new ArrayList<Descriptor<Object>>();
-		assertEquals(d2, patterns.sortBySuccessCriteria(d2));
+		assertEquals(d2, patterns.sortByMeanWeightCriteria(d2));
 		
 		d2.add(new CharacterDescriptor<Object>("Branquias", "Número de hojas branquiales", 6));
-		assertEquals(d2, patterns.sortBySuccessCriteria(d1));
+		assertEquals(d2, patterns.sortByMeanWeightCriteria(d1));
 		
 		d1.add(new CharacterDescriptor<Object>("Branquias", "Posición durante desplazamiento", "Hacia atras"));
 		d1.add(new CharacterDescriptor<Object>("Branquias", "Posición del ano con respecto a la branquia",
@@ -143,7 +143,7 @@ public class SpecificPatternsbyStructureListTest {
 		d2.add(new CharacterDescriptor<Object>("Branquias", "Posición del ano con respecto a la branquia",
 		"En el centro"));
 		d2.add(new CharacterDescriptor<Object>("Branquias", "Posición durante desplazamiento", "Hacia atras"));
-		assertEquals(d2, patterns.sortBySuccessCriteria(d1));
+		assertEquals(d2, patterns.sortByMeanWeightCriteria(d1));
 		
 		d1 = new ArrayList<Descriptor<Object>>();
 		d1.add(new CharacterDescriptor<Object>("Manto", "Textura del borde", "Lisa"));
@@ -152,22 +152,22 @@ public class SpecificPatternsbyStructureListTest {
 		d2 = new ArrayList<Descriptor<Object>>();
 		d2.add(new CharacterDescriptor<Object>("Manto", "Forma del borde", "Ondulado"));
 		d2.add(new CharacterDescriptor<Object>("Manto", "Textura del borde", "Lisa"));
-		assertEquals(d2, patterns.sortBySuccessCriteria(d1));
+		assertEquals(d2, patterns.sortByMeanWeightCriteria(d1));
 	}
 
 	/**
-	 * Test method for {@link searchHintsBase.Lists.SpecificPatternsbyStructureList#contains(searchHintsBase.Elements.SpecificPatternsbyStructure)}.
+	 * Test method for {@link searchHintsBase.Lists.WeightedPatternsbyStructureList#contains(searchHintsBase.Elements.WeightedPatternsbyStructure)}.
 	 */
 	@Test
-	public void testContainsSpecificPatternsbyStructure() {
-		SpecificPatternsbyStructure spbs;
+	public void testContainsWeightedPatternsbyStructure() {
+		WeightedPatternsbyStructure spbs;
 		
 		System.out.println("Iniciando pruebas para el método ContainsSpecificPatternsbyStructure()");
 		
 		System.out.println("Verificar que no contiene una referencia");
-		spbs = new SpecificPatternsbyStructure("Branquias");
-		spbs.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Branquias",
-				"Número de hojas branquiales", 6), 1));
+		spbs = new WeightedPatternsbyStructure("Branquias");
+		spbs.addPattern(new WeightedDescriptorPattern(new CharacterDescriptor<Object>("Branquias",
+				"Número de hojas branquiales", 6), 1, 1));
 		assertFalse(patterns.contains(spbs));
 		
 		System.out.println("Verificar que sí contiene una referencia");
@@ -176,18 +176,18 @@ public class SpecificPatternsbyStructureListTest {
 	}
 
 	/**
-	 * Test method for {@link searchHintsBase.Lists.SpecificPatternsbyStructureList#contains(java.lang.String)}.
+	 * Test method for {@link searchHintsBase.Lists.WeightedPatternsbyStructureList#contains(java.lang.String)}.
 	 */
 	@Test
 	public void testContainsString() {
-		SpecificPatternsbyStructure spbs;
+		WeightedPatternsbyStructure spbs;
 		
 		System.out.println("Iniciando pruebas para el método ContainsString()");
 		
 		System.out.println("Verificar que no contiene una referencia");
-		spbs = new SpecificPatternsbyStructure("Branquias");
-		spbs.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Branquias",
-				"Número de hojas branquiales", 6), 1));
+		spbs = new WeightedPatternsbyStructure("Branquias");
+		spbs.addPattern(new WeightedDescriptorPattern(new CharacterDescriptor<Object>("Branquias",
+				"Número de hojas branquiales", 6), 1, 1));
 		assertFalse(patterns.contains(spbs.getStructureName()));
 		
 		System.out.println("Verificar que sí contiene una referencia");
@@ -196,18 +196,18 @@ public class SpecificPatternsbyStructureListTest {
 	}
 
 	/**
-	 * Test method for {@link searchHintsBase.Lists.SpecificPatternsbyStructureList#getPatterns(java.lang.String)}.
+	 * Test method for {@link searchHintsBase.Lists.WeightedPatternsbyStructureList#getPatterns(java.lang.String)}.
 	 */
 	@Test
-	public void testGetSpecificPatternbyStructure() {
-		SpecificPatternsbyStructure spbs;
+	public void testGetPatterns() {
+		WeightedPatternsbyStructure spbs;
 		
 		System.out.println("Iniciando pruebas para el método ContainsString()");
 		
 		System.out.println("Verificar que no se obtiene tiene una referencia no incluida");
-		spbs = new SpecificPatternsbyStructure("Branquias");
-		spbs.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Branquias",
-				"Número de hojas branquiales", 6), 1));
+		spbs = new WeightedPatternsbyStructure("Branquias");
+		spbs.addPattern(new WeightedDescriptorPattern(new CharacterDescriptor<Object>("Branquias",
+				"Número de hojas branquiales", 6), 0.5, 1));
 		assertNull(patterns.getPatterns(spbs.getStructureName()));
 		
 		System.out.println("Verificar que sí se obtiene una referencia no incluida");

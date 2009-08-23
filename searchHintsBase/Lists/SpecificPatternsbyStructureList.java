@@ -46,7 +46,7 @@ public class SpecificPatternsbyStructureList extends HintsList<SpecificPatternsb
 			return true;
 		}
 		
-		spbs = this.getSpecificPatternbyStructure(patterns.getStructureName());
+		spbs = this.getPatterns(patterns.getStructureName());
 		
 		for (SpecificDescriptorPattern sdp:patterns.getPatterns())
 			spbs.addPattern(sdp);
@@ -103,7 +103,7 @@ public class SpecificPatternsbyStructureList extends HintsList<SpecificPatternsb
 	 * Obtiene un patr&oacute;n espec&iacute;fico con nombre de estructura aName
 	 * @return
 	 */
-	public SpecificPatternsbyStructure getSpecificPatternbyStructure(String aName) {
+	public SpecificPatternsbyStructure getPatterns(String aName) {
 		for (SpecificPatternsbyStructure spbs:this) {
 			if (spbs.getStructureName().equals(aName))
 				return spbs;
@@ -155,7 +155,7 @@ public class SpecificPatternsbyStructureList extends HintsList<SpecificPatternsb
 			return tempList;
 
 		numElements = outList.size();
-		spbs = this.getSpecificPatternbyStructure(outList.get(0).getStructure());
+		spbs = this.getPatterns(outList.get(0).getStructure());
 		if (spbs == null) return tempList;
 		sortedList = new ArrayList<SpecificDescriptorPattern>();
 		

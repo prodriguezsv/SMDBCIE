@@ -5,7 +5,9 @@ package ontology.taxonomy;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ontology.common.Descriptor;
 import ontology.common.Modifier;
@@ -21,8 +23,8 @@ public class Taxon implements Comparable<Taxon>{
 	private String name;
 	private Taxon predecessor;
 	private List<Taxon> successors;
-	private List<Descriptor<Object>> description;
-	private List<Modifier> modifiers;
+	private Map<Descriptor<Object>, Modifier> description;
+	//private List<Modifier> modifiers;
 
 	/**
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
@@ -34,9 +36,7 @@ public class Taxon implements Comparable<Taxon>{
 		//Pendiente ordenamiento
 		setSuccessors(new ArrayList<Taxon>());
 		//Pendiente ordenamiento
-		setModifiers(new ArrayList<Modifier>());
-		//Pendiente ordenamiento
-		setDescription(new ArrayList<Descriptor<Object>>());
+		setModifiedDescription(new HashMap<Descriptor<Object>, Modifier>());
 	}
 
 	/**
@@ -141,7 +141,7 @@ public class Taxon implements Comparable<Taxon>{
 	 * Método de instancia agregado
 	 * @param sAVDescription
 	 */
-	public void setDescription(List<Descriptor<Object>> aDescription) {
+	public void setModifiedDescription(Map<Descriptor<Object>, Modifier> aDescription) {
 		this.description = aDescription;
 	}
 
@@ -149,26 +149,24 @@ public class Taxon implements Comparable<Taxon>{
 	 * @see "Método SAVdescription del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Descriptor<Object>> getDescription() {
+	public Map<Descriptor<Object>, Modifier> getModifiedDescription() {
 		return description;
 	}	
 	
 	/**
-	 * 
-	 * @param modifiers
-	 */
-	public void setModifiers(List<Modifier> modifiers) {
-		this.modifiers = modifiers;
-	}
-
-	/**
-	 * 
+	 * @see "Método SAVdescription del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Modifier> getModifiers() {
-		return modifiers;
+	public List<Descriptor<Object>> getDescription() {
+		List<Descriptor<Object>> dl;
+		
+		dl = new ArrayList<Descriptor<Object>>();
+		for (Descriptor<Object> d:description.keySet())
+			dl.add(d);
+		
+		return dl;
 	}
-
+	
 	/**
 	 * @see "Método isSuccessorOf: del protocolo inhetitence en SUKIA SmallTalk"
 	 */
@@ -223,12 +221,11 @@ public class Taxon implements Comparable<Taxon>{
 	public boolean addToDescription(Descriptor<Object> aDescriptor) {
 		if (aDescriptor == null) return false;
 		
-		if (this.getDescription().contains(aDescriptor))
+		if (this.getModifiedDescription().containsKey(aDescriptor))
 			return false;
 		
-		this.getDescription().add(aDescriptor);
 		aDescriptor.setAssociatedObject(this);
-		this.getModifiers().add(new Modifier());
+		this.getModifiedDescription().put(aDescriptor, new Modifier());
 		
 		return true;
 	}
@@ -236,12 +233,11 @@ public class Taxon implements Comparable<Taxon>{
 	public boolean addToDescription(Descriptor<Object> aDescriptor, Modifier aModifier) {
 		if (aDescriptor == null) return false;
 		
-		if (this.getDescription().contains(aDescriptor))
+		if (this.getModifiedDescription().containsKey(aDescriptor))
 			return false;
 		
-		this.getDescription().add(aDescriptor);
 		aDescriptor.setAssociatedObject(this);
-		this.getModifiers().add(aModifier);
+		this.getModifiedDescription().put(aDescriptor, aModifier);
 		
 		return true;
 	}
@@ -255,8 +251,10 @@ public class Taxon implements Comparable<Taxon>{
 	public boolean removeFromDescription(Descriptor<Object> aDescriptor) {
 		if (aDescriptor == null) return false;
 		
-		this.getModifiers().remove(this.getDescription().indexOf(aDescriptor));
-		return this.getDescription().remove(aDescriptor);
+		if (this.getModifiedDescription().remove(aDescriptor) == null)
+			return true;
+			
+		return false;
 	}
 	
 	/**

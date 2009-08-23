@@ -89,7 +89,6 @@ public class RangeValue extends Value {
 	
 	public int hashCode(){
 		return Double.valueOf(this.getLowerBound()).hashCode() 
-			+ Double.valueOf(this.getUpperBound()).hashCode() +
-			this.getMeasuringUnit().hashCode();
+			+ Double.valueOf(this.getUpperBound()).hashCode();
 	}
 }

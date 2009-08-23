@@ -4,7 +4,9 @@
 package ontology.taxonomy;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ontology.common.Descriptor;
 
@@ -14,7 +16,7 @@ import ontology.common.Descriptor;
  *
  */
 public class Taxonomy {
-	private DescriptorsIndex descriptorsIndex;
+	private Map<Descriptor<Object>, List<Taxon>> descriptorsIndex;
 	private Taxon rootTaxon;
 	private List<List<Taxon>> levelIndex;
 
@@ -24,7 +26,7 @@ public class Taxonomy {
 	public Taxonomy() {
 		List<Taxon> level;
 
-		setDescriptorsIndex(new DescriptorsIndex());
+		setDescriptorsIndex(new HashMap<Descriptor<Object>, List<Taxon>>());
 		
 		rootTaxon = new Taxon();
 		rootTaxon.setName(null);
@@ -42,7 +44,7 @@ public class Taxonomy {
 	 * Método de instancia agregado
 	 * @param descriptorsIndex
 	 */
-	private void setDescriptorsIndex(DescriptorsIndex descriptorsIndex) {
+	private void setDescriptorsIndex(Map<Descriptor<Object>, List<Taxon>> descriptorsIndex) {
 		this.descriptorsIndex = descriptorsIndex;
 	}
 	
@@ -54,18 +56,18 @@ public class Taxonomy {
 	private void addToDescriptorsIndex(Taxon aNewTaxon) {
 		for (Descriptor<Object> d:aNewTaxon.getDescription()) {
 			// Find a structure, in the Structure Index, with a name that matches the new taxon's structure name
-			if (!this.getDescriptorsIndex().getDescriptorsIndex().contains(d)) {
-				this.getDescriptorsIndex().getDescriptorsIndex().add(d);
-				this.getDescriptorsIndex().getOtherTaxons().add(new ArrayList<Taxon>());
-				this.getDescriptorsIndex().getOtherTaxons().get(this.getDescriptorsIndex()
-						.getDescriptorsIndex().indexOf(d)).add(aNewTaxon);
+			if (!this.getDescriptorsIndex().containsKey(d)) {
+				this.getDescriptorsIndex().put(d, new ArrayList<Taxon>());
+				this.getDescriptorsIndex().get(d).add(aNewTaxon);
 			} else {
-				if (!this.getDescriptorsIndex().getDescriptorsIndex().get(this.getDescriptorsIndex()
-						.getDescriptorsIndex().indexOf(d)).getAssociatedObject().equals(aNewTaxon) &&
-						!this.getDescriptorsIndex().getOtherTaxons().get(this.getDescriptorsIndex()
-								.getDescriptorsIndex().indexOf(d)).contains(aNewTaxon));
-					this.getDescriptorsIndex().getOtherTaxons().get(this.getDescriptorsIndex()
-							.getDescriptorsIndex().indexOf(d)).add(aNewTaxon);				
+				for(Descriptor<Object> d2:this.getDescriptorsIndex().keySet()) {
+					if (d2.equals(d)) {
+						if (!d2.getAssociatedObject().equals(aNewTaxon) &&
+								!this.getDescriptorsIndex().get(d).contains(aNewTaxon)); // OJO
+						this.getDescriptorsIndex().get(d).add(aNewTaxon);
+					}
+						
+				}
 			}
 		}
 	}
@@ -74,7 +76,7 @@ public class Taxonomy {
 	 * @see "Método structureIndex del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public DescriptorsIndex getDescriptorsIndex() {
+	public Map<Descriptor<Object>, List<Taxon>> getDescriptorsIndex() {
 		return descriptorsIndex;
 	}
 	
