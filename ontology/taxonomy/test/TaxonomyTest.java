@@ -60,7 +60,7 @@ public class TaxonomyTest {
         aRangeDescriptor.setLowerBound(0.3);
         aRangeDescriptor.setUpperBound(4.0);
 
-        taxon1.addToDescription(new CharacterDescriptor("cuerpo","longitud",aRangeDescriptor),
+        taxon1.addToDescription(new CharacterDescriptor<Object>("cuerpo","longitud",aRangeDescriptor),
                                     new Modifier(1.0,1.0,1.0));
 
         taxon1.addToDescription(new CharacterDescriptor("cuerpo","conformacion","tiene_cerata"),

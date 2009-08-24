@@ -56,6 +56,7 @@ public class SingleValue<E> extends Value{
 		else return false;
 	}
 	
+    @Override
 	public int hashCode(){
 		return this.getValue().hashCode() + this.getMeasuringUnit().hashCode();
 	}

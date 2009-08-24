@@ -1,12 +1,19 @@
+package system.searchAutomata.output.test;
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 
-package system.searchAutomata.output.test;
+//package system.searchAutomata.output.test;
 
+import java.util.ArrayList;
 import java.util.List;
+import ontology.CBR.Case;
+import ontology.common.CharacterDescriptor;
 import ontology.common.Descriptor;
+import ontology.taxonomy.Taxon;
+import ontology.taxonomy.TaxonomicRank;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -21,6 +28,11 @@ import system.searchAutomata.output.SearchAutomatonOutput;
  * @author pabloq
  */
 public class SearchAutomatonOutputTest {
+    PossibleSolution aPossibleSolution,aPossibleSolution2;
+    Taxon aTaxon;
+    Case aCase;
+    List<PossibleSolution> aPossibleSolutionList;
+    List<Descriptor<Object>> aDescription;
 
     public SearchAutomatonOutputTest() {
     }
@@ -35,23 +47,35 @@ public class SearchAutomatonOutputTest {
 
     @Before
     public void setUp() {
+        aTaxon = new Taxon();
+        aTaxon.setLevel(TaxonomicRank.GENUS);
+        aTaxon.setName("Glossodoris");
+
+        aPossibleSolution = new PossibleSolution();
+        aPossibleSolution.setSolution(aTaxon);
+        
+        aCase = new Case();
+        aCase.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
+        aCase.addToDescription(new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto"));
+
+        aPossibleSolution2 = new PossibleSolution();
+        aPossibleSolution2.setSolution(aCase);
+
+        aPossibleSolutionList = new ArrayList<PossibleSolution>();
+        aPossibleSolutionList.add(aPossibleSolution);
+        aPossibleSolutionList.add(aPossibleSolution2);
+
+        aDescription = new ArrayList<Descriptor<Object>>();
+        aDescription.add(new CharacterDescriptor("pie","disposicion","sobresale_al_manto"));
+        aDescription.add(new CharacterDescriptor("pie","coloracion","blanquecino"));
+        aDescription.add(new CharacterDescriptor("pie","coloracion","crema"));
+        aDescription.add(new CharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro"));
+
+
     }
 
     @After
     public void tearDown() {
-    }
-
-    /**
-     * Test of setJustification method, of class SearchAutomatonOutput.
-     */
-    @Test
-    public void testSetJustification() {
-        System.out.println("setJustification");
-        List<Descriptor<Object>> aJustificationsList = null;
-        SearchAutomatonOutput instance = new SearchAutomatonOutput();
-        instance.setJustification(aJustificationsList);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -60,66 +84,11 @@ public class SearchAutomatonOutputTest {
     @Test
     public void testSetPossibleSolutions() {
         System.out.println("setPossibleSolutions");
-        List<PossibleSolution> aPossibleSolutionList = null;
         SearchAutomatonOutput instance = new SearchAutomatonOutput();
         instance.setPossibleSolutions(aPossibleSolutionList);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
 
-    /**
-     * Test of setUnmatchedDescription method, of class SearchAutomatonOutput.
-     */
-    @Test
-    public void testSetUnmatchedDescription() {
-        System.out.println("setUnmatchedDescription");
-        List<Descriptor<Object>> anUnmatchedDescription = null;
-        SearchAutomatonOutput instance = new SearchAutomatonOutput();
-        instance.setUnmatchedDescription(anUnmatchedDescription);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getJustification method, of class SearchAutomatonOutput.
-     */
-    @Test
-    public void testGetJustification() {
-        System.out.println("getJustification");
-        SearchAutomatonOutput instance = new SearchAutomatonOutput();
-        List expResult = null;
-        List result = instance.getJustification();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getPossibleSolutions method, of class SearchAutomatonOutput.
-     */
-    @Test
-    public void testGetPossibleSolutions() {
-        System.out.println("getPossibleSolutions");
-        SearchAutomatonOutput instance = new SearchAutomatonOutput();
-        List expResult = null;
-        List result = instance.getPossibleSolutions();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getUnmatchedDescription method, of class SearchAutomatonOutput.
-     */
-    @Test
-    public void testGetUnmatchedDescription() {
-        System.out.println("getUnmatchedDescription");
-        SearchAutomatonOutput instance = new SearchAutomatonOutput();
-        List expResult = null;
-        List result = instance.getUnmatchedDescription();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertNotSame(aPossibleSolutionList,instance.getPossibleSolutions());
+        assertSame(((Taxon)aPossibleSolutionList.get(0).getSolution()).getName(),((Taxon)instance.getPossibleSolutions().get(0).getSolution()).getName());
     }
 
     /**
@@ -128,11 +97,13 @@ public class SearchAutomatonOutputTest {
     @Test
     public void testAppendToJustification() {
         System.out.println("appendToJustification");
-        List<Descriptor<Object>> aJustificationList = null;
+        List<Descriptor<Object>> aJustificationList = new ArrayList<Descriptor<Object>>();
+        aJustificationList.add(new CharacterDescriptor("pie","disposicion","sobresale_al_manto"));
+        aJustificationList.add(new CharacterDescriptor("pie","coloracion","blanquecino"));
+        aJustificationList.add(new CharacterDescriptor("pie","coloracion","crema"));
+        aJustificationList.add(new CharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro"));
         SearchAutomatonOutput instance = new SearchAutomatonOutput();
         instance.appendToJustification(aJustificationList);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -141,11 +112,14 @@ public class SearchAutomatonOutputTest {
     @Test
     public void testAppendToPossibleSolutions() {
         System.out.println("appendToPossibleSolutions");
-        List<PossibleSolution> aPossibleSolutionsList = null;
         SearchAutomatonOutput instance = new SearchAutomatonOutput();
-        instance.appendToPossibleSolutions(aPossibleSolutionsList);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
+        instance.setPossibleSolutions(aPossibleSolutionList);
+        assertEquals(aPossibleSolutionList.size(),instance.getPossibleSolutions().size());
+
+        instance.appendToPossibleSolutions(aPossibleSolutionList);
+
+        assertNotSame(aPossibleSolutionList.size(),instance.getPossibleSolutions().size());
     }
 
     /**
@@ -154,11 +128,30 @@ public class SearchAutomatonOutputTest {
     @Test
     public void testAppendToUnmatchedDescription() {
         System.out.println("appendToUnmatchedDescription");
-        List<Descriptor<Object>> anUnmatchedDescription = null;
         SearchAutomatonOutput instance = new SearchAutomatonOutput();
+        List<Descriptor<Object>> anUnmatchedDescription = new ArrayList<Descriptor<Object>>();
+        anUnmatchedDescription.add(new CharacterDescriptor("pie","disposicion","sobresale_al_manto"));
+        anUnmatchedDescription.add(new CharacterDescriptor("pie","coloracion","blanquecino"));
+        
         instance.appendToUnmatchedDescription(anUnmatchedDescription);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        assertSame(2,instance.getUnmatchedDescription().size());
+
+        /*
+         * Must add just new ones.
+         */
+        anUnmatchedDescription.add(new CharacterDescriptor("pie","disposicion","new value"));
+        anUnmatchedDescription.add(new CharacterDescriptor("pie","disposicion","other new"));
+
+        instance.appendToUnmatchedDescription(anUnmatchedDescription);
+        assertSame(4,instance.getUnmatchedDescription().size());
+        /*
+         * Must keep the sames, descriptor already exists.
+         */
+        anUnmatchedDescription.add(new CharacterDescriptor("pie","coloracion","blanquecino"));
+        instance.appendToUnmatchedDescription(anUnmatchedDescription);
+        assertSame(4,instance.getUnmatchedDescription().size());
+        
     }
 
     /**
@@ -167,15 +160,26 @@ public class SearchAutomatonOutputTest {
     @Test
     public void testGetDescriptor() {
         System.out.println("getDescriptor");
-        Descriptor<Object> aDescriptor = null;
-        List<Descriptor<Object>> aDescription = null;
         SearchAutomatonOutput instance = new SearchAutomatonOutput();
-        Descriptor expResult = null;
-        Descriptor result = instance.getDescriptor(aDescriptor, aDescription);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        instance.appendToUnmatchedDescription(aDescription);
+
+        List<Descriptor<Object>> aDescription2 = new ArrayList<Descriptor<Object>>();
+        aDescription2.add(new CharacterDescriptor("manos","disposicion","sobresale_al_manto"));
+        aDescription2.add(new CharacterDescriptor("manos","coloracion","blanquecino"));
+        
+        Descriptor<Object> aCharacterDescriptor = instance.getDescriptor(new CharacterDescriptor("pie","coloracion","crema"), instance.getUnmatchedDescription());
+        /*
+         * Case when it's the same instance and the descriptor exist.
+         */
+        assertEquals("crema",aCharacterDescriptor.getValue());
+        /*
+         * Cases when is not the same instance and case when it's the same instance but descriptor doesn't exist.
+         */
+
+        assertNull(instance.getDescriptor(new CharacterDescriptor("pie","coloracion","crema"), aDescription2));
+        assertNull(instance.getDescriptor(new CharacterDescriptor("pie","coloracion","red"), instance.getUnmatchedDescription()));
     }
+
 
     /**
      * Test of contains method, of class SearchAutomatonOutput.
@@ -183,14 +187,27 @@ public class SearchAutomatonOutputTest {
     @Test
     public void testContains() {
         System.out.println("contains");
-        Descriptor<Object> aSAVDescriptor = null;
-        List<Descriptor<Object>> aDescription = null;
         SearchAutomatonOutput instance = new SearchAutomatonOutput();
-        boolean expResult = false;
-        boolean result = instance.contains(aSAVDescriptor, aDescription);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        instance.appendToUnmatchedDescription(aDescription);
+
+        CharacterDescriptor aCharacterDescriptor = new CharacterDescriptor("pie","coloracion","blanquecino");
+        /*
+         * Same instance and it contains the descriptor
+         */
+        assertTrue(instance.contains(aCharacterDescriptor, instance.getUnmatchedDescription()));
+
+        List<Descriptor<Object>> aDescription2 = new ArrayList<Descriptor<Object>>();
+        aDescription2.add(new CharacterDescriptor("manos","disposicion","sobresale_al_manto"));
+        aDescription2.add(new CharacterDescriptor("pie","coloracion","blanquecino"));
+        /*
+         * Not same instance and it contains the descriptor
+         */
+        assertFalse(instance.contains(aCharacterDescriptor, aDescription2));
+        /*
+         * Same instance and it doesn't contain the descriptor
+         */
+        aCharacterDescriptor = new CharacterDescriptor("pie","coloracion","color unknow");
+        assertFalse(instance.contains(aCharacterDescriptor, instance.getUnmatchedDescription()));
     }
 
 }

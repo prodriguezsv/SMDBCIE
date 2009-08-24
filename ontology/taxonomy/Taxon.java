@@ -6,9 +6,11 @@ package ontology.taxonomy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import java.util.Set;
 import ontology.common.Descriptor;
 import ontology.common.Modifier;
 import ontology.values.RangeValue;
@@ -166,7 +168,66 @@ public class Taxon implements Comparable<Taxon>{
 		
 		return dl;
 	}
-	
+        
+       public Map<Descriptor<Object>, Modifier> searchByStructure(Object structureName){
+            Map<Descriptor<Object>, Modifier> result = new HashMap<Descriptor<Object>, Modifier>();
+            Set set = description.entrySet();
+            Iterator i = set.iterator();
+            while(i.hasNext()){
+                Map.Entry me = (Map.Entry)i.next();
+                Descriptor<Object> aDescriptor  = (Descriptor<Object>)me.getKey();
+                Modifier aModifier  = (Modifier)me.getValue();
+                if (aDescriptor.getStructure().equals(structureName)){
+                    result.put(aDescriptor, aModifier);
+                }
+
+            }
+            return result;
+       }
+
+       public Map<Descriptor<Object>, Modifier> searchByAttribute(Object attributeName){
+            Map<Descriptor<Object>, Modifier> result = new HashMap<Descriptor<Object>, Modifier>();
+            Set set = description.entrySet();
+            Iterator i = set.iterator();
+            while(i.hasNext()){
+                Map.Entry me = (Map.Entry)i.next();
+                Descriptor<Object> aDescriptor  = (Descriptor<Object>)me.getKey();
+                Modifier aModifier  = (Modifier)me.getValue();
+                if (aDescriptor.getAttribute().equals(attributeName)){
+                    result.put(aDescriptor, aModifier);
+                }
+            }
+            return result;
+       }
+       public Map<Descriptor<Object>, Modifier> searchByValue(Object valueName){
+            Map<Descriptor<Object>, Modifier> result = new HashMap<Descriptor<Object>, Modifier>();
+            Set set = description.entrySet();
+            Iterator i = set.iterator();
+            while(i.hasNext()){
+                Map.Entry me = (Map.Entry)i.next();
+                Descriptor<Object> aDescriptor  = (Descriptor<Object>)me.getKey();
+                Modifier aModifier  = (Modifier)me.getValue();
+                if (aDescriptor.getValue().equals(valueName)){
+                    result.put(aDescriptor, aModifier);
+                }
+            }
+            return result;
+       }
+
+       public Map<Object, Double> retriveValuesUsing(Object valueStruture,Object valueAttribute){
+            Map<Object, Double> result = new HashMap<Object, Double>();
+            Set set = description.entrySet();
+            Iterator i = set.iterator();
+            while(i.hasNext()){
+                Map.Entry me = (Map.Entry)i.next();
+                Descriptor<Object> aDescriptor  = (Descriptor<Object>)me.getKey();
+                Modifier aModifier  = (Modifier)me.getValue();
+                if (aDescriptor.getStructure().equals(valueStruture) && aDescriptor.getAttribute().equals(valueAttribute)){
+                    result.put(aDescriptor.getValue(), aModifier.getValueWeight());
+                }
+            }
+            return result;
+       }
 	/**
 	 * @see "Método isSuccessorOf: del protocolo inhetitence en SUKIA SmallTalk"
 	 */

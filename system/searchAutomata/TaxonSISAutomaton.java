@@ -13,13 +13,12 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+import java.util.Map;
 import ontology.CBR.SimilarityDegree;
-import ontology.common.Attribute;
 import ontology.common.Descriptor;
-import ontology.common.Structure;
-import ontology.taxonomy.StructureIndex;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
+import ontology.taxonomy.Taxonomy;
 import ontology.values.RangeValue;
 import ontology.values.Values;
 import ontology.values.Value;
@@ -28,32 +27,20 @@ import ontology.values.Value;
  *
  * Taxon Structure-Index Search Automaton.
  * 1. The search is based on a problem description composed of a non-empty set of SAVDescriptors.
- * 2. The search strategy is to use the StructureIndex defined in the class Taxonomy.
+ * 2. The search strategy is to use the List<Descriptor<Object>> defined in the class Taxonomy.
  * @author pabloq
  */
 
 public class TaxonSISAutomaton extends TaxonSearchAutomaton{
 
-    private Attribute attribute;
-    private Structure structure;
-    private StructureIndex structureIndex;
-    //private String status;
+    private String attribute;
+    private String structure;
+    private List<Value> value;
+    private Map<Descriptor<Object>, List<Taxon>> structureIndex;
     private List<PossibleSolution> taxonList;
     private PossibleSolution compSolution;
     private SimilarityDegree minSimilarityDegree;
 
-
-/*
-<name>TaxonSISAutomaton</name>
-<environment>Smalltalk</environment>
-<super>TaxonSearchAutomaton</super>
-<private>false</private>
-<indexed-type>none</indexed-type>
-<inst-vars>structure attribute similarityRanges </inst-vars>
-<class-inst-vars></class-inst-vars>
-<imports></imports>
-<category>CBR - Sukia Search Automata</category>
-*/
 
  /*
  *Category instance creation
@@ -63,7 +50,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
  * @param my parameters list
  * @return my return values
  */
- public TaxonSISAutomaton(StructureIndex aStructureIndex,SimilarityDegree minSimilarityDegree){
+ public TaxonSISAutomaton(List<Descriptor<Object>> aStructureIndex,SimilarityDegree minSimilarityDegree){
  
         //Index searchIndex = aStructureIndex;
         setSearchIndex(aStructureIndex);
@@ -82,10 +69,6 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
  * @return my return values
  */
     public void resetAttribute(){
-/*resetAttribute
-
-	attribute := nil.
-	^self.*/
         attribute = null;
 }
 
@@ -95,10 +78,6 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
  * @return my return values
  */
     public void resetStructure(){
-/*resetStructure
-
-	structure := nil.
-	^self.*/
         structure = null;
 }
 
@@ -111,11 +90,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
  * @param my parameters list
  * @return my return values
  */
-    public void setAttribute(Attribute anAttribute){
-/*attribute: anAttribute
-
-	attribute := anAttribute.
-	^self.*/
+    public void setAttribute(String anAttribute){
         attribute = anAttribute;
 }
 
@@ -124,11 +99,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
  * @param my parameters list
  * @return my return values
  */
-    public void setStructure(Structure aStructure){
-/*structure: aStructure
-
-	structure := aStructure.
-	^self.*/
+    public void setStructure(String aStructure){
         structure = aStructure;
 }
 
@@ -142,9 +113,6 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
  * @return my return values
  */
     public Object getAttribute(){
-/*attribute
-
-	^attribute.*/
         return attribute;
 }
 
@@ -154,9 +122,6 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
  * @return my return values
  */
     public Object getSimilarityRanges(){
-/*similarityRanges
-
-	^similarityRanges.*/
         return minSimilarityDegree;
 }
 
@@ -165,10 +130,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
  * @param my parameters list
  * @return my return values
  */
-    public Structure getStructure(){
-/*structure
-
-	^structure.*/
+    public String getStructure(){
         return structure;
 }
 
@@ -178,9 +140,6 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
  * @return my return values
  */
     public Object getStructureIndex(){
-/*structureIndex
-
-	^self searchIndex.*/
         return structureIndex;
 }
 
@@ -230,7 +189,10 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
 	self prepareFailedOutput.
 	^nil.*/
         if (checkPrecondition(aProblemDescription)){setStatus("error"); return false;}
-        structure = structureIndex.getStructure(aProblemDescription.get(0).getStructure());
+
+        //TODO check here
+        structure = structureIndex.get(aProblemDescription.get(0)).get(0).getDescription().get(0).getStructure();
+
         if (structure == null){prepareFailedOutput(); return false;}
         for (Descriptor<Object> dt: aProblemDescription){
             resetAttribute();
@@ -266,15 +228,23 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
 	| weightedValues similarity |
 
 	weightedValues :=
-		(((aTaxon getAnObjectWith: (aSAVDescriptor structure) in: (aTaxon SAVdescription))
-		   attributeWith: (aSAVDescriptor attribute)) values at: (Attribute oneLevel)).
+		(   (
+                        (
+                            aTaxon getAnObjectWith: (aSAVDescriptor structure) in: (aTaxon SAVdescription)
+                        )
+                        attributeWith: (aSAVDescriptor attribute)
+                    )
+                    values at: (Attribute oneLevel)
+                ).
 
 	similarity := SimAssessor similarityRangeOf: (aSAVDescriptor value) in: weightedValues.
 	(self similarityRanges includes: similarity) ifFalse: [ ^nil ].
 
 	^aTaxon.*/
-        List<Value> weightedValues = ((aTaxon.getDescription().getStructure(aDescriptor.getStructure())
-        		.getAttribute(aDescriptor.getAttribute())).getValues().get(Attribute.oneLevel()));
+
+        Map<Object, Double> weightedValues = aTaxon.retriveValuesUsing(aDescriptor.getStructure(),aDescriptor.getAttribute());
+                //((aTaxon.getDescription().getStructure(aDescriptor.getStructure())
+        	//	.getAttribute(aDescriptor.getAttribute())).getValues().get(Attribute.oneLevel()));
         
         SimilarityDegree similarity = SimilarityAssessor.similarityRangeOf(aDescriptor.getValue(), weightedValues);
         if (EnumSet.range(minSimilarityDegree, SimilarityDegree.IGUAL).contains(similarity) != true)
@@ -288,23 +258,18 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
  * @param my parameters list
  * @return my return values
  */
-    public boolean retrieveTaxa(Descriptor<Object> aSAVDescriptor){
-    	List<Taxon> taxa;
+    public boolean retrieveTaxa(Descriptor<Object> aSAVDescriptor,Taxonomy aTaxonomy){
     	List<PossibleSolution> tps;
 
         List<Taxon> tempList = new ArrayList<Taxon>();
-        for (Value vd: getValueDescriptors()){
-            taxa = (List<Taxon>)vd.getTaxonList();
-            if (taxa.size()<1){return false;}
-            while (taxa.size()>0){
-                Taxon taxon = determineSimilarityFor(aSAVDescriptor,taxa.remove(0));
-                if (taxon != null){
-                    tempList.add(taxon);
-                }
+        
+        for (List<Taxon> aLevel: aTaxonomy.getLevelIndex()){
+            for (Taxon aTaxon: aLevel){
+                Taxon taxon = determineSimilarityFor(aSAVDescriptor,aTaxon);
+                if (taxon != null) tempList.add(aTaxon);
             }
-
         }
-        if (tempList.size() < 1) {return false;}
+        if (tempList.size() < 1) return false;
         setTSolutionDescription(aSAVDescriptor);
         tps = associateTaxaToPossibleSolutions(tempList);
         while (tps.size()>0){
@@ -330,7 +295,7 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
 	ifTrue: [ self tUnmatchedDescription: aSAVDescriptor. ^nil ].
 
 	^(self searchValueDescriptors: aSAVDescriptor).*/
-        attribute = getStructure().getAttribute(aSAVDescriptor.getAttribute());
+        setAttribute(aSAVDescriptor.getAttribute());
         if (attribute == null) {
             setTUnmatchedDescription(aSAVDescriptor);
             return null;
@@ -354,34 +319,34 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
     public Object searchValueDescriptors(Descriptor<Object> aDescriptor){
     	List<Value> vdList;
     	Value vd;
-    	List<Taxon> taxa;
+    	List<Taxon> taxa = new ArrayList<Taxon>();
     	List<PossibleSolution> tps;
-
-        Values attrValues = attribute.getValues();
+        //TODO Check this!!!!
+//        Values attrValues = structureIndex.G;
         
         int i = 0;
         //set the list of possible value descriptors to nil
         vdList = null;
         
-        while ( i <= attrValues.size()){
-		//If the argument's value is not ByteSymbol, then it MUST be a number. If so, search for a match using value descriptor ranges. If the search was unsuccessful, reset vd to nil
-                //TODO check the real instance that it should be.
-                if ((aDescriptor.getValue() instanceof String) != true){
-                    vdList = attrValues.getRangeDescriptorsWithNumber((Double)aDescriptor.getValue(), TaxonomicRank.values()[i]);
-                    if (vdList == null) {return false;}
-                    if (vdList.isEmpty()) {vdList = null;}
-                }
-            //If the list of possible value descriptors is not nil, a successful range-based descriptor search was done. Place the value descriptor in the valueDescriptors instance variable
-            if (vdList != null){
-                setValueDescriptors(vdList);
-            }else{
-                //At this point, either: a) the argument's value is a ByteSymbol, or a range search was unsuccessful. Do then an exact match search
-                vdList = attrValues.getRangeDescriptorsWithNumber((Double)aDescriptor.getValue(), TaxonomicRank.values()[i]);
-                if (vdList == null) {return -1;}
-                if (vdList.isEmpty()!=true){setValueDescriptors(vdList);}
-            }
-            i += 1;
-        }
+//        while ( i <= attrValues.size()){
+//		//If the argument's value is not ByteSymbol, then it MUST be a number. If so, search for a match using value descriptor ranges. If the search was unsuccessful, reset vd to nil
+//                //TODO check the real instance that it should be.
+//                if ((aDescriptor.getValue() instanceof String) != true){
+//                    vdList = attrValues.getRangeDescriptorsWithNumber((Double)aDescriptor.getValue(), TaxonomicRank.values()[i]);
+//                    if (vdList == null) {return false;}
+//                    if (vdList.isEmpty()) {vdList = null;}
+//                }
+//            //If the list of possible value descriptors is not nil, a successful range-based descriptor search was done. Place the value descriptor in the valueDescriptors instance variable
+//            if (vdList != null){
+//                setValueDescriptors(vdList);
+//            }else{
+//                //At this point, either: a) the argument's value is a ByteSymbol, or a range search was unsuccessful. Do then an exact match search
+//                vdList = attrValues.getRangeDescriptorsWithNumber((Double)aDescriptor.getValue(), TaxonomicRank.values()[i]);
+//                if (vdList == null) {return -1;}
+//                if (vdList.isEmpty()!=true){setValueDescriptors(vdList);}
+//            }
+//            i += 1;
+//        }
 
         if (getValueDescriptors().isEmpty()){
             setTUnmatchedDescription(aDescriptor);
@@ -395,8 +360,9 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
                 if (vd instanceof RangeValue){
                     //Value desscriptor is a range. Associate all taxa to possible solutions, place them in the taxon list
 
-        			
-                    taxa = vd.getTaxonList();
+                    //TODO Check this!!!!
+                    //taxa = vd.getTaxonList();
+
                     setTSolutionDescription(aDescriptor);
                     tps = associateTaxaToPossibleSolutions(taxa);
                     resetList(getTSolutionDescription());
@@ -415,7 +381,9 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
         if (tempList.isEmpty()){return true;}
         //Remove all exact-match value descriptors from the temporary list, put them back in the valueDescriptos list, and continue processing
         setValueDescriptors(tempList);
-        return retrieveTaxa(aDescriptor);
+        //TODO Check this!!!!
+        return false;
+        //return retrieveTaxa(aDescriptor);
 }
 
 
@@ -575,5 +543,6 @@ public class TaxonSISAutomaton extends TaxonSearchAutomaton{
         }
         return 1;
 }
+
 
 }

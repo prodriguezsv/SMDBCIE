@@ -10,7 +10,6 @@ import java.util.List;
 
 import ontology.common.Descriptor;
 import ontology.common.GroupingHeuristic;
-import ontology.taxonomy.GroupingHeuristicIndex;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
 import ontology.values.Values;
@@ -31,14 +30,14 @@ import system.PossibleSolution;
  * 	 generalStructureName = name of the organism for which the Reasoner is set up (e.g., 'planta'),
  * 	 groupingHeuristicName = a valid grouping heuristic name (e.g., #esLenoso),
  * 	 value = (ByteSymbol | Number)
- * 3. The search strategy is to use the GroupingHeuristicIndex defined in the class Taxonomy.
+ * 3. The search strategy is to use the List<Descriptor> defined in the class Taxonomy.
  * @author pabloq
  */
     public class TaxonGHISAutomaton extends TaxonSearchAutomaton{
 
-        GroupingHeuristicIndex searchIndex;
+        List<Descriptor> searchIndex;
         GroupingHeuristic groupingHeuristic;
-        GroupingHeuristicIndex groupingHeuristicIndex;
+        List<Descriptor> groupingHeuristicIndex;
 
 /*
 <name>TaxonGHISAutomaton</name>
@@ -61,7 +60,7 @@ import system.PossibleSolution;
  * @param my parameters list
  * @return my return values
  */
-    public TaxonGHISAutomaton(GroupingHeuristicIndex aGroupingHeuristicIndex) {
+    public TaxonGHISAutomaton(List<Descriptor> aGroupingHeuristicIndex) {
 /*newWith: aGroupingHeuristicIndex
 
 	| searchAutomaton |
@@ -81,7 +80,7 @@ import system.PossibleSolution;
  * @param my parameters list
  * @return my return values
  */
-    public void initializeWithIndex(GroupingHeuristicIndex aGroupingHeuristicIndex){
+    public void initializeWithIndex(List<Descriptor> aGroupingHeuristicIndex){
 /*initializeWithIndex: aGroupingHeuristicIndex
 
 	self searchIndex: aGroupingHeuristicIndex.
@@ -142,7 +141,7 @@ import system.PossibleSolution;
  * @param my parameters list
  * @return my return values
  */
-    public GroupingHeuristicIndex GetGroupingHeuristicIndex(){
+    public List<Descriptor> GetGroupingHeuristicIndex(){
 /*groupingHeuristicIndex
 
 	^self searchIndex.*/

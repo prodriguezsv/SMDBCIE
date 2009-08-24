@@ -7,9 +7,11 @@ package system.searchAutomata.output;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import ontology.taxonomy.Taxon;
+import ontology.taxonomy.TaxonomicRank;
 import ontology.taxonomy.Taxonomy;
 import system.PossibleSolution;
 
@@ -20,7 +22,18 @@ import system.PossibleSolution;
  */
 public class DFSAutomatonOutput extends SearchAutomatonOutput {
     private Taxonomy taxonomy;
-    
+    private static final Comparator<PossibleSolution>  compareByPossibleSolutionLevels = new Comparator<PossibleSolution>() {
+                @Override
+                public int compare(PossibleSolution o1, PossibleSolution o2) {
+                    if (TaxonomicRank.getIndex(o1.getLevel())<TaxonomicRank.getIndex(o2.getLevel())){
+                        return -1;
+                    }else if (TaxonomicRank.getIndex(o1.getLevel()) == TaxonomicRank.getIndex(o2.getLevel())){
+                        return 0;
+                    }else{
+                        return 1;
+                    }
+                }
+   };
     public DFSAutomatonOutput(){
         taxonomy = null;
     }
@@ -51,8 +64,9 @@ public class DFSAutomatonOutput extends SearchAutomatonOutput {
     	// Empty all possible solutions into the sorted-by-taxonomic-level list
     	while (!(this.getPossibleSolutions().isEmpty())) {
     			processList.add(this.getPossibleSolutions().remove(0));
-    			Collections.sort(processList);
     	}
+        Collections.sort(processList,compareByPossibleSolutionLevels);
+
 
     	tempList = new ArrayList<PossibleSolution>();
 
@@ -74,7 +88,7 @@ public class DFSAutomatonOutput extends SearchAutomatonOutput {
     			if (ps.getSolution() == compSolution.getSolution()) {
     				// Inherit the compare solution's descriptions and remove it from aPossibleSolutionsList
     				this.inheritPossibleSolutionDescriptionsFrom(compSolution, ps);
-    				processList.remove(i);
+    				processList.remove(i-1);
     			} else {
     				// At this point, ps and compSolution are different cases
 					compSolutionTaxon = this.getTaxonomy().getTaxonFromLevelIndex(compSolution.getName(), compSolution.getLevel());

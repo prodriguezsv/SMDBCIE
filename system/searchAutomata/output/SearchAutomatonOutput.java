@@ -6,6 +6,7 @@
 package system.searchAutomata.output;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ontology.common.Descriptor;
@@ -23,9 +24,9 @@ public class SearchAutomatonOutput {
 
 
     public SearchAutomatonOutput() {
-        possibleSolutions = null;
-        unmatchedDescription = null;
-        justification = null;
+        possibleSolutions = new ArrayList<PossibleSolution>();
+        unmatchedDescription = new ArrayList<Descriptor<Object>>();
+        justification = new ArrayList<Descriptor<Object>>();
 
     }
 
@@ -37,7 +38,9 @@ public class SearchAutomatonOutput {
     }
     
     public void setPossibleSolutions(List<PossibleSolution> aPossibleSolutionList){
-        possibleSolutions = aPossibleSolutionList.subList(0, aPossibleSolutionList.size()-1);
+        possibleSolutions.clear();
+        possibleSolutions.addAll(aPossibleSolutionList);
+//        possibleSolutions = aPossibleSolutionList.subList(0, aPossibleSolutionList.size());
     }
     
     public void setUnmatchedDescription(List<Descriptor<Object>> anUnmatchedDescription){
@@ -92,7 +95,7 @@ public class SearchAutomatonOutput {
 	 *Category testing
 	 */
     public Descriptor<Object> getDescriptor(Descriptor<Object> aDescriptor, List<Descriptor<Object>> aDescription){
-        if (!(aDescription.equals(unmatchedDescription))) return null;
+        if (!(this.unmatchedDescription.equals(aDescription))) return null;
         
         for (Descriptor<Object> d : unmatchedDescription) {
             if (d.getStructure().equals(aDescriptor.getStructure()) && d.getAttribute().equals(aDescriptor.getAttribute())

@@ -4,11 +4,14 @@
 package ontology.taxonomy;
 
 import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import ontology.common.Descriptor;
+import ontology.values.Value;
+import ontology.values.Value;
 
 
 /**
@@ -95,6 +98,30 @@ public class Taxonomy {
 	public List<List<Taxon>> getLevelIndex() {
 		return levelIndex;
 	}
+
+
+        public List<Object> searchBySA(String aStruture, String aAttribute){
+            List<Object> aListValues = new ArrayList<Object>();
+
+            for (List<Taxon> aTaxonList:levelIndex){
+                for (Taxon aTaxon:aTaxonList){
+                    for(Descriptor aDescritor:aTaxon.getDescription()){
+                        if (aDescritor.getStructure().equals(aStruture)&&
+                                (aDescritor.getAttribute().equals(aAttribute)))
+
+                            //TODO fix this
+                            aListValues.add(aDescritor.getValue());
+                    }
+
+                }
+                
+
+            }
+            return aListValues;
+                            
+
+        }
+
 
 	/**
 	 * @see "Método rootTaxon del protocolo accessing en SUKIA SmallTalk"
