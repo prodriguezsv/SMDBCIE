@@ -6,11 +6,9 @@ package ontology.taxonomy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import java.util.Set;
 import ontology.common.Descriptor;
 import ontology.common.Modifier;
 import ontology.values.RangeValue;
@@ -169,63 +167,50 @@ public class Taxon implements Comparable<Taxon>{
 		return dl;
 	}
         
-       public Map<Descriptor<Object>, Modifier> searchByStructure(Object structureName){
+       public Map<Descriptor<Object>, Modifier> searchByStructure(String structureName){
             Map<Descriptor<Object>, Modifier> result = new HashMap<Descriptor<Object>, Modifier>();
-            Set set = description.entrySet();
-            Iterator i = set.iterator();
-            while(i.hasNext()){
-                Map.Entry me = (Map.Entry)i.next();
-                Descriptor<Object> aDescriptor  = (Descriptor<Object>)me.getKey();
-                Modifier aModifier  = (Modifier)me.getValue();
-                if (aDescriptor.getStructure().equals(structureName)){
-                    result.put(aDescriptor, aModifier);
+            
+            for (Descriptor<Object> d:description.keySet()) {
+            	if (d.getStructure().equals(structureName)){
+                    result.put(d, description.get(d));
                 }
-
             }
+
             return result;
        }
 
-       public Map<Descriptor<Object>, Modifier> searchByAttribute(Object attributeName){
+       public Map<Descriptor<Object>, Modifier> searchByAttribute(String attributeName){
             Map<Descriptor<Object>, Modifier> result = new HashMap<Descriptor<Object>, Modifier>();
-            Set set = description.entrySet();
-            Iterator i = set.iterator();
-            while(i.hasNext()){
-                Map.Entry me = (Map.Entry)i.next();
-                Descriptor<Object> aDescriptor  = (Descriptor<Object>)me.getKey();
-                Modifier aModifier  = (Modifier)me.getValue();
-                if (aDescriptor.getAttribute().equals(attributeName)){
-                    result.put(aDescriptor, aModifier);
+            
+            for (Descriptor<Object> d:description.keySet()) {
+            	if (d.getAttribute().equals(attributeName)){
+                    result.put(d, description.get(d));
                 }
             }
+            
             return result;
        }
-       public Map<Descriptor<Object>, Modifier> searchByValue(Object valueName){
+       public Map<Descriptor<Object>, Modifier> searchByValue(Object value){
             Map<Descriptor<Object>, Modifier> result = new HashMap<Descriptor<Object>, Modifier>();
-            Set set = description.entrySet();
-            Iterator i = set.iterator();
-            while(i.hasNext()){
-                Map.Entry me = (Map.Entry)i.next();
-                Descriptor<Object> aDescriptor  = (Descriptor<Object>)me.getKey();
-                Modifier aModifier  = (Modifier)me.getValue();
-                if (aDescriptor.getValue().equals(valueName)){
-                    result.put(aDescriptor, aModifier);
+            
+            for (Descriptor<Object> d:description.keySet()) {
+            	if (d.getValue().equals(value)){
+                    result.put(d, description.get(d));
                 }
             }
+            
             return result;
        }
 
-       public Map<Object, Double> retriveValuesUsing(Object valueStruture,Object valueAttribute){
+       public Map<Object, Double> retriveValuesUsing(String structureName,String attributeName){
             Map<Object, Double> result = new HashMap<Object, Double>();
-            Set set = description.entrySet();
-            Iterator i = set.iterator();
-            while(i.hasNext()){
-                Map.Entry me = (Map.Entry)i.next();
-                Descriptor<Object> aDescriptor  = (Descriptor<Object>)me.getKey();
-                Modifier aModifier  = (Modifier)me.getValue();
-                if (aDescriptor.getStructure().equals(valueStruture) && aDescriptor.getAttribute().equals(valueAttribute)){
-                    result.put(aDescriptor.getValue(), aModifier.getValueWeight());
+            
+            for (Descriptor<Object> d:description.keySet()) {
+            	if (d.getStructure().equals(structureName) && d.getAttribute().equals(attributeName)){
+                    result.put(d.getValue(), description.get(d).getValueWeight());
                 }
             }
+            
             return result;
        }
 	/**

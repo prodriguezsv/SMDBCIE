@@ -59,32 +59,32 @@ public class DFSAutomatonOutputTest {
         aTaxon.setName("Chromodorididae");
         aTaxon.setLevel(TaxonomicRank.FAMILY);
 //-----------------------Structure No. 1---------------------
-        aTaxon.addToDescription(new CharacterDescriptor("cuerpo","forma","alargado"),
+        aTaxon.addToDescription(new CharacterDescriptor<Object>("cuerpo","forma","alargado"),
                                     new Modifier(1.0,1.0,0.8));
-        aTaxon.addToDescription(new CharacterDescriptor("cuerpo","forma","ovalado"),
+        aTaxon.addToDescription(new CharacterDescriptor<Object>("cuerpo","forma","ovalado"),
                                     new Modifier(1.0,1.0,0.1));
-        aTaxon.addToDescription(new CharacterDescriptor("cuerpo","conformacion","tiene_cerata"),
+        aTaxon.addToDescription(new CharacterDescriptor<Object>("cuerpo","conformacion","tiene_cerata"),
                                     new Modifier(1.0,1.0,1.0));
 //-----------------------Structure No. 2---------------------
-        aTaxon.addToDescription(new CharacterDescriptor("pie","disposicion","sobresale_al_manto"),
+        aTaxon.addToDescription(new CharacterDescriptor<Object>("pie","disposicion","sobresale_al_manto"),
                                     new Modifier(0.8,1.0,0.8));
-        aTaxon.addToDescription(new CharacterDescriptor("pie","coloracion","blanquecino"),
+        aTaxon.addToDescription(new CharacterDescriptor<Object>("pie","coloracion","blanquecino"),
                                     new Modifier(0.8,1.0,0.7));
-        aTaxon.addToDescription(new CharacterDescriptor("pie","coloracion","crema"),
+        aTaxon.addToDescription(new CharacterDescriptor<Object>("pie","coloracion","crema"),
                                     new Modifier(0.8,1.0,0.7));
-        aTaxon.addToDescription(new CharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro"),
+        aTaxon.addToDescription(new CharacterDescriptor<Object>("pie","coloracion","gris_oscuro_casi_negro"),
                                     new Modifier(0.8,1.0,0.2));
 //-----------------------Structure No. 2---------------------
-        aTaxon.addToDescription(new CharacterDescriptor("branquia","posicion_durante_desplazamiento","hacia_atras"),
+        aTaxon.addToDescription(new CharacterDescriptor<Object>("branquia","posicion_durante_desplazamiento","hacia_atras"),
                                     new Modifier(0.8,1.0,0.8));
-        aTaxon.addToDescription(new CharacterDescriptor("branquia","posicion_del_ano_con_respecto_a_la_branquia","en_el_centro"),
+        aTaxon.addToDescription(new CharacterDescriptor<Object>("branquia","posicion_del_ano_con_respecto_a_la_branquia","en_el_centro"),
                                     new Modifier(0.8,1.0,0.8));
-        aTaxon.addToDescription(new CharacterDescriptor("branquia","forma_hojas_branquiales","bipinnada"),
+        aTaxon.addToDescription(new CharacterDescriptor<Object>("branquia","forma_hojas_branquiales","bipinnada"),
                                     new Modifier(0.8,1.0,0.6));
-        aTaxon.addToDescription(new CharacterDescriptor("branquia","forma_hojas_branquiales","tripinnada"),
+        aTaxon.addToDescription(new CharacterDescriptor<Object>("branquia","forma_hojas_branquiales","tripinnada"),
                                     new Modifier(0.8,1.0,0.4));
 //-----------------------Grouping Heuristic No. 1---------------------
-        aTaxon.addToDescription(new HeuristicDescriptor("heuristica","alimenatcion","esponjas"),
+        aTaxon.addToDescription(new HeuristicDescriptor<Object>("heuristica","alimenatcion","esponjas"),
                                     new Modifier(1.0,1.0,1.0));
         aTaxonomy.addTaxon(aTaxon, rootTaxon);
 

@@ -4,14 +4,11 @@
 package ontology.taxonomy;
 
 import java.util.ArrayList;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import ontology.common.Descriptor;
-import ontology.values.Value;
-import ontology.values.Value;
 
 
 /**
@@ -105,7 +102,7 @@ public class Taxonomy {
 
             for (List<Taxon> aTaxonList:levelIndex){
                 for (Taxon aTaxon:aTaxonList){
-                    for(Descriptor aDescritor:aTaxon.getDescription()){
+                    for(Descriptor<Object> aDescritor:aTaxon.getDescription()){
                         if (aDescritor.getStructure().equals(aStruture)&&
                                 (aDescritor.getAttribute().equals(aAttribute)))
 
