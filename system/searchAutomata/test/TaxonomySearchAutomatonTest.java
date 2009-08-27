@@ -24,9 +24,9 @@ import system.PossibleSolution;
  *
  * @author pabloq
  */
-public class TaxonSearchAutomatonTest {
+public class TaxonomySearchAutomatonTest {
 
-    public TaxonSearchAutomatonTest() {
+    public TaxonomySearchAutomatonTest() {
     }
 
     @BeforeClass
@@ -58,13 +58,13 @@ public class TaxonSearchAutomatonTest {
         cD3 = new CharacterDescriptor<Object>("radula","posicion_del_diente_mas_conspicuo","centro");
         cD4 = new CharacterDescriptor<Object>("tentaculos_orales","contextura","macizo");
 
-        TaxonSearchAutomaton instance = new TaxonSearchAutomaton();
-        instance.setTSolutionDescription(cD1);
-        instance.setTSolutionDescription(cD1);
-        instance.setTSolutionDescription(cD2);
-        instance.setTSolutionDescription(cD2);
-        instance.setTSolutionDescription(cD3);
-        instance.setTSolutionDescription(cD4);
+        TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton();
+        instance.addToTSolutionDescription(cD1);
+        instance.addToTSolutionDescription(cD1);
+        instance.addToTSolutionDescription(cD2);
+        instance.addToTSolutionDescription(cD2);
+        instance.addToTSolutionDescription(cD3);
+        instance.addToTSolutionDescription(cD4);
 
         assertSame(4,instance.getTSolutionDescription().size());
     }
@@ -82,13 +82,13 @@ public class TaxonSearchAutomatonTest {
         cD3 = new CharacterDescriptor<Object>("radula","posicion_del_diente_mas_conspicuo","centro");
         cD4 = new CharacterDescriptor<Object>("tentaculos_orales","contextura","macizo");
 
-        TaxonSearchAutomaton instance = new TaxonSearchAutomaton();
-        instance.setTUnmatchedDescription(cD1);
-        instance.setTUnmatchedDescription(cD1);
-        instance.setTUnmatchedDescription(cD2);
-        instance.setTUnmatchedDescription(cD2);
-        instance.setTUnmatchedDescription(cD3);
-        instance.setTUnmatchedDescription(cD4);
+        TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton();
+        instance.addToTUnmatchedDescription(cD1);
+        instance.addToTUnmatchedDescription(cD1);
+        instance.addToTUnmatchedDescription(cD2);
+        instance.addToTUnmatchedDescription(cD2);
+        instance.addToTUnmatchedDescription(cD3);
+        instance.addToTUnmatchedDescription(cD4);
 
         assertSame(4,instance.getTUnmatchedDescription().size());
     }
@@ -121,7 +121,7 @@ public class TaxonSearchAutomatonTest {
         aTaxonList.add(taxon3);
         aTaxonList.add(taxon4);
 
-        TaxonSearchAutomaton instance = new TaxonSearchAutomaton();
+        TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton();
         List<PossibleSolution> result = instance.associateTaxaToPossibleSolutions(aTaxonList);
 
         assertSame(4,result.size());
@@ -137,7 +137,7 @@ public class TaxonSearchAutomatonTest {
     @Test
     public void testCheckPrecondition() {
         System.out.println("checkPrecondition");
-        TaxonSearchAutomaton instance = new TaxonSearchAutomaton();
+        TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton();
         List<Descriptor<Object>> aProblemDescription = new ArrayList<Descriptor<Object>>();
         CharacterDescriptor<Object> cD1,cD2,cD3,cD4;
 
@@ -171,7 +171,7 @@ public class TaxonSearchAutomatonTest {
     @Test
     public void testPrepareFailedOutput() {
         System.out.println("prepareFailedOutput");
-        TaxonSearchAutomaton instance = new TaxonSearchAutomaton();
+        TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton();
 
         List<Descriptor<Object>> aDescriptorList = new ArrayList<Descriptor<Object>>();
         aDescriptorList.add(new CharacterDescriptor<Object>("cuerpo","posicion_de_la_banda_dorsal_continua","centro"));
@@ -191,7 +191,7 @@ public class TaxonSearchAutomatonTest {
         List<PossibleSolution> aPossibleSolutionsList = new ArrayList<PossibleSolution>();
         aPossibleSolutionsList.add(new PossibleSolution());
         aPossibleSolutionsList.add(new PossibleSolution());
-        TaxonSearchAutomaton instance = new TaxonSearchAutomaton();
+        TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton();
         assertTrue(instance.prepareSuccessfulOutputWith(aPossibleSolutionsList));
         /*
          * doesnt nothing in case that it had been assigned
@@ -217,11 +217,11 @@ public class TaxonSearchAutomatonTest {
         cD3 = new CharacterDescriptor<Object>("radula","posicion_del_diente_mas_conspicuo","centro");
         cD4 = new CharacterDescriptor<Object>("tentaculos_orales","contextura","macizo");
 
-        TaxonSearchAutomaton instance = new TaxonSearchAutomaton();
-        instance.setTSolutionDescription(cD1);
-        instance.setTSolutionDescription(cD2);
-        instance.setTSolutionDescription(cD3);
-        instance.setTSolutionDescription(cD4);
+        TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton();
+        instance.addToTSolutionDescription(cD1);
+        instance.addToTSolutionDescription(cD2);
+        instance.addToTSolutionDescription(cD3);
+        instance.addToTSolutionDescription(cD4);
         List<Descriptor<Object>> listDescription = instance.getTSolutionDescription();
         
         assertTrue(instance.includes(cD1,listDescription));

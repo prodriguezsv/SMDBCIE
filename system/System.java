@@ -26,13 +26,13 @@ public class System {
 	/**
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public System() {
+	public System(String aCommonName) {
 		// Initialize scope classes
 		StructureScopes.initialize();
 		AttributeScopes.initialize();
 		GroupingHeuristicScopes.initialize();
 
-		setTaxonomicGroupName(null);
+		setTaxonomicGroupName(aCommonName);
 
 		setHintsBase(new HintsBase());
 		if (this.loadHintsBase() == null) return;
@@ -174,9 +174,8 @@ public class System {
 	/**
 	 * @see "Método loadReasoner del protocolo preparing en SUKIA SmallTalk"
 	 */
-	// Ojo pendiente
 	public Object loadReasoner() {
-		// this.setReasoner(new Reasoner(this));
+		this.setReasoner(new Reasoner(this));
 		
 		return this;
 	}

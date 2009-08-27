@@ -9,7 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ontology.common.CharacterDescriptor;
 import ontology.common.Descriptor;
+import ontology.common.HeuristicDescriptor;
 import ontology.common.Modifier;
 import ontology.values.RangeValue;
 
@@ -369,8 +371,112 @@ public class Taxon implements Comparable<Taxon>{
 			}
 		}
 											
-		/*"The entire SAV decription of the receiver was parsed and nothing was found in the SAV description of all its
+		/*The entire SAV decription of the receiver was parsed and nothing was found in the SAV description of all its
 		 predecessors. Thus, assume there are no inconsistencies*/
 		return true;
+	}
+	
+	/**
+	 * M&eacute;todo de instancia agregado
+	 * @return una lista de descriptores relacionados a aStructureName
+	 */
+	public List<Descriptor<Object>> getDescription(String aStructureName) {
+		List<Descriptor<Object>> description;
+		
+		description = new ArrayList<Descriptor<Object>>();
+		
+		for(Descriptor<Object> d: this.getDescription()) {
+			// Determine if the structure name in Deescriptor has already been included in structureList
+			if (d.getStructure().equals(aStructureName)) {
+				description.add(d);
+			} else continue;
+		}
+		
+		return description;
+	}
+	
+	/**
+	 * M&eacute;todo de instancia agregado
+	 * @return una lista de cadenas representando el nombre de las estructuras
+	 */
+	public List<String> getCharacterStructuresList() {
+		List<String> structuresList;
+		
+		structuresList = new ArrayList<String>();
+		
+		for(Descriptor<Object> d: this.getDescription()) {
+			if (d instanceof CharacterDescriptor) { 
+				// Determine if the structure name in Deescriptor has already been included in structureList
+				if (!(structuresList.contains(d.getStructure()))) {
+					// The structure name was not found in structureList. Append it to structureList
+					structuresList.add(d.getStructure());
+				} else continue;
+			}
+		}
+		
+		return structuresList;
+	}
+	
+	/**
+	 * M&eacute;todo de instancia agregado
+	 * @return una lista de cadenas representando el nombre de las estructuras
+	 */
+	public List<String> getHeuristicStructuresList() {
+		List<String> structuresList;
+		
+		structuresList = new ArrayList<String>();
+		
+		for(Descriptor<Object> d: this.getDescription()) {
+			if (d instanceof HeuristicDescriptor) { 
+				// Determine if the structure name in Deescriptor has already been included in structureList
+				if (!(structuresList.contains(d.getStructure()))) {
+					// The structure name was not found in structureList. Append it to structureList
+					structuresList.add(d.getStructure());
+				} else continue;
+			}
+		}
+		
+		return structuresList;
+	}
+	
+	/**
+	 * M&eacute;todo de instancia agregado
+	 * @return una lista de cadenas representando el nombre de las estructuras
+	 */
+	public List<String> getAttributeList(String structureName) {
+		List<String> attributesList;
+		
+		attributesList = new ArrayList<String>();
+		
+		for(Descriptor<Object> d: this.getDescription()) {
+			if (d.getStructure().equals(structureName)) {
+				// Determine if the structure name in Deescriptor has already been included in structureList
+				if (!(attributesList.contains(d.getAttribute()))) {
+					// The structure name was not found in structureList. Append it to structureList
+					attributesList.add(d.getStructure());
+				} else continue;
+			}
+		}
+		
+		return attributesList;
+	}
+	
+	/**
+	 * M&eacute;todo de instancia agregado
+	 * @return una lista de descriptores relacionados a aStructureName y aAttributeName
+	 */
+	public List<Descriptor<Object>> getDescription(String aStructureName, String anAttributeName) {
+		List<Descriptor<Object>> description;
+		
+		description = new ArrayList<Descriptor<Object>>();
+		
+		for(Descriptor<Object> d: this.getDescription()) {
+			// Determine if the structure name in Deescriptor has already been included in structureList
+			if (d.getStructure().equals(aStructureName) && d.getAttribute().equals(anAttributeName)) {
+				description.add(d);
+			} else continue;
+		}
+		
+		return description;
 	}
 }

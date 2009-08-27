@@ -23,20 +23,20 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import system.PossibleSolution;
 import static org.junit.Assert.*;
-import system.searchAutomata.output.DFSAutomatonOutput;
+import system.searchAutomata.output.CaseBaseDFSAutomatonOutput;
 
 /**
  *
  * @author pabloq
  */
-public class DFSAutomatonOutputTest {
+public class CaseBaseDFSAutomatonOutputTest {
     Taxonomy aTaxonomy;
     Taxon aTaxon,aTaxon2,rootTaxon;
     PossibleSolution aPossibleSolution,aPossibleSolution2;
     Case aCase;
     List<PossibleSolution> aPossibleSolutionList;
 
-    public DFSAutomatonOutputTest() {
+    public CaseBaseDFSAutomatonOutputTest() {
     }
 
     @BeforeClass
@@ -132,7 +132,7 @@ public class DFSAutomatonOutputTest {
     @Test
     public void testCompress() {
         System.out.println("compress");
-        DFSAutomatonOutput instance = new DFSAutomatonOutput();
+        CaseBaseDFSAutomatonOutput instance = new CaseBaseDFSAutomatonOutput();
         instance.setTaxonomy(aTaxonomy);
         instance.setPossibleSolutions(aPossibleSolutionList);
         

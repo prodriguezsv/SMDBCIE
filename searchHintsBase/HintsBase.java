@@ -28,7 +28,7 @@ public class HintsBase {
 		this.setSpecificPatternsbyStructureList(new SpecificPatternsbyStructureList());
 
 		// This list must contain objects of class: WeightedStructureElt
-		this.setWeightedPatternsList(new WeightedPatternsbyStructureList());
+		this.setWeightedPatternsbyStructureList(new WeightedPatternsbyStructureList());
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class HintsBase {
 	 * @see "Método weightedGrpHeuristicList del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public WeightedPatternsbyStructureList getWeightedPatternsList() {
+	public WeightedPatternsbyStructureList getWeightedPatternsbyStructureList() {
 		return weightedPatternsList;
 	}
 
@@ -75,7 +75,7 @@ public class HintsBase {
 	 * Método de instancia agregado
 	 * @param weightedPatternsList
 	 */
-	public void setWeightedPatternsList(WeightedPatternsbyStructureList weightedPatternsList) {
+	public void setWeightedPatternsbyStructureList(WeightedPatternsbyStructureList weightedPatternsList) {
 		this.weightedPatternsList = weightedPatternsList;
 	}
 }

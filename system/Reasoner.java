@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ontology.CBR.SimilarityDegree;
+import ontology.common.CharacterDescriptor;
 import ontology.common.Descriptor;
-import ontology.common.GroupingHeuristic;
-import ontology.common.Structure;
+import ontology.common.HeuristicDescriptor;
 import ontology.taxonomy.TaxonomicRank;
 import ontology.taxonomy.Taxonomy;
 
@@ -18,39 +18,31 @@ import redundantDiscriminationNet.RDNet;
 import redundantDiscriminationNet.RootNorm;
 import searchHintsBase.HintsBase;
 import system.searchAutomata.GoalApproachingDialog;
-import system.searchAutomata.SAVCaseDFSAutomaton;
-import system.searchAutomata.TaxonGHISAutomaton;
-import system.searchAutomata.TaxonSISAutomaton;
-import system.searchAutomata.output.DFSAutomatonOutput;
+import system.searchAutomata.CaseBaseDFSAutomaton;
+import system.searchAutomata.SearchStatus;
+import system.searchAutomata.TaxonomySearchAutomaton;
+import system.searchAutomata.output.CaseBaseDFSAutomatonOutput;
 
 /**
  * @author Armando
  *
  */
 public class Reasoner {
-	private List<Descriptor<Object>> caseMemorySearchJustification; //Ojo
+	private List<Descriptor<Object>> caseMemorySearchJustification;
+	private List<Descriptor<Object>> taxonHierarchySearchJustification;
+	private List<Descriptor<Object>> routeSelectJustification;
+	private List<Descriptor<Object>> description;
 	private List<Hypothesis> failGHConflictSet;
+	private List<Hypothesis> succGHConflictSet;
+	private List<Hypothesis> succStructConflictSet;
 	private List<Hypothesis> failStructConflictSet;
-	private List<GroupingHeuristic> groupHDescription;
+	private List<Hypothesis> noResultsSet;
+	private List<ProposedSolution> proposedSolutions;
 	private TaxonomicRank identGoal;
 	private System identSystem;
 	private int maxNumberSolutions;
 	private SimilarityDegree minSimilarityDegree;
-	private List<Hypothesis> noResultsSet;
 	private boolean presentFailedSolutions;
-	private List<ProposedSolution> proposedSolutions;
-	private List<Descriptor<Object>> routeSelectJustification; //Ojo
-	private List<Structure> structDescription;
-	private List<Hypothesis> succGHConflictSet;
-	private List<Hypothesis> succStructConflictSet;
-	private List<Descriptor<Object>> taxonHierarchySearchJustification; // OJo
-
-	/**
-	 * Método de instancia agregado
-	 */
-	public Reasoner() {
-		super();
-	}
 	
 	/**
 	 * identSystem will be associated to the Sukia system object. Through this object, access is
@@ -84,10 +76,8 @@ public class Reasoner {
 		//if (this.getMinSimilarityDegree().isEmpty()) return;
 
 		// List with Structures that constitute the morphological description given by the user
-		setStructDescription(new ArrayList<Structure>());
+		setDescription(new ArrayList<Descriptor<Object>>());
 
-		// List with GroupingHeuristics which complement the description given by the user
-		setGroupHDescription(new ArrayList<GroupingHeuristic>());
 
 		/* CONFLICT SET: Hypotheses that contain successful possible solutions (i.e., positive cases or taxa) 
 		 for a given Structure belonging to the problem description*/
@@ -198,29 +188,25 @@ public class Reasoner {
 	 * Método de instancia agregado
 	 * @param groupHDescription
 	 */
-	public void setGroupHDescription(List<GroupingHeuristic> groupHDescription) {
-		this.groupHDescription = groupHDescription;
+	public void setDescription(List<Descriptor<Object>> description) {
+		this.description = description;
 	}
 	
 	/**
 	 * @see "Método groupHDescription: del protocolo adding en SUKIA SmallTalk"
 	 * @param aHypothesis
 	 */
-	public void addGroupHDescription(GroupingHeuristic aGroupingHeuristic) {
-		for( int i = 1; i <= this.getGroupHDescription().size(); i++) {
-			if (this.getGroupHDescription().get(i-1).getName().equals(aGroupingHeuristic.getName()))
-				return;
-		}
-
-		this.getGroupHDescription().add(aGroupingHeuristic);
+	public void addToDescription(Descriptor<Object> descriptor) {
+		if (!this.getDescription().contains(descriptor))
+			this.getDescription().add(descriptor);
 	}
 
 	/**
 	 * @see "Método groupHDescription del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<GroupingHeuristic> getGroupHDescription() {
-		return groupHDescription;
+	public List<Descriptor<Object>> getDescription() {
+		return description;
 	}
 
 	/**
@@ -366,36 +352,7 @@ public class Reasoner {
 	public List<Descriptor<Object>> getRouteSelectJustification() {
 		return routeSelectJustification;
 	}
-
-	/**
-	 * Método de instancia agregado
-	 * @param structDescription
-	 */
-	public void setStructDescription(List<Structure> structDescription) {
-		this.structDescription = structDescription;
-	}
 	
-	/**
-	 * @see "Método groupHDescription: del protocolo adding en SUKIA SmallTalk"
-	 * @param aHypothesis
-	 */
-	public void addStructDescription(Structure aStructure) {
-		for( int i = 1; i <= this.getStructDescription().size(); i++) {
-			if (this.getStructDescription().get(i-1).getName().equals(aStructure.getName()))
-				return;
-		}
-
-		this.getStructDescription().add(aStructure);
-	}
-
-	/**
-	 * @see "Método structDescription del protocolo accessing en SUKIA SmallTalk"
-	 * @return
-	 */
-	public List<Structure> getStructDescription() {
-		return structDescription;
-	}
-
 	/**
 	 * Método de instancia agregado
 	 * @param succGHConflictSet
@@ -665,8 +622,7 @@ public class Reasoner {
 	 * @param hypothesis2
 	 * @return
 	 */
-	// Ojo falta la traducción de los automatas
-	private boolean processSuccessfulGHSearchOutputWith(SAVCaseDFSAutomaton searchAutomaton, Hypothesis hypothesis1, Hypothesis hypothesis2) {
+	private boolean processSuccessfulGHSearchOutputWith(CaseBaseDFSAutomaton searchAutomaton, Hypothesis hypothesis1, Hypothesis hypothesis2) {
 		Hypothesis currHypothesis;
 		PossibleSolution ps;
 		int index;
@@ -729,51 +685,52 @@ public class Reasoner {
 	 * @return
 	 */
 	public boolean searchCaseGroupingHeuristics() {
-		GroupingHeuristic gh;
+		String h;
 		Hypothesis hypothesis1, hypothesis2;
 		RootNorm caseNetRoot;
-		SAVCaseDFSAutomaton searchAutomaton1;
-		TaxonGHISAutomaton searchAutomaton2;
+		CaseBaseDFSAutomaton searchAutomaton1;
+		TaxonomySearchAutomaton searchAutomaton2;
 		List<Descriptor<Object>> problemDescription;
-		String status;
+		SearchStatus status;
+		List<String> heuristicList;
 		
-		while (!(this.getGroupHDescription().isEmpty())) {
+		heuristicList = this.getHeuristicStructuresList();
+		
+		while (!(heuristicList.isEmpty())) {
 			// Remove the next grouping heuristic from the description
-			gh = this.getGroupHDescription().remove(0);
+			h = heuristicList.remove(0);
 
 			// Create a first instance of Hypothesis and assign the grouping heuristic as descriptive element
 			hypothesis1 = new Hypothesis();
-			hypothesis1.setDescriptiveElement(gh);
+			hypothesis1.setDescription(this.getDescription(h));
 
 			// Create a second instance of hypothesis, and again, assign the same grouping heuristic as descriptive element
 			hypothesis2 = new Hypothesis();
-			hypothesis2.setDescriptiveElement(gh);
+			hypothesis2.setDescription(this.getDescription(h));
 			
-			// Get the SAV problem description from the grouping heuristic. If no description available, return error value
-			problemDescription = gh.createSAVDescription(this.getTaxonomicGroupName());
-			
+			problemDescription = this.getDescription(h);
 			if (problemDescription == null) return false;
 
 			// Get the net root that corresponds to the grouping heuristic
-			caseNetRoot = this.getCaseMemory().getRoot().getRDNet(this.getTaxonomicGroupName()).getRoot();
+			caseNetRoot = this.getCaseMemory().getRoot().getRDNet(h).getRoot();
 		
 			if (!(caseNetRoot == null)) {
 				// Create a new instance of case net search automaton
-				searchAutomaton1 = new SAVCaseDFSAutomaton(caseNetRoot);
+				searchAutomaton1 = new CaseBaseDFSAutomaton(caseNetRoot);
 	
 				// Begin the search with the given problem description
 				searchAutomaton1.beginWith(problemDescription);
 				status = searchAutomaton1.getStatus();
 	
-				if (status.equals("error") || status.equals("cancel"))
+				if (status == SearchStatus.ERROR || status == SearchStatus.CANCEL)
 					return false;
 	
-				if (status.equals("success")) {
+				if (status == SearchStatus.SUCCESS) {
 					this.processSuccessfulGHSearchOutputWith(searchAutomaton1, hypothesis1, hypothesis2);
 					return this.searchCaseGroupingHeuristics();
 				}
 	
-				if (status.equals("fail")) {
+				if (status == SearchStatus.FAIL) {
 					/* Copy the unmatched description and the justification to the first hypothesis, which is the one
 					 we'll continue to use from now on.*/
 					hypothesis1.copyToUnmatchedDescriptionFrom(searchAutomaton1.getSearchOutput().getUnmatchedDescription());
@@ -781,22 +738,23 @@ public class Reasoner {
 				}
 			}
 		
-			/* At this point, either: a) no net root was found, or b) the status of the net search was unsuccessful 
-			 (i.e., status = #fail). Try doing a taxonomic search*/
+			/* At this point, either: a) no net root was found, or b) the status of the net search was
+			 * unsuccessful (i.e., status = #fail). Try doing a taxonomic search*/
 	
 			// Refresh the problem description
-			problemDescription = gh.createSAVDescription(this.getTaxonomicGroupName());
+			problemDescription = this.getDescription(h);
 			if (problemDescription == null) return false;
 	
-			// Perform a taxonomic search (Ojo)
-			searchAutomaton2 = new TaxonGHISAutomaton(this.getTaxonomy().getGroupingHeuristicIndex());
+			// Perform a taxonomic search
+			searchAutomaton2 = new TaxonomySearchAutomaton(this.getTaxonomy().getDescriptorsIndex(),
+					this.getMinSimilarityDegree());
 			searchAutomaton2.beginWith(problemDescription);
 			status = searchAutomaton2.getStatus();
 	
-			if (status.equals("error") || status.equals("cancel"))
+			if (status == SearchStatus.ERROR || status == SearchStatus.CANCEL)
 				return false;
 	
-			if (status.equals("success")) {
+			if (status == SearchStatus.SUCCESS) {
 				// Load all the possible solutions into the hypothesis
 				while (!(searchAutomaton2.getSearchOutput().getPossibleSolutions().isEmpty())) {
 					/* Attempt to add the possible solution to the first hypothesis. If not successful,
@@ -815,7 +773,7 @@ public class Reasoner {
 				return this.searchCaseGroupingHeuristics();
 			}
 	
-			if (status.equals("fail")) {
+			if (status == SearchStatus.FAIL) {
 				/* Copy the unmatched description and the justification to the first hypothesis, which is the one
 				 we'll continue to use from now on.*/
 				hypothesis1.copyToUnmatchedDescriptionFrom(searchAutomaton2.getSearchOutput().getUnmatchedDescription());
@@ -839,12 +797,12 @@ public class Reasoner {
 	 * @return
 	 */
 	// Ojo falta la traducción de los automatas
-	private boolean processSuccessfulStructSearchOutputWith(DFSAutomatonOutput anOutputCopy, Hypothesis hypothesis1, Hypothesis hypothesis2) {
+	private boolean processSuccessfulStructSearchOutputWith(CaseBaseDFSAutomatonOutput anOutputCopy, Hypothesis hypothesis1, Hypothesis hypothesis2) {
 		Hypothesis currHypothesis;
 		PossibleSolution ps;
 		GoalApproachingDialog dialog;
 		int index;
-		String status;
+		SearchStatus status;
 	
 		// Check the precondition
 		if (anOutputCopy.getPossibleSolutions() == null)
@@ -889,7 +847,7 @@ public class Reasoner {
 				dialog = new GoalApproachingDialog(this.getIdentGoal(), hypothesis1, this.getTaxonomy(), this.getMinSimilarityDegree());
 				dialog.chat();
 				status = dialog.getStatus();
-				if (status.equals("error") || status.equals("cancel"))
+				if (status == SearchStatus.ERROR || status == SearchStatus.CANCEL)
 					return false;
 			}
 		} else {
@@ -904,7 +862,7 @@ public class Reasoner {
 					dialog = new GoalApproachingDialog(this.getIdentGoal(), hypothesis2, this.getTaxonomy(), this.getMinSimilarityDegree());
 					dialog.chat();
 					status = dialog.getStatus();
-					if (status.equals("error") || status.equals("cancel"))
+					if (status == SearchStatus.ERROR || status == SearchStatus.CANCEL)
 						return false;
 				}
 			}
@@ -939,50 +897,51 @@ public class Reasoner {
 	 * @return
 	 */
 	public boolean searchCaseStructures() {
-		Structure s;
+		String s;
 		Hypothesis hypothesis1, hypothesis2;
 		List<Descriptor<Object>> problemDescription;
 		RDNet net;
 		RootNorm caseNetRoot;
-		SAVCaseDFSAutomaton searchAutomaton1;
-		TaxonSISAutomaton searchAutomaton2;
+		CaseBaseDFSAutomaton searchAutomaton1;
+		TaxonomySearchAutomaton searchAutomaton2;
 		GoalApproachingDialog dialog;
-		DFSAutomatonOutput outputCopy;
-		String status;
-
-
-		while (!(this.getStructDescription().isEmpty())) {
+		CaseBaseDFSAutomatonOutput outputCopy;
+		SearchStatus status;
+		List<String> characterList;
+		
+		characterList = this.getCharacterStructuresList();
+		
+		while (!(characterList.isEmpty())) {
 			// Remove the next grouping heuristic from the description
-			s = this.getStructDescription().remove(0);
+			s = characterList.remove(0);
 
 			// Create a first instance of Hypothesis and assign the structure as descriptive element
 			hypothesis1 = new Hypothesis();
-			hypothesis1.setDescriptiveElement(s);
+			hypothesis1.setDescription(this.getDescription(s));
 
 			// Create a second instance of hypothesis, and again, assign the same structure as descriptive element
 			hypothesis2 = new Hypothesis();
-			hypothesis2.setDescriptiveElement(s);
+			hypothesis2.setDescription(this.getDescription(s));
 			
 			// Get the SAV problem description from the structure. If no description available, return error value
-			problemDescription = s.createDescription(this.getTaxonomicGroupName());
-			
+			problemDescription = this.getDescription(s);
 			if (problemDescription == null) return false;
 			
 			// Get the net root that corresponds to the structure
-			net = this.getCaseMemory().getRoot().getRDNet(s.getName());
+			net = this.getCaseMemory().getRoot().getRDNet(s);
 			if (net == null) 
 				caseNetRoot = null;
 			else caseNetRoot = net.getRoot();
 					
 			if (!(caseNetRoot == null)) {
 				// Create a new instance of case net search automaton
-				searchAutomaton1 = new SAVCaseDFSAutomaton(caseNetRoot);
+				searchAutomaton1 = new CaseBaseDFSAutomaton(caseNetRoot);
 	
 				// Begin the search with the given problem description
 				searchAutomaton1.beginWith(problemDescription);
 				status = searchAutomaton1.getStatus();
 	
-				if (status.equals("error") || status.equals("cancel"))
+				if (status == SearchStatus.ERROR || status == SearchStatus.CANCEL)
 					return false;
 	
 				/* If the automaton returns a non-empty problem description list, then the REASONER MUST call 
@@ -998,7 +957,7 @@ public class Reasoner {
 					searchAutomaton1.newSearchWith(problemDescription);
 					status = searchAutomaton1.getStatus();
 
-					if (status.equals("error") || status.equals("cancel"))
+					if (status == SearchStatus.ERROR || status == SearchStatus.CANCEL)
 						return false;
 
 					outputCopy.appendToPossibleSolutions(searchAutomaton1.getSearchOutput().getPossibleSolutions());
@@ -1029,15 +988,15 @@ public class Reasoner {
 			 (i.e., status = #fail). Try doing a taxonomic search*/
 	
 			// Refresh the problem description
-			problemDescription = s.createDescription(this.getTaxonomicGroupName());
+			problemDescription = this.getDescription(s);
 			if (problemDescription == null) return false;
 	
-			// Perform a taxonomic search (Ojo)
-			searchAutomaton2 = new TaxonSISAutomaton(this.getTaxonomy().getDescriptorsIndex(), this.getMinSimilarityDegree());
+			// Perform a taxonomic search
+			searchAutomaton2 = new TaxonomySearchAutomaton(this.getTaxonomy().getDescriptorsIndex(), this.getMinSimilarityDegree());
 			searchAutomaton2.beginWith(problemDescription);
 			status = searchAutomaton2.getStatus();
 	
-			if (status.equals("error") || status.equals("cancel"))
+			if (status == SearchStatus.ERROR || status == SearchStatus.CANCEL)
 				return false;
 	
 			
@@ -1090,16 +1049,15 @@ public class Reasoner {
 	 * b)	Failed lists will not be used.
 	 * RETURNS: self.
 	 */
-	@SuppressWarnings("unchecked")
 	private boolean chooseIndexHintsForGroupingHeuristics() {
 		HintsBase hb;
 		
 		hb = this.getHintsBase();
 		
-		if (!(hb.getWeightedPatternsList().sortByMeanWeightCriteria((List)this.getGroupHDescription()).isEmpty()))
-			if (hb.getWeightedPatternsList().getPercentageItemsProcessed() > 0.0) return false;
+		if (!(hb.getWeightedPatternsbyStructureList().sortByMeanWeightCriteria(this.getHeuristicList()).isEmpty()))
+			if (hb.getWeightedPatternsbyStructureList().getPercentageItemsProcessed() > 0.0) return false;
 
-		hb.getFreqGrpHeuristicList().sortByMeanWeightCriteria(this.getGroupHDescription());
+		hb.getPatternsbyStructureList().sortBySuccessFrecuencyCriteria(this.getHeuristicList());
 		
 		return true;
 	}
@@ -1114,24 +1072,23 @@ public class Reasoner {
 	 * b) 	The (hb failedFrequentStructurePatternList) will not be used.
 	 * RETURNS: self.
 	 */
-	@SuppressWarnings("unchecked")
 	private boolean chooseIndexHintsForStructures() {
 		HintsBase hb;
-		Structure s;
 		
 		hb = this.getHintsBase();
 
-		if (!(hb.getWeightedStructList().sortByMeanWeightCriteria((List)this.getStructDescription()).isEmpty()))
-				if (hb.getWeightedStructList().getPercentageItemsProcessed() > 0.0) return false;
+		if (!(hb.getWeightedPatternsbyStructureList().sortByMeanWeightCriteria(this.getCharacterList())
+				.isEmpty()))
+			if (hb.getWeightedPatternsbyStructureList().getPercentageItemsProcessed() > 0.0) return false;
 		
-		if (!(hb.getPatternsbyStructureList().sortBySuccessFrecuencyCriteria(this.getStructDescription()).isEmpty()))
+		if (!(hb.getPatternsbyStructureList().sortBySuccessFrecuencyCriteria(this.getCharacterList()).isEmpty()))
 			if (hb.getPatternsbyStructureList().getPercentageItemsProcessed() > 0.0) return false;
 
-		for( int i = 1; i <= this.getStructDescription().size(); i++) {
+		for( int i = 1; i <= this.getCharacterList().size(); i++) {
 			hb.getSpecStructAttrList().resetPercentageItemsProcessed();
 
-			s = this.getStructDescription().get(i-1);
-			hb.getSpecStructAttrList().sortByMeanWeightCriteria(s);
+			//s = this.getCharacterList().get(i-1); Ojo
+			hb.getSpecStructAttrList().sortBySuccessCriteria(this.getCharacterList());
 		}
 		
 		return true;
@@ -1144,33 +1101,37 @@ public class Reasoner {
 	 * self - OK
 	 */
 	private boolean searchTaxonGroupingHeuristics() {
-		GroupingHeuristic gh;
+		String h;
 		Hypothesis hypothesis;
-		String status;
+		SearchStatus status;
 		List<Descriptor<Object>> problemDescription;
-		TaxonGHISAutomaton searchAutomaton;
-	
-		while (!(this.getGroupHDescription().isEmpty())) {
+		TaxonomySearchAutomaton searchAutomaton;
+		List<String> heuristicList;
+		
+		heuristicList = this.getHeuristicStructuresList();
+		
+		while (!(heuristicList.isEmpty())) {
 			// Remove the next grouping heuristic from the description
-			gh = this.getGroupHDescription().remove(0);
+			h = heuristicList.remove(0);
 
 			// Create a first instance of Hypothesis and assign the grouping heuristic as descriptive element
 			hypothesis = new Hypothesis();
-			hypothesis.setDescriptiveElement(gh);
+			hypothesis.setDescription(this.getDescription(h));
 
 			// Get the SAV problem description from the grouping heuristic
-			problemDescription = gh.createSAVDescription(this.getTaxonomicGroupName());
+			problemDescription = this.getDescription(h);
 			if (problemDescription == null) return false;
 
 			// Perform a taxonomic search
-			searchAutomaton = new TaxonGHISAutomaton(this.getTaxonomy().getGroupingHeuristicIndex());
+			searchAutomaton = new TaxonomySearchAutomaton(this.getTaxonomy().getDescriptorsIndex()
+					, this.getMinSimilarityDegree());
 			searchAutomaton.beginWith(problemDescription);
 			status = searchAutomaton.getStatus();
 
-			if (status.equals("error") || status.equals("cancel"))
+			if (status == SearchStatus.ERROR || status == SearchStatus.CANCEL)
 				return false;
 			
-			if (status.equals("success")) {
+			if (status == SearchStatus.SUCCESS) {
 				// Load all the possible solutions into the hypothesis
 				while (!(searchAutomaton.getSearchOutput().getPossibleSolutions().isEmpty())) {
 					// Attempt to add the possible solution to the hypothesis. If not successful, return an error value*/
@@ -1201,34 +1162,38 @@ public class Reasoner {
 	 * self - OK
 	 */
 	private boolean searchTaxonStructures() {
-		Structure s;
+		String s;
 		Hypothesis hypothesis;
-		String status;
+		SearchStatus status;
 		List<Descriptor<Object>> problemDescription;
-		TaxonSISAutomaton searchAutomaton; // Ojo
+		TaxonomySearchAutomaton searchAutomaton;
 		GoalApproachingDialog dialog;
-	
-		while (!(this.getStructDescription().isEmpty())) {
+		List<String> characterList;
+		
+		characterList = this.getCharacterStructuresList();
+		
+		while (!(characterList.isEmpty())) {
 			// Remove the next structure from the description
-			s = this.getStructDescription().remove(0);
-
+			s = characterList.remove(0);
+			
 			// Create a first instance of Hypothesis and assign the grouping heuristic as descriptive element
 			hypothesis = new Hypothesis();
-			hypothesis.setDescriptiveElement(s);
+			hypothesis.setDescription(this.getDescription(s));
 
 			// Get the SAV problem description from the structure
-			problemDescription = s.createDescription(this.getTaxonomicGroupName());
+			problemDescription = this.getDescription(s);
 			if (problemDescription == null) return false;
-
+			
 			// Perform a taxonomic search
-			searchAutomaton = new TaxonSISAutomaton(this.getTaxonomy().getDescriptorsIndex(), this.getMinSimilarityDegree());
+			searchAutomaton = new TaxonomySearchAutomaton(this.getTaxonomy().getDescriptorsIndex()
+					,this.getMinSimilarityDegree());
 			searchAutomaton.beginWith(problemDescription);
 			status = searchAutomaton.getStatus();
 
-			if (status.equals("error") || status.equals("cancel"))
+			if (status == SearchStatus.ERROR || status == SearchStatus.CANCEL)
 				return false;
 							
-			if (status.equals("success")) {
+			if (status == SearchStatus.SUCCESS) {
 				// Load all the possible solutions into the hypothesis
 				while (!(searchAutomaton.getSearchOutput().getPossibleSolutions().isEmpty())) {
 					// Attempt to add the possible solution to the hypothesis. If not successful, return an error value*/
@@ -1246,7 +1211,7 @@ public class Reasoner {
 					dialog = new GoalApproachingDialog(this.getIdentGoal(), hypothesis, this.getTaxonomy(), this.getMinSimilarityDegree());
 					dialog.chat();
 					status = dialog.getStatus();
-					if (status.equals("error") || status.equals("cancel"))
+					if (status == SearchStatus.ERROR || status == SearchStatus.CANCEL)
 						return false;
 				}
 
@@ -1261,5 +1226,112 @@ public class Reasoner {
 		}
 			
 		return true;
+	}
+	
+	/**
+	 * M&eacute;todo de instancia agregado
+	 * @return una lista de cadenas representando el nombre de las estructuras
+	 */
+	public List<Descriptor<Object>> getCharacterList() {
+		List<Descriptor<Object>> characterList;
+		
+		characterList = new ArrayList<Descriptor<Object>>();
+		
+		for(Descriptor<Object> d: this.getDescription()) {
+			if (d instanceof CharacterDescriptor) { 
+				// Determine if the structure name in Deescriptor has already been included in structureList
+				if (!(characterList.contains(d.getStructure()))) {
+					// The structure name was not found in structureList. Append it to structureList
+					characterList.add(d);
+				} else continue;
+			}
+		}
+		
+		return characterList;
+	}
+	
+	/**
+	 * M&eacute;todo de instancia agregado
+	 * @return una lista de cadenas representando el nombre de las estructuras
+	 */
+	public List<Descriptor<Object>> getHeuristicList() {
+		List<Descriptor<Object>> heuristicList;
+		
+		heuristicList = new ArrayList<Descriptor<Object>>();
+		
+		for(Descriptor<Object> d: this.getDescription()) {
+			if (d instanceof HeuristicDescriptor) { 
+				// Determine if the structure name in Deescriptor has already been included in structureList
+				if (!(heuristicList.contains(d.getStructure()))) {
+					// The structure name was not found in structureList. Append it to structureList
+					heuristicList.add(d);
+				} else continue;
+			}
+		}
+		
+		return heuristicList;
+	}
+	
+	/**
+	 * M&eacute;todo de instancia agregado
+	 * @return una lista de cadenas representando el nombre de las estructuras
+	 */
+	public List<String> getCharacterStructuresList() {
+		List<String> structuresList;
+		
+		structuresList = new ArrayList<String>();
+		
+		for(Descriptor<Object> d: this.getDescription()) {
+			if (d instanceof CharacterDescriptor) { 
+				// Determine if the structure name in Deescriptor has already been included in structureList
+				if (!(structuresList.contains(d.getStructure()))) {
+					// The structure name was not found in structureList. Append it to structureList
+					structuresList.add(d.getStructure());
+				} else continue;
+			}
+		}
+		
+		return structuresList;
+	}
+	
+	/**
+	 * M&eacute;todo de instancia agregado
+	 * @return una lista de cadenas representando el nombre de las estructuras
+	 */
+	public List<String> getHeuristicStructuresList() {
+		List<String> structuresList;
+		
+		structuresList = new ArrayList<String>();
+		
+		for(Descriptor<Object> d: this.getDescription()) {
+			if (d instanceof HeuristicDescriptor) { 
+				// Determine if the structure name in Deescriptor has already been included in structureList
+				if (!(structuresList.contains(d.getStructure()))) {
+					// The structure name was not found in structureList. Append it to structureList
+					structuresList.add(d.getStructure());
+				} else continue;
+			}
+		}
+		
+		return structuresList;
+	}
+	
+	/**
+	 * M&eacute;todo de instancia agregado
+	 * @return una lista de descriptores relacionados a aStructureName
+	 */
+	public List<Descriptor<Object>> getDescription(String aStructureName) {
+		List<Descriptor<Object>> description;
+		
+		description = new ArrayList<Descriptor<Object>>();
+		
+		for(Descriptor<Object> d: this.getDescription()) {
+			// Determine if the structure name in Deescriptor has already been included in structureList
+			if (d.getStructure().equals(aStructureName)) {
+				description.add(d);
+			} else continue;
+		}
+		
+		return description;
 	}
 }

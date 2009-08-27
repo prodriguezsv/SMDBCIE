@@ -86,15 +86,4 @@ public class SheetCase extends Node {
 		
 		return false;
 	}
-	
-	/**
-	 * @see "M&eacute;todo value del protocolo accessing en SUKIA SmallTalk"
-	 * @return
-	 */
-	public Object getValue() {
-		if (this.getDescriptor() != null)
-			return this.getDescriptor().getValue();
-		
-		return null;
-	}
 }

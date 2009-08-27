@@ -17,7 +17,7 @@ import ontology.common.Structure;
  *
  */
 public class Hypothesis {
-	private Object descriptiveElement;
+	private List<Descriptor<Object>> description;
 	private List<Descriptor<Object>> justification;
 	private List<Descriptor<Object>> unmatchedDescription;
 	private List<PossibleSolution> possibleSolutions;
@@ -28,7 +28,7 @@ public class Hypothesis {
 	 */
 	// Ojo el ordenamiento
 	public Hypothesis() {
-		setDescriptiveElement(null);
+		setDescription(new ArrayList<Descriptor<Object>>());
 
 		// Sort criteria: taxonomic level
 		setPossibleSolutions(new ArrayList<PossibleSolution>());
@@ -43,11 +43,8 @@ public class Hypothesis {
 	 * @see "Método descriptiveElement: del protocolo adding en SUKIA SmallTalk"
 	 * @param aDescElt
 	 */
-	public boolean setDescriptiveElement(Object aDescElt) {
-		if (!((aDescElt instanceof Structure) || (aDescElt instanceof GroupingHeuristic)))
-			return false;
-
-		this.descriptiveElement = aDescElt;
+	public boolean setDescription(List<Descriptor<Object>> aDescElt) {
+		this.description = aDescElt;
 		
 		return true;
 	}
@@ -56,8 +53,8 @@ public class Hypothesis {
 	 * @see "Método descriptiveElement del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public Object getDescriptiveElement() {
-		return descriptiveElement;
+	public List<Descriptor<Object>> getDescription() {
+		return description;
 	}
 
 	/**
@@ -175,7 +172,7 @@ public class Hypothesis {
 	 * @return
 	 */
 	public boolean addUnmatchedDescription(Descriptor<Object> aDescriptor) {
-		if (containsFull(aDescriptor, this.getUnmatchedDescription()))
+		if (this.getUnmatchedDescription().contains(aDescriptor))
 			return false;
 
 		this.getUnmatchedDescription().add(aDescriptor);
@@ -231,13 +228,13 @@ public class Hypothesis {
 	 * @return
 	 */
 	public  List<Descriptor<Object>> problemDescriptionFor(String aTaxonomicGroupName) {
-		if (this.getDescriptiveElement() == null)
+		if (this.getDescription() == null)
 			return null;
 		
-		if (this.getDescriptiveElement() instanceof Structure)
-			return ((Structure)this.getDescriptiveElement()).createDescription(aTaxonomicGroupName);
+		if (this.getDescription() instanceof Structure)
+			return ((Structure)this.getDescription()).createDescription(aTaxonomicGroupName);
 		else
-			return ((GroupingHeuristic)this.getDescriptiveElement()).createSAVDescription(aTaxonomicGroupName);
+			return ((GroupingHeuristic)this.getDescription()).createSAVDescription(aTaxonomicGroupName);
 	}
 
 	/**
@@ -270,33 +267,22 @@ public class Hypothesis {
 	}
 	
 	/**
-	 * Determines if a full aSAVDescriptor is already a member of aDescriptionList. The argument aSAVDescriptor is a member of
-	 * aDescriptionList when its structure, attribute and value match with the structure and attribute names of a list element.
-	 * Returns: 	-1 (error state): The argument aDescriptionList IS NOT a valid list for self.
-	 * nil: aSAVDescriptor IS NOT a member of aDescriptionList.
-	 * not nil: an element of aDescriptionList whose structure and attribute names match those of aSAVDescriptor"
-	 * @see "Método includesFull:in: del protocolo testing en SUKIA SmallTalk"
-	 * @param aDescriptor
-	 * @param aDescription
+	 * Verifica si existen contradicciones entre los descriptores (estructura, atributo, valor)
+	 * Se dice que existe contradiccion  si existe dos descripciones distintas para el mismo par
+	 * (estructura, atributo)
+	 * @see "M&eacute;todo thereAreContradictions: del protocolo testing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public boolean containsFull(Descriptor<Object> aDescriptor, List<Descriptor<Object>> aDescription) {
-		// Make sure that aDescription is indeed one of my description lists. If not, return the -1 error value
-		 if (!(aDescription == this.getUnmatchedDescription()))
-			 return false;
+	public boolean areThereContradictions(Descriptor<Object> aDescriptor, 
+		List<Descriptor<Object>> aDescription) {
 
-		for( int i = 1; i <= aDescription.size(); i++) {
-			if (aDescription.get(i-1).getStructure().equals(aDescriptor.getStructure()) &&
-					aDescription.get(i-1).getAttribute().equals(aDescriptor.getAttribute()) &&
-					aDescription.get(i-1).getValue().equals(aDescriptor.getValue()))
-				return true;
-
-			// Stop searching if the next descriptor's structure name is (alphabetically) greater than the argument's structure name
-			if (i < aDescription.size())
-				if (aDescriptor.getStructure().compareTo(aDescription.get(i).getStructure()) < 0)
-					return false;
+		for(Descriptor<Object> d: aDescription) {
+			if (d.getStructure().equals(aDescriptor.getStructure()) &&
+					d.getAttribute().equals(aDescriptor.getAttribute())	) {
+					return true; // Hay contradiccion
+			}
 		}
-
-		return false;
-	}	
+				
+	    return false;
+	}
 }

@@ -8,6 +8,8 @@ package redundantDiscriminationNet;
 import java.util.ArrayList;
 import java.util.List;
 
+import ontology.common.Descriptor;
+
 /**
  * Representa el concepto abstracto de un nodo de la red de discriminaci&oacute;n redundante 
  * @author Armando
@@ -133,11 +135,11 @@ public abstract class Node {
 	}
 	
 	/**
-	 * M&eacute;todo a anular para polimofirmo
+	 * M&eacute;todo a anular para efectos de polimofirmo
 	 * @see "Método value del protocolo accessing en SUKIA SmallTalk"
 	 * @return 
 	 */
-	public Object getValue() {
+	public Descriptor<Object> getDescriptor() {
 		return null;
 	}
 }

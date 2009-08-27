@@ -9,6 +9,6 @@ package system.searchAutomata.output;
  *
  * @author pabloq
  */
-public class TaxonAutomatonOutput extends SearchAutomatonOutput {
+public class TaxonomyAutomatonOutput extends SearchAutomatonOutput {
 
 }

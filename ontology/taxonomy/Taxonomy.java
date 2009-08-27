@@ -97,27 +97,24 @@ public class Taxonomy {
 	}
 
 
-        public List<Object> searchBySA(String aStruture, String aAttribute){
-            List<Object> aListValues = new ArrayList<Object>();
+    public List<Object> searchBySA(String aStruture, String aAttribute){
+        List<Object> aListValues = new ArrayList<Object>();
 
-            for (List<Taxon> aTaxonList:levelIndex){
-                for (Taxon aTaxon:aTaxonList){
-                    for(Descriptor<Object> aDescritor:aTaxon.getDescription()){
-                        if (aDescritor.getStructure().equals(aStruture)&&
-                                (aDescritor.getAttribute().equals(aAttribute)))
+        for (List<Taxon> aTaxonList:levelIndex){
+            for (Taxon aTaxon:aTaxonList){
+                for(Descriptor<Object> aDescritor:aTaxon.getDescription()){
+                    if (aDescritor.getStructure().equals(aStruture)&&
+                            (aDescritor.getAttribute().equals(aAttribute)))
 
-                            //TODO fix this
-                            aListValues.add(aDescritor.getValue());
-                    }
-
+                        //TODO fix this
+                        aListValues.add(aDescritor.getValue());
                 }
-                
 
             }
-            return aListValues;
-                            
-
         }
+        
+        return aListValues;
+    }
 
 
 	/**

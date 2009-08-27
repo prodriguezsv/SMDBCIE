@@ -239,15 +239,4 @@ public class Norm extends Node {
 		
 		return null;
 	}
-		
-	/**
-	 * @see "Método value del protocolo accessing en SUKIA SmallTalk"
-	 * @return
-	 */
-	public Object getValue() {
-		if (this.getDescriptor() != null)
-			return this.getDescriptor().getValue();
-		
-		return null;
-	}
 }

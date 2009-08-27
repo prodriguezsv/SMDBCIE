@@ -885,7 +885,7 @@ public class RDNet {
 		for(Index ix: rootIndexes) {
 			value =  JOptionPane.showInputDialog(ix.getLabel());
 			if (!(value == null)) {
-				if (ix.getSuccessors().get(0).getValue() instanceof String)
+				if (ix.getSuccessors().get(0).getDescriptor().getValue() instanceof String)
 					simbolValue =  value;
 				else simbolValue =  Double.parseDouble(value);
 				desc.set(this.getRoot().getStructure(), ix.getLabel(), simbolValue);
