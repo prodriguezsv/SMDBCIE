@@ -182,7 +182,7 @@ public class TaxonomySearchAutomaton {
 	 * @return my return values
 	 */
     public boolean prepareFailedOutput(){
-        if (searchOutput.getJustification() != null) return false;
+        if (searchOutput.getJustification().size() != 0) return false;
         
         searchOutput.setJustification(justification);
         searchOutput.setUnmatchedDescription(tUnmatchedDescription);
@@ -333,11 +333,11 @@ public class TaxonomySearchAutomaton {
         List<Descriptor<Object>> inheritedDescription = new ArrayList<Descriptor<Object>>();
 
         while (this.getPossibleSolutionList().isEmpty() != true){
-            PossibleSolution ps = this.getPossibleSolutionList().get(0);
+            PossibleSolution ps = this.getPossibleSolutionList().remove(0);
             if (ps.getSolutionDescription().size() > 1) return false;
 
             int i = 0;
-            while (i <= getPossibleSolutionList().size()){
+            while (i < getPossibleSolutionList().size()){
                 //get the next possible solution to compare against
                 PossibleSolution compSolution = getPossibleSolutionList().get(i);
                 if (compSolution.getSolutionDescription().size() > 1) return false;
@@ -353,8 +353,6 @@ public class TaxonomySearchAutomaton {
                         while (compSolution.getSolutionDescription().isEmpty() != true){
                             inheritedDescription.add(compSolution.getSolutionDescription().remove(0));
                         }
-                        
-                        getPossibleSolutionList().remove(i);
                     } else {//At this point, ps and compSolution are different taxa
                         //Check if ps is a successor of compSolution
                         if (((Taxon)ps.getSolution()).isSuccessorOf((Taxon)compSolution.getSolution())){

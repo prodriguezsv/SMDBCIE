@@ -196,13 +196,10 @@ public class Hypothesis {
 	 * @return
 	 */
 	public boolean copyToJustificationFrom(List<Descriptor<Object>> aJustificationDescription) {
-		if (aJustificationDescription == null)
-			return false;
-
-		for( int i = 1; i <= aJustificationDescription.size(); i++) {
-			this.addJustification(aJustificationDescription.get(i-1));
-		}
-		
+		if (aJustificationDescription == null) return false;
+                for (Descriptor d:aJustificationDescription){
+                    this.addJustification(d);
+                }
 		return true;
 	}
 	
@@ -212,30 +209,27 @@ public class Hypothesis {
 	 * @return
 	 */
 	public boolean copyToUnmatchedDescriptionFrom(List<Descriptor<Object>> anUnmatchedDescription) {
-		if (anUnmatchedDescription == null)
-			return false;
-
-		for( int i = 1; i <= anUnmatchedDescription.size(); i++) {
-			this.addUnmatchedDescription(anUnmatchedDescription.get(i-1));
-		}
-		
+		if (anUnmatchedDescription == null)return false;
+                for (Descriptor d:anUnmatchedDescription){
+                    this.addUnmatchedDescription(d);
+                }
 		return true;
 	}
 	
-	/**
-	 * @see "Método problemDescriptionFor: del protocolo description generation en SUKIA SmallTalk"
-	 * @param aTaxonomicGroupName
-	 * @return
-	 */
-	public  List<Descriptor<Object>> problemDescriptionFor(String aTaxonomicGroupName) {
-		if (this.getDescription() == null)
-			return null;
-		
-		if (this.getDescription() instanceof Structure)
-			return ((Structure)this.getDescription()).createDescription(aTaxonomicGroupName);
-		else
-			return ((GroupingHeuristic)this.getDescription()).createSAVDescription(aTaxonomicGroupName);
-	}
+//	/**
+//	 * @see "Método problemDescriptionFor: del protocolo description generation en SUKIA SmallTalk"
+//	 * @param aTaxonomicGroupName
+//	 * @return
+//	 */
+//	public  List<Descriptor<Object>> problemDescriptionFor(String aTaxonomicGroupName) {
+//		if (this.getDescription() == null)
+//			return null;
+//
+//		if (this.getDescription() instanceof Structure)
+//			return ((Structure)this.getDescription()).createDescription(aTaxonomicGroupName);
+//		else
+//			return ((GroupingHeuristic)this.getDescription()).createSAVDescription(aTaxonomicGroupName);
+//	}
 
 	/**
 	 * Determines if the argument aSAVDescriptor is a member of the argument aDescription.
@@ -251,18 +245,14 @@ public class Hypothesis {
 		// Make sure that aDescription is indeed one of my description lists. If not, return the -1 error value
 		 if (!(aDescription == this.getUnmatchedDescription()))
 			 return false;
-
-		for( int i = 1; i <= aDescription.size(); i++) {
-			if (aDescription.get(i-1).getStructure() == aDescriptor.getStructure() &&
-					aDescription.get(i-1).getAttribute() == aDescriptor.getAttribute())
-				return true;
-
+                for (Descriptor d:aDescription){
+                    if (d.getStructure().equals(aDescriptor.getStructure()) &&
+                            (d.getAttribute().equals(aDescriptor.getAttribute())))
+                        return true;
 			// Stop searching if the next descriptor's structure name is (alphabetically) greater than the argument's structure name
-			if (i < aDescription.size())
-				if (aDescriptor.getStructure().compareTo(aDescription.get(i).getStructure()) < 0)
-					return false;
-		}
-
+                        if (aDescriptor.getStructure().compareTo(d.getStructure()) < 0)
+                                return false;
+                }
 		return false;
 	}
 	
