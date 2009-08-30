@@ -10,8 +10,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import ontology.CBR.Case;
-import ontology.common.CharacterDescriptor;
 import ontology.common.Descriptor;
+import ontology.common.SSCharacterDescriptor;
+import ontology.common.SVCharacterDescriptor;
+import ontology.values.SingleValue;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -50,11 +52,11 @@ public class CaseTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		Descriptor<Object> aDescriptor;
+		Descriptor aDescriptor;
 		
-		aDescriptor = new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3);
+		aDescriptor = new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3));
 		aCase.addToDescription(aDescriptor);
-		aDescriptor = new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto");
+		aDescriptor = new SSCharacterDescriptor("Pie", "Disposición", "Sobresale al manto");
 		aCase.addToDescription(aDescriptor);
 	}
 
@@ -71,7 +73,7 @@ public class CaseTest {
 	 */
 	@Test
 	public final void testAddToDescription() {
-		Descriptor<Object> aDescriptor;
+		Descriptor aDescriptor;
 		
 		System.out.println("Iniciando pruebas para el método AddToDescription()");
 		
@@ -79,14 +81,14 @@ public class CaseTest {
 		assertFalse(aCase.addToDescription(null));
 		
 		System.out.println("Verificar que no haya contradicciones en la descripción o duplicados");
-		assertFalse(aCase.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3)));
-		assertFalse(aCase.addToDescription(new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto")));
-		assertFalse(aCase.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 1)));
+		assertFalse(aCase.addToDescription(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3))));
+		assertFalse(aCase.addToDescription(new SSCharacterDescriptor("Pie", "Disposición", "Sobresale al manto")));
+		assertFalse(aCase.addToDescription(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(1))));
 		
 		System.out.println("Verificar que se agregue un descriptor válido");
-		aDescriptor = new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata");
+		aDescriptor = new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata");
 		assertTrue(aCase.addToDescription(aDescriptor));
-		aDescriptor = new CharacterDescriptor<Object>("Branquias", "Número de hojas branquiales", 6);
+		aDescriptor = new SVCharacterDescriptor("Branquias", "Número de hojas branquiales", new SingleValue(6));
 		assertTrue(aCase.addToDescription(aDescriptor));
 	}
 
@@ -95,7 +97,7 @@ public class CaseTest {
 	 */
 	@Test
 	public final void testAddToJustification() {
-		Descriptor<Object> aDescriptor;
+		Descriptor aDescriptor;
 		
 		System.out.println("Iniciando pruebas para el método AddToJustification()");
 		
@@ -103,14 +105,14 @@ public class CaseTest {
 		assertFalse(aCase.addToDescription(null));
 		
 		System.out.println("Verificar que no haya contradicciones en la descripción o duplicados");
-		assertFalse(aCase.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3)));
-		assertFalse(aCase.addToDescription(new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto")));
-		assertFalse(aCase.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 1)));
+		assertFalse(aCase.addToDescription(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3))));
+		assertFalse(aCase.addToDescription(new SSCharacterDescriptor("Pie", "Disposición", "Sobresale al manto")));
+		assertFalse(aCase.addToDescription(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(1))));
 		
 		System.out.println("Verificar que se agregue un descriptor correctamente");
-		aDescriptor = new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata");
+		aDescriptor = new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata");
 		assertTrue(aCase.addToDescription(aDescriptor));
-		aDescriptor = new CharacterDescriptor<Object>("Branquias", "Número de hojas branquiales", 6);
+		aDescriptor = new SVCharacterDescriptor("Branquias", "Número de hojas branquiales", new SingleValue(6));
 		assertTrue(aCase.addToDescription(aDescriptor));
 	}
 
@@ -135,12 +137,12 @@ public class CaseTest {
 	 */
 	@Test
 	public final void testGetDescription() {
-		List<Descriptor<Object>> dl = new ArrayList<Descriptor<Object>>();
+		List<Descriptor> dl = new ArrayList<Descriptor>();
 		
 		System.out.println("Iniciando pruebas para el método GetDescription()");
 		
 		System.out.println("Verificar que se obtenga una descripción asociada a una estructura");
-		dl.add(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
+		dl.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
 		assertEquals(dl, aCase.getDescription("Cuerpo"));
 	}
 }

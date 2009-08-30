@@ -8,8 +8,8 @@ package redundantDiscriminationNet;
 import java.util.List;
 
 import ontology.CBR.Case;
-import ontology.common.CharacterDescriptor;
-import ontology.common.HeuristicDescriptor;
+import ontology.common.SSCharacterDescriptor;
+import ontology.common.SSHeuristicDescriptor;
 
 
 
@@ -79,7 +79,7 @@ public class RDMultiNet {
 			 * description. b) Create a new NetRoot. c) Add the case to the structure-defined network.
 			 */
 			if (!(this.getRoot().contains(s)))
-				this.getRoot().addRDNet(new RootNorm(new CharacterDescriptor<Object>(s, null, null)));
+				this.getRoot().addRDNet(new RootNorm(new SSCharacterDescriptor(s, null, null)));
 			
 			aRDNet = this.getRoot().getRDNet(s);
 		
@@ -97,7 +97,7 @@ public class RDMultiNet {
 			 * description. b) Create a new NetRoot. c) Add the case to the structure-defined network.
 			 */
 			if (!(this.getRoot().contains(s)))
-				this.getRoot().addRDNet(new RootNorm(new HeuristicDescriptor<Object>(s, null, null)));
+				this.getRoot().addRDNet(new RootNorm(new SSHeuristicDescriptor(s, null, null)));
 			
 			aRDNet = this.getRoot().getRDNet(s);
 		

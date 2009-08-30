@@ -117,7 +117,7 @@ public class SpecificPatternsbyStructure {
 	 * @param aDescriptor
 	 * @return
 	 */
-	public SpecificDescriptorPattern getPattern(Descriptor<Object> aDescriptor) {
+	public SpecificDescriptorPattern getPattern(Descriptor aDescriptor) {
 		for (SpecificDescriptorPattern sdp:this.getPatterns()) {
 			if (sdp.getPattern().equals(aDescriptor))
 				return sdp;

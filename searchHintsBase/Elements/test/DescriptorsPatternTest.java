@@ -8,9 +8,11 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import ontology.common.CharacterDescriptor;
 import ontology.common.Descriptor;
-import ontology.common.HeuristicDescriptor;
+import ontology.common.SSCharacterDescriptor;
+import ontology.common.SSHeuristicDescriptor;
+import ontology.common.SVCharacterDescriptor;
+import ontology.values.SingleValue;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -49,7 +51,7 @@ public class DescriptorsPatternTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		descriptorsPattern.addDescriptor(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
+		descriptorsPattern.addDescriptor(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
 	}
 
 	/**
@@ -65,7 +67,7 @@ public class DescriptorsPatternTest {
 	 */
 	@Test
 	public void testAddDescriptor() {
-		Descriptor<Object> aDescriptor;
+		Descriptor aDescriptor;
 		
 		System.out.println("Iniciando pruebas para el método AddDescriptor()");
 		
@@ -73,13 +75,13 @@ public class DescriptorsPatternTest {
 		assertFalse(descriptorsPattern.addDescriptor(null));
 		
 		System.out.println("Verificar que no haya contradicciones en la descripción o duplicados");
-		assertFalse(descriptorsPattern.addDescriptor(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3)));
-		assertFalse(descriptorsPattern.addDescriptor(new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto")));
-		assertFalse(descriptorsPattern.addDescriptor(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 1)));
-		assertFalse(descriptorsPattern.addDescriptor(new HeuristicDescriptor<Object>("Supervivencia", "Alimentación", "Carnivoro")));
+		assertFalse(descriptorsPattern.addDescriptor(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3))));
+		assertFalse(descriptorsPattern.addDescriptor(new SSCharacterDescriptor("Pie", "Disposición", "Sobresale al manto")));
+		assertFalse(descriptorsPattern.addDescriptor(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3))));
+		assertFalse(descriptorsPattern.addDescriptor(new SSHeuristicDescriptor("Alimentación", "Alimentación", "Carnivoro")));
 		
 		System.out.println("Verificar que se agregue un descriptor válido");
-		aDescriptor = new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata");
+		aDescriptor = new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata");
 		assertTrue(descriptorsPattern.addDescriptor(aDescriptor));
 	}
 
@@ -88,24 +90,24 @@ public class DescriptorsPatternTest {
 	 */
 	@Test
 	public void testHowSimilarTo() {
-		List<Descriptor<Object>> dl;
+		List<Descriptor> dl;
 		
 		System.out.println("Iniciando pruebas para el método HowSimilarTo()");
 		
 		System.out.println("Verificar que el patrón es igual a una lista de descriptores");
-		dl = new ArrayList<Descriptor<Object>>();
-		dl.add(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
+		dl = new ArrayList<Descriptor>();
+		dl.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
 		assertEquals(1, descriptorsPattern.howSimilarTo(dl));
 		
 		System.out.println("Verificar que el patrón es completamente distinto a una lista de descriptores");
 		dl.clear();
-		dl.add(new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata"));
+		dl.add(new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata"));
 		assertEquals(0, descriptorsPattern.howSimilarTo(dl));
 		
 		System.out.println("Verificar que el patrón es medianamente distinto a una lista de descriptores");
 		dl.clear();
-		dl.add(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
-		dl.add(new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata"));
+		dl.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
+		dl.add(new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata"));
 		assertEquals(0.5, descriptorsPattern.howSimilarTo(dl));
 	}
 	
@@ -114,15 +116,15 @@ public class DescriptorsPatternTest {
 	 */
 	@Test
 	public void testCompareTo() {
-		List<Descriptor<Object>> dl;
+		List<Descriptor> dl;
 		DescriptorsPattern dp;
 		
 		System.out.println("Iniciando pruebas para el método CompareTo()");
 		
 		System.out.println("Verificar que el patrón de descriptores es igual con otro patrón de descriptores" +
 				"según el criterio de comparación");
-		dl = new ArrayList<Descriptor<Object>>();
-		dl.add(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
+		dl = new ArrayList<Descriptor>();
+		dl.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
 		dp = new DescriptorsPattern(dl, 0, 1);
 		assertEquals(0, descriptorsPattern.compareTo(dp));
 		
@@ -131,8 +133,8 @@ public class DescriptorsPatternTest {
 		dl.clear();
 		assertTrue(descriptorsPattern.compareTo(dp) < 0);
 	
-		dl.add(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
-		dl.add(new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata"));
+		dl.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
+		dl.add(new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata"));
 		assertTrue(descriptorsPattern.compareTo(dp) > 0);
 	}
 }

@@ -10,7 +10,7 @@ package ontology.common;
  * ya que ningún par attribute-value particular generaliza todos los casos bajo ellos.
  * 
 */
-public class CharacterDescriptor<T> extends Descriptor<T> {
+public abstract class CharacterDescriptor extends Descriptor {
 	/**
 	 * Class instance invariant: self MUST always have exactly two values. The first
 	 * element corresponds to the descriptor's attribute, and the second one to the value.
@@ -24,14 +24,14 @@ public class CharacterDescriptor<T> extends Descriptor<T> {
 	/**
 	 * Método agregado
 	 */
-	public CharacterDescriptor(String aStructure, String aAttribute, T aValue) {
-		super(aStructure, aAttribute, aValue);
+	public CharacterDescriptor(String aStructure, String anAttribute) {
+		super(aStructure, anAttribute);
 	}
 	
 	/**
 	 * Método agregado
 	 */
-	public CharacterDescriptor(Object associatedObject, String aStructure, String aAttribute, T aValue) {
-		super(associatedObject, aStructure, aAttribute, aValue);
+	public CharacterDescriptor(Object associatedObject, String aStructure, String anAttribute) {
+		super(associatedObject, aStructure, anAttribute);
 	}
 }

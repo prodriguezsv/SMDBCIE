@@ -55,7 +55,7 @@ public class PatternsbyStructureList extends HintsList<PatternsbyStructure> {
 	 * @return The same list but sorted (in descending order) according to the frequency of description
 	 * patterns found in the elements of this list that are similar to the Structures' descriptions
 	 */
-	public List<String> sortBySuccessFrecuencyCriteria(List<Descriptor<Object>> aDescriptorList) {
+	public List<String> sortBySuccessFrecuencyCriteria(List<Descriptor> aDescriptorList) {
 		return this.getSortedStructureList(aDescriptorList, 
 				new Comparator<PatternsbyStructure>() {
 					public int compare(PatternsbyStructure elem1, PatternsbyStructure elem2) {
@@ -73,7 +73,7 @@ public class PatternsbyStructureList extends HintsList<PatternsbyStructure> {
 	 * @return The same list but sorted (in ascending order) according to the frequency of description
 	 * patterns found in the elements of this list that are similar to the Structures' descriptions
 	 */
-	public List<String> sortByFailureFrecuencyCriteria(List<Descriptor<Object>> aDescriptorList) {
+	public List<String> sortByFailureFrecuencyCriteria(List<Descriptor> aDescriptorList) {
 		return this.getSortedStructureList(aDescriptorList, 
 				new Comparator<PatternsbyStructure>() {
 					public int compare(PatternsbyStructure elem1, PatternsbyStructure elem2) {
@@ -143,13 +143,13 @@ public class PatternsbyStructureList extends HintsList<PatternsbyStructure> {
 	 * sorted by similar pattern frequency.
 	 */
 	@SuppressWarnings("unchecked")
-	private List<String> getSortedStructureList(List<Descriptor<Object>>  description, Comparator c) {
+	private List<String> getSortedStructureList(List<Descriptor>  description, Comparator c) {
 		List<String> mainList, tempList, leftOvers;
 		PatternsbyStructureList sortedList;
 		String aStructureName;
 		PatternsbyStructure pbs, singlepbs;
 		DescriptorsPattern dp;
-		List<Descriptor<Object>> descriptors;
+		List<Descriptor> descriptors;
 		int numElements, numProcessedElts, i;
 		
 		
@@ -213,12 +213,12 @@ public class PatternsbyStructureList extends HintsList<PatternsbyStructure> {
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de descriptores relacionados a aStructureName
 	 */
-	private List<Descriptor<Object>> getDescription(List<Descriptor<Object>> descriptors, String aStructureName) {
-		List<Descriptor<Object>> description;
+	private List<Descriptor> getDescription(List<Descriptor> descriptors, String aStructureName) {
+		List<Descriptor> description;
 		
-		description = new ArrayList<Descriptor<Object>>();
+		description = new ArrayList<Descriptor>();
 		
-		for(Descriptor<Object> d: descriptors) {
+		for(Descriptor d: descriptors) {
 			// Determine if the structure name in Deescriptor has already been included in structureList
 			if (d.getStructure().equals(aStructureName)) {
 				description.add(d);
@@ -232,12 +232,12 @@ public class PatternsbyStructureList extends HintsList<PatternsbyStructure> {
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
-	private List<String> getStructuresList(List<Descriptor<Object>>  descriptors) {
+	private List<String> getStructuresList(List<Descriptor>  descriptors) {
 		List<String> structuresList;
 		
 		structuresList = new ArrayList<String>();
 		
-		for(Descriptor<Object> d: descriptors) { 
+		for(Descriptor d: descriptors) { 
 			// Determine if the structure name in Deescriptor has already been included in structureList
 			if (!(structuresList.contains(d.getStructure()))) {
 				// The structure name was not found in structureList. Append it to structureList

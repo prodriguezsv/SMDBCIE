@@ -12,7 +12,7 @@ import ontology.common.Descriptor;
  *
  */
 public class WeightedDescriptorPattern implements Comparable<WeightedDescriptorPattern> {
-	private Descriptor<Object> pattern;
+	private Descriptor pattern;
 	private double accumulatedWeight;
 	private int numberTaxa;
 	
@@ -20,7 +20,7 @@ public class WeightedDescriptorPattern implements Comparable<WeightedDescriptorP
 	 * Constructor alternativo
 	 * @see "M&eacute;todo initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public WeightedDescriptorPattern(Descriptor<Object> descriptor, double weight, int numberTaxa) {
+	public WeightedDescriptorPattern(Descriptor descriptor, double weight, int numberTaxa) {
 		setPattern(descriptor);
 		setAccumulatedWeight(weight);
 		setNumberTaxa(numberTaxa);
@@ -30,7 +30,7 @@ public class WeightedDescriptorPattern implements Comparable<WeightedDescriptorP
 	 * M&eacute;todo accesor de escritura
 	 * @param pattern
 	 */
-	public void setPattern(Descriptor<Object> pattern) {
+	public void setPattern(Descriptor pattern) {
 		this.pattern = pattern;
 	}
 
@@ -39,7 +39,7 @@ public class WeightedDescriptorPattern implements Comparable<WeightedDescriptorP
 	 * @see "M&eacute;todo pattern del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public Descriptor<Object> getPattern() {
+	public Descriptor getPattern() {
 		return pattern;
 	}
 

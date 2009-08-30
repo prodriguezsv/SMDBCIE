@@ -110,7 +110,7 @@ public class PatternsbyStructure implements Comparable<PatternsbyStructure> {
 	 * @param aPattern
 	 * @return
 	 */
-	public DescriptorsPattern getPattern(List<Descriptor<Object>> aPattern) {
+	public DescriptorsPattern getPattern(List<Descriptor> aPattern) {
 		
 		if (aPattern == null)
 			return null;
@@ -138,7 +138,7 @@ public class PatternsbyStructure implements Comparable<PatternsbyStructure> {
 	 * @param aPattern
 	 * @return
 	 */
-	public boolean hasAPatternSimilarTo(List<Descriptor<Object>> aPattern) {
+	public boolean hasAPatternSimilarTo(List<Descriptor> aPattern) {
 		DescriptorsPattern p;
 		
 		p = this.whatPatternIsMostSimilarTo(aPattern);
@@ -157,7 +157,7 @@ public class PatternsbyStructure implements Comparable<PatternsbyStructure> {
 	 * @return nil - if aPattern is NOT similar to any of the patterns contained in self; an instance of
 	 * DescriptorsPattern - if a similar or equal pattern is found in this list.
 	 */
-	public DescriptorsPattern whatPatternIsMostSimilarTo(List<Descriptor<Object>> aPattern) {
+	public DescriptorsPattern whatPatternIsMostSimilarTo(List<Descriptor> aPattern) {
 		int min, max;
 		double simThreshold, simRate, maxSimRate = 0;
 		DescriptorsPattern dpret = null;

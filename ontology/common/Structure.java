@@ -148,13 +148,12 @@ public class Structure implements Comparable<Structure> {
 	 * @param aTaxonomicGroupName
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	public List<Descriptor<Object>> createDescription(String aDummyName) {
-		List<Descriptor<Object>> description;
+	public List<Descriptor> createDescription(String aDummyName) {
+		List<Descriptor> description;
 		Attribute a;
 		List<Value> vdList;
 		Value vd;
-		Descriptor<Object> d;
+		Descriptor d;
 		
 		// Make sure there's at least one attribute
 		if (getAttributes().isEmpty())
@@ -165,7 +164,7 @@ public class Structure implements Comparable<Structure> {
 			return null;
 
 		// Create the description holder
-		description = new ArrayList<Descriptor<Object>>();
+		description = new ArrayList<Descriptor>();
 
 		// Scan the receiver's attributes
 		for (int i = 1; i <= this.getAttributes().size(); i++) {
@@ -181,8 +180,8 @@ public class Structure implements Comparable<Structure> {
 			if (vd instanceof RangeValue) return null;
 
 			// Create the new SAVDescriptor and assign its values
-			d = new CharacterDescriptor<Object>();
-			d.set(this.getName(), a.getName(), ((SingleValue<Object>)vd).getValue());
+			d = new SVCharacterDescriptor();
+			d.set(this.getName(), a.getName(), ((SingleValue)vd).getValue());
 					
 			description.add(d);
 		}

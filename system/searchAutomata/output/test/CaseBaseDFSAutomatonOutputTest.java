@@ -10,9 +10,9 @@ package system.searchAutomata.output.test;
 import java.util.ArrayList;
 import java.util.List;
 import ontology.CBR.Case;
-import ontology.common.CharacterDescriptor;
-import ontology.common.HeuristicDescriptor;
 import ontology.common.Modifier;
+import ontology.common.SSCharacterDescriptor;
+import ontology.common.SSHeuristicDescriptor;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
 import ontology.taxonomy.Taxonomy;
@@ -51,40 +51,36 @@ public class CaseBaseDFSAutomatonOutputTest {
     public void setUp() {
         aTaxonomy = new Taxonomy();
 
-        rootTaxon = new Taxon();
-        rootTaxon.setName(null);
-        rootTaxon.setLevel(TaxonomicRank.ROOT);
-        aTaxon = new Taxon();
+        rootTaxon = new Taxon(TaxonomicRank.ROOT, null);
 //-----------------------Taxon No. 1---------------------
-        aTaxon.setName("Chromodorididae");
-        aTaxon.setLevel(TaxonomicRank.FAMILY);
+        aTaxon = new Taxon(TaxonomicRank.FAMILY, "Chromodorididae");
 //-----------------------Structure No. 1---------------------
-        aTaxon.addToDescription(new CharacterDescriptor<Object>("cuerpo","forma","alargado"),
+        aTaxon.addToDescription(new SSCharacterDescriptor("Cuerpo","Forma","Alargado"),
                                     new Modifier(1.0,1.0,0.8));
-        aTaxon.addToDescription(new CharacterDescriptor<Object>("cuerpo","forma","ovalado"),
+        aTaxon.addToDescription(new SSCharacterDescriptor("Cuerpo","Forma","Ovalado"),
                                     new Modifier(1.0,1.0,0.1));
-        aTaxon.addToDescription(new CharacterDescriptor<Object>("cuerpo","conformacion","tiene_cerata"),
+        aTaxon.addToDescription(new SSCharacterDescriptor("Cuerpo","Conformación","Tiene cerata"),
                                     new Modifier(1.0,1.0,1.0));
 //-----------------------Structure No. 2---------------------
-        aTaxon.addToDescription(new CharacterDescriptor<Object>("pie","disposicion","sobresale_al_manto"),
+        aTaxon.addToDescription(new SSCharacterDescriptor("Pie","Disposición","Sobresale al manto"),
                                     new Modifier(0.8,1.0,0.8));
-        aTaxon.addToDescription(new CharacterDescriptor<Object>("pie","coloracion","blanquecino"),
+        aTaxon.addToDescription(new SSCharacterDescriptor("Pie","Coloración","Blanquecino"),
                                     new Modifier(0.8,1.0,0.7));
-        aTaxon.addToDescription(new CharacterDescriptor<Object>("pie","coloracion","crema"),
+        aTaxon.addToDescription(new SSCharacterDescriptor("Pie","Coloracion","Crema"),
                                     new Modifier(0.8,1.0,0.7));
-        aTaxon.addToDescription(new CharacterDescriptor<Object>("pie","coloracion","gris_oscuro_casi_negro"),
+        aTaxon.addToDescription(new SSCharacterDescriptor("Pie","Coloración","Gris oscuro casi negro"),
                                     new Modifier(0.8,1.0,0.2));
 //-----------------------Structure No. 2---------------------
-        aTaxon.addToDescription(new CharacterDescriptor<Object>("branquia","posicion_durante_desplazamiento","hacia_atras"),
+        aTaxon.addToDescription(new SSCharacterDescriptor("Branquia","Posición durante desplazamiento", 
+        		"Hacia atras"), new Modifier(0.8,1.0,0.8));
+        aTaxon.addToDescription(new SSCharacterDescriptor("Branquia","Posición del ano con respecto a la branquia","En el centro"),
                                     new Modifier(0.8,1.0,0.8));
-        aTaxon.addToDescription(new CharacterDescriptor<Object>("branquia","posicion_del_ano_con_respecto_a_la_branquia","en_el_centro"),
-                                    new Modifier(0.8,1.0,0.8));
-        aTaxon.addToDescription(new CharacterDescriptor<Object>("branquia","forma_hojas_branquiales","bipinnada"),
+        aTaxon.addToDescription(new SSCharacterDescriptor("Branquia","Forma hojas branquiales","Bipinnada"),
                                     new Modifier(0.8,1.0,0.6));
-        aTaxon.addToDescription(new CharacterDescriptor<Object>("branquia","forma_hojas_branquiales","tripinnada"),
+        aTaxon.addToDescription(new SSCharacterDescriptor("Branquia","Forma hojas branquiales","Tripinnada"),
                                     new Modifier(0.8,1.0,0.4));
 //-----------------------Grouping Heuristic No. 1---------------------
-        aTaxon.addToDescription(new HeuristicDescriptor<Object>("heuristica","alimenatcion","esponjas"),
+        aTaxon.addToDescription(new SSHeuristicDescriptor("Alimenatcion","Alimenatcion","Esponjas"),
                                     new Modifier(1.0,1.0,1.0));
         aTaxonomy.addTaxon(aTaxon, rootTaxon);
 
@@ -92,18 +88,16 @@ public class CaseBaseDFSAutomatonOutputTest {
         aPossibleSolution.setSolution(aTaxon);
 
 //        aCase = new Case();
-//        aCase.addToDescription(new CharacterDescriptor<Object>("pie","coloracion","crema"));
-//        aCase.addToDescription(new CharacterDescriptor<Object>("branquia","forma_hojas_branquiales","tripinnada"));
+//        aCase.addToDescription(new SSCharacterDescriptor("pie","coloracion","crema"));
+//        aCase.addToDescription(new SSCharacterDescriptor("branquia","forma_hojas_branquiales","tripinnada"));
 //-----------------------Taxon No. 2---------------------
-        aTaxon2 = new Taxon();
-        aTaxon2.setName("Chromodoris");
-        aTaxon2.setLevel(TaxonomicRank.GENUS);
+        aTaxon2 = new Taxon(TaxonomicRank.GENUS, "Chromodoris");
 //-----------------------Structure No. 1---------------------
-        aTaxon2.addToDescription(new CharacterDescriptor<Object>("cuerpo","posicion_de_la_banda_dorsal_continua","centro"),
+        aTaxon2.addToDescription(new SSCharacterDescriptor("Cuerpo","Posición de la banda dorsal continua","Centro"),
                                     new Modifier(1.0,1.0,1.0));
-        aTaxon2.addToDescription(new CharacterDescriptor<Object>("cuerpo","coloracion","brillante_azul_rojo_blanco_anaranjado_purpura"),
-                                    new Modifier(1.0,1.0,1.0));
-        aTaxon2.addToDescription(new CharacterDescriptor<Object>("cuerpo","forma_ventral","aplanado"),
+        aTaxon2.addToDescription(new SSCharacterDescriptor("Cuerpo","Coloración",
+        		"brillante azul rojo blanco anaranjado purpura"), new Modifier(1.0,1.0,1.0));
+        aTaxon2.addToDescription(new SSCharacterDescriptor("Cuerpo","Forma ventral","Aplanado"),
                                     new Modifier(1.0,1.0,0.6));
 
         aTaxonomy.addTaxon(aTaxon2, aTaxon);

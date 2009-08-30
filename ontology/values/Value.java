@@ -1,5 +1,5 @@
 /**
- * @see "Categoría Sukia Values de SUKIA Smalltalk"
+ * @see "Categor&iacute;a Sukia Values de SUKIA Smalltalk"
  */
 package ontology.values;
 
@@ -14,21 +14,20 @@ public abstract class Value {
 		
 	/**
 	 * aMeasuringUnit can be #cm, #mm, #inch
-	 * @see "Método measuringUnit: del protocolo setting-range values (private) en SUKIA SmallTalk"
+	 * @see "M&eacute;todo measuringUnit: del protocolo setting-range values (private) en SUKIA SmallTalk"
 	 * @param measuringUnit
 	 */
-	public void setMeasuringUnit(MeasuringUnit aMeasuringUnit) {
+	protected void setMeasuringUnit(MeasuringUnit aMeasuringUnit) {
 		this.measuringUnit = aMeasuringUnit;
 	}
 
 	/**
-	 * @see "Método measuringUnit del protocolo accessing-range values en SUKIA SmallTalk"
+	 * @see "M&eacute;todo measuringUnit del protocolo accessing-range values en SUKIA SmallTalk"
 	 * @return
 	 */
 	public MeasuringUnit getMeasuringUnit() {
 		return measuringUnit;
 	}
-	
-	public abstract void addValues(Value aValue);
+
 	public abstract boolean equals(Object aValue);
 }

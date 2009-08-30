@@ -10,10 +10,13 @@ package system.searchAutomata.output.test;
 import java.util.ArrayList;
 import java.util.List;
 import ontology.CBR.Case;
-import ontology.common.CharacterDescriptor;
 import ontology.common.Descriptor;
+import ontology.common.SSCharacterDescriptor;
+import ontology.common.SVCharacterDescriptor;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
+import ontology.values.SingleValue;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -32,7 +35,7 @@ public class SearchAutomatonOutputTest {
     Taxon aTaxon;
     Case aCase;
     List<PossibleSolution> aPossibleSolutionList;
-    List<Descriptor<Object>> aDescription;
+    List<Descriptor> aDescription;
 
     public SearchAutomatonOutputTest() {
     }
@@ -47,16 +50,14 @@ public class SearchAutomatonOutputTest {
 
     @Before
     public void setUp() {
-        aTaxon = new Taxon();
-        aTaxon.setLevel(TaxonomicRank.GENUS);
-        aTaxon.setName("Glossodoris");
-
+        aTaxon = new Taxon(TaxonomicRank.GENUS, "Glossodoris");
+        
         aPossibleSolution = new PossibleSolution();
         aPossibleSolution.setSolution(aTaxon);
         
         aCase = new Case();
-        aCase.addToDescription(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
-        aCase.addToDescription(new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto"));
+        aCase.addToDescription(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
+        aCase.addToDescription(new SSCharacterDescriptor("Pie", "Disposición", "Sobresale al manto"));
 
         aPossibleSolution2 = new PossibleSolution();
         aPossibleSolution2.setSolution(aCase);
@@ -65,11 +66,11 @@ public class SearchAutomatonOutputTest {
         aPossibleSolutionList.add(aPossibleSolution);
         aPossibleSolutionList.add(aPossibleSolution2);
 
-        aDescription = new ArrayList<Descriptor<Object>>();
-        aDescription.add(new CharacterDescriptor<Object>("pie","disposicion","sobresale_al_manto"));
-        aDescription.add(new CharacterDescriptor<Object>("pie","coloracion","blanquecino"));
-        aDescription.add(new CharacterDescriptor<Object>("pie","coloracion","crema"));
-        aDescription.add(new CharacterDescriptor<Object>("pie","coloracion","gris_oscuro_casi_negro"));
+        aDescription = new ArrayList<Descriptor>();
+        aDescription.add(new SSCharacterDescriptor("pie","disposicion","sobresale_al_manto"));
+        aDescription.add(new SSCharacterDescriptor("pie","coloracion","blanquecino"));
+        aDescription.add(new SSCharacterDescriptor("pie","coloracion","crema"));
+        aDescription.add(new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro"));
 
 
     }
@@ -97,11 +98,11 @@ public class SearchAutomatonOutputTest {
     @Test
     public void testAppendToJustification() {
         System.out.println("appendToJustification");
-        List<Descriptor<Object>> aJustificationList = new ArrayList<Descriptor<Object>>();
-        aJustificationList.add(new CharacterDescriptor<Object>("pie","disposicion","sobresale_al_manto"));
-        aJustificationList.add(new CharacterDescriptor<Object>("pie","coloracion","blanquecino"));
-        aJustificationList.add(new CharacterDescriptor<Object>("pie","coloracion","crema"));
-        aJustificationList.add(new CharacterDescriptor<Object>("pie","coloracion","gris_oscuro_casi_negro"));
+        List<Descriptor> aJustificationList = new ArrayList<Descriptor>();
+        aJustificationList.add(new SSCharacterDescriptor("pie","disposicion","sobresale_al_manto"));
+        aJustificationList.add(new SSCharacterDescriptor("pie","coloracion","blanquecino"));
+        aJustificationList.add(new SSCharacterDescriptor("pie","coloracion","crema"));
+        aJustificationList.add(new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro"));
         SearchAutomatonOutput instance = new SearchAutomatonOutput();
         instance.appendToJustification(aJustificationList);
     }
@@ -129,9 +130,9 @@ public class SearchAutomatonOutputTest {
     public void testAppendToUnmatchedDescription() {
         System.out.println("appendToUnmatchedDescription");
         SearchAutomatonOutput instance = new SearchAutomatonOutput();
-        List<Descriptor<Object>> anUnmatchedDescription = new ArrayList<Descriptor<Object>>();
-        anUnmatchedDescription.add(new CharacterDescriptor<Object>("pie","disposicion","sobresale_al_manto"));
-        anUnmatchedDescription.add(new CharacterDescriptor<Object>("pie","coloracion","blanquecino"));
+        List<Descriptor> anUnmatchedDescription = new ArrayList<Descriptor>();
+        anUnmatchedDescription.add(new SSCharacterDescriptor("pie","disposicion","sobresale_al_manto"));
+        anUnmatchedDescription.add(new SSCharacterDescriptor("pie","coloracion","blanquecino"));
         
         instance.appendToUnmatchedDescription(anUnmatchedDescription);
         
@@ -140,15 +141,15 @@ public class SearchAutomatonOutputTest {
         /*
          * Must add just new ones.
          */
-        anUnmatchedDescription.add(new CharacterDescriptor<Object>("pie","disposicion","new value"));
-        anUnmatchedDescription.add(new CharacterDescriptor<Object>("pie","disposicion","other new"));
+        anUnmatchedDescription.add(new SSCharacterDescriptor("pie","disposicion","new value"));
+        anUnmatchedDescription.add(new SSCharacterDescriptor("pie","disposicion","other new"));
 
         instance.appendToUnmatchedDescription(anUnmatchedDescription);
         assertSame(4,instance.getUnmatchedDescription().size());
         /*
          * Must keep the sames, descriptor already exists.
          */
-        anUnmatchedDescription.add(new CharacterDescriptor<Object>("pie","coloracion","blanquecino"));
+        anUnmatchedDescription.add(new SSCharacterDescriptor("pie","coloracion","blanquecino"));
         instance.appendToUnmatchedDescription(anUnmatchedDescription);
         assertSame(4,instance.getUnmatchedDescription().size());
         
@@ -163,11 +164,11 @@ public class SearchAutomatonOutputTest {
         SearchAutomatonOutput instance = new SearchAutomatonOutput();
         instance.appendToUnmatchedDescription(aDescription);
 
-        List<Descriptor<Object>> aDescription2 = new ArrayList<Descriptor<Object>>();
-        aDescription2.add(new CharacterDescriptor<Object>("manos","disposicion","sobresale_al_manto"));
-        aDescription2.add(new CharacterDescriptor<Object>("manos","coloracion","blanquecino"));
+        List<Descriptor> aDescription2 = new ArrayList<Descriptor>();
+        aDescription2.add(new SSCharacterDescriptor("manos","disposicion","sobresale_al_manto"));
+        aDescription2.add(new SSCharacterDescriptor("manos","coloracion","blanquecino"));
         
-        Descriptor<Object> aCharacterDescriptor = instance.getDescriptor(new CharacterDescriptor<Object>("pie","coloracion","crema"), instance.getUnmatchedDescription());
+        Descriptor aCharacterDescriptor = instance.getDescriptor(new SSCharacterDescriptor("pie","coloracion","crema"), instance.getUnmatchedDescription());
         /*
          * Case when it's the same instance and the descriptor exist.
          */
@@ -176,8 +177,8 @@ public class SearchAutomatonOutputTest {
          * Cases when is not the same instance and case when it's the same instance but descriptor doesn't exist.
          */
 
-        assertNull(instance.getDescriptor(new CharacterDescriptor<Object>("pie","coloracion","crema"), aDescription2));
-        assertNull(instance.getDescriptor(new CharacterDescriptor<Object>("pie","coloracion","red"), instance.getUnmatchedDescription()));
+        assertNull(instance.getDescriptor(new SSCharacterDescriptor("pie","coloracion","crema"), aDescription2));
+        assertNull(instance.getDescriptor(new SSCharacterDescriptor("pie","coloracion","red"), instance.getUnmatchedDescription()));
     }
 
 
@@ -190,15 +191,15 @@ public class SearchAutomatonOutputTest {
         SearchAutomatonOutput instance = new SearchAutomatonOutput();
         instance.appendToUnmatchedDescription(aDescription);
 
-        CharacterDescriptor<Object> aCharacterDescriptor = new CharacterDescriptor<Object>("pie","coloracion","blanquecino");
+        SSCharacterDescriptor aCharacterDescriptor = new SSCharacterDescriptor("pie","coloracion","blanquecino");
         /*
          * Same instance and it contains the descriptor
          */
         assertTrue(instance.contains(aCharacterDescriptor, instance.getUnmatchedDescription()));
 
-        List<Descriptor<Object>> aDescription2 = new ArrayList<Descriptor<Object>>();
-        aDescription2.add(new CharacterDescriptor<Object>("manos","disposicion","sobresale_al_manto"));
-        aDescription2.add(new CharacterDescriptor<Object>("pie","coloracion","blanquecino"));
+        List<Descriptor> aDescription2 = new ArrayList<Descriptor>();
+        aDescription2.add(new SSCharacterDescriptor("manos","disposicion","sobresale_al_manto"));
+        aDescription2.add(new SSCharacterDescriptor("pie","coloracion","blanquecino"));
         /*
          * Not same instance and it contains the descriptor
          */
@@ -206,7 +207,7 @@ public class SearchAutomatonOutputTest {
         /*
          * Same instance and it doesn't contain the descriptor
          */
-        aCharacterDescriptor = new CharacterDescriptor<Object>("pie","coloracion","color unknow");
+        aCharacterDescriptor = new SSCharacterDescriptor("pie","coloracion","color unknow");
         assertFalse(instance.contains(aCharacterDescriptor, instance.getUnmatchedDescription()));
     }
 

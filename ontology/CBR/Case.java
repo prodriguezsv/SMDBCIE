@@ -4,12 +4,10 @@
  */
 package ontology.CBR;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import ontology.common.CharacterDescriptor;
+import ontology.common.Description;
 import ontology.common.Descriptor;
-import ontology.common.HeuristicDescriptor;
 
 
 /**
@@ -51,7 +49,7 @@ public class Case {
 	/**
 	 * Constructor alternativo
 	 */
-	public Case(List<Descriptor<Object>> description) {
+	public Case(Description description) {
 		problem = new Problem(description);
 		solution = new Solution();
 		state = false;
@@ -112,17 +110,14 @@ public class Case {
 	 * @return Valor de verdad true indicando que la adici&oacute;n se llev&oacute; a cabo
 	 * @return Valor de verdad false indicando que la adici&oacute;n no se llev&oacute; a cabo
 	 */
-	public boolean addToDescription(Descriptor<Object> aDescriptor) {
-		if (aDescriptor == null) return false;
+	public boolean addToDescription(Descriptor aDescriptor) {
+		if (aDescriptor == null) return false; //Ojo analizar comportamiento alternativo
 		
-		if (this.getProblem().getDescription().contains(aDescriptor) ||
-				this.areThereContradictions(aDescriptor))
-			return false;
+		boolean value = this.getProblem().getDescription().addToConcreteDescription(aDescriptor);
+		if (value)
+			aDescriptor.setAssociatedObject(this);
 		
-		this.getProblem().getDescription().add(aDescriptor);
-		aDescriptor.setAssociatedObject(this);
-		
-		return true;
+		return value;
 	}
 	
 	/**
@@ -131,7 +126,7 @@ public class Case {
 	 * @return Valor de verdad true indicando que la remoci&oacute;n se llev&oacute; a cabo
 	 * @return Valor de verdad false indicando que la remoci&oacute;n no se llev&oacute; a cabo
 	 */
-	public boolean removeFromDescription(Descriptor<Object> aDescriptor) {
+	public boolean removeFromDescription(Descriptor aDescriptor) {
 		if (aDescriptor == null) return false;
 		
 		return this.getProblem().getDescription().remove(aDescriptor);
@@ -144,17 +139,14 @@ public class Case {
 	 * @return Valor de verdad true indicando que la adici&oacute;n se llev&oacute; a cabo
 	 * @return Valor de verdad false indicando que la adici&oacute;n no se llev&oacute; a cabo
 	 */
-	public boolean addToJustification(Descriptor<Object> aDescriptor) {
-		if (aDescriptor == null) return false;
+	public boolean addToJustification(Descriptor aDescriptor) {
+		if (aDescriptor == null) return false; //Ojo analizar comportamiento alternativo
 		
-		if (this.getSolution().getJustification().contains(aDescriptor)  ||
-				this.areThereContradictions(aDescriptor))
-			return false;
+		boolean value = this.getSolution().getJustification().addToConcreteDescription(aDescriptor);
+		if (value)
+			aDescriptor.setAssociatedObject(this);
 		
-		this.getSolution().getJustification().add(aDescriptor);
-		aDescriptor.setAssociatedObject(this); // Ojo verificar si es necesario
-		
-		return true;
+		return value;
 	}
 	
 	/**
@@ -163,7 +155,7 @@ public class Case {
 	 * @return Valor de verdad true indicando que la remoci&oacute;n se llev&oacute; a cabo
 	 * @return Valor de verdad false indicando que la remoci&oacute;n no se llev&oacute; a cabo
 	 */
-	public boolean removeFromJustification(Descriptor<Object> aDescriptor) {
+	public boolean removeFromJustification(Descriptor aDescriptor) {
 		if (aDescriptor == null) return false;
 		
 		return this.getSolution().getJustification().remove(aDescriptor);
@@ -183,82 +175,23 @@ public class Case {
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
-	public List<String> getCharacterStructuresList() {
-		List<String> structuresList;
-		
-		structuresList = new ArrayList<String>();
-		
-		for(Descriptor<Object> d: this.getProblem().getDescription()) {
-			if (d instanceof CharacterDescriptor) { 
-				// Determine if the structure name in Deescriptor has already been included in structureList
-				if (!(structuresList.contains(d.getStructure()))) {
-					// The structure name was not found in structureList. Append it to structureList
-					structuresList.add(d.getStructure());
-				} else continue;
-			}
-		}
-		
-		return structuresList;
+	public final List<String> getCharacterStructuresList() {
+		return this.getProblem().getDescription().getCharacterStructuresList();
 	}
 	
 	/**
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
-	public List<String> getHeuristicStructuresList() {
-		List<String> structuresList;
-		
-		structuresList = new ArrayList<String>();
-		
-		for(Descriptor<Object> d: this.getProblem().getDescription()) {
-			if (d instanceof HeuristicDescriptor) { 
-				// Determine if the structure name in Deescriptor has already been included in structureList
-				if (!(structuresList.contains(d.getStructure()))) {
-					// The structure name was not found in structureList. Append it to structureList
-					structuresList.add(d.getStructure());
-				} else continue;
-			}
-		}
-		
-		return structuresList;
+	public final List<String> getHeuristicStructuresList() {
+		return this.getProblem().getDescription().getHeuristicStructuresList();
 	}
 	
 	/**
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de descriptores relacionados a aStructureName
 	 */
-	public List<Descriptor<Object>> getDescription(String aStructureName) {
-		List<Descriptor<Object>> description;
-		
-		description = new ArrayList<Descriptor<Object>>();
-		
-		for(Descriptor<Object> d: this.getProblem().getDescription()) {
-			// Determine if the structure name in Deescriptor has already been included in structureList
-			if (d.getStructure().equals(aStructureName)) {
-				description.add(d);
-			} else continue;
-		}
-		
-		return description;
-	}
-	
-	/**
-	 * Verifica si existen contradicciones entre los descriptores (estructura, atributo, valor) del caso
-	 * Se dice que existe contradiccion  si existe dos descripciones distintas para el mismo par
-	 * (estructura, atributo)
-	 * @see "M&eacute;todo thereAreContradictions: del protocolo testing en SUKIA SmallTalk"
-	 * @return
-	 */
-	private boolean areThereContradictions(Descriptor<Object> aDescriptor) {
-		
-		// Para cada par (atributo, valor) de aCase.
-		for(Descriptor<Object> d: this.getProblem().getDescription()) {
-			if (d.getStructure().equals(aDescriptor.getStructure()) &&
-					d.getAttribute().equals(aDescriptor.getAttribute())	) {
-					return true; // Hay contradiccion
-			}
-		}
-
-		return false;  //No hubo contradiccion
+	public final List<Descriptor> getDescription(String aStructureName) {
+		return this.getProblem().getDescription().getDescription(aStructureName);
 	}
 }

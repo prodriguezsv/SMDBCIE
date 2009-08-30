@@ -113,12 +113,11 @@ public class GroupingHeuristic implements Comparable<GroupingHeuristic> {
 			for (int j = 1; j <= vList.size(); j++) {
 				ovd = vList.get(j-1);
 				if (ovd instanceof SingleValue)
-					nvd = new SingleValue<T>();
+					nvd = new SingleValue((SingleValue)ovd);
 				else {
-					nvd = new RangeValue();
+					nvd = new RangeValue((RangeValue)ovd);
 				}
 				
-				nvd.addValues(ovd);
 				if (this.getValues().size() == aGroupingHeuristic.getValues().size())
 					this.getValues().addValueDescriptor(nvd, TaxonomicRank.values()[i+1]);
 				else
@@ -143,19 +142,18 @@ public class GroupingHeuristic implements Comparable<GroupingHeuristic> {
 	 * @param aTaxonomicGroupName
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	public List<Descriptor<Object>> createSAVDescription(String aTaxonomicGroupName) {
-		List<Descriptor<Object>> description;
+	public List<Descriptor> createSAVDescription(String aTaxonomicGroupName) {
+		List<Descriptor> description;
 		List<Value> vdList;
 		Value vd;
-		Descriptor<Object> d;
+		Descriptor d;
 		
 		// Check if its value has more than one value descriptor container
 		if (!(this.getValues().size() == 1))
 			return null;
 
 		// Create the description holder
-		description = new ArrayList<Descriptor<Object>>();
+		description = new ArrayList<Descriptor>();
 
 		// Get the set of value descriptors
 		vdList = this.getValues().getValueDescriptors(TaxonomicRank.values()[GroupingHeuristic.oneLevel()]);
@@ -169,8 +167,8 @@ public class GroupingHeuristic implements Comparable<GroupingHeuristic> {
 		if (vd instanceof RangeValue) return null;
 		
 		// Create the new SAVDescriptor and assign its values
-		d = new HeuristicDescriptor<Object>();
-		d.set(aTaxonomicGroupName, this.getName(), ((SingleValue<Object>)vd).getValue());
+		d = new SVHeuristicDescriptor();
+		d.set(aTaxonomicGroupName, this.getName(), ((SingleValue)vd).getValue());
 					
 		description.add(d);
 		

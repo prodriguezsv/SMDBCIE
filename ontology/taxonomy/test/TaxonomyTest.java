@@ -6,12 +6,15 @@
 package ontology.taxonomy.test;
 
 import java.util.List;
-import ontology.common.CharacterDescriptor;
-import ontology.common.HeuristicDescriptor;
 import ontology.common.Modifier;
+import ontology.common.RVCharacterDescriptor;
+import ontology.common.RVHeuristicDescriptor;
+import ontology.common.SSCharacterDescriptor;
+import ontology.common.SSHeuristicDescriptor;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
 import ontology.taxonomy.Taxonomy;
+import ontology.values.MeasuringUnit;
 import ontology.values.RangeValue;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -39,102 +42,81 @@ public class TaxonomyTest {
     public static void tearDownClass() throws Exception {
     }
 
-    @SuppressWarnings("unchecked")
 	@Before
     public void setUp() {
         taxonomy = new Taxonomy();
-        rootTaxon = new Taxon();
-        rootTaxon.setName(null);
-        rootTaxon.setLevel(TaxonomicRank.ROOT);
-        taxon1 = new Taxon();
+        rootTaxon = new Taxon(TaxonomicRank.ROOT, null);
 //-----------------------Taxon No. 1---------------------
-        taxon1.setName("Chromodorididae");
-        taxon1.setLevel(TaxonomicRank.FAMILY);
+        taxon1 = new Taxon(TaxonomicRank.FAMILY, "Chromodorididae");
 //-----------------------Structure No. 1---------------------
-        taxon1.addToDescription(new CharacterDescriptor("cuerpo","forma","alargado"),
-                                    new Modifier(1.0,1.0,0.8));
-        taxon1.addToDescription(new CharacterDescriptor("cuerpo","forma","ovalado"),
-                                    new Modifier(1.0,1.0,0.1));
-
-        RangeValue aRangeDescriptor = new RangeValue();
-        aRangeDescriptor.setLowerBound(0.3);
-        aRangeDescriptor.setUpperBound(4.0);
-
-        taxon1.addToDescription(new CharacterDescriptor<Object>("cuerpo","longitud",aRangeDescriptor),
-                                    new Modifier(1.0,1.0,1.0));
-
-        taxon1.addToDescription(new CharacterDescriptor("cuerpo","conformacion","tiene_cerata"),
-                                    new Modifier(1.0,1.0,1.0));
-//-----------------------Structure No. 2---------------------
-        taxon1.addToDescription(new CharacterDescriptor("pie","disposicion","sobresale_al_manto"),
-                                    new Modifier(0.8,1.0,0.8));
-        taxon1.addToDescription(new CharacterDescriptor("pie","coloracion","blanquecino"),
-                                    new Modifier(0.8,1.0,0.7));
-        taxon1.addToDescription(new CharacterDescriptor("pie","coloracion","crema"),
-                                    new Modifier(0.8,1.0,0.7));
-        taxon1.addToDescription(new CharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro"),
-                                    new Modifier(0.8,1.0,0.2));
-//-----------------------Structure No. 2---------------------
-        taxon1.addToDescription(new CharacterDescriptor("branquia","posicion_durante_desplazamiento","hacia_atras"),
-                                    new Modifier(0.8,1.0,0.8));
-        taxon1.addToDescription(new CharacterDescriptor("branquia","posicion_del_ano_con_respecto_a_la_branquia","en_el_centro"),
-                                    new Modifier(0.8,1.0,0.8));
-
-        aRangeDescriptor = new RangeValue();
-        aRangeDescriptor.setLowerBound(6.0);
-        aRangeDescriptor.setUpperBound(9.0);
-
-        taxon1.addToDescription(new CharacterDescriptor("branquia","numero_hojas_branquiales",aRangeDescriptor),
-                                    new Modifier(0.8,1.0,1.0));
-        taxon1.addToDescription(new CharacterDescriptor("branquia","forma_hojas_branquiales","bipinnada"),
-                                    new Modifier(0.8,1.0,0.6));
-        taxon1.addToDescription(new CharacterDescriptor("branquia","forma_hojas_branquiales","tripinnada"),
-                                    new Modifier(0.8,1.0,0.4));
-//-----------------------Structure No. 4---------------------
-        taxon1.addToDescription(new CharacterDescriptor("manto","textura","lisa"),
-                                    new Modifier(1.0,1.0,0.8));
-        taxon1.addToDescription(new CharacterDescriptor("manto","textura","con_tuberculos"),
-                                    new Modifier(1.0,1.0,0.4));
-        taxon1.addToDescription(new CharacterDescriptor("manto","forma_del_borde","ondulado"),
-                                    new Modifier(1.0,1.0,0.3));
-        taxon1.addToDescription(new CharacterDescriptor("manto","textura_del_borde","lisa"),
-                                    new Modifier(1.0,1.0,0.7));
-//-----------------------Structure No. 5---------------------
-        taxon1.addToDescription(new CharacterDescriptor("glandulas_del_manto","posicion","delante"),
-                                    new Modifier(1.0,1.0,0.2));
-        taxon1.addToDescription(new CharacterDescriptor("glandulas_del_manto","posicion","delante_y_atras"),
-                                    new Modifier(1.0,1.0,0.2));
-        taxon1.addToDescription(new CharacterDescriptor("glandulas_del_manto","posicion","alrededor_del_manto"),
-                                    new Modifier(1.0,1.0,0.4));
-//-----------------------Structure No. 6---------------------
-        taxon1.addToDescription(new CharacterDescriptor("rinoforos","forma","laminados"),
-                                    new Modifier(1.0,1.0,1.0));
-        aRangeDescriptor = new RangeValue();
-        aRangeDescriptor.setLowerBound(6.0);
-        aRangeDescriptor.setUpperBound(20.0);
-        taxon1.addToDescription(new CharacterDescriptor("rinoforos","numero_de_laminillas",aRangeDescriptor),
-                                    new Modifier(1.0,1.0,1.0));
-//-----------------------Structure No. 7---------------------
-        taxon1.addToDescription(new CharacterDescriptor("tentaculos_orales","contextura","macizo"),
-                                    new Modifier(1.0,1.0,0.7));
-        taxon1.addToDescription(new CharacterDescriptor("tentaculos_orales","contextura","surcado"),
-                                    new Modifier(1.0,1.0,0.2));
-//-----------------------Grouping Heuristic No. 1---------------------
-        taxon1.addToDescription(new HeuristicDescriptor("heuristica","alimenatcion","esponjas"),
-                                    new Modifier(1.0,1.0,1.0));
-//-----------------------Grouping Heuristic No. 2---------------------
-        aRangeDescriptor = new RangeValue();
-        aRangeDescriptor.setLowerBound(0.0);
-        aRangeDescriptor.setUpperBound(20.0);
-        taxon1.addToDescription(new HeuristicDescriptor("heuristica","profundidad_donde_se_encuentra",aRangeDescriptor),
-                                    new Modifier(1.0,1.0,1.0));
-//-----------------------Grouping Heuristic No. 3---------------------
-        taxon1.addToDescription(new HeuristicDescriptor("heuristica","medio_de_preservacion_tenido","azul_marino"),
-                                    new Modifier(1.0,1.0,1.0));
-        taxon1.addToDescription(new HeuristicDescriptor("heuristica","medio_de_preservacion_tenido","celeste"),
-                                    new Modifier(1.0,1.0,0.8));
-        taxon1.addToDescription(new HeuristicDescriptor("heuristica","medio_de_preservacion_tenido","amarillento"),
-                                    new Modifier(1.0,1.0,0.2));
+        taxon1.addToDescription(new SSCharacterDescriptor("Cuerpo","Forma","Alargado"),
+                new Modifier(1.0,1.0,0.8));
+		taxon1.addToDescription(new SSCharacterDescriptor("Cuerpo","Forma","Ovalado"),
+		        new Modifier(1.0,1.0,0.1));
+		taxon1.addToDescription(new RVCharacterDescriptor("Cuerpo","Longitud", new RangeValue(0.3, 4.0,
+				MeasuringUnit.CM)), new Modifier(1.0,1.0,1.0));
+		taxon1.addToDescription(new SSCharacterDescriptor("Cuerpo","Conformación","Tiene cerata"),
+		        new Modifier(1.0,1.0,1.0));
+		//-----------------------Structure No. 2---------------------
+		taxon1.addToDescription(new SSCharacterDescriptor("Pie","Disposición","Sobresale al manto"),
+		        new Modifier(0.8,1.0,0.8));
+		taxon1.addToDescription(new SSCharacterDescriptor("Pie","Coloración","Blanquecino"),
+		        new Modifier(0.8,1.0,0.7));
+		taxon1.addToDescription(new SSCharacterDescriptor("Pie","Coloración","Crema"),
+		        new Modifier(0.8,1.0,0.7));
+		taxon1.addToDescription(new SSCharacterDescriptor("Pie","Coloración","Gris oscuro casi negro"),
+		        new Modifier(0.8,1.0,0.2));
+		//-----------------------Structure No. 2---------------------
+		taxon1.addToDescription(new SSCharacterDescriptor("Branquia","Posición durante desplazamiento","Hacia atras"),
+		        new Modifier(0.8,1.0,0.8));
+		taxon1.addToDescription(new SSCharacterDescriptor("Branquia","¨Posición del ano con respecto a la branquia","En el centro"),
+		                new Modifier(0.8,1.0,0.8));
+		taxon1.addToDescription(new RVCharacterDescriptor("Branquia","Número hojas branquiales", 
+				new RangeValue(6.0, 9.0)), new Modifier(0.8,1.0,1.0));
+		taxon1.addToDescription(new SSCharacterDescriptor("Branquia","Forma hojas branquiales","Bipinnada"),
+		        new Modifier(0.8,1.0,0.6));
+		taxon1.addToDescription(new SSCharacterDescriptor("Branquia","Forma hojas branquiales","Tripinnada"),
+		        new Modifier(0.8,1.0,0.4));
+		//-----------------------Structure No. 4---------------------
+		taxon1.addToDescription(new SSCharacterDescriptor("Manto","Textura","Lisa"),
+		        new Modifier(1.0,1.0,0.8));
+		taxon1.addToDescription(new SSCharacterDescriptor("Manto","Textura","Con tuberculos"),
+		        new Modifier(1.0,1.0,0.4));
+		taxon1.addToDescription(new SSCharacterDescriptor("Manto","Forma del borde","Ondulado"),
+		        new Modifier(1.0,1.0,0.3));
+		taxon1.addToDescription(new SSCharacterDescriptor("Manto","Textura del borde","Lisa"),
+		        new Modifier(1.0,1.0,0.7));
+		//-----------------------Structure No. 5---------------------
+		taxon1.addToDescription(new SSCharacterDescriptor("Glándulas del manto","Posición","Delante"),
+		        new Modifier(1.0,1.0,0.2));
+		taxon1.addToDescription(new SSCharacterDescriptor("Glándulas del manto","Posición",
+				"Delante y atras"), new Modifier(1.0,1.0,0.2));
+		taxon1.addToDescription(new SSCharacterDescriptor("Glándulas del manto","Posición",
+				"Alrededor del manto"), new Modifier(1.0,1.0,0.4));
+		//-----------------------Structure No. 6---------------------
+		taxon1.addToDescription(new SSCharacterDescriptor("Rinoforos","Forma","Laminados"),
+		        new Modifier(1.0,1.0,1.0));
+		taxon1.addToDescription(new RVCharacterDescriptor("Rinoforos","Número de laminillas",
+				new RangeValue(6.0, 20.0)), new Modifier(1.0,1.0,1.0));
+		//-----------------------Structure No. 7---------------------
+		taxon1.addToDescription(new SSCharacterDescriptor("Tentáculos orales","Contextura","Macizo"),
+		        new Modifier(1.0,1.0,0.7));
+		taxon1.addToDescription(new SSCharacterDescriptor("Tentaculos orales","Contextura","Surcado"),
+		        new Modifier(1.0,1.0,0.2));
+		//-----------------------Grouping Heuristic No. 1---------------------
+		taxon1.addToDescription(new SSHeuristicDescriptor("Alimentación", "Alimentación","Esponjas"),
+		        new Modifier(1.0,1.0,1.0));
+		//-----------------------Grouping Heuristic No. 2---------------------
+		taxon1.addToDescription(new RVHeuristicDescriptor("Profundidad donde se encuentra",
+				"Profundidad donde se encuentra", new RangeValue(0.0, 20.0, MeasuringUnit.CM)), 
+				new Modifier(1.0,1.0,1.0));
+		//-----------------------Grouping Heuristic No. 3---------------------
+		taxon1.addToDescription(new SSHeuristicDescriptor("Medio de preservacion tenido",
+				"Medio de preservacion tenido","Azul marino"), new Modifier(1.0,1.0,1.0));
+		taxon1.addToDescription(new SSHeuristicDescriptor("Medio de preservacion tenido",
+				"Medio de preservacion tenido","Celeste"), new Modifier(1.0,1.0,0.8));
+		taxon1.addToDescription(new SSHeuristicDescriptor("Medio de preservacion tenido",
+				"Medio de preservacion tenido","Amarillento"), new Modifier(1.0,1.0,0.2));
 
         taxonomy.addTaxon(taxon1, rootTaxon);
 
@@ -201,9 +183,7 @@ public class TaxonomyTest {
     @Test
     public void testAreTaxonomicDependenciesOK() {
         System.out.println("areTaxonomicDependenciesOK");
-        Taxon rootTaxon2 = new Taxon();
-        rootTaxon2.setName(null);
-        rootTaxon2.setLevel(TaxonomicRank.ROOT);
+        Taxon rootTaxon2 = new Taxon(TaxonomicRank.ROOT, null);
         assertTrue(taxonomyEmpty.areTaxonomicDependenciesOK(rootTaxon2, taxon1));
     }
 

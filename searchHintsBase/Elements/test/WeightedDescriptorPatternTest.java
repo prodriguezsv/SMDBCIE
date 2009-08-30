@@ -5,7 +5,9 @@ package searchHintsBase.Elements.test;
 
 import static org.junit.Assert.*;
 
-import ontology.common.CharacterDescriptor;
+import ontology.common.SSCharacterDescriptor;
+import ontology.common.SVCharacterDescriptor;
+import ontology.values.SingleValue;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -28,7 +30,7 @@ public class WeightedDescriptorPatternTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		System.out.println("Iniciando pruebas para la clase " + WeightedDescriptorPattern.class.getName());
-		pattern = new WeightedDescriptorPattern(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3), 0.5, 1);
+		pattern = new WeightedDescriptorPattern(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)), 0.5, 1);
 	}
 
 	/**
@@ -62,14 +64,14 @@ public class WeightedDescriptorPatternTest {
 		
 		System.out.println("Verificar que el patrón de descriptores es igual con otro patrón de descriptores" +
 				"según el criterio de comparación");
-		assertEquals(0, pattern.compareTo(new WeightedDescriptorPattern(new CharacterDescriptor<Object>
+		assertEquals(0, pattern.compareTo(new WeightedDescriptorPattern(new SSCharacterDescriptor
 			("Cuerpo", "Forma", "Ovalado"), 0.5, 1)));
 		
 		System.out.println("Verificar que el patrón de descriptores es distinto con otro patrón de descriptores" +
 				"según el criterio de comparación");
-		assertTrue(pattern.compareTo(new WeightedDescriptorPattern(new CharacterDescriptor<Object>
+		assertTrue(pattern.compareTo(new WeightedDescriptorPattern(new SSCharacterDescriptor
 		("Cuerpo", "Forma", "Ovalado"), 0.75, 1)) > 0);
-		assertTrue(pattern.compareTo(new WeightedDescriptorPattern(new CharacterDescriptor<Object>
+		assertTrue(pattern.compareTo(new WeightedDescriptorPattern(new SSCharacterDescriptor
 		("Cuerpo", "Forma", "Ovalado"), 0.25, 1)) < 0);
 	}
 

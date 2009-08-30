@@ -23,22 +23,22 @@ import system.similarityAssessment.SimilarityAssessor;
 
 public class TaxonomySearchAutomaton {
     private List<Value> valueDescriptors;
-    private List<Descriptor<Object>> justification;
+    private List<Descriptor> justification;
     private List<PossibleSolution> possibleSolutionList;
-    private List<Descriptor<Object>> tSolutionDescription;
-    private List<Descriptor<Object>> tUnmatchedDescription;
-    private Map<Descriptor<Object>, List<Taxon>> searchIndex;
+    private List<Descriptor> tSolutionDescription;
+    private List<Descriptor> tUnmatchedDescription;
+    private Map<Descriptor, List<Taxon>> searchIndex;
     private SearchStatus status;
     private TaxonomyAutomatonOutput searchOutput;
     private SimilarityDegree minSimilarityDegree;
 
-   public TaxonomySearchAutomaton (Map<Descriptor<Object>, List<Taxon>> searchIndex,
+   public TaxonomySearchAutomaton (Map<Descriptor, List<Taxon>> searchIndex,
 		   SimilarityDegree minSimilarityDegree) {
         searchOutput = new TaxonomyAutomatonOutput();
         possibleSolutionList = new ArrayList<PossibleSolution>();
         valueDescriptors = new ArrayList<Value>();
-        tSolutionDescription = new ArrayList<Descriptor<Object>>();
-        tUnmatchedDescription = new ArrayList<Descriptor<Object>>();
+        tSolutionDescription = new ArrayList<Descriptor>();
+        tUnmatchedDescription = new ArrayList<Descriptor>();
         this.setSearchIndex(searchIndex);
         this.minSimilarityDegree = minSimilarityDegree;
         status = SearchStatus.FAIL;
@@ -49,7 +49,7 @@ public class TaxonomySearchAutomaton {
  */
 
 
-	public Map<Descriptor<Object>, List<Taxon>> getSearchIndex() {
+	public Map<Descriptor, List<Taxon>> getSearchIndex() {
 		return searchIndex;
 	}
 
@@ -62,7 +62,7 @@ public class TaxonomySearchAutomaton {
         status = aStatusValue;
     }
     
-    public void setSearchIndex(Map<Descriptor<Object>, List<Taxon>> aSearchIndex) {
+    public void setSearchIndex(Map<Descriptor, List<Taxon>> aSearchIndex) {
         searchIndex = aSearchIndex;
     }
 
@@ -84,7 +84,7 @@ public class TaxonomySearchAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public boolean addToTSolutionDescription(Descriptor<Object> aDescriptor){
+    public boolean addToTSolutionDescription(Descriptor aDescriptor){
         if (tSolutionDescription.contains(aDescriptor)) return true;
         tSolutionDescription.add(aDescriptor);
         return true;
@@ -95,7 +95,7 @@ public class TaxonomySearchAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public boolean addToTUnmatchedDescription(Descriptor<Object> aDescriptor){
+    public boolean addToTUnmatchedDescription(Descriptor aDescriptor){
         if (tUnmatchedDescription.contains(aDescriptor)) return true;
         tUnmatchedDescription.add(aDescriptor);
         return true;
@@ -126,11 +126,11 @@ public class TaxonomySearchAutomaton {
         return possibleSolutionList;
     }
     
-    public List<Descriptor<Object>> getTSolutionDescription(){
+    public List<Descriptor> getTSolutionDescription(){
         return tSolutionDescription;
     }
     
-    public List<Descriptor<Object>>  getTUnmatchedDescription(){
+    public List<Descriptor>  getTUnmatchedDescription(){
         return tUnmatchedDescription;
     }
     
@@ -153,7 +153,7 @@ public class TaxonomySearchAutomaton {
         for (Taxon tx : aTaxonList){
             PossibleSolution ps = new PossibleSolution();
             ps.setSolution(tx);
-            ps.setSolutionDescription(new ArrayList<Descriptor<Object>>(tSolutionDescription));
+            ps.setSolutionDescription(new ArrayList<Descriptor>(tSolutionDescription));
             psList.add(ps);
         }
         return psList;
@@ -164,7 +164,7 @@ public class TaxonomySearchAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public boolean checkPrecondition(List<Descriptor<Object>>  aProblemDescription){
+    public boolean checkPrecondition(List<Descriptor>  aProblemDescription){
         if (aProblemDescription.isEmpty()) return false;
 
         String sName = aProblemDescription.get(0).getStructure();
@@ -218,7 +218,7 @@ public class TaxonomySearchAutomaton {
      * @return nil - if the precondition was not met, or an error occurred, or the process failed to find
      * possible solutions. value returned by prepareSuccessfulOutputWith:
      */
-    public SearchStatus beginWith(List<Descriptor<Object>> aProblemDescription){
+    public SearchStatus beginWith(List<Descriptor> aProblemDescription){
     	//Check general description precondition
         if (checkPrecondition(aProblemDescription) == false) {
         	setStatus(SearchStatus.ERROR);
@@ -252,12 +252,12 @@ public class TaxonomySearchAutomaton {
      * @return -1 : if a processing error occurred; nil : if no value descriptors were found; self : if at
      * least one descriptor was found.
      */
-    public boolean searchPossibleSolutions(List<Descriptor<Object>> descriptionProblem){
+    public boolean searchPossibleSolutions(List<Descriptor> descriptionProblem){
     	boolean response = false; 
-    	List<Descriptor<Object>> tempList;
+    	List<Descriptor> tempList;
     	
-    	tempList = new ArrayList<Descriptor<Object>>();
-        for (Descriptor<Object> d: descriptionProblem) {
+    	tempList = new ArrayList<Descriptor>();
+        for (Descriptor d: descriptionProblem) {
         	List<Taxon> taxa = this.getSearchIndex().get(d);
         	
         	if (taxa == null)
@@ -284,7 +284,7 @@ public class TaxonomySearchAutomaton {
         
         List<Taxon> taxaTempList = new ArrayList<Taxon>();
         
-        for (Descriptor<Object> d: tempList) {
+        for (Descriptor d: tempList) {
         	List<Taxon> taxa = this.getSearchIndex().get(d);
         	
         	if (taxa == null)
@@ -311,8 +311,8 @@ public class TaxonomySearchAutomaton {
     }
     
     /**
-     * Since this automaton searches for taxa one Descriptor<Object> at a time, at the end of the process
-     * there may exist a number of possible solutions (with one Descriptor<Object> solution descriptions)
+     * Since this automaton searches for taxa one Descriptor at a time, at the end of the process
+     * there may exist a number of possible solutions (with one Descriptor solution descriptions)
      * refering to:
      * a) the same taxon or b) a successor taxon of another possible solution.  What this method does is to
      * place the solution descriptions of several possible solutions (that refer to the same taxon)
@@ -322,15 +322,15 @@ public class TaxonomySearchAutomaton {
      * @see Define method name.
      * @param my parameters list
      * @return -1: error condition. All posible solutions' solution description MUST consist of ONE 
-     * Descriptor<Object>. The reason for this is that since earch search was done one Descriptor<Object> at a 
-     * time, then all possible solutions must contain exactly one Descriptor<Object> in their solution
+     * Descriptor. The reason for this is that since earch search was done one Descriptor at a 
+     * time, then all possible solutions must contain exactly one Descriptor in their solution
      * description; null - if the precondition is not met; self - the process ran OK.
      */
     private boolean compress(){
         if (this.getPossibleSolutionList().isEmpty()) return false;
         
         List<PossibleSolution> tempList = new ArrayList<PossibleSolution>();
-        List<Descriptor<Object>> inheritedDescription = new ArrayList<Descriptor<Object>>();
+        List<Descriptor> inheritedDescription = new ArrayList<Descriptor>();
 
         while (this.getPossibleSolutionList().isEmpty() != true){
             PossibleSolution ps = this.getPossibleSolutionList().remove(0);
@@ -357,7 +357,7 @@ public class TaxonomySearchAutomaton {
                         //Check if ps is a successor of compSolution
                         if (((Taxon)ps.getSolution()).isSuccessorOf((Taxon)compSolution.getSolution())){
                             //ps inherits compSolution's description
-                            for (Descriptor<Object> d: compSolution.getSolutionDescription()){
+                            for (Descriptor d: compSolution.getSolutionDescription()){
                                 inheritedDescription.add(d);
                             }
                             i += 1;
@@ -391,7 +391,7 @@ public class TaxonomySearchAutomaton {
      * @param my parameters list
      * @return nil : if there is no similarity; aTaxon : if there was an acceptable degree of similarity.
      */
-        public Taxon determineSimilarityFor(Descriptor<Object> aDescriptor,Taxon aTaxon){
+        public Taxon determineSimilarityFor(Descriptor aDescriptor,Taxon aTaxon){
             Map<Object, Double> weightedValues = aTaxon.retriveValuesUsing(aDescriptor.getStructure(),
             		aDescriptor.getAttribute());
             

@@ -12,14 +12,14 @@ import ontology.common.Descriptor;
  *
  */
 public class SpecificDescriptorPattern implements Comparable<SpecificDescriptorPattern>{
-	private Descriptor<Object> pattern;
+	private Descriptor pattern;
 	private int frequency;
 	
 	/**
 	 * M&eacute;todo constructor alternativo
 	 * @see "M&eacute;todo initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public SpecificDescriptorPattern(Descriptor<Object> descriptor, int frecuency) {
+	public SpecificDescriptorPattern(Descriptor descriptor, int frecuency) {
 		setPattern(descriptor);
 		setFrequency(frecuency);
 	}
@@ -28,7 +28,7 @@ public class SpecificDescriptorPattern implements Comparable<SpecificDescriptorP
 	 * M&eacute;todo accesor de escritura
 	 * @param pattern
 	 */
-	public void setPattern(Descriptor<Object> pattern) {
+	public void setPattern(Descriptor pattern) {
 		this.pattern = pattern;
 	}
 
@@ -37,7 +37,7 @@ public class SpecificDescriptorPattern implements Comparable<SpecificDescriptorP
 	 * @see "M&eacute;todo pattern del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public Descriptor<Object> getPattern() {
+	public Descriptor getPattern() {
 		return pattern;
 	}
 

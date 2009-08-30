@@ -5,12 +5,11 @@ package redundantDiscriminationNet.test;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ontology.CBR.Case;
-import ontology.common.CharacterDescriptor;
-import ontology.common.Descriptor;
+import ontology.common.Description;
+import ontology.common.SSCharacterDescriptor;
+import ontology.common.SVCharacterDescriptor;
+import ontology.values.SingleValue;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -35,7 +34,7 @@ public class SheetCaseTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		System.out.println("Iniciando pruebas para la clase " + SheetCase.class.getName());
-		sheetcase = new SheetCase(new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto"));
+		sheetcase = new SheetCase(new SSCharacterDescriptor("Pie", "Disposición", "Sobresale al manto"));
 	}
 
 	/**
@@ -71,7 +70,7 @@ public class SheetCaseTest {
 		System.out.println("Iniciando pruebas para el método AddPredecessor()");
 		
 		System.out.println("Verificar que un predecesor válido se agregue");
-		norm = new Norm(new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto"));
+		norm = new Norm(new SSCharacterDescriptor("Pie", "Disposición", "Sobresale al manto"));
 		index = new Index("Disposición");
 		assertTrue(sheetcase.addPredecessor(norm));
 		assertTrue(sheetcase.addPredecessor(index));
@@ -103,19 +102,19 @@ public class SheetCaseTest {
 	@Test
 	public void testSetCase() {
 		Case aCase;
-		List<Descriptor<Object>> dl;
+		Description dl;
 		
 		System.out.println("Iniciando pruebas para el método testSetCase()");
 		
 		System.out.println("Verificar que un caso incompatible no se embebe");
-		dl = new ArrayList<Descriptor<Object>>();
-		dl.add(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
+		dl = new Description();
+		dl.addToConcreteDescription(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
 		aCase = new Case(dl);
 		assertFalse(sheetcase.setCase(aCase));
 		
 		System.out.println("Verificar que un caso compatible se embebe");
-		dl = new ArrayList<Descriptor<Object>>();
-		dl.add(new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto"));
+		dl = new Description();
+		dl.addToConcreteDescription(new SSCharacterDescriptor("Pie", "Disposición", "Sobresale al manto"));
 		aCase = new Case(dl);
 		assertTrue(sheetcase.setCase(aCase));
 		

@@ -4,10 +4,7 @@
  */
 package ontology.CBR;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import ontology.common.Descriptor;
+import ontology.common.Description;
 import ontology.taxonomy.TaxonomicRank;
 
 /**
@@ -20,7 +17,7 @@ public class Solution {
 	 *  A list containing a set of Descriptor's (the solution path of the case, i.e., the result of the
 	 *  traversal across the net and other reference structures).
 	 */
-	private List<Descriptor<Object>> justification;
+	private Description justification;
 	/**
 	 * El rango del tax&oacute;n de la soluci&oacute;n
 	 */
@@ -35,7 +32,7 @@ public class Solution {
 	 * @see "M&eacute;todo initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
 	public Solution() {
-		justification = new ArrayList<Descriptor<Object>>();
+		justification = new Description();
 		taxonLevel = null;
 		taxonName = null;
 	}
@@ -45,7 +42,7 @@ public class Solution {
 	 * @see "M&eacute;todo initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
 	public Solution(TaxonomicRank aTaxonLevel, String aTaxonName) {
-		justification = new ArrayList<Descriptor<Object>>();
+		justification = new Description();
 		taxonLevel = aTaxonLevel;
 		taxonName = aTaxonName;
 	}
@@ -54,7 +51,7 @@ public class Solution {
 	 * M&eacute;todo accesor de escritura
 	 * @param justification
 	 */
-	public void setJustification(List<Descriptor<Object>> justification) {
+	public void setJustification(Description justification) {
 		this.justification = justification;
 	}
 
@@ -63,7 +60,7 @@ public class Solution {
 	 * @see "M&eacute;todo justification del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Descriptor<Object>> getJustification() {
+	public Description getJustification() {
 		return justification;
 	}
 

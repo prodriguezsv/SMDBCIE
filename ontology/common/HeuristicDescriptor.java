@@ -10,7 +10,7 @@ package ontology.common;
  * ya que ningún par attribute-value particular generaliza todos los casos bajo ellos.
  * 
 */
-public class HeuristicDescriptor<T> extends Descriptor<T> {
+public abstract class HeuristicDescriptor extends Descriptor {
 	/**
 	 * Class instance invariant: self MUST always have exactly two values. The first
 	 * element corresponds to the descriptor's attribute, and the second one to the value.
@@ -18,20 +18,20 @@ public class HeuristicDescriptor<T> extends Descriptor<T> {
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
 	public HeuristicDescriptor() {
-		super();
+
 	}
 	
 	/**
 	 * Método agregado
 	 */
-	public HeuristicDescriptor(String aStructure, String aAttribute, T aValue) {
-		super(aStructure, aAttribute, aValue);
+	public HeuristicDescriptor(String aStructure, String anAttribute) {
+		super(aStructure, anAttribute);
 	}
 	
 	/**
 	 * Método agregado
 	 */
-	public HeuristicDescriptor(Object associatedObject, String aStructure, String aAttribute, T aValue) {
-		super(associatedObject, aStructure, aAttribute, aValue);
+	public HeuristicDescriptor(Object associatedObject, String aStructure, String anAttribute) {
+		super(associatedObject, aStructure, anAttribute);
 	}
 }

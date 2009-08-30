@@ -16,8 +16,8 @@ import ontology.common.Descriptor;
  *
  */
 public class Taxonomy {
-	private Map<Descriptor<Object>, List<Taxon>> descriptorsIndex;
 	private Taxon rootTaxon;
+	private Map<Descriptor, List<Taxon>> descriptorsIndex;
 	private List<List<Taxon>> levelIndex;
 
 	/**
@@ -26,11 +26,9 @@ public class Taxonomy {
 	public Taxonomy() {
 		List<Taxon> level;
 
-		setDescriptorsIndex(new HashMap<Descriptor<Object>, List<Taxon>>());
+		setDescriptorsIndex(new HashMap<Descriptor, List<Taxon>>());
 		
-		rootTaxon = new Taxon();
-		rootTaxon.setName(null);
-		rootTaxon.setLevel(TaxonomicRank.ROOT);
+		rootTaxon = new Taxon(TaxonomicRank.ROOT, null);
 		
 		setLevelIndex(new ArrayList<List<Taxon>>());
 			
@@ -44,7 +42,7 @@ public class Taxonomy {
 	 * Método de instancia agregado
 	 * @param descriptorsIndex
 	 */
-	private void setDescriptorsIndex(Map<Descriptor<Object>, List<Taxon>> descriptorsIndex) {
+	private void setDescriptorsIndex(Map<Descriptor, List<Taxon>> descriptorsIndex) {
 		this.descriptorsIndex = descriptorsIndex;
 	}
 	
@@ -54,13 +52,13 @@ public class Taxonomy {
 	 * @param aNewTaxon
 	 */
 	private void addToDescriptorsIndex(Taxon aNewTaxon) {
-		for (Descriptor<Object> d:aNewTaxon.getDescription()) {
+		for (Descriptor d:aNewTaxon.getDescription()) {
 			// Find a structure, in the Structure Index, with a name that matches the new taxon's structure name
 			if (!this.getDescriptorsIndex().containsKey(d)) {
 				this.getDescriptorsIndex().put(d, new ArrayList<Taxon>());
 				this.getDescriptorsIndex().get(d).add(aNewTaxon);
 			} else {
-				for(Descriptor<Object> d2:this.getDescriptorsIndex().keySet()) {
+				for(Descriptor d2:this.getDescriptorsIndex().keySet()) {
 					if (d2.equals(d)) {
 						if (!d2.getAssociatedObject().equals(aNewTaxon) &&
 								!this.getDescriptorsIndex().get(d).contains(aNewTaxon)); // OJO
@@ -76,7 +74,7 @@ public class Taxonomy {
 	 * @see "Método structureIndex del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public Map<Descriptor<Object>, List<Taxon>> getDescriptorsIndex() {
+	public Map<Descriptor, List<Taxon>> getDescriptorsIndex() {
 		return descriptorsIndex;
 	}
 	
@@ -97,14 +95,14 @@ public class Taxonomy {
 	}
 
 
-    public List<Object> searchBySA(String aStruture, String aAttribute){
+    public List<Object> searchBySA(String aStructure, String anAttribute){
         List<Object> aListValues = new ArrayList<Object>();
 
         for (List<Taxon> aTaxonList:levelIndex){
             for (Taxon aTaxon:aTaxonList){
-                for(Descriptor<Object> aDescritor:aTaxon.getDescription()){
-                    if (aDescritor.getStructure().equals(aStruture)&&
-                            (aDescritor.getAttribute().equals(aAttribute)))
+                for(Descriptor aDescritor:aTaxon.getDescription()){
+                    if (aDescritor.getStructure().equals(aStructure)&&
+                            (aDescritor.getAttribute().equals(anAttribute)))
 
                         //TODO fix this
                         aListValues.add(aDescritor.getValue());

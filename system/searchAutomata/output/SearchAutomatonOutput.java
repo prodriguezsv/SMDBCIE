@@ -19,21 +19,21 @@ import system.PossibleSolution;
  */
 public class SearchAutomatonOutput {
     private List<PossibleSolution> possibleSolutions;
-    private List<Descriptor<Object>> unmatchedDescription;
-    private List<Descriptor<Object>> justification;
+    private List<Descriptor> unmatchedDescription;
+    private List<Descriptor> justification;
 
 
     public SearchAutomatonOutput() {
         possibleSolutions = new ArrayList<PossibleSolution>();
-        unmatchedDescription = new ArrayList<Descriptor<Object>>();
-        justification = new ArrayList<Descriptor<Object>>();
+        unmatchedDescription = new ArrayList<Descriptor>();
+        justification = new ArrayList<Descriptor>();
 
     }
 
 	 /**
 	 *Category adding
 	 */
-    public void setJustification(List<Descriptor<Object>> aJustificationsList){
+    public void setJustification(List<Descriptor> aJustificationsList){
         justification = aJustificationsList; // .copy()
     }
     
@@ -43,14 +43,14 @@ public class SearchAutomatonOutput {
 //        possibleSolutions = aPossibleSolutionList.subList(0, aPossibleSolutionList.size());
     }
     
-    public void setUnmatchedDescription(List<Descriptor<Object>> anUnmatchedDescription){
+    public void setUnmatchedDescription(List<Descriptor> anUnmatchedDescription){
         unmatchedDescription = anUnmatchedDescription; // .copy();
     }
     
 	 /**
 	 *Category accessing
 	 */
-    public List<Descriptor<Object>> getJustification(){
+    public List<Descriptor> getJustification(){
         return justification;
     }
     
@@ -58,14 +58,14 @@ public class SearchAutomatonOutput {
         return possibleSolutions;
     }
     
-    public List<Descriptor<Object>> getUnmatchedDescription(){
+    public List<Descriptor> getUnmatchedDescription(){
         return unmatchedDescription;
     }
     
 	 /**
 	 *Category appending
 	 */
-    public void appendToJustification(List<Descriptor<Object>> aJustificationList){
+    public void appendToJustification(List<Descriptor> aJustificationList){
         if (aJustificationList != null) {
             justification.addAll(aJustificationList);
         }
@@ -76,9 +76,9 @@ public class SearchAutomatonOutput {
         }
     }
     
-    public void appendToUnmatchedDescription(List<Descriptor<Object>> anUnmatchedDescription){
+    public void appendToUnmatchedDescription(List<Descriptor> anUnmatchedDescription){
         if (anUnmatchedDescription != null) {
-            for (Descriptor<Object> d : anUnmatchedDescription) {
+            for (Descriptor d : anUnmatchedDescription) {
                  if (!this.contains(d, this.unmatchedDescription)){
                     this.unmatchedDescription.add(d);
                  }
@@ -94,10 +94,10 @@ public class SearchAutomatonOutput {
 	 * not nil: an element of aDescriptionList whose structure and attribute names match those of aSAVDescriptor
 	 *Category testing
 	 */
-    public Descriptor<Object> getDescriptor(Descriptor<Object> aDescriptor, List<Descriptor<Object>> aDescription){
+    public Descriptor getDescriptor(Descriptor aDescriptor, List<Descriptor> aDescription){
         if (!(this.unmatchedDescription.equals(aDescription))) return null;
         
-        for (Descriptor<Object> d : unmatchedDescription) {
+        for (Descriptor d : unmatchedDescription) {
             if (d.getStructure().equals(aDescriptor.getStructure()) && d.getAttribute().equals(aDescriptor.getAttribute())
             		&& d.getValue().equals(aDescriptor.getValue())) {
                 return d;
@@ -107,10 +107,10 @@ public class SearchAutomatonOutput {
         return null;
     }
     
-    public boolean contains(Descriptor<Object> aSAVDescriptor, List<Descriptor<Object>> aDescription){
+    public boolean contains(Descriptor aSAVDescriptor, List<Descriptor> aDescription){
         if (!(aDescription.equals(unmatchedDescription))) return false;
         
-        for (Descriptor<Object> d : unmatchedDescription) {
+        for (Descriptor d : unmatchedDescription) {
             if (d.getStructure().equals(aSAVDescriptor.getStructure()) && d.getAttribute().equals(aSAVDescriptor.getAttribute())
             		&& d.getValue().equals(aSAVDescriptor.getValue())) {
                 return true;

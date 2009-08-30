@@ -8,8 +8,10 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import ontology.common.CharacterDescriptor;
 import ontology.common.Descriptor;
+import ontology.common.SSCharacterDescriptor;
+import ontology.common.SVCharacterDescriptor;
+import ontology.values.SingleValue;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -65,31 +67,31 @@ public class ComparingTableTest {
 	 */
 	@Test
 	public void testFill() {
-		List<Descriptor<Object>> d1 = new ArrayList<Descriptor<Object>>();
-		List<Descriptor<Object>> d2 = new ArrayList<Descriptor<Object>>();
+		List<Descriptor> d1 = new ArrayList<Descriptor>();
+		List<Descriptor> d2 = new ArrayList<Descriptor>();
 		ComparingTable ct = new ComparingTable();
 		ComparingTableTuple<Object> tuple;
 		
 		System.out.println("Iniciando pruebas para el método fill()");
 		
 		System.out.println("Verificar que ComparingTable se llene correctamente");
-		d1.add(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
-		d1.add(new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto"));
-		d1.add(new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata"));
-		d1.add(new CharacterDescriptor<Object>("Branquias", "Número de hojas branquiales", 6));
+		d1.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
+		d1.add(new SSCharacterDescriptor("Pie", "Disposición", "Sobresale al manto"));
+		d1.add(new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata"));
+		d1.add(new SVCharacterDescriptor("Branquias", "Número de hojas branquiales", new SingleValue(6)));
 		
-		d2.add(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 1));
-		d2.add(new CharacterDescriptor<Object>("Cuerpo", "Forma", "Alargado"));
+		d2.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(1)));
+		d2.add(new SSCharacterDescriptor("Cuerpo", "Forma", "Alargado"));
 	
 		act.fill(d1, d2);
 		
-		tuple = new ComparingTableTuple<Object>("Longitud", 0.3, 1);		
+		tuple = new ComparingTableTuple<Object>("Longitud", new SingleValue(0.3), new SingleValue(1));		
 		ct.add(tuple);
 		tuple = new ComparingTableTuple<Object>("Disposición", "Sobresale al manto", null);		
 		ct.add(tuple);
 		tuple = new ComparingTableTuple<Object>("Conformación", "Tiene cerata", null);		
 		ct.add(tuple);
-		tuple = new ComparingTableTuple<Object>("Número de hojas branquiales", 6, null);		
+		tuple = new ComparingTableTuple<Object>("Número de hojas branquiales", new SingleValue(6), null);		
 		ct.add(tuple);
 		tuple = new ComparingTableTuple<Object>("Forma", null, "Alargado");		
 		ct.add(tuple);
@@ -102,8 +104,8 @@ public class ComparingTableTest {
 	 */
 	@Test
 	public void testExtractTuple() {
-		List<Descriptor<Object>> d1 = new ArrayList<Descriptor<Object>>();
-		List<Descriptor<Object>> d2 = new ArrayList<Descriptor<Object>>();
+		List<Descriptor> d1 = new ArrayList<Descriptor>();
+		List<Descriptor> d2 = new ArrayList<Descriptor>();
 		
 		System.out.println("Iniciando pruebas para el método ExtractTuple()");
 		
@@ -111,13 +113,13 @@ public class ComparingTableTest {
 		assertNull(act.extractTuple());
 		
 		System.out.println("Verificar que devuelve el primer elemento de ComparingTable");
-		d1.add(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
+		d1.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
 		
-		d2.add(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 1));
-		d2.add(new CharacterDescriptor<Object>("Cuerpo", "Forma", "Alargado"));
+		d2.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(1)));
+		d2.add(new SSCharacterDescriptor("Cuerpo", "Forma", "Alargado"));
 	
 		act.fill(d1, d2);
 		
-		assertEquals(new ComparingTableTuple<Object>("Longitud", 0.3, 1), act.extractTuple());
+		assertEquals(new ComparingTableTuple<Object>("Longitud", new SingleValue(0.3), new SingleValue(1)), act.extractTuple());
 	}
 }

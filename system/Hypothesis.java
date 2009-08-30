@@ -8,8 +8,6 @@ import java.util.Collections;
 import java.util.List;
 
 import ontology.common.Descriptor;
-import ontology.common.GroupingHeuristic;
-import ontology.common.Structure;
 
 
 /**
@@ -17,9 +15,9 @@ import ontology.common.Structure;
  *
  */
 public class Hypothesis {
-	private List<Descriptor<Object>> description;
-	private List<Descriptor<Object>> justification;
-	private List<Descriptor<Object>> unmatchedDescription;
+	private List<Descriptor> description;
+	private List<Descriptor> justification;
+	private List<Descriptor> unmatchedDescription;
 	private List<PossibleSolution> possibleSolutions;
 	private double points;
 
@@ -28,14 +26,14 @@ public class Hypothesis {
 	 */
 	// Ojo el ordenamiento
 	public Hypothesis() {
-		setDescription(new ArrayList<Descriptor<Object>>());
+		setDescription(new ArrayList<Descriptor>());
 
 		// Sort criteria: taxonomic level
 		setPossibleSolutions(new ArrayList<PossibleSolution>());
 
 		// Sort criteria: concatenated structure and attribute names
-		setUnmatchedDescription(new ArrayList<Descriptor<Object>>());
-		setJustification(new ArrayList<Descriptor<Object>>());
+		setUnmatchedDescription(new ArrayList<Descriptor>());
+		setJustification(new ArrayList<Descriptor>());
 		setPoints(0);
 	}
 
@@ -43,7 +41,7 @@ public class Hypothesis {
 	 * @see "Método descriptiveElement: del protocolo adding en SUKIA SmallTalk"
 	 * @param aDescElt
 	 */
-	public boolean setDescription(List<Descriptor<Object>> aDescElt) {
+	public boolean setDescription(List<Descriptor> aDescElt) {
 		this.description = aDescElt;
 		
 		return true;
@@ -53,7 +51,7 @@ public class Hypothesis {
 	 * @see "Método descriptiveElement del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Descriptor<Object>> getDescription() {
+	public List<Descriptor> getDescription() {
 		return description;
 	}
 
@@ -61,7 +59,7 @@ public class Hypothesis {
 	 * Método de instancia agregado
 	 * @param justification
 	 */
-	public void setJustification(List<Descriptor<Object>> justification) {
+	public void setJustification(List<Descriptor> justification) {
 		this.justification = justification;
 	}
 
@@ -69,7 +67,7 @@ public class Hypothesis {
 	 * @see "Método justification del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Descriptor<Object>> getJustification() {
+	public List<Descriptor> getJustification() {
 		return justification;
 	}
 	
@@ -77,7 +75,7 @@ public class Hypothesis {
 	 * @see "Método justification: del protocolo adding en SUKIA SmallTalk"
 	 * @param aJustification
 	 */
-	public void addJustification(Descriptor<Object> aJustification) {
+	public void addJustification(Descriptor aJustification) {
 		justification.add(aJustification);
 	}
 
@@ -162,7 +160,7 @@ public class Hypothesis {
 	 * Método de instancia agregado
 	 * @param unmatchedDescription
 	 */
-	public void setUnmatchedDescription(List<Descriptor<Object>> unmatchedDescription) {
+	public void setUnmatchedDescription(List<Descriptor> unmatchedDescription) {
 		this.unmatchedDescription = unmatchedDescription;
 	}
 
@@ -171,7 +169,7 @@ public class Hypothesis {
 	 * @param aDescriptor
 	 * @return
 	 */
-	public boolean addUnmatchedDescription(Descriptor<Object> aDescriptor) {
+	public boolean addUnmatchedDescription(Descriptor aDescriptor) {
 		if (this.getUnmatchedDescription().contains(aDescriptor))
 			return false;
 
@@ -186,7 +184,7 @@ public class Hypothesis {
 	 * @see "Método unmatchedDescription del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Descriptor<Object>> getUnmatchedDescription() {
+	public List<Descriptor> getUnmatchedDescription() {
 		return unmatchedDescription;
 	}
 	
@@ -195,7 +193,7 @@ public class Hypothesis {
 	 * @param aJustificationDescription
 	 * @return
 	 */
-	public boolean copyToJustificationFrom(List<Descriptor<Object>> aJustificationDescription) {
+	public boolean copyToJustificationFrom(List<Descriptor> aJustificationDescription) {
 		if (aJustificationDescription == null) return false;
                 for (Descriptor d:aJustificationDescription){
                     this.addJustification(d);
@@ -208,28 +206,13 @@ public class Hypothesis {
 	 * @param anUnmatchedDescription
 	 * @return
 	 */
-	public boolean copyToUnmatchedDescriptionFrom(List<Descriptor<Object>> anUnmatchedDescription) {
+	public boolean copyToUnmatchedDescriptionFrom(List<Descriptor> anUnmatchedDescription) {
 		if (anUnmatchedDescription == null)return false;
                 for (Descriptor d:anUnmatchedDescription){
                     this.addUnmatchedDescription(d);
                 }
 		return true;
 	}
-	
-//	/**
-//	 * @see "Método problemDescriptionFor: del protocolo description generation en SUKIA SmallTalk"
-//	 * @param aTaxonomicGroupName
-//	 * @return
-//	 */
-//	public  List<Descriptor<Object>> problemDescriptionFor(String aTaxonomicGroupName) {
-//		if (this.getDescription() == null)
-//			return null;
-//
-//		if (this.getDescription() instanceof Structure)
-//			return ((Structure)this.getDescription()).createDescription(aTaxonomicGroupName);
-//		else
-//			return ((GroupingHeuristic)this.getDescription()).createSAVDescription(aTaxonomicGroupName);
-//	}
 
 	/**
 	 * Determines if the argument aSAVDescriptor is a member of the argument aDescription.
@@ -241,7 +224,7 @@ public class Hypothesis {
 	 * @param aDescription
 	 * @return
 	 */
-	public boolean contains(Descriptor<Object> aDescriptor, List<Descriptor<Object>> aDescription) {
+	public boolean contains(Descriptor aDescriptor, List<Descriptor> aDescription) {
 		// Make sure that aDescription is indeed one of my description lists. If not, return the -1 error value
 		 if (!(aDescription == this.getUnmatchedDescription()))
 			 return false;
@@ -263,10 +246,10 @@ public class Hypothesis {
 	 * @see "M&eacute;todo thereAreContradictions: del protocolo testing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public boolean areThereContradictions(Descriptor<Object> aDescriptor, 
-		List<Descriptor<Object>> aDescription) {
+	public boolean areThereContradictions(Descriptor aDescriptor, 
+		List<Descriptor> aDescription) {
 
-		for(Descriptor<Object> d: aDescription) {
+		for(Descriptor d: aDescription) {
 			if (d.getStructure().equals(aDescriptor.getStructure()) &&
 					d.getAttribute().equals(aDescriptor.getAttribute())	) {
 					return true; // Hay contradiccion

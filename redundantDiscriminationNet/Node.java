@@ -139,7 +139,7 @@ public abstract class Node {
 	 * @see "Método value del protocolo accessing en SUKIA SmallTalk"
 	 * @return 
 	 */
-	public Descriptor<Object> getDescriptor() {
+	public Descriptor getDescriptor() {
 		return null;
 	}
 }

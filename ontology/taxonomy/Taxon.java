@@ -9,9 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ontology.common.CharacterDescriptor;
+import ontology.common.Description;
 import ontology.common.Descriptor;
-import ontology.common.HeuristicDescriptor;
 import ontology.common.Modifier;
 import ontology.values.RangeValue;
 
@@ -25,27 +24,26 @@ public class Taxon implements Comparable<Taxon>{
 	private String name;
 	private Taxon predecessor;
 	private List<Taxon> successors;
-	private Map<Descriptor<Object>, Modifier> description;
-	//private List<Modifier> modifiers;
+	private Description description;
+	private Map<Descriptor, Modifier> modifiedDescription;
 
 	/**
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public Taxon() {
-		setLevel(null);
-		setName(null);
+	public Taxon(TaxonomicRank level, String name) {
+		setLevel(level);
+		setName(name);
 		//setPredecessor(null);
-		//Pendiente ordenamiento
 		setSuccessors(new ArrayList<Taxon>());
-		//Pendiente ordenamiento
-		setModifiedDescription(new HashMap<Descriptor<Object>, Modifier>());
+		setDescription(new Description());
+		setModifiedDescription(new HashMap<Descriptor, Modifier>());
 	}
 
 	/**
 	 * @see "Método level: del protocolo adding en SUKIA SmallTalk"
 	 * @param level
 	 */
-	public void setLevel(TaxonomicRank level) {
+	private void setLevel(TaxonomicRank level) {
 		this.level = level;
 	}
 
@@ -81,7 +79,7 @@ public class Taxon implements Comparable<Taxon>{
 	 * @see "Método name: del protocolo adding en SUKIA SmallTalk"
 	 * @param name
 	 */
-	public void setName(String name) {
+	private void setName(String name) {
 		this.name = name;
 	}
 
@@ -98,6 +96,8 @@ public class Taxon implements Comparable<Taxon>{
 	 * @param predecessor
 	 */
 	public void setPredecessor(Taxon predecessor) {
+		if (predecessor == null) return; //Ojo revisar comportamiento
+		
 		this.predecessor = predecessor;
 		this.predecessor.addSuccessor(this);
 	}
@@ -131,90 +131,114 @@ public class Taxon implements Comparable<Taxon>{
 	 * @see "Método sucessor: del protocolo adding-private en SUKIA SmallTalk"
 	 * @param sucessor
 	 */
-	public void addSuccessor(Taxon successor) {
-                //TODO
-                //check circular dependency
-		//successor.setPredecessor(this);
-		this.successors.add(successor);
-		Collections.sort(this.successors);
+	public boolean addSuccessor(Taxon successor) {
+       if ((TaxonomicRank.getIndex(successor.getLevel()) - TaxonomicRank.getIndex(this.getLevel())) != 1)
+    	   return false; //Verificar comportamiento
+       
+		if (!this.getSuccessors().contains(successor)) {
+			this.successors.add(successor);
+			Collections.sort(this.successors);
+			successor.setPredecessor(this);
+			return true;
+		}
+		
+		return false;
 	}
 
 	/***
 	 * Método de instancia agregado
 	 * @param sAVDescription
 	 */
-	public void setModifiedDescription(Map<Descriptor<Object>, Modifier> aDescription) {
-		this.description = aDescription;
+	private void setModifiedDescription(Map<Descriptor, Modifier> aDescription) {
+		this.modifiedDescription = aDescription;
 	}
 
 	/**
 	 * @see "Método SAVdescription del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public Map<Descriptor<Object>, Modifier> getModifiedDescription() {
-		return description;
+	public Map<Descriptor, Modifier> getModifiedDescription() {
+		return modifiedDescription;
 	}	
 	
 	/**
 	 * @see "Método SAVdescription del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Descriptor<Object>> getDescription() {
-		List<Descriptor<Object>> dl;
-		
-		dl = new ArrayList<Descriptor<Object>>();
-		for (Descriptor<Object> d:description.keySet())
-			dl.add(d);
-		
-		return dl;
+	public Description getDescription() {
+		return this.description;
+	}
+	
+	public void setDescription(Description description) {
+		this.description = description;
 	}
         
-       public Map<Descriptor<Object>, Modifier> searchByStructure(String structureName){
-            Map<Descriptor<Object>, Modifier> result = new HashMap<Descriptor<Object>, Modifier>();
-            
-            for (Descriptor<Object> d:description.keySet()) {
-            	if (d.getStructure().equals(structureName)){
-                    result.put(d, description.get(d));
-                }
+   public Map<Descriptor, Modifier> searchByStructure(String structureName){
+        Map<Descriptor, Modifier> result = new HashMap<Descriptor, Modifier>();
+        
+        for (Descriptor d:modifiedDescription.keySet()) {
+        	if (d.getStructure().equals(structureName)){
+                result.put(d, modifiedDescription.get(d));
             }
+        }
 
-            return result;
-       }
+        return result;
+   }
 
-       public Map<Descriptor<Object>, Modifier> searchByAttribute(String attributeName){
-            Map<Descriptor<Object>, Modifier> result = new HashMap<Descriptor<Object>, Modifier>();
-            
-            for (Descriptor<Object> d:description.keySet()) {
-            	if (d.getAttribute().equals(attributeName)){
-                    result.put(d, description.get(d));
-                }
+   /**
+    * 
+    * @param attributeName
+    * @return
+    */
+   //Ojo verificar pertinencia
+   public Map<Descriptor, Modifier> searchByAttribute(String attributeName){
+        Map<Descriptor, Modifier> result = new HashMap<Descriptor, Modifier>();
+        
+        for (Descriptor d:modifiedDescription.keySet()) {
+        	if (d.getAttribute().equals(attributeName)){
+                result.put(d, modifiedDescription.get(d));
             }
-            
-            return result;
-       }
-       public Map<Descriptor<Object>, Modifier> searchByValue(Object value){
-            Map<Descriptor<Object>, Modifier> result = new HashMap<Descriptor<Object>, Modifier>();
-            
-            for (Descriptor<Object> d:description.keySet()) {
-            	if (d.getValue().equals(value)){
-                    result.put(d, description.get(d));
-                }
+        }
+        
+        return result;
+   }
+   
+   /**
+    * 
+    * @param value
+    * @return
+    */
+ //Ojo verificar pertinencia
+   public Map<Descriptor, Modifier> searchByValue(Object value){
+        Map<Descriptor, Modifier> result = new HashMap<Descriptor, Modifier>();
+        
+        for (Descriptor d:modifiedDescription.keySet()) {
+        	if (d.getValue().equals(value)){
+                result.put(d, modifiedDescription.get(d));
             }
-            
-            return result;
-       }
+        }
+        
+        return result;
+   }
 
-       public Map<Object, Double> retriveValuesUsing(String structureName,String attributeName){
-            Map<Object, Double> result = new HashMap<Object, Double>();
-            
-            for (Descriptor<Object> d:description.keySet()) {
-            	if (d.getStructure().equals(structureName) && d.getAttribute().equals(attributeName)){
-                    result.put(d.getValue(), description.get(d).getValueWeight());
-                }
+   /**
+    * 
+    * @param structureName
+    * @param attributeName
+    * @return
+    */
+   public Map<Object, Double> retriveValuesUsing(String structureName, String attributeName){
+        Map<Object, Double> result = new HashMap<Object, Double>();
+        
+        for (Descriptor d:modifiedDescription.keySet()) {
+        	if (d.getStructure().equals(structureName) && d.getAttribute().equals(attributeName)){
+                result.put(d.getValue(), modifiedDescription.get(d).getValueWeight());
             }
-            
-            return result;
-       }
+        }
+        
+        return result;
+   }
+   
 	/**
 	 * @see "Método isSuccessorOf: del protocolo inhetitence en SUKIA SmallTalk"
 	 */
@@ -266,41 +290,45 @@ public class Taxon implements Comparable<Taxon>{
 	 * @return Valor de verdad true indicando que la adici&oacute;n se llev&oacute; a cabo
 	 * @return Valor de verdad false indicando que la adici&oacute;n no se llev&oacute; a cabo
 	 */
-	public boolean addToDescription(Descriptor<Object> aDescriptor) {
+	public boolean addToDescription(Descriptor aDescriptor) {
 		if (aDescriptor == null) return false;
 		
-		if (this.getModifiedDescription().containsKey(aDescriptor))
-			return false;
+		boolean value = this.getDescription().addToAbstractDescription(aDescriptor);
 		
-		aDescriptor.setAssociatedObject(this);
-		this.getModifiedDescription().put(aDescriptor, new Modifier());
+		if (value) {
+			aDescriptor.setAssociatedObject(this);
+			this.getModifiedDescription().put(aDescriptor, new Modifier());
+		}
 		
-		return true;
+		return value;
 	}
 	
-	public boolean addToDescription(Descriptor<Object> aDescriptor, Modifier aModifier) {
+	public boolean addToDescription(Descriptor aDescriptor, Modifier aModifier) {
 		if (aDescriptor == null) return false;
 		
-		if (this.getModifiedDescription().containsKey(aDescriptor))
-			return false;
+		boolean value = this.getDescription().addToAbstractDescription(aDescriptor);
 		
-		aDescriptor.setAssociatedObject(this);
-		this.getModifiedDescription().put(aDescriptor, aModifier);
+		if (value) {
+			aDescriptor.setAssociatedObject(this);
+			this.getModifiedDescription().put(aDescriptor, aModifier);
+		}
 		
-		return true;
+		return value;
 	}
-	
+		
 	/**
 	 * Removes aDescriptor from the variable description
 	 * @param aDescriptor
 	 * @return Valor de verdad true indicando que la remoci&oacute;n se llev&oacute; a cabo
 	 * @return Valor de verdad false indicando que la remoci&oacute;n no se llev&oacute; a cabo
 	 */
-	public boolean removeFromDescription(Descriptor<Object> aDescriptor) {
+	public boolean removeFromDescription(Descriptor aDescriptor) {
 		if (aDescriptor == null) return false;
 		
-		if (this.getModifiedDescription().remove(aDescriptor) == null)
+		if (this.getDescription().remove(aDescriptor)) {
+			this.getModifiedDescription().remove(aDescriptor);
 			return true;
+		}
 			
 		return false;
 	}
@@ -312,7 +340,8 @@ public class Taxon implements Comparable<Taxon>{
 	 * @return
 	 */
 	public boolean isOKDirectLink(Taxon aParentTaxon) {
-		return (((TaxonomicRank.getIndex(this.getLevel())) - (TaxonomicRank.getIndex(aParentTaxon.getLevel()))) == 1);
+		return (((TaxonomicRank.getIndex(this.getLevel())) 
+				- (TaxonomicRank.getIndex(aParentTaxon.getLevel()))) == 1);
 	}
 	
 	/**
@@ -344,13 +373,13 @@ public class Taxon implements Comparable<Taxon>{
 			return true;
 		
 		// Parse the receiver's SAV (structure) description
-		for (Descriptor<Object> d:this.getDescription()) {
+		for (Descriptor d:this.getDescription()) {
 			if (d.getValue() instanceof RangeValue) {
 				/*The attribute's value descriptor is a range value.  Get the receiver's predecessor and loop while the 
 				 predecessor's level is not ROOT*/
 				pt = aParentTaxon;
 				while(!(pt.getLevel().equals(TaxonomicRank.ROOT))) {
-					for (Descriptor<Object> d2:pt.getDescription()) {
+					for (Descriptor d2:pt.getDescription()) {
 						if (d2.getValue() instanceof RangeValue) {
 							/*Value descriptor found. If the measuring units for the receiver's retrieved range value and the 
 							 predecessor's range value are different, then there is an inconsistency*/
@@ -380,103 +409,54 @@ public class Taxon implements Comparable<Taxon>{
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de descriptores relacionados a aStructureName
 	 */
-	public List<Descriptor<Object>> getDescription(String aStructureName) {
-		List<Descriptor<Object>> description;
-		
-		description = new ArrayList<Descriptor<Object>>();
-		
-		for(Descriptor<Object> d: this.getDescription()) {
-			// Determine if the structure name in Deescriptor has already been included in structureList
-			if (d.getStructure().equals(aStructureName)) {
-				description.add(d);
-			} else continue;
-		}
-		
-		return description;
+	public final List<Descriptor> getDescription(String aStructureName) {
+		return this.getDescription().getDescription(aStructureName);
 	}
 	
 	/**
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
-	public List<String> getCharacterStructuresList() {
-		List<String> structuresList;
-		
-		structuresList = new ArrayList<String>();
-		
-		for(Descriptor<Object> d: this.getDescription()) {
-			if (d instanceof CharacterDescriptor) { 
-				// Determine if the structure name in Deescriptor has already been included in structureList
-				if (!(structuresList.contains(d.getStructure()))) {
-					// The structure name was not found in structureList. Append it to structureList
-					structuresList.add(d.getStructure());
-				} else continue;
-			}
-		}
-		
-		return structuresList;
+	public final List<String> getCharacterStructuresList() {
+		return this.getDescription().getCharacterStructuresList();
 	}
 	
 	/**
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
-	public List<String> getHeuristicStructuresList() {
-		List<String> structuresList;
-		
-		structuresList = new ArrayList<String>();
-		
-		for(Descriptor<Object> d: this.getDescription()) {
-			if (d instanceof HeuristicDescriptor) { 
-				// Determine if the structure name in Deescriptor has already been included in structureList
-				if (!(structuresList.contains(d.getStructure()))) {
-					// The structure name was not found in structureList. Append it to structureList
-					structuresList.add(d.getStructure());
-				} else continue;
-			}
-		}
-		
-		return structuresList;
+	public final List<String> getHeuristicStructuresList() {
+		return this.getDescription().getHeuristicStructuresList();
 	}
 	
 	/**
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
-	public List<String> getAttributeList(String structureName) {
-		List<String> attributesList;
-		
-		attributesList = new ArrayList<String>();
-		
-		for(Descriptor<Object> d: this.getDescription()) {
-			if (d.getStructure().equals(structureName)) {
-				// Determine if the structure name in Deescriptor has already been included in structureList
-				if (!(attributesList.contains(d.getAttribute()))) {
-					// The structure name was not found in structureList. Append it to structureList
-					attributesList.add(d.getStructure());
-				} else continue;
-			}
-		}
-		
-		return attributesList;
+	public final List<String> getAttributeList(String structureName) {
+		return this.getDescription().getAttributeList(structureName);
 	}
 	
 	/**
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de descriptores relacionados a aStructureName y aAttributeName
 	 */
-	public List<Descriptor<Object>> getDescription(String aStructureName, String anAttributeName) {
-		List<Descriptor<Object>> description;
+	public final List<Descriptor> getDescription(String aStructureName, String anAttributeName) {
+		return this.getDescription().getDescription(aStructureName, anAttributeName);
+	}
+	
+	/**
+	 * Determina la igualdad entre dos descriptores
+	 * @param aTaxon
+	 * @return
+	 */
+	public boolean equals(Object aTaxon) {
+		if (aTaxon == null) return false;
+		if (!(aTaxon instanceof Taxon)) return false;
 		
-		description = new ArrayList<Descriptor<Object>>();
-		
-		for(Descriptor<Object> d: this.getDescription()) {
-			// Determine if the structure name in Deescriptor has already been included in structureList
-			if (d.getStructure().equals(aStructureName) && d.getAttribute().equals(anAttributeName)) {
-				description.add(d);
-			} else continue;
-		}
-		
-		return description;
+		if (this.getLevel().equals(((Taxon)aTaxon).getLevel()) &&
+				this.getName().equals(((Taxon)aTaxon).getName()))
+			return true;
+		else return false;
 	}
 }

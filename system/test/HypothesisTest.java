@@ -7,9 +7,11 @@ package system.test;
 
 import java.util.ArrayList;
 import java.util.List;
-import ontology.common.CharacterDescriptor;
 import ontology.common.Descriptor;
+import ontology.common.SSCharacterDescriptor;
 import ontology.taxonomy.Taxon;
+import ontology.taxonomy.TaxonomicRank;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -57,15 +59,15 @@ public class HypothesisTest {
 
         assertSame(1,instance.getPossibleSolutions().size());
 
-        aPossibleSolution.setSolution(new Taxon());
+        aPossibleSolution.setSolution(new Taxon(TaxonomicRank.SPECIES, "Chromodoris sphoni"));
 
         assertTrue(instance.addPossibleSolutions(aPossibleSolution));
 
         assertSame(2,instance.getPossibleSolutions().size());
 
         aPossibleSolution = new PossibleSolution();
-        aPossibleSolution.setSolution(new Taxon());
-        aPossibleSolution.setSolution(new Taxon());
+        aPossibleSolution.setSolution(new Taxon(TaxonomicRank.SPECIES, "Chromodoris sphoni"));
+        aPossibleSolution.setSolution(new Taxon(TaxonomicRank.SPECIES, "Chromodoris clenchi"));
 
         assertTrue(instance.addPossibleSolutions(aPossibleSolution));
 
@@ -85,9 +87,9 @@ public class HypothesisTest {
         /*
          * just true when unique descriptor
          */
-        assertTrue(instance.addUnmatchedDescription(new CharacterDescriptor<Object>("01cuerpo","forma","alargado")));
-        assertFalse(instance.addUnmatchedDescription(new CharacterDescriptor<Object>("01cuerpo","forma","alargado")));
-        assertTrue(instance.addUnmatchedDescription(new CharacterDescriptor<Object>("00acuerpo","forma","alargado")));
+        assertTrue(instance.addUnmatchedDescription(new SSCharacterDescriptor("01cuerpo","forma","alargado")));
+        assertFalse(instance.addUnmatchedDescription(new SSCharacterDescriptor("01cuerpo","forma","alargado")));
+        assertTrue(instance.addUnmatchedDescription(new SSCharacterDescriptor("00acuerpo","forma","alargado")));
 
         /*
          * Must be sorted
@@ -102,11 +104,11 @@ public class HypothesisTest {
     @Test
     public void testCopyToJustificationFrom() {
         java.lang.System.out.println("copyToJustificationFrom");
-        List<Descriptor<Object>> aJustificationDescription = new ArrayList<Descriptor<Object>>();
+        List<Descriptor> aJustificationDescription = new ArrayList<Descriptor>();
         Hypothesis instance = new Hypothesis();
-        aJustificationDescription.add(new CharacterDescriptor<Object>("pie","coloracion","gris_oscuro_casi_negro"));
-        aJustificationDescription.add(new CharacterDescriptor<Object>("pie","coloracion","crema"));
-        aJustificationDescription.add(new CharacterDescriptor<Object>("branquia","posicion_durante_desplazamiento","hacia_atras"));
+        aJustificationDescription.add(new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro"));
+        aJustificationDescription.add(new SSCharacterDescriptor("pie","coloracion","crema"));
+        aJustificationDescription.add(new SSCharacterDescriptor("branquia","posicion_durante_desplazamiento","hacia_atras"));
 
         assertFalse(instance.copyToJustificationFrom(null));
         assertTrue(instance.copyToJustificationFrom(aJustificationDescription));
@@ -120,10 +122,10 @@ public class HypothesisTest {
     public void testCopyToUnmatchedDescriptionFrom() {
         java.lang.System.out.println("copyToUnmatchedDescriptionFrom");
         Hypothesis instance = new Hypothesis();
-        List<Descriptor<Object>> anUnmatchedDescription = new ArrayList<Descriptor<Object>>();
-        anUnmatchedDescription.add(new CharacterDescriptor<Object>("pie","coloracion","gris_oscuro_casi_negro"));
-        anUnmatchedDescription.add(new CharacterDescriptor<Object>("pie","coloracion","crema"));
-        anUnmatchedDescription.add(new CharacterDescriptor<Object>("branquia","posicion_durante_desplazamiento","hacia_atras"));
+        List<Descriptor> anUnmatchedDescription = new ArrayList<Descriptor>();
+        anUnmatchedDescription.add(new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro"));
+        anUnmatchedDescription.add(new SSCharacterDescriptor("pie","coloracion","crema"));
+        anUnmatchedDescription.add(new SSCharacterDescriptor("branquia","posicion_durante_desplazamiento","hacia_atras"));
 
         assertFalse(instance.copyToUnmatchedDescriptionFrom(null));
         assertTrue(instance.copyToUnmatchedDescriptionFrom(anUnmatchedDescription));
@@ -152,21 +154,21 @@ public class HypothesisTest {
     public void testContains() {
         java.lang.System.out.println("contains");
         Hypothesis instance = new Hypothesis();
-        List<Descriptor<Object>> aDescription = new ArrayList<Descriptor<Object>>();
-        aDescription.add(new CharacterDescriptor<Object>("pie","coloracion","gris_oscuro_casi_negro"));
-        aDescription.add(new CharacterDescriptor<Object>("pie","coloracion","crema"));
-        aDescription.add(new CharacterDescriptor<Object>("branquia","posicion_durante_desplazamiento","hacia_atras"));
+        List<Descriptor> aDescription = new ArrayList<Descriptor>();
+        aDescription.add(new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro"));
+        aDescription.add(new SSCharacterDescriptor("pie","coloracion","crema"));
+        aDescription.add(new SSCharacterDescriptor("branquia","posicion_durante_desplazamiento","hacia_atras"));
         /*
          * Must be on list on the system
          */
-        assertFalse(instance.contains(new CharacterDescriptor<Object>("pie","coloracion","gris_oscuro_casi_negro"), aDescription));
+        assertFalse(instance.contains(new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro"), aDescription));
         instance.setUnmatchedDescription(aDescription);
-        assertTrue(instance.contains(new CharacterDescriptor<Object>("pie","coloracion","gris_oscuro_casi_negro"), aDescription));
-        assertTrue(instance.contains(new CharacterDescriptor<Object>("pie","coloracion","crema"), aDescription));
+        assertTrue(instance.contains(new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro"), aDescription));
+        assertTrue(instance.contains(new SSCharacterDescriptor("pie","coloracion","crema"), aDescription));
         /*
          * The first name on the list is greater, so error.
          */
-        assertFalse(instance.contains(new CharacterDescriptor<Object>("branquia","posicion_durante_desplazamiento","hacia_atras"), aDescription));
+        assertFalse(instance.contains(new SSCharacterDescriptor("branquia","posicion_durante_desplazamiento","hacia_atras"), aDescription));
     }
 
     /**
@@ -176,17 +178,17 @@ public class HypothesisTest {
     public void testAreThereContradictions() {
         java.lang.System.out.println("areThereContradictions");
         Hypothesis instance = new Hypothesis();
-        List<Descriptor<Object>> aDescription = new ArrayList<Descriptor<Object>>();
-        aDescription.add(new CharacterDescriptor<Object>("pie","coloracion","gris_oscuro_casi_negro"));
-        aDescription.add(new CharacterDescriptor<Object>("pie","coloracion","crema"));
-        aDescription.add(new CharacterDescriptor<Object>("branquia","posicion_durante_desplazamiento","hacia_atras"));
+        List<Descriptor> aDescription = new ArrayList<Descriptor>();
+        aDescription.add(new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro"));
+        aDescription.add(new SSCharacterDescriptor("pie","coloracion","crema"));
+        aDescription.add(new SSCharacterDescriptor("branquia","posicion_durante_desplazamiento","hacia_atras"));
 
-        assertTrue(instance.areThereContradictions(new CharacterDescriptor<Object>("pie","coloracion","gris_oscuro_casi_negro"), aDescription));
-        assertTrue(instance.areThereContradictions(new CharacterDescriptor<Object>("pie","coloracion","crema"), aDescription));
+        assertTrue(instance.areThereContradictions(new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro"), aDescription));
+        assertTrue(instance.areThereContradictions(new SSCharacterDescriptor("pie","coloracion","crema"), aDescription));
         /*
          * Contradiccion, it doesn't exist
          */
-        assertFalse(instance.areThereContradictions(new CharacterDescriptor<Object>("weird structure","posicion_durante_desplazamiento","hacia_atras"), aDescription));
+        assertFalse(instance.areThereContradictions(new SSCharacterDescriptor("weird structure","posicion_durante_desplazamiento","hacia_atras"), aDescription));
     }
 
 }

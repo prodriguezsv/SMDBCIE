@@ -3,10 +3,7 @@
  */
 package ontology.CBR;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import ontology.common.Descriptor;
+import ontology.common.Description;
 
 /**
  * Representa la especificación de un problema particular a resolver
@@ -17,7 +14,7 @@ public class Problem {
 	/**
 	 * A list containing a set of Descriptor's (a description of the problem)
 	 */
-	private List<Descriptor<Object>> description;
+	private Description description;
 	/**
 	 * Especifica la meta de identificaci&oacute;n
 	 */
@@ -31,7 +28,7 @@ public class Problem {
 	 * Constructor por defecto
 	 */
 	public Problem() {
-		description = new ArrayList<Descriptor<Object>>();
+		description = new Description();
 		goalRank = null;
 		leastDegreeOfCertainty = null;
 	}
@@ -39,7 +36,7 @@ public class Problem {
 	/**
 	 * Constructor por defecto
 	 */
-	public Problem(List<Descriptor<Object>> description) {
+	public Problem(Description description) {
 		this.description = description;
 		goalRank = null;
 		leastDegreeOfCertainty = null;
@@ -49,7 +46,7 @@ public class Problem {
 	 * M&eacute;todo accesor de escritura
 	 * @param description
 	 */
-	public void setDescription(List<Descriptor<Object>> description) {
+	public void setDescription(Description description) {
 		this.description = description;
 	}
 
@@ -57,7 +54,7 @@ public class Problem {
 	 * M&eacute;todo accesor de lectura
 	 * @return
 	 */
-	public List<Descriptor<Object>> getDescription() {
+	public Description getDescription() {
 		return description;
 	}
 

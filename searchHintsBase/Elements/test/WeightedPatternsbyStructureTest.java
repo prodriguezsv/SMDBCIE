@@ -1,17 +1,22 @@
 /**
  * 
  */
-package searchHintsBase.Elements;
+package searchHintsBase.Elements.test;
 
 import static org.junit.Assert.*;
 
-import ontology.common.CharacterDescriptor;
+import ontology.common.SSCharacterDescriptor;
+import ontology.common.SVCharacterDescriptor;
+import ontology.values.SingleValue;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import searchHintsBase.Elements.WeightedDescriptorPattern;
+import searchHintsBase.Elements.WeightedPatternsbyStructure;
 
 /**
  * @author Armando
@@ -60,22 +65,22 @@ public class WeightedPatternsbyStructureTest {
 		System.out.println("Iniciando pruebas para el método AddPattern()");
 		
 		System.out.println("Verificar que un patron de descriptores se agrega correctamente");
-		assertTrue(patterns.addPattern(new WeightedDescriptorPattern(new CharacterDescriptor<Object>("Cuerpo",
-				"Longitud", 0.3), 0.5, 1)));
+		assertTrue(patterns.addPattern(new WeightedDescriptorPattern(new SVCharacterDescriptor("Cuerpo",
+				"Longitud", new SingleValue(0.3)), 0.5, 1)));
 		
-		assertTrue(patterns.addPattern(new WeightedDescriptorPattern(new CharacterDescriptor<Object>("Cuerpo",
-				"Longitud", 0.3), 0.75, 5)));
+		assertTrue(patterns.addPattern(new WeightedDescriptorPattern(new SVCharacterDescriptor("Cuerpo",
+				"Longitud", new SingleValue(0.3)), 0.75, 5)));
 		assertTrue(patterns.getPatterns().get(0).getNumberTaxa() == 6);
 	
-		assertTrue(patterns.addPattern(new WeightedDescriptorPattern(new CharacterDescriptor<Object>("Cuerpo",
+		assertTrue(patterns.addPattern(new WeightedDescriptorPattern(new SSCharacterDescriptor("Cuerpo",
 				"Conformación", "Tiene cerata"), 9, 10)));
 		assertTrue(patterns.getPatterns().get(0).getNumberTaxa() == 10);
 		
 		System.out.println("Verificar que un patron de descriptores incompatible o incorrecto no se agrega");
 		assertFalse(patterns.addPattern(null));
 		
-		assertFalse(patterns.addPattern(new WeightedDescriptorPattern(new CharacterDescriptor<Object>("Branquias",
-				"Número de hojas branquiales", 6), 1, 1)));
+		assertFalse(patterns.addPattern(new WeightedDescriptorPattern(new SVCharacterDescriptor("Branquias",
+				"Número de hojas branquiales", new SingleValue(6)), 1, 1)));
 	}
 
 	/**
@@ -88,7 +93,7 @@ public class WeightedPatternsbyStructureTest {
 		System.out.println("Iniciando pruebas para el método Contains()");
 		
 		System.out.println("Verificar que no contiene una referencia");
-		pattern = new WeightedDescriptorPattern(new CharacterDescriptor<Object>("Cuerpo", "Conformación",
+		pattern = new WeightedDescriptorPattern(new SSCharacterDescriptor("Cuerpo", "Conformación",
 				"Tiene cerata"), 0.5, 1);
 		assertFalse(patterns.contains(pattern));
 		
@@ -107,7 +112,7 @@ public class WeightedPatternsbyStructureTest {
 		System.out.println("Iniciando pruebas para el método ContainsString()");
 		
 		System.out.println("Verificar que se obtiene una referencia null");
-		pattern = new WeightedDescriptorPattern(new CharacterDescriptor<Object>("Cuerpo", "Conformación",
+		pattern = new WeightedDescriptorPattern(new SSCharacterDescriptor("Cuerpo", "Conformación",
 				"Tiene cerata"), 0.5, 1);
 		assertNull(patterns.getPattern(pattern.getPattern()));
 		

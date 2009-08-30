@@ -110,7 +110,7 @@ public class Index extends Node {
 	 * @see "M&eacute;todo getIndexValueWith:aValue: del protocolo searching en SUKIA SmallTalk"
 	 * @return
 	 */
-	public Node getSuccessor(Descriptor<Object> aDescriptor) {
+	public Node getSuccessor(Descriptor aDescriptor) {
 		boolean valor;
 		
 		if (super.getSuccessors() != null) {
@@ -130,7 +130,7 @@ public class Index extends Node {
 	 * Devuelve la norma sucesor que contiene el descriptor com&uacuten aDescriptor
 	 * @return norma sucesor o nul si no hay una que coincida con el descriptor
 	 */
-	public Norm getSuccessorNorm(Descriptor<Object> aDescriptor) {
+	public Norm getSuccessorNorm(Descriptor aDescriptor) {
 		if (super.getSuccessors() != null) {
 			for (Node n: this.getSuccessors()) {
 				if (n instanceof Norm)

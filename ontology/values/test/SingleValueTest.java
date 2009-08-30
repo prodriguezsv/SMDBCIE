@@ -35,34 +35,13 @@ public class SingleValueTest {
     }
 
     /**
-     * Test of addValues method, of class SingleValue.
-     */
-    @Test
-    public void testAddValues() {
-        System.out.println("addValues");
-        SingleValue<Double> aSingleValue = new SingleValue<Double>();
-
-        aSingleValue.setValue(0.0);
-
-        SingleValue<Object> instance = new SingleValue<Object>();
-
-        instance.addValues(aSingleValue);
-        assertEquals(0.0,instance.getValue());
-    }
-
-    /**
      * Test of equals method, of class SingleValue.
      */
     @Test
     public void testEquals() {
         System.out.println("equals");
-        SingleValue<Double> aSingleValue = new SingleValue<Double>();
-
-        aSingleValue.setValue(0.0);
-
-        SingleValue<Object> instance = new SingleValue<Object>();
-
-        instance.addValues(aSingleValue);
+        SingleValue aSingleValue = new SingleValue(0.0);
+        SingleValue instance = new SingleValue(aSingleValue);
         /*
          * must be the same
          */
@@ -74,11 +53,8 @@ public class SingleValueTest {
         assertFalse(instance.equals(null));
         aSingleValue.setValue(0.1);
 
-        RangeValue aRangeValue = new RangeValue();
-        aRangeValue.setLowerBound(0.0);
-        aRangeValue.setUpperBound(0.0);
-        assertFalse(instance.equals(aRangeValue));
-        
+        RangeValue aRangeValue = new RangeValue(0.0, 0.0);
+        assertFalse(instance.equals(aRangeValue));        
     }
 
 }

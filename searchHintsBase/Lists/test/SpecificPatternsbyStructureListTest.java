@@ -8,8 +8,10 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import ontology.common.CharacterDescriptor;
 import ontology.common.Descriptor;
+import ontology.common.SSCharacterDescriptor;
+import ontology.common.SVCharacterDescriptor;
+import ontology.values.SingleValue;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -77,13 +79,13 @@ public class SpecificPatternsbyStructureListTest {
 		
 		System.out.println("Verificar que se agregue una referencia válida");
 		spbs = new SpecificPatternsbyStructure("Branquias");
-		spbs.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Branquias", 
-				"Número de hojas branquiales", 6), 1));
+		spbs.addPattern(new SpecificDescriptorPattern(new SVCharacterDescriptor("Branquias", 
+				"Número de hojas branquiales", new SingleValue(6)), 1));
 		assertTrue(patterns.add(spbs));
 		
 		spbs = new SpecificPatternsbyStructure("Branquias");
-		spbs.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Branquias",
-				"Número de hojas branquiales", 6), 10));
+		spbs.addPattern(new SpecificDescriptorPattern(new SVCharacterDescriptor("Branquias",
+				"Número de hojas branquiales", new SingleValue(6)), 10));
 		assertTrue(patterns.add(spbs));
 	}
 
@@ -92,66 +94,66 @@ public class SpecificPatternsbyStructureListTest {
 	 */
 	@Test
 	public void testSortBySuccessCriteria() {
-		List<Descriptor<Object>> d1, d2;
+		List<Descriptor> d1, d2;
 		SpecificPatternsbyStructure spbs;
 		
 		System.out.println("Iniciando pruebas para el método SortBySuccessCriteria()");
 		
 		System.out.println("Verificar que se obtiene una lista ordenada de forma descendente según criterio");
 		spbs = new SpecificPatternsbyStructure("Branquias");
-		spbs.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Branquias",
-				"Número de hojas branquiales", 6), 10));
+		spbs.addPattern(new SpecificDescriptorPattern(new SVCharacterDescriptor("Branquias",
+				"Número de hojas branquiales", new SingleValue(6)), 10));
 		assertTrue(patterns.add(spbs));
 		
 		spbs = new SpecificPatternsbyStructure("Branquias");
-		spbs.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Branquias",
+		spbs.addPattern(new SpecificDescriptorPattern(new SSCharacterDescriptor("Branquias",
 				"Forma de hojas branquiales", "Tripinnada"), 5));
 		assertTrue(patterns.add(spbs));
 		
-		spbs.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Branquias", 
+		spbs.addPattern(new SpecificDescriptorPattern(new SSCharacterDescriptor("Branquias", 
 				"Posición del ano con respecto a la branquia", "En el centro"), 3));
 		assertTrue(patterns.add(spbs));
 		
 		spbs = new SpecificPatternsbyStructure("Cuerpo");
-		spbs.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Cuerpo", 
+		spbs.addPattern(new SpecificDescriptorPattern(new SSCharacterDescriptor("Cuerpo", 
 				"Forma", "Ovalado"), 8));
 		assertTrue(patterns.add(spbs));
 		
 		spbs = new SpecificPatternsbyStructure("Manto");
-		spbs.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Manto", 
+		spbs.addPattern(new SpecificDescriptorPattern(new SSCharacterDescriptor("Manto", 
 				"Textura", "Lisa"), 2));
 		assertTrue(patterns.add(spbs));
 		
-		spbs.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Manto", 
+		spbs.addPattern(new SpecificDescriptorPattern(new SSCharacterDescriptor("Manto", 
 				"Forma del borde", "Ondulado"), 10));
 		assertTrue(patterns.add(spbs));
 		
-		d1 = new ArrayList<Descriptor<Object>>();
-		d1.add(new CharacterDescriptor<Object>("Branquias", "Número de hojas branquiales", 6));
+		d1 = new ArrayList<Descriptor>();
+		d1.add(new SVCharacterDescriptor("Branquias", "Número de hojas branquiales", new SingleValue(6)));
 		
 		assertEquals(d1, patterns.sortBySuccessCriteria(d1));
-		d2 = new ArrayList<Descriptor<Object>>();
+		d2 = new ArrayList<Descriptor>();
 		assertEquals(d2, patterns.sortBySuccessCriteria(d2));
 		
-		d2.add(new CharacterDescriptor<Object>("Branquias", "Número de hojas branquiales", 6));
+		d2.add(new SVCharacterDescriptor("Branquias", "Número de hojas branquiales", new SingleValue(6)));
 		assertEquals(d2, patterns.sortBySuccessCriteria(d1));
 		
-		d1.add(new CharacterDescriptor<Object>("Branquias", "Posición durante desplazamiento", "Hacia atras"));
-		d1.add(new CharacterDescriptor<Object>("Branquias", "Posición del ano con respecto a la branquia",
+		d1.add(new SSCharacterDescriptor("Branquias", "Posición durante desplazamiento", "Hacia atras"));
+		d1.add(new SSCharacterDescriptor("Branquias", "Posición del ano con respecto a la branquia",
 				"En el centro"));
 		
-		d2.add(new CharacterDescriptor<Object>("Branquias", "Posición del ano con respecto a la branquia",
+		d2.add(new SSCharacterDescriptor("Branquias", "Posición del ano con respecto a la branquia",
 		"En el centro"));
-		d2.add(new CharacterDescriptor<Object>("Branquias", "Posición durante desplazamiento", "Hacia atras"));
+		d2.add(new SSCharacterDescriptor("Branquias", "Posición durante desplazamiento", "Hacia atras"));
 		assertEquals(d2, patterns.sortBySuccessCriteria(d1));
 		
-		d1 = new ArrayList<Descriptor<Object>>();
-		d1.add(new CharacterDescriptor<Object>("Manto", "Textura del borde", "Lisa"));
-		d1.add(new CharacterDescriptor<Object>("Manto", "Forma del borde", "Ondulado"));
+		d1 = new ArrayList<Descriptor>();
+		d1.add(new SSCharacterDescriptor("Manto", "Textura del borde", "Lisa"));
+		d1.add(new SSCharacterDescriptor("Manto", "Forma del borde", "Ondulado"));
 		
-		d2 = new ArrayList<Descriptor<Object>>();
-		d2.add(new CharacterDescriptor<Object>("Manto", "Forma del borde", "Ondulado"));
-		d2.add(new CharacterDescriptor<Object>("Manto", "Textura del borde", "Lisa"));
+		d2 = new ArrayList<Descriptor>();
+		d2.add(new SSCharacterDescriptor("Manto", "Forma del borde", "Ondulado"));
+		d2.add(new SSCharacterDescriptor("Manto", "Textura del borde", "Lisa"));
 		assertEquals(d2, patterns.sortBySuccessCriteria(d1));
 	}
 
@@ -166,8 +168,8 @@ public class SpecificPatternsbyStructureListTest {
 		
 		System.out.println("Verificar que no contiene una referencia");
 		spbs = new SpecificPatternsbyStructure("Branquias");
-		spbs.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Branquias",
-				"Número de hojas branquiales", 6), 1));
+		spbs.addPattern(new SpecificDescriptorPattern(new SVCharacterDescriptor("Branquias",
+				"Número de hojas branquiales", new SingleValue(6)), 1));
 		assertFalse(patterns.contains(spbs));
 		
 		System.out.println("Verificar que sí contiene una referencia");
@@ -186,8 +188,8 @@ public class SpecificPatternsbyStructureListTest {
 		
 		System.out.println("Verificar que no contiene una referencia");
 		spbs = new SpecificPatternsbyStructure("Branquias");
-		spbs.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Branquias",
-				"Número de hojas branquiales", 6), 1));
+		spbs.addPattern(new SpecificDescriptorPattern(new SVCharacterDescriptor("Branquias",
+				"Número de hojas branquiales", new SingleValue(6)), 1));
 		assertFalse(patterns.contains(spbs.getStructureName()));
 		
 		System.out.println("Verificar que sí contiene una referencia");
@@ -206,8 +208,8 @@ public class SpecificPatternsbyStructureListTest {
 		
 		System.out.println("Verificar que no se obtiene tiene una referencia no incluida");
 		spbs = new SpecificPatternsbyStructure("Branquias");
-		spbs.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Branquias",
-				"Número de hojas branquiales", 6), 1));
+		spbs.addPattern(new SpecificDescriptorPattern(new SVCharacterDescriptor("Branquias",
+				"Número de hojas branquiales", new SingleValue(6)), 1));
 		assertNull(patterns.getPatterns(spbs.getStructureName()));
 		
 		System.out.println("Verificar que sí se obtiene una referencia no incluida");

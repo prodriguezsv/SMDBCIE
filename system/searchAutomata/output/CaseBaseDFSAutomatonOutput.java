@@ -22,6 +22,7 @@ import system.PossibleSolution;
  */
 public class CaseBaseDFSAutomatonOutput extends SearchAutomatonOutput {
     private Taxonomy taxonomy;
+    
     private static final Comparator<PossibleSolution>  compareByPossibleSolutionLevels = new Comparator<PossibleSolution>() {
                 @Override
                 public int compare(PossibleSolution o1, PossibleSolution o2) {
@@ -34,6 +35,7 @@ public class CaseBaseDFSAutomatonOutput extends SearchAutomatonOutput {
                     }
                 }
    };
+   
     public CaseBaseDFSAutomatonOutput(){
         taxonomy = null;
     }
@@ -110,7 +112,8 @@ public class CaseBaseDFSAutomatonOutput extends SearchAutomatonOutput {
     	return true;
     }
     
-    private void inheritPossibleSolutionDescriptionsFrom(PossibleSolution anOldPossibleSolution, PossibleSolution aNewPossibleSolution){
+    private void inheritPossibleSolutionDescriptionsFrom(PossibleSolution anOldPossibleSolution,
+    		PossibleSolution aNewPossibleSolution){
         aNewPossibleSolution.appendToSolutionDescription(anOldPossibleSolution.getSolutionDescription());
         aNewPossibleSolution.appendToConfirmedDescription(anOldPossibleSolution.getConfirmedDescription());
         aNewPossibleSolution.appendToUnconfirmedDescription(anOldPossibleSolution.getUnconfirmedDescription());

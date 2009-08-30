@@ -22,7 +22,7 @@ public class SheetCase extends Node {
 	/**
 	 *  depicting the grouping (generalizing) concept
 	 */
-	private Descriptor<Object> descriptor;
+	private Descriptor descriptor;
 	/**
 	 * El caso que el nodo representa
 	 */
@@ -31,7 +31,7 @@ public class SheetCase extends Node {
 	/**
 	 * @see "M&eacute;todo initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public SheetCase(Descriptor<Object> descriptor) {
+	public SheetCase(Descriptor descriptor) {
 		super.setPredecessors(new ArrayList<Node>());
 		this.descriptor = descriptor;
 		aCase = null;
@@ -42,7 +42,7 @@ public class SheetCase extends Node {
 	 * @see "M&eacute;todo descriptor del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public Descriptor<Object> getDescriptor() {
+	public Descriptor getDescriptor() {
 		return descriptor;
 	}
 	
@@ -77,7 +77,7 @@ public class SheetCase extends Node {
 	 * @param aCase
 	 */
 	public boolean setCase(Case aCase) {
-		for (Descriptor<Object> d: aCase.getProblem().getDescription()) {
+		for (Descriptor d: aCase.getProblem().getDescription()) {
 			if (d.equals(this.descriptor)) {
 				this.aCase = aCase;
 				return true;

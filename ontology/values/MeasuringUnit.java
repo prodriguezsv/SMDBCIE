@@ -18,7 +18,8 @@ public enum MeasuringUnit {
 	 */
 	MM("mm"),
 	CM("cm"),
-	INCH("inch");
+	INCH("inch"),
+	COUNT("count");
 	
 	/**
 	 * Variable para manejar el valor de la constante

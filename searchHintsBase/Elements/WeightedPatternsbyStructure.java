@@ -121,7 +121,7 @@ public class WeightedPatternsbyStructure {
 	 * @param aDescriptor
 	 * @return
 	 */
-	public WeightedDescriptorPattern getPattern(Descriptor<Object> aDescriptor) {
+	public WeightedDescriptorPattern getPattern(Descriptor aDescriptor) {
 		for (WeightedDescriptorPattern wdp:this.getPatterns()) {
 			if (wdp.getPattern().equals(aDescriptor))
 				return wdp;

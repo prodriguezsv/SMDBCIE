@@ -18,14 +18,43 @@ public class RangeValue extends Value {
 	public RangeValue() {
 		// this is set up for weighted values as default
 		super();
-		setMeasuringUnit(null);
+		setMeasuringUnit(MeasuringUnit.COUNT);
+	}
+	
+	/**
+	 * Constructor altenativo
+	 */
+	public RangeValue(double lowerBound, double upperBound) {
+		this.setLowerBound(lowerBound);
+		this.setUpperBound(upperBound);
+		this.setMeasuringUnit(MeasuringUnit.COUNT);
+	}
+	
+	/**
+	 * Constructor altenativo
+	 */
+	public RangeValue(double lowerBound, double upperBound, MeasuringUnit measurinUnit) {
+		this.setLowerBound(lowerBound);
+		this.setUpperBound(upperBound);
+		this.setMeasuringUnit(measurinUnit);
+	}
+
+	/**
+	 * @see "Método copyFrom:referencing: del protocolo copying en SUKIA SmallTalk"
+	 * @param aValue
+	 * @param aTaxon
+	 */
+	public RangeValue(RangeValue aValue) {
+		this.setLowerBound(aValue.getLowerBound());
+		this.setUpperBound(aValue.getUpperBound());
+		this.setMeasuringUnit(aValue.getMeasuringUnit());
 	}
 
 	/**
 	 * @see "Método lowerBound del protocolo adding-range values en SUKIA SmallTalk"
 	 * @return
 	 */
-	public void setLowerBound(double lowerBound) {
+	private void setLowerBound(double lowerBound) {
 		this.lowerBound = lowerBound;
 	}
 
@@ -41,7 +70,7 @@ public class RangeValue extends Value {
 	 * @see "Método upperBound del protocolo adding-range values en SUKIA SmallTalk"
 	 * @return
 	 */
-	public void setUpperBound(double upperBound) {
+	private void setUpperBound(double upperBound) {
 		this.upperBound = upperBound;
 	}
 
@@ -52,19 +81,6 @@ public class RangeValue extends Value {
 	public double getUpperBound() {
 		return upperBound;
 	}	
-	
-	/**
-	 * @see "Método copyFrom:referencing: del protocolo copying en SUKIA SmallTalk"
-	 * @param aValue
-	 * @param aTaxon
-	 */
-	public  void addValues(Value aValue) {
-		RangeValue rvd;
-		
-		rvd = (RangeValue) aValue;
-		this.setLowerBound(rvd.getLowerBound());
-		this.setUpperBound(rvd.getUpperBound());
-	}
 	
 	public boolean isRangeWithin(double aLowerBound, double anUpperBound) {
 		if (aLowerBound > anUpperBound) return false;
@@ -81,14 +97,17 @@ public class RangeValue extends Value {
 		if (aValue == null) return false;
 		if (!(aValue instanceof RangeValue)) return false;
 		
-		if (this.getLowerBound()  == ((RangeValue)aValue).getLowerBound() &&
-			this.getUpperBound()  == ((RangeValue)aValue).getUpperBound())
+		if (this.getLowerBound()  >= ((RangeValue)aValue).getLowerBound() &&
+			this.getUpperBound()  <= ((RangeValue)aValue).getUpperBound() &&
+			this.getMeasuringUnit().equals(((RangeValue)aValue).getMeasuringUnit()))
 			return true;
+		
 		else return false;
 	}
 	
 	public int hashCode(){
 		return Double.valueOf(this.getLowerBound()).hashCode() 
-			+ Double.valueOf(this.getUpperBound()).hashCode();
+			+ Double.valueOf(this.getUpperBound()).hashCode()
+			+ this.getMeasuringUnit().hashCode();
 	}
 }

@@ -45,7 +45,6 @@ public class Values extends ArrayList<List<Value>> {
 	 * @param aDescriptor
 	 * @param aLevel
 	 */
-	@SuppressWarnings("unchecked")
 	public <T extends Value> Value getValueDescriptors(T aDescriptor, TaxonomicRank aLevel) {
 		List<Value> vdList;
 		
@@ -174,11 +173,10 @@ public class Values extends ArrayList<List<Value>> {
 	 * @param aLevel
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public <T> List<Value> getSingleDescriptors(T aValue, TaxonomicRank aLevel) {
 		int levelNumber;
 		Value vd;
-		SingleValue<T> svd;
+		SingleValue svd;
 		List<Value> vdList;
 
 		// Get the level-list index (in self) corresponding to aLevel
@@ -193,7 +191,7 @@ public class Values extends ArrayList<List<Value>> {
 			vd = this.get(levelNumber-1).get(i-1);
 			if (!(vd instanceof RangeValue)) {
 				svd = (SingleValue)vd;
-				if (svd.getValue() == aValue)
+				if (svd.equals(aValue)) //Ojo revisar
 					vdList.add(vd);
 			}
 		}
@@ -265,12 +263,11 @@ public class Values extends ArrayList<List<Value>> {
 	 * @param aLevel
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public boolean includes(Value aDescriptor, int aNumberLevel) {
 		int levelNumber;
 		Value vd;
 		RangeValue nrvd, rvd;
-		SingleValue<Object> nsvd, svd;
+		SingleValue nsvd, svd;
 		
 		levelNumber = aNumberLevel;
 		if (levelNumber == -1) return false;
@@ -308,12 +305,11 @@ public class Values extends ArrayList<List<Value>> {
 	 * @param aLevel
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public boolean includesUniqueValue(Value aDescriptor, int aNumberLevel) {
 		int levelNumber;
 		Value vd;
 		RangeValue nrvd, rvd;
-		SingleValue<Object> nsvd, svd;
+		SingleValue nsvd, svd;
 		
 		levelNumber = aNumberLevel;
 		if (levelNumber == -1) return false;

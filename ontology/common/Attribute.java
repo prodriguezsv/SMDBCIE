@@ -88,12 +88,11 @@ public class Attribute implements Comparable<Attribute>{
 		for(List<Value> l: attribute.getValues()) {
 			for(Value ovd: l) {
 				if (ovd instanceof SingleValue)
-					nvd = new SingleValue<T>();
+					nvd = new SingleValue((SingleValue)ovd);
 				else {
-					nvd = new RangeValue();
+					nvd = new RangeValue((RangeValue)ovd);
 				}
 				
-				nvd.addValues(ovd);
 				if (this.getValues().size() == attribute.getValues().size())
 					this.getValues().addValueDescriptor(nvd, TaxonomicRank.values()[l.indexOf(ovd)+1]);
 				else

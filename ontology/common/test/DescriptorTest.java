@@ -2,8 +2,10 @@ package ontology.common.test;
 
 import static org.junit.Assert.*;
 
-import ontology.common.CharacterDescriptor;
 import ontology.common.Descriptor;
+import ontology.common.RVCharacterDescriptor;
+import ontology.common.SSCharacterDescriptor;
+import ontology.common.SVCharacterDescriptor;
 
 import ontology.values.MeasuringUnit;
 import ontology.values.RangeValue;
@@ -15,11 +17,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class DescriptorTest {
-	private static Descriptor<Object> d;
+	private static Descriptor d;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		d = new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata");
+		d = new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata");
 	}
 
 	@AfterClass
@@ -36,37 +38,31 @@ public class DescriptorTest {
 
 	@Test
 	public final void testCompareTo() {
-		Descriptor<Object> d2;
+		Descriptor d2;
 
-		d2 = new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata");
+		d2 = new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata");
 		assertEquals(0, d.compareTo(d2));
-		d2 = new CharacterDescriptor<Object>("Cuerpo", "Forma", "Alargado");
+		d2 = new SSCharacterDescriptor("Cuerpo", "Forma", "Alargado");
 		assertTrue(d.compareTo(d2)<0);
-		d2 = new CharacterDescriptor<Object>("Branquias", "Número de hojas branquiales", 6);
+		d2 = new SVCharacterDescriptor("Branquias", "Número de hojas branquiales", new SingleValue(6));
 		assertTrue(d.compareTo(d2)>0);
 	}
 
 	@Test
 	public final void testEquals() {
-		Descriptor<Object> d2,d3,d4;
+		Descriptor d2,d3,d4;
 
-                SingleValue<Double> aSingleValue = new SingleValue<Double>();
-                aSingleValue.setValue(100.0);
-                aSingleValue.setMeasuringUnit(MeasuringUnit.CM);
+        SingleValue aSingleValue = new SingleValue(100, MeasuringUnit.CM);
+        RangeValue aRangeValue = new RangeValue(0.0, 100.0, MeasuringUnit.MM);
 
-                RangeValue aRangeValue = new RangeValue();
-
-                aRangeValue.setLowerBound(0.0);
-                aRangeValue.setUpperBound(100.0);
-                aRangeValue.setMeasuringUnit(MeasuringUnit.MM);
                 
-		d2 = new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata");
-		d3 = new CharacterDescriptor<Object>("Cuerpo", "longitud",aSingleValue);
-		d4 = new CharacterDescriptor<Object>("Cuerpo", "tamaño cola", aRangeValue);
+		d2 = new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata");
+		d3 = new SVCharacterDescriptor("Cuerpo", "longitud",aSingleValue);
+		d4 = new RVCharacterDescriptor("Cuerpo", "tamaño cola", aRangeValue);
 
 		assertTrue(d.equals(d2));
-		assertTrue(d3.equals(new CharacterDescriptor<Object>("Cuerpo", "longitud",aSingleValue)));
-		assertTrue(d4.equals(new CharacterDescriptor<Object>("Cuerpo", "tamaño cola", aRangeValue)));
+		assertTrue(d3.equals(new SVCharacterDescriptor("Cuerpo", "longitud",aSingleValue)));
+		assertTrue(d4.equals(new RVCharacterDescriptor("Cuerpo", "tamaño cola", aRangeValue)));
 
                 assertFalse(d.equals(null));
 		assertFalse(d.equals(d3));

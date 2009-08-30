@@ -6,10 +6,12 @@ package system.test;
 import static org.junit.Assert.*;
 
 import ontology.CBR.Case;
-import ontology.common.CharacterDescriptor;
 import ontology.common.Descriptor;
+import ontology.common.SSCharacterDescriptor;
+import ontology.common.SVCharacterDescriptor;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
+import ontology.values.SingleValue;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -36,9 +38,7 @@ public class PossibleSolutionTest {
 		
 		System.out.println("Iniciando pruebas para la clase " + PossibleSolution.class.getName());
 		aPossibleSolution = new PossibleSolution();
-		taxon = new Taxon();
-		taxon.setLevel(TaxonomicRank.GENUS);
-		taxon.setName("Glossodoris");
+		taxon = new Taxon(TaxonomicRank.GENUS, "Glossodoris");
 		aPossibleSolution  = new PossibleSolution();
 		aPossibleSolution.setSolution(taxon);
 	}
@@ -55,11 +55,11 @@ public class PossibleSolutionTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		Descriptor<Object> aDescriptor;
+		Descriptor aDescriptor;
 		
-		aDescriptor = new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3);
+		aDescriptor = new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(3));
 		aPossibleSolution.addConfirmedDescription(aDescriptor);
-		aDescriptor = new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto");
+		aDescriptor = new SSCharacterDescriptor("Pie", "Disposición", "Sobresale al manto");
 		aPossibleSolution.addConfirmedDescription(aDescriptor);
 	}
 
@@ -75,23 +75,25 @@ public class PossibleSolutionTest {
 	 */
 	@Test
 	public void testAddConfirmedDescription() {
-		Descriptor<Object> aDescriptor;
+		Descriptor aDescriptor;
 		
 		System.out.println("Iniciando pruebas para el método AddConfirmedDescription()");
 		
-		aDescriptor = new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3);
-		aPossibleSolution.addConfirmedDescription(aDescriptor);
-		aDescriptor = new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto");
-		aPossibleSolution.addConfirmedDescription(aDescriptor);
-		
 		System.out.println("Verificar que no haya contradicciones en la descripción o duplicados");
-		assertFalse(aPossibleSolution.addConfirmedDescription(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3)));
-		assertFalse(aPossibleSolution.addConfirmedDescription(new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto")));
+		aDescriptor = new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3));
+		aPossibleSolution.addConfirmedDescription(aDescriptor);
+		aDescriptor = new SSCharacterDescriptor("Pie", "Disposición", "Sobresale al manto");
+		aPossibleSolution.addConfirmedDescription(aDescriptor);
+	
+		assertFalse(aPossibleSolution.addConfirmedDescription(new SVCharacterDescriptor("Cuerpo", 
+				"Longitud", new SingleValue(0.3))));
+		assertFalse(aPossibleSolution.addConfirmedDescription(new SSCharacterDescriptor("Pie", 
+				"Disposición", "Sobresale al manto")));
 		
 		System.out.println("Verificar que se agregue un descriptor válido");
-		aDescriptor = new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata");
+		aDescriptor = new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata");
 		assertTrue(aPossibleSolution.addConfirmedDescription(aDescriptor));
-		aDescriptor = new CharacterDescriptor<Object>("Branquias", "Número de hojas branquiales", 6);
+		aDescriptor = new SVCharacterDescriptor("Branquias", "Número de hojas branquiales", new SingleValue(6));
 		assertTrue(aPossibleSolution.addConfirmedDescription(aDescriptor));
 	}
 
@@ -100,23 +102,25 @@ public class PossibleSolutionTest {
 	 */
 	@Test
 	public void testAddContradictions() {
-		Descriptor<Object> aDescriptor;
+		Descriptor aDescriptor;
 		
 		System.out.println("Iniciando pruebas para el método AddContradictions()");
 		
-		aDescriptor = new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3);
+		aDescriptor = new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3));
 		aPossibleSolution.addContradictions(aDescriptor);
-		aDescriptor = new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto");
+		aDescriptor = new SSCharacterDescriptor("Pie", "Disposición", "Sobresale al manto");
 		aPossibleSolution.addContradictions(aDescriptor);
 		
 		System.out.println("Verificar que no haya duplicados");
-		assertFalse(aPossibleSolution.addContradictions(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3)));
-		assertFalse(aPossibleSolution.addContradictions(new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto")));
+		assertFalse(aPossibleSolution.addContradictions(new SVCharacterDescriptor("Cuerpo", 
+				"Longitud", new SingleValue(0.3))));
+		assertFalse(aPossibleSolution.addContradictions(new SSCharacterDescriptor("Pie",
+				"Disposición", "Sobresale al manto")));
 		
 		System.out.println("Verificar que se agregue un descriptor válido");
-		aDescriptor = new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata");
+		aDescriptor = new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata");
 		assertTrue(aPossibleSolution.addContradictions(aDescriptor));
-		aDescriptor = new CharacterDescriptor<Object>("Branquias", "Número de hojas branquiales", 6);
+		aDescriptor = new SVCharacterDescriptor("Branquias", "Número de hojas branquiales", new SingleValue(6));
 		assertTrue(aPossibleSolution.addContradictions(aDescriptor));
 	}
 
@@ -125,23 +129,26 @@ public class PossibleSolutionTest {
 	 */
 	@Test
 	public void testAddDoubtfulDescription() {
-		Descriptor<Object> aDescriptor;
+		Descriptor aDescriptor;
 		
 		System.out.println("Iniciando pruebas para el método AddDoubtfulDescription()");
 		
-		aDescriptor = new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3);
+		aDescriptor = new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3));
 		aPossibleSolution.addDoubtfulDescription(aDescriptor);
-		aDescriptor = new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto");
+		aDescriptor = new SSCharacterDescriptor("Pie", "Disposición", "Sobresale al manto");
 		aPossibleSolution.addDoubtfulDescription(aDescriptor);
 		
 		System.out.println("Verificar que no haya duplicados");
-		assertFalse(aPossibleSolution.addDoubtfulDescription(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3)));
-		assertFalse(aPossibleSolution.addDoubtfulDescription(new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto")));
+		assertFalse(aPossibleSolution.addDoubtfulDescription(new SVCharacterDescriptor("Cuerpo", 
+				"Longitud", new SingleValue(0.3))));
+		assertFalse(aPossibleSolution.addDoubtfulDescription(new SSCharacterDescriptor("Pie", 
+				"Disposición", "Sobresale al manto")));
 		
 		System.out.println("Verificar que se agregue un descriptor válido");
-		aDescriptor = new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata");
+		aDescriptor = new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata");
 		assertTrue(aPossibleSolution.addDoubtfulDescription(aDescriptor));
-		aDescriptor = new CharacterDescriptor<Object>("Branquias", "Número de hojas branquiales", 6);
+		aDescriptor = new SVCharacterDescriptor("Branquias", "Número de hojas branquiales", 
+				new SingleValue(6));
 		assertTrue(aPossibleSolution.addDoubtfulDescription(aDescriptor));
 	}
 
@@ -154,13 +161,11 @@ public class PossibleSolutionTest {
 		
 		System.out.println("Iniciando pruebas para el método SetSolution()");
 		assertTrue(aPossibleSolution.setSolution(new Case()));
-		assertTrue(aPossibleSolution.setSolution(new Taxon()));
+		assertTrue(aPossibleSolution.setSolution(new Taxon(TaxonomicRank.GENUS, "Glossodoris")));
 		
 		assertFalse(aPossibleSolution.setSolution(new Object()));
 		
-		taxon = new Taxon();
-		taxon.setLevel(TaxonomicRank.GENUS);
-		taxon.setName("Glossodoris");
+		taxon = new Taxon(TaxonomicRank.GENUS, "Glossodoris");
 		aPossibleSolution  = new PossibleSolution();
 		aPossibleSolution.setSolution(taxon);
 	}
@@ -170,23 +175,25 @@ public class PossibleSolutionTest {
 	 */
 	@Test
 	public void testAddSolutionDescription() {
-		Descriptor<Object> aDescriptor;
+		Descriptor aDescriptor;
 		
 		System.out.println("Iniciando pruebas para el método AddSolutionDescription()");
 		
-		aDescriptor = new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3);
+		aDescriptor = new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3));
 		aPossibleSolution.addSolutionDescription(aDescriptor);
-		aDescriptor = new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto");
+		aDescriptor = new SSCharacterDescriptor("Pie", "Disposición", "Sobresale al manto");
 		aPossibleSolution.addSolutionDescription(aDescriptor);
 		
 		System.out.println("Verificar que no haya duplicados");
-		assertFalse(aPossibleSolution.addSolutionDescription(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3)));
-		assertFalse(aPossibleSolution.addSolutionDescription(new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto")));
+		assertFalse(aPossibleSolution.addSolutionDescription(new SVCharacterDescriptor("Cuerpo",
+				"Longitud", new SingleValue(0.3))));
+		assertFalse(aPossibleSolution.addSolutionDescription(new SSCharacterDescriptor("Pie", "Disposición",
+				"Sobresale al manto")));
 		
 		System.out.println("Verificar que se agregue un descriptor válido");
-		aDescriptor = new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata");
+		aDescriptor = new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata");
 		assertTrue(aPossibleSolution.addSolutionDescription(aDescriptor));
-		aDescriptor = new CharacterDescriptor<Object>("Branquias", "Número de hojas branquiales", 6);
+		aDescriptor = new SVCharacterDescriptor("Branquias", "Número de hojas branquiales", new SingleValue(6));
 		assertTrue(aPossibleSolution.addSolutionDescription(aDescriptor));
 	}
 
@@ -195,23 +202,25 @@ public class PossibleSolutionTest {
 	 */
 	@Test
 	public void testAddUnconfirmedDescription() {
-		Descriptor<Object> aDescriptor;
+		Descriptor aDescriptor;
 		
 		System.out.println("Iniciando pruebas para el método AddUnconfirmedDescription()");
 		
-		aDescriptor = new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3);
+		aDescriptor = new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3));
 		aPossibleSolution.addUnconfirmedDescription(aDescriptor);
-		aDescriptor = new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto");
+		aDescriptor = new SSCharacterDescriptor("Pie", "Disposición", "Sobresale al manto");
 		aPossibleSolution.addUnconfirmedDescription(aDescriptor);
 		
 		System.out.println("Verificar que no haya duplicados");
-		assertFalse(aPossibleSolution.addUnconfirmedDescription(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3)));
-		assertFalse(aPossibleSolution.addUnconfirmedDescription(new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto")));
+		assertFalse(aPossibleSolution.addUnconfirmedDescription(new SVCharacterDescriptor("Cuerpo", 
+				"Longitud", new SingleValue(0.3))));
+		assertFalse(aPossibleSolution.addUnconfirmedDescription(new SSCharacterDescriptor("Pie", 
+				"Disposición", "Sobresale al manto")));
 		
 		System.out.println("Verificar que se agregue un descriptor válido");
-		aDescriptor = new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata");
+		aDescriptor = new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata");
 		assertTrue(aPossibleSolution.addUnconfirmedDescription(aDescriptor));
-		aDescriptor = new CharacterDescriptor<Object>("Branquias", "Número de hojas branquiales", 6);
+		aDescriptor = new SVCharacterDescriptor("Branquias", "Número de hojas branquiales", new SingleValue(6));
 		assertTrue(aPossibleSolution.addUnconfirmedDescription(aDescriptor));
 	}
 
@@ -251,8 +260,7 @@ public class PossibleSolutionTest {
 		Taxon taxon;
 		
 		System.out.println("Iniciando pruebas para el método CompareTo()");
-		taxon = new Taxon();
-		taxon.setLevel(TaxonomicRank.GENUS);
+		taxon = new Taxon(TaxonomicRank.GENUS, "Chromodoris");
 		ps  = new PossibleSolution();
 		ps.setSolution(taxon);
 		
@@ -262,10 +270,10 @@ public class PossibleSolutionTest {
 		
 		System.out.println("Verificar que la posible solución es distinta con otra según el criterio" +
 				"de comparación");
-		taxon.setLevel(TaxonomicRank.FAMILY);;
+		taxon = new Taxon(TaxonomicRank.FAMILY, "Chromodorididae");;
 		ps.setSolution(taxon);
 		assertTrue(aPossibleSolution.compareTo(ps) < 0);
-		taxon.setLevel(TaxonomicRank.SPECIES);;
+		taxon = new Taxon(TaxonomicRank.SPECIES, "Cadlina sparsa");;
 		ps.setSolution(taxon);
 		assertTrue(aPossibleSolution.compareTo(ps) > 0);
 	}

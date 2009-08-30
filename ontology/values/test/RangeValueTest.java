@@ -5,9 +5,6 @@
 
 package ontology.values.test;
 
-import ontology.taxonomy.Taxon;
-import ontology.taxonomy.TaxonomicRank;
-import ontology.values.MeasuringUnit;
 import ontology.values.RangeValue;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -62,26 +59,6 @@ public class RangeValueTest {
 //
 //    }
 
-    /**
-     * Test of addValues method, of class RangeValue.
-     */
-    @Test
-    public void testAddValues() {
-        System.out.println("addValues");
-
-        Taxon aTaxon = new Taxon() ;
-        aTaxon.setName("Chromodorididae");
-        aTaxon.setLevel(TaxonomicRank.FAMILY);
-        
-        RangeValue instance = new RangeValue();
-
-        RangeValue aRangeDescriptor = new RangeValue();
-        aRangeDescriptor.setLowerBound(0.0);
-        aRangeDescriptor.setUpperBound(0.5);
-        aRangeDescriptor.setMeasuringUnit(MeasuringUnit.CM);
-        
-        instance.addValues(aRangeDescriptor);
-    }
 
     /**
      * Test of isRangeWithin method, of class RangeValue.
@@ -89,9 +66,7 @@ public class RangeValueTest {
     @Test
     public void testIsRangeWithin() {
         System.out.println("isRangeWithin");
-        RangeValue aRangeDescriptor = new RangeValue();
-        aRangeDescriptor.setLowerBound(0.0);
-        aRangeDescriptor.setUpperBound(0.5);
+        RangeValue aRangeDescriptor = new RangeValue(0.0, 0.5);
         //same
         assertTrue(aRangeDescriptor.isRangeWithin(0.0, 0.5));
         //is range well

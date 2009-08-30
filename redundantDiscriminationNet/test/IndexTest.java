@@ -5,8 +5,9 @@ package redundantDiscriminationNet.test;
 
 import static org.junit.Assert.*;
 
-
-import ontology.common.CharacterDescriptor;
+import ontology.common.SSCharacterDescriptor;
+import ontology.common.SVCharacterDescriptor;
+import ontology.values.SingleValue;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -65,17 +66,17 @@ public class IndexTest {
 		System.out.println("Iniciando pruebas para el método AddSuccessor()");
 		
 		System.out.println("Verificar que un sucesor válido se agregue");
-		assertTrue(index.addSuccessor(new Norm(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3))));
-		assertTrue(index.addSuccessor(new SheetCase(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 1))));
+		assertTrue(index.addSuccessor(new Norm(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)))));
+		assertTrue(index.addSuccessor(new SheetCase(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(1)))));
 		
 		System.out.println("Verificar que un norma con descriptor duplicado no se agregue");
-		assertFalse(index.addSuccessor(new Norm(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3))));
+		assertFalse(index.addSuccessor(new Norm(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)))));
 		
 		System.out.println("Verificar que un caso con descriptor duplicado no se agregue");
-		assertFalse(index.addSuccessor(new SheetCase(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 1))));
+		assertFalse(index.addSuccessor(new SheetCase(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(1)))));
 		
 		System.out.println("Verificar que un caso incompatible con el índice no se agregue");
-		assertFalse(index.addSuccessor(new SheetCase(new CharacterDescriptor<Object>("Pie", "Disposición", "Sobresale al manto"))));
+		assertFalse(index.addSuccessor(new SheetCase(new SSCharacterDescriptor("Pie", "Disposición", "Sobresale al manto"))));
 		
 		System.out.println("Verificar que una referencia null no se agregue");
 		assertFalse(index.addSuccessor(null));
@@ -95,7 +96,7 @@ public class IndexTest {
 		assertNull(index.getPredecessor());
 		
 		System.out.println("Verificar que se obtiene una referencia no null");
-		norm = new Norm(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
+		norm = new Norm(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
 		index.setPredecessor(norm);
 		assertNotNull(index.getPredecessor());
 		
@@ -116,12 +117,12 @@ public class IndexTest {
 		assertTrue(index.setPredecessor(null));
 		
 		System.out.println("Verificar que no se agrege un predecesor incompatible");
-		norm = new Norm(new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata"));
+		norm = new Norm(new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata"));
 		norm.addSuccessor(new Index("Longitud"));
 		assertFalse(index.setPredecessor(norm));
 		
 		System.out.println("Verificar que se agrege un predecesor compatible");
-		norm = new Norm(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
+		norm = new Norm(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
 		assertTrue(index.setPredecessor(norm));
 	}
 
@@ -136,13 +137,13 @@ public class IndexTest {
 		System.out.println("Iniciando pruebas para el método GetSuccessor()");
 		
 		System.out.println("Verificar que se obtiene el sucesor que es efecto es");
-		sc = new SheetCase(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 1));
-		norm = new Norm(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
+		sc = new SheetCase(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(1)));
+		norm = new Norm(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
 		index.addSuccessor(norm);
 		index.addSuccessor(sc);
 		
-		assertSame(sc, index.getSuccessor(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 1)));
-		assertSame(norm, index.getSuccessor(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3)));
+		assertSame(sc, index.getSuccessor(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(1))));
+		assertSame(norm, index.getSuccessor(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3))));
 	}
 
 	/**
@@ -155,10 +156,10 @@ public class IndexTest {
 		System.out.println("Iniciando pruebas para el método GetSuccessor()");
 		
 		System.out.println("Verificar que se obtiene el sucesor que es efecto es");
-		norm = new Norm(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3));
+		norm = new Norm(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
 		index.addSuccessor(norm);
-		index.addSuccessor(new SheetCase(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 1)));
+		index.addSuccessor(new SheetCase(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(1))));
 		
-		assertSame(norm, index.getSuccessorNorm(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3)));
+		assertSame(norm, index.getSuccessorNorm(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3))));
 	}
 }

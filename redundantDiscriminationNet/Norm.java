@@ -26,7 +26,7 @@ public class Norm extends Node {
 	/**
 	 * Depicting the grouping (generalizing) concept
 	 */
-	private Descriptor<Object> descriptor;
+	private Descriptor descriptor;
 	/**
 	 * Number of cases grouped by the Norm, whether linked directly or located levels below.
 	 */
@@ -36,7 +36,7 @@ public class Norm extends Node {
 	 * Constructor alternativo
 	 * @see "M&eacute;todo initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public Norm(Descriptor<Object> descriptor) {
+	public Norm(Descriptor descriptor) {
 		super.setPredecessors(new ArrayList<Node>());
 		super.setSuccessors(new ArrayList<Node>());
 		this.descriptor = descriptor;
@@ -47,7 +47,7 @@ public class Norm extends Node {
 	 * Constructor alternativo
 	 * @see "M&eacute;todo initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public Norm(Descriptor<Object> descriptor, Index predecessor) {
+	public Norm(Descriptor descriptor, Index predecessor) {
 		super.setSuccessors(new ArrayList<Node>());
 		this.setPredecessor(predecessor);
 		this.descriptor = descriptor;
@@ -59,7 +59,7 @@ public class Norm extends Node {
 	 * @see "M&eacute;todo descriptor del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public Descriptor<Object> getDescriptor() {
+	public Descriptor getDescriptor() {
 		return descriptor;
 	}
 	
@@ -196,7 +196,7 @@ public class Norm extends Node {
 	 * @param aDescriptor
 	 * @return The successor Norm, or null, otherwise
 	 */
-	public Norm getNearestSuccessorNorm(Descriptor<Object> aDescriptor) {
+	public Norm getNearestSuccessorNorm(Descriptor aDescriptor) {
 		Index index;
 
 		index = this.getSuccessorIndex(aDescriptor.getAttribute());
@@ -229,7 +229,7 @@ public class Norm extends Node {
 	 * @param aValue El valor se&ntilde;alado a buscar
 	 * @return
 	 */
-	public Index getSuccessorIndex(Descriptor<Object> aDescriptor) {
+	public Index getSuccessorIndex(Descriptor aDescriptor) {
 		for (Node n: this.getSuccessors()) {
 			if (n instanceof Index)
 				if (aDescriptor.getAttribute().equals(((Index)n).getLabel()) 

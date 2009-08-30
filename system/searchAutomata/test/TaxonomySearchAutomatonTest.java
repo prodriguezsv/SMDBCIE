@@ -10,9 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import ontology.CBR.SimilarityDegree;
-import ontology.common.CharacterDescriptor;
 import ontology.common.Descriptor;
 import ontology.common.Modifier;
+import ontology.common.RVCharacterDescriptor;
+import ontology.common.SSCharacterDescriptor;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
 import ontology.values.RangeValue;
@@ -34,7 +35,7 @@ public class TaxonomySearchAutomatonTest {
 
     Taxon rootTaxon,taxon1,taxon2,taxon3,taxon4,taxon5,taxon6,taxon7,taxon8;
     List<Taxon> listaTaxones1,listaTaxones2,listaTaxones3,listaTaxones4;
-    Map<Descriptor<Object>, List<Taxon>> searchIndex;
+    Map<Descriptor, List<Taxon>> searchIndex;
 
     public TaxonomySearchAutomatonTest() {
     }
@@ -50,41 +51,22 @@ public class TaxonomySearchAutomatonTest {
     @Before
     public void setUp() {
 
-searchIndex = new HashMap<Descriptor<Object>, List<Taxon>>();
-        rootTaxon = new Taxon();
-        rootTaxon.setName(null);
-        rootTaxon.setLevel(TaxonomicRank.ROOT);
-        taxon1 = new Taxon();
-        taxon2 = new Taxon();
-        taxon3 = new Taxon();
-        taxon4 = new Taxon();
-        taxon5 = new Taxon();
-        taxon6 = new Taxon();
-        taxon7 = new Taxon();
-        taxon8 = new Taxon();
+    	searchIndex = new HashMap<Descriptor, List<Taxon>>();
+    	rootTaxon = new Taxon(TaxonomicRank.ROOT, null);
+    	taxon1 = new Taxon(TaxonomicRank.FAMILY, "Chromodorididae");
+    	taxon2 = new Taxon(TaxonomicRank.GENUS, "Chromodoris");
+        
+        taxon3 = new Taxon(TaxonomicRank.SPECIES, "Chromodoris sphoni");
+        taxon4 = new Taxon(TaxonomicRank.SPECIES, "Chromodoris clenchi");
+        taxon5 = new Taxon(TaxonomicRank.SPECIES, "Chromodoris kempfi");
+        taxon6 = new Taxon(TaxonomicRank.GENUS, "Cadlina");
+        taxon7 = new Taxon(TaxonomicRank.SPECIES, "Cadlina sparsa");
+        taxon8 = new Taxon(TaxonomicRank.GENUS, "Hypselodoris");
 //-----------------------Taxon No. 1---------------------
-        taxon1.setName("Chromodorididae");
-        taxon1.setLevel(TaxonomicRank.FAMILY);
-
-        taxon1.addToDescription(new CharacterDescriptor<Object>("cuerpo","forma","alargado"),
+        taxon1.addToDescription(new SSCharacterDescriptor("cuerpo","forma","alargado"),
                                     new Modifier(1.0,1.0,0.8));
-        taxon1.addToDescription(new CharacterDescriptor<Object>("cuerpo","forma","ovalado"),
+        taxon1.addToDescription(new SSCharacterDescriptor("cuerpo","forma","ovalado"),
                                     new Modifier(1.0,1.0,0.1));
-
-        taxon2.setName("Chromodoris");
-        taxon2.setLevel(TaxonomicRank.GENUS);
-        taxon3.setName("Chromodoris_sphoni");
-        taxon3.setLevel(TaxonomicRank.SPECIES);
-        taxon4.setName("Chromodoris_clenchi");
-        taxon4.setLevel(TaxonomicRank.SPECIES);
-        taxon5.setName("Chromodoris_kempfi");
-        taxon5.setLevel(TaxonomicRank.SPECIES);
-        taxon6.setName("Cadlina");
-        taxon6.setLevel(TaxonomicRank.GENUS);
-        taxon7.setName("Cadlina_sparsa");
-        taxon7.setLevel(TaxonomicRank.SPECIES);
-        taxon8.setName("Hypselodoris");
-        taxon8.setLevel(TaxonomicRank.GENUS);
 //-----------------------Structure No. 1---------------------
         listaTaxones1 = new ArrayList<Taxon>();
         listaTaxones2 = new ArrayList<Taxon>();
@@ -111,36 +93,32 @@ searchIndex = new HashMap<Descriptor<Object>, List<Taxon>>();
        /*
          * Lista 1
          */
-        searchIndex.put(new CharacterDescriptor<Object>("cuerpo","forma","alargado"),listaTaxones1);
-        searchIndex.put(new CharacterDescriptor<Object>("cuerpo","forma","ovalado"),listaTaxones1);
-        RangeValue aRangeDescriptor = new RangeValue();
-        aRangeDescriptor.setLowerBound(0.3);
-        aRangeDescriptor.setUpperBound(4.0);
+        searchIndex.put(new SSCharacterDescriptor("cuerpo","forma","alargado"),listaTaxones1);
+        searchIndex.put(new SSCharacterDescriptor("cuerpo","forma","ovalado"),listaTaxones1);
+        RangeValue aRangeDescriptor = new RangeValue(0.3, 4.0);
         /*
          * Lista 2
          */
-        searchIndex.put(new CharacterDescriptor<Object>("cuerpo","longitud",aRangeDescriptor),listaTaxones2);
-        searchIndex.put(new CharacterDescriptor<Object>("cuerpo","conformacion","tiene_cerata"),listaTaxones2);
-        searchIndex.put(new CharacterDescriptor<Object>("pie","disposicion","sobresale_al_manto"),listaTaxones2);
-        searchIndex.put(new CharacterDescriptor<Object>("pie","coloracion","blanquecino"),listaTaxones2);
+        searchIndex.put(new RVCharacterDescriptor("cuerpo","longitud",aRangeDescriptor),listaTaxones2);
+        searchIndex.put(new SSCharacterDescriptor("cuerpo","conformacion","tiene_cerata"),listaTaxones2);
+        searchIndex.put(new SSCharacterDescriptor("pie","disposicion","sobresale_al_manto"),listaTaxones2);
+        searchIndex.put(new SSCharacterDescriptor("pie","coloracion","blanquecino"),listaTaxones2);
         /*
          * Lista 3
          */
-        searchIndex.put(new CharacterDescriptor<Object>("pie","coloracion","gris_oscuro_casi_negro"),listaTaxones3);
-        searchIndex.put(new CharacterDescriptor<Object>("pie","coloracion","crema"),listaTaxones3);
-        searchIndex.put(new CharacterDescriptor<Object>("branquia","posicion_durante_desplazamiento","hacia_atras"),listaTaxones3);
+        searchIndex.put(new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro"),listaTaxones3);
+        searchIndex.put(new SSCharacterDescriptor("pie","coloracion","crema"),listaTaxones3);
+        searchIndex.put(new SSCharacterDescriptor("branquia","posicion_durante_desplazamiento","hacia_atras"),listaTaxones3);
         /*
          * Lista 4
          */
-        searchIndex.put(new CharacterDescriptor<Object>("branquia","posicion_del_ano_con_respecto_a_la_branquia","en_el_centro"),listaTaxones4);
-        aRangeDescriptor = new RangeValue();
-        aRangeDescriptor.setLowerBound(6.0);
-        aRangeDescriptor.setUpperBound(9.0);
-        searchIndex.put(new CharacterDescriptor<Object>("branquia","numero_hojas_branquiales",aRangeDescriptor),listaTaxones4);
-        searchIndex.put(new CharacterDescriptor<Object>("branquia","forma_hojas_branquiales","bipinnada"),listaTaxones4);
-        searchIndex.put(new CharacterDescriptor<Object>("manto","textura_del_borde","lisa"),listaTaxones4);
-        searchIndex.put(new CharacterDescriptor<Object>("tentaculos_orales","contextura","surcado"),listaTaxones4);
-        searchIndex.put(new CharacterDescriptor<Object>("tentaculos_orales","contextura","macizo"),listaTaxones4);
+        searchIndex.put(new SSCharacterDescriptor("branquia","posicion_del_ano_con_respecto_a_la_branquia","en_el_centro"),listaTaxones4);
+        aRangeDescriptor = new RangeValue(6.0, 9.0);
+        searchIndex.put(new RVCharacterDescriptor("branquia","numero_hojas_branquiales",aRangeDescriptor),listaTaxones4);
+        searchIndex.put(new SSCharacterDescriptor("branquia","forma_hojas_branquiales","bipinnada"),listaTaxones4);
+        searchIndex.put(new SSCharacterDescriptor("manto","textura_del_borde","lisa"),listaTaxones4);
+        searchIndex.put(new SSCharacterDescriptor("tentaculos_orales","contextura","surcado"),listaTaxones4);
+        searchIndex.put(new SSCharacterDescriptor("tentaculos_orales","contextura","macizo"),listaTaxones4);
         
     }
 
@@ -156,10 +134,10 @@ searchIndex = new HashMap<Descriptor<Object>, List<Taxon>>();
     public void testAddToTSolutionDescription() {
         System.out.println("addToTSolutionDescription");
         TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton(searchIndex,SimilarityDegree.POCOSIMILAR);
-        Descriptor<Object> aDescriptor1 = new CharacterDescriptor<Object>("branquia","forma_hojas_branquiales","bipinnada");
-        Descriptor<Object> aDescriptor2 = new CharacterDescriptor<Object>("manto","textura_del_borde","lisa");
-        Descriptor<Object> aDescriptor3 = new CharacterDescriptor<Object>("pie","coloracion","gris_oscuro_casi_negro");
-        Descriptor<Object> aDescriptor4 = new CharacterDescriptor<Object>("cuerpo","conformacion","tiene_cerata");
+        Descriptor aDescriptor1 = new SSCharacterDescriptor("branquia","forma_hojas_branquiales","bipinnada");
+        Descriptor aDescriptor2 = new SSCharacterDescriptor("manto","textura_del_borde","lisa");
+        Descriptor aDescriptor3 = new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro");
+        Descriptor aDescriptor4 = new SSCharacterDescriptor("cuerpo","conformacion","tiene_cerata");
 
         assertTrue(instance.addToTSolutionDescription(aDescriptor1));
         assertSame(1,instance.getTSolutionDescription().size());
@@ -181,10 +159,10 @@ searchIndex = new HashMap<Descriptor<Object>, List<Taxon>>();
     public void testAddToTUnmatchedDescription() {
         System.out.println("addToTUnmatchedDescription");
         TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton(searchIndex,SimilarityDegree.POCOSIMILAR);
-        Descriptor<Object> aDescriptor1 = new CharacterDescriptor<Object>("branquia","forma_hojas_branquiales","bipinnada");
-        Descriptor<Object> aDescriptor2 = new CharacterDescriptor<Object>("manto","textura_del_borde","lisa");
-        Descriptor<Object> aDescriptor3 = new CharacterDescriptor<Object>("pie","coloracion","gris_oscuro_casi_negro");
-        Descriptor<Object> aDescriptor4 = new CharacterDescriptor<Object>("cuerpo","conformacion","tiene_cerata");
+        Descriptor aDescriptor1 = new SSCharacterDescriptor("branquia","forma_hojas_branquiales","bipinnada");
+        Descriptor aDescriptor2 = new SSCharacterDescriptor("manto","textura_del_borde","lisa");
+        Descriptor aDescriptor3 = new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro");
+        Descriptor aDescriptor4 = new SSCharacterDescriptor("cuerpo","conformacion","tiene_cerata");
 
         assertTrue(instance.addToTUnmatchedDescription(aDescriptor1));
         assertSame(1,instance.getTUnmatchedDescription().size());
@@ -208,20 +186,11 @@ searchIndex = new HashMap<Descriptor<Object>, List<Taxon>>();
         List<Taxon> aTaxonList = new ArrayList<Taxon>();
         Taxon taxon1,taxon2,taxon3,taxon4;
 
-        taxon1 = new Taxon();
-        taxon2 = new Taxon();
-        taxon3 = new Taxon();
-        taxon4 = new Taxon();
-
-        taxon1.setName("Chromodorididae");
-        taxon1.setLevel(TaxonomicRank.FAMILY);
-        taxon2.setName("Chromodoris");
-        taxon2.setLevel(TaxonomicRank.GENUS);
-        taxon3.setName("Chromodoris_sphoni");
-        taxon3.setLevel(TaxonomicRank.SPECIES);
-        taxon4.setName("Chromodoris_clenchi");
-        taxon4.setLevel(TaxonomicRank.SPECIES);
-
+    	taxon1 = new Taxon(TaxonomicRank.FAMILY, "Chromodorididae");
+    	taxon2 = new Taxon(TaxonomicRank.GENUS, "Chromodoris");
+        taxon3 = new Taxon(TaxonomicRank.SPECIES, "Chromodoris sphoni");
+        taxon4 = new Taxon(TaxonomicRank.SPECIES, "Chromodoris clenchi");
+        
         aTaxonList.add(taxon1);
         aTaxonList.add(taxon2);
         aTaxonList.add(taxon3);
@@ -244,10 +213,10 @@ searchIndex = new HashMap<Descriptor<Object>, List<Taxon>>();
     public void testCheckPrecondition() {
         System.out.println("checkPrecondition");
         TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton(searchIndex,SimilarityDegree.DIFERENTE);
-        List<Descriptor<Object>> aProblemDescription = new ArrayList<Descriptor<Object>>();
-        CharacterDescriptor<Object> cD1,cD2,cD3,cD4;
+        List<Descriptor> aProblemDescription = new ArrayList<Descriptor>();
+        SSCharacterDescriptor cD1,cD2,cD3,cD4;
 
-        cD1 = new CharacterDescriptor<Object>("manto","forma","alargo");
+        cD1 = new SSCharacterDescriptor("manto","forma","alargo");
 
 
         assertFalse(instance.checkPrecondition(aProblemDescription));
@@ -256,9 +225,9 @@ searchIndex = new HashMap<Descriptor<Object>, List<Taxon>>();
 
         assertTrue(instance.checkPrecondition(aProblemDescription));
 
-        cD2 = new CharacterDescriptor<Object>("manto","forma","ovalado");
-        cD3 = new CharacterDescriptor<Object>("manto","forma","cuadrado");
-        cD4 = new CharacterDescriptor<Object>("manto","forma","redondo");
+        cD2 = new SSCharacterDescriptor("manto","forma","ovalado");
+        cD3 = new SSCharacterDescriptor("manto","forma","cuadrado");
+        cD4 = new SSCharacterDescriptor("manto","forma","redondo");
 
         aProblemDescription.add(cD2);
         aProblemDescription.add(cD3);
@@ -266,7 +235,7 @@ searchIndex = new HashMap<Descriptor<Object>, List<Taxon>>();
 
         assertTrue(instance.checkPrecondition(aProblemDescription));
 
-        aProblemDescription.add(new CharacterDescriptor<Object>("DISTINCT STRUCTURE","forma","redondo"));
+        aProblemDescription.add(new SSCharacterDescriptor("DISTINCT STRUCTURE","forma","redondo"));
 
         assertFalse(instance.checkPrecondition(aProblemDescription));
     }
@@ -279,10 +248,10 @@ searchIndex = new HashMap<Descriptor<Object>, List<Taxon>>();
         System.out.println("prepareFailedOutput");
         TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton(searchIndex,SimilarityDegree.DIFERENTE);
 
-        List<Descriptor<Object>> aDescriptorList = new ArrayList<Descriptor<Object>>();
-        aDescriptorList.add(new CharacterDescriptor<Object>("cuerpo","posicion_de_la_banda_dorsal_continua","centro"));
-        aDescriptorList.add(new CharacterDescriptor<Object>("manto","forma","elongado_y_ovalado"));
-        aDescriptorList.add(new CharacterDescriptor<Object>("radula","posicion_del_diente_mas_conspicuo","centro"));
+        List<Descriptor> aDescriptorList = new ArrayList<Descriptor>();
+        aDescriptorList.add(new SSCharacterDescriptor("cuerpo","posicion_de_la_banda_dorsal_continua","centro"));
+        aDescriptorList.add(new SSCharacterDescriptor("manto","forma","elongado_y_ovalado"));
+        aDescriptorList.add(new SSCharacterDescriptor("radula","posicion_del_diente_mas_conspicuo","centro"));
 
         assertTrue(instance.prepareFailedOutput());
 
@@ -322,7 +291,7 @@ searchIndex = new HashMap<Descriptor<Object>, List<Taxon>>();
         System.out.println("beginWith");
         TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton(searchIndex,SimilarityDegree.CONSIDERABLEMENTESIMILAR);
 
-        List<Descriptor<Object>> aProblemDescription = new ArrayList<Descriptor<Object>>();
+        List<Descriptor> aProblemDescription = new ArrayList<Descriptor>();
 
         /*
          * Empty Problem Description
@@ -331,8 +300,8 @@ searchIndex = new HashMap<Descriptor<Object>, List<Taxon>>();
         assertEquals(SearchStatus.ERROR, instance.beginWith(aProblemDescription));
 
 
-        aProblemDescription.add(new CharacterDescriptor<Object>("cuerpo","forma","alargado"));
-        aProblemDescription.add(new CharacterDescriptor<Object>("diferent structure","forma","corta"));
+        aProblemDescription.add(new SSCharacterDescriptor("cuerpo","forma","alargado"));
+        aProblemDescription.add(new SSCharacterDescriptor("diferent structure","forma","corta"));
 
         /*
          * not same structure.
@@ -342,9 +311,9 @@ searchIndex = new HashMap<Descriptor<Object>, List<Taxon>>();
 
 
 
-        aProblemDescription = new ArrayList<Descriptor<Object>>();
-        aProblemDescription.add(new CharacterDescriptor<Object>("tentaculos_orales","contextura","surcado"));
-        aProblemDescription.add(new CharacterDescriptor<Object>("tentaculos_orales","contextura","macizo"));
+        aProblemDescription = new ArrayList<Descriptor>();
+        aProblemDescription.add(new SSCharacterDescriptor("tentaculos_orales","contextura","surcado"));
+        aProblemDescription.add(new SSCharacterDescriptor("tentaculos_orales","contextura","macizo"));
 
         /*
          * not description that match with a taxon.
@@ -353,9 +322,9 @@ searchIndex = new HashMap<Descriptor<Object>, List<Taxon>>();
 
 
 
-        aProblemDescription = new ArrayList<Descriptor<Object>>();
-        aProblemDescription.add(new CharacterDescriptor<Object>("cuerpo","forma","alargado"));
-        aProblemDescription.add(new CharacterDescriptor<Object>("cuerpo","forma","corta"));
+        aProblemDescription = new ArrayList<Descriptor>();
+        aProblemDescription.add(new SSCharacterDescriptor("cuerpo","forma","alargado"));
+        aProblemDescription.add(new SSCharacterDescriptor("cuerpo","forma","corta"));
 
 
 
@@ -368,9 +337,9 @@ searchIndex = new HashMap<Descriptor<Object>, List<Taxon>>();
     @Test
     public void testSearchPossibleSolutions() {
         System.out.println("searchPossibleSolutions");
-        List<Descriptor<Object>> aProblemDescription = new ArrayList<Descriptor<Object>>();
-        aProblemDescription.add(new CharacterDescriptor<Object>("cuerpo","forma","alargado"));
-        aProblemDescription.add(new CharacterDescriptor<Object>("cuerpo","forma","corta"));
+        List<Descriptor> aProblemDescription = new ArrayList<Descriptor>();
+        aProblemDescription.add(new SSCharacterDescriptor("cuerpo","forma","alargado"));
+        aProblemDescription.add(new SSCharacterDescriptor("cuerpo","forma","corta"));
 
         TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton(searchIndex,SimilarityDegree.MEDIANAMENTESIMILAR);
         assertTrue( instance.searchPossibleSolutions(aProblemDescription));
@@ -386,7 +355,7 @@ searchIndex = new HashMap<Descriptor<Object>, List<Taxon>>();
         /*
          * Descriptor that exist on taxon1
          */
-        Descriptor<Object> aDescriptor = new CharacterDescriptor<Object>("cuerpo","forma","alargado");
+        Descriptor aDescriptor = new SSCharacterDescriptor("cuerpo","forma","alargado");
 
         assertSame(taxon1, instance.determineSimilarityFor(aDescriptor, taxon1));
         /*

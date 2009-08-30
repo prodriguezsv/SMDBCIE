@@ -14,7 +14,10 @@ import javax.swing.JOptionPane;
 import ontology.CBR.Case;
 import ontology.common.CharacterDescriptor;
 import ontology.common.Descriptor;
-import ontology.common.HeuristicDescriptor;
+import ontology.common.SSCharacterDescriptor;
+import ontology.common.SSHeuristicDescriptor;
+import ontology.common.SVCharacterDescriptor;
+import ontology.common.SVHeuristicDescriptor;
 
 import redundantDiscriminationNet.auxiliary.ComparingTable;
 import redundantDiscriminationNet.auxiliary.ComparingTableTuple;
@@ -47,7 +50,7 @@ public class RDNet {
 	/**
 	 * 	Case-To-Insert description, used to traverse the net, and create new Norms and indices.
 	 */
-	private List<Descriptor<Object>> ciDescription;
+	private List<Descriptor> ciDescription;
 	/**
 	 * Pointer to the current Norm during net traversal.
 	 */
@@ -65,7 +68,7 @@ public class RDNet {
 		setRoute(new Stack<String>());
 		setCaseToInsert(null);
 		setCasesToCompare(new Stack<Case>());
-		setCiDescription(new ArrayList<Descriptor<Object>>());
+		setCiDescription(new ArrayList<Descriptor>());
 		setCurrentNorm(null);
 		setProblemSolutions(new ProblemSolutions());
 	}
@@ -159,7 +162,7 @@ public class RDNet {
 	 * M&eacute;todo accesor de escritura
 	 * @param ciDesc
 	 */
-	public void setCiDescription(List<Descriptor<Object>> ciDesc) {
+	public void setCiDescription(List<Descriptor> ciDesc) {
 		this.ciDescription = ciDesc;
 	}
 
@@ -168,7 +171,7 @@ public class RDNet {
 	 * @see "M&eacute;todo caseToInsertDesc del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Descriptor<Object>> getCiDescription() {
+	public List<Descriptor> getCiDescription() {
 		return ciDescription;
 	}
 	
@@ -177,7 +180,7 @@ public class RDNet {
 	 * @param aCase
 	 */
 	public void setCiDescription(Case aCase) {
-		List<Descriptor<Object>> desc;
+		List<Descriptor> desc;
 		
 		desc = aCase.getDescription(this.getRoot().getStructure());
 		
@@ -242,7 +245,7 @@ public class RDNet {
 	 * @return
 	 */
 	private void processCase() {
-		Descriptor<Object> d;
+		Descriptor d;
 		Index ix;
 		SheetCase sc;
 		Node n;
@@ -302,8 +305,8 @@ public class RDNet {
 	 * @param aDescriptor
 	 * @param aNumber
 	 */
-	private void moveToNorm(Descriptor<Object> aDescriptor, int aNumber) {
-		List<Descriptor<Object>> tmpDesc;
+	private void moveToNorm(Descriptor aDescriptor, int aNumber) {
+		List<Descriptor> tmpDesc;
 		
 		this.setCurrentNorm(this.getCurrentNorm().getNearestSuccessorNorm(aDescriptor));
 		this.getCurrentNorm().incrementNumCasesBy(aNumber);
@@ -323,7 +326,7 @@ public class RDNet {
 		
 		// Save current state of ciDescription, since a totally new checking process (with ciDescription)
 		// will take place, considering all description elements
-		tmpDesc = new ArrayList<Descriptor<Object>>();
+		tmpDesc = new ArrayList<Descriptor>();
 		this.moveDescElements(this.getCiDescription(), tmpDesc);
 		this.setCiDescription(this.getCaseToInsert());
 
@@ -346,7 +349,7 @@ public class RDNet {
 	 * @param aNodeList
 	 * @param aSuccessor
 	 */
-	private void processCICCWithCIDescEmpty(Descriptor<Object> aDescriptor, Index anIndex, SheetCase sc) {
+	private void processCICCWithCIDescEmpty(Descriptor aDescriptor, Index anIndex, SheetCase sc) {
 		boolean CIInserted;
 		boolean CCInserted;
 		Norm norm;
@@ -404,7 +407,7 @@ public class RDNet {
 	 * @param aNodeList
 	 * @param aSuccessor
 	 */
-	private void processCICCWithCIDescNotEmpty(Descriptor<Object> aDescriptor, Index anIndex, SheetCase sc) {
+	private void processCICCWithCIDescNotEmpty(Descriptor aDescriptor, Index anIndex, SheetCase sc) {
 		Norm norm;
 		
 		norm = new Norm(aDescriptor);
@@ -443,7 +446,7 @@ public class RDNet {
 	private void whenCCExists() {
 		ComparingTable table;
 		ComparingTableTuple<Object> tuple;
-		Descriptor<Object> d;
+		Descriptor d = null;
 		Norm norm;
 		Index ix;
 		boolean arevaluesequal;
@@ -511,26 +514,53 @@ public class RDNet {
 			if (!(arevaluesequal)) {
 				// If the case-to-insert value is non-null, attach it to the index
 				if (!(tuple.getACIValue() == null)) {
-					if (this.getRoot().getDescriptor() instanceof CharacterDescriptor)
-						d = new CharacterDescriptor<Object>();
-					else d = new HeuristicDescriptor<Object>();
+					if (this.getRoot().getDescriptor() instanceof CharacterDescriptor) {
+						if (this.getRoot().getDescriptor() instanceof SVCharacterDescriptor)
+							d = new SVCharacterDescriptor();
+						else if (this.getRoot().getDescriptor() instanceof SSCharacterDescriptor)
+							d = new SSCharacterDescriptor();
+					} else {
+						if (this.getRoot().getDescriptor() instanceof SVHeuristicDescriptor)
+							d = new SVHeuristicDescriptor();
+						else if (this.getRoot().getDescriptor() instanceof SSHeuristicDescriptor)
+							d = new SSHeuristicDescriptor();
+					}
+					
 					d.set(this.getRoot().getStructure(), tuple.getAttribute(), tuple.getACIValue());
 					this.addSuccessorCase(this.getCaseToInsert(), ix, d);
 				}
 				
 				// If the case-to-compare value is non-nil, attach it to the index"
 				if (!(tuple.getACCValue() == null)) {
-					if (this.getRoot().getDescriptor() instanceof CharacterDescriptor)
-						d = new CharacterDescriptor<Object>();
-					else d = new HeuristicDescriptor<Object>();
+					if (this.getRoot().getDescriptor() instanceof CharacterDescriptor) {
+						if (this.getRoot().getDescriptor() instanceof SVCharacterDescriptor)
+							d = new SVCharacterDescriptor();
+						else if (this.getRoot().getDescriptor() instanceof SSCharacterDescriptor)
+							d = new SSCharacterDescriptor();
+					} else {
+						if (this.getRoot().getDescriptor() instanceof SVHeuristicDescriptor)
+							d = new SVHeuristicDescriptor();
+						else if (this.getRoot().getDescriptor() instanceof SSHeuristicDescriptor)
+							d = new SSHeuristicDescriptor();
+					}
+					
 					d.set(this.getRoot().getStructure(), tuple.getAttribute(), tuple.getACCValue());
 					this.addSuccessorCase(this.getCaseToCompare(), ix, d);
 				}
 			} else {
 				// Create an empty norm and fill its values
-				if (this.getRoot().getDescriptor() instanceof CharacterDescriptor)
-					d = new CharacterDescriptor<Object>();
-				else d = new HeuristicDescriptor<Object>();
+				if (this.getRoot().getDescriptor() instanceof CharacterDescriptor) {
+					if (this.getRoot().getDescriptor() instanceof SVCharacterDescriptor)
+						d = new SVCharacterDescriptor();
+					else if (this.getRoot().getDescriptor() instanceof SSCharacterDescriptor)
+						d = new SSCharacterDescriptor();
+				} else {
+					if (this.getRoot().getDescriptor() instanceof SVHeuristicDescriptor)
+						d = new SVHeuristicDescriptor();
+					else if (this.getRoot().getDescriptor() instanceof SSHeuristicDescriptor)
+						d = new SSHeuristicDescriptor();
+				}
+				
 				d.set(this.getRoot().getStructure(), tuple.getAttribute(), tuple.getACCValue());
 				norm = new Norm(d);
 				norm.incrementNumCasesBy(2);
@@ -561,7 +591,7 @@ public class RDNet {
 	 * @param predecessor
 	 * @param d
 	 */
-	private void addSuccessorCase(Case aCase, Node predecessor, Descriptor<Object> d) {
+	private void addSuccessorCase(Case aCase, Node predecessor, Descriptor d) {
 		SheetCase sc;
 		
 		// Place the case as successor of predecessor
@@ -585,11 +615,11 @@ public class RDNet {
 	 * @return
 	 */
 	protected boolean isCaseDescriptionUsedUp(Case c) {
-		List<Descriptor<Object>> description, descriptionCopy;
+		List<Descriptor> description, descriptionCopy;
 		
 		description = c.getDescription(this.getRoot().getStructure());
-		descriptionCopy = new ArrayList<Descriptor<Object>>(description);
-		for (Descriptor<Object> d:description) {
+		descriptionCopy = new ArrayList<Descriptor>(description);
+		for (Descriptor d:description) {
 			if (this.getRoute().contains(d.getAttribute())) {
 				descriptionCopy.remove(d);
 			}
@@ -618,7 +648,7 @@ public class RDNet {
 	 * @param anotherDescList
 	 * @return
 	 */
-	protected boolean moveDescElements(List<Descriptor<Object>> oneDescList, List<Descriptor<Object>> anotherDescList) {
+	protected boolean moveDescElements(List<Descriptor> oneDescList, List<Descriptor> anotherDescList) {
 		if (oneDescList.isEmpty() || !anotherDescList.isEmpty()) return false;
 		
 		while (!oneDescList.isEmpty()) {
@@ -655,12 +685,12 @@ public class RDNet {
 	 * @see "M&eacute;todo removeMatchingElementsInTheRouteFrom: del protocolo removing en SUKIA SmallTalk"
 	 * @param aDescriptionList
 	 */
-	protected List<Descriptor<Object>> removeMatchingElementsInTheRoute(List<Descriptor<Object>> aDescriptionList) {
-		List<Descriptor<Object>> aDescriptionListCopy;
+	protected List<Descriptor> removeMatchingElementsInTheRoute(List<Descriptor> aDescriptionList) {
+		List<Descriptor> aDescriptionListCopy;
 		
-		aDescriptionListCopy = new ArrayList<Descriptor<Object>>(aDescriptionList);
+		aDescriptionListCopy = new ArrayList<Descriptor>(aDescriptionList);
 		
-		for (Descriptor<Object> d: aDescriptionListCopy) {
+		for (Descriptor d: aDescriptionListCopy) {
 			if (this.getRoute().contains(d.getAttribute()))
 				aDescriptionList.remove(d);
 		}
@@ -704,7 +734,7 @@ public class RDNet {
 	 */
 	// Ojo Casos de prueba pendientes
 	private void computeWeights() {
-		List<Descriptor<Object>> description;
+		List<Descriptor> description;
 		Index actIndex;
 		Node successor;
 		
@@ -712,7 +742,7 @@ public class RDNet {
 			.getDescription(this.getRoot().getStructure()); // Ojo hay que verificar está parte
 		
 		// Para cada descriptor del caso problema
-		for(Descriptor<Object> d: description) {
+		for(Descriptor d: description) {
 			if (!(this.getRoute().contains(d.getAttribute()))) { 
 				// Indice correspondiente a descriptor del caso problema. 
       		 	actIndex =  this.getCurrentNorm().getSuccessorIndex(d);
@@ -801,7 +831,7 @@ public class RDNet {
 	// Ojo Casos de prueba pendientes
 	private void nextBestMatch() {
 		int mostPredictivePos;
-		Descriptor<Object> mostPredictiveDescriptor;
+		Descriptor mostPredictiveDescriptor;
 		Index predictiveIndex;
 		Node successor;
 		
@@ -868,7 +898,7 @@ public class RDNet {
 	// Ojo Casos de prueba pendientes
 	private void readProblemCase() {
 		List<Index> rootIndexes;
-		Descriptor<Object> desc;
+		Descriptor desc = null;
 		String value;
 		Object simbolValue;
 		
@@ -878,9 +908,17 @@ public class RDNet {
 		this.problemSolutions.setToDefault();
 
 		// Ojo verificar esta parte
-		if (this.getRoot().getDescriptor() instanceof CharacterDescriptor)
-			desc = new CharacterDescriptor<Object>();
-		else desc = new HeuristicDescriptor<Object>();
+		if (this.getRoot().getDescriptor() instanceof CharacterDescriptor) {
+			if (this.getRoot().getDescriptor() instanceof SVCharacterDescriptor)
+				desc = new SVCharacterDescriptor();
+			else if (this.getRoot().getDescriptor() instanceof SSCharacterDescriptor)
+				desc = new SSCharacterDescriptor();
+		} else {
+			if (this.getRoot().getDescriptor() instanceof SVHeuristicDescriptor)
+				desc = new SVHeuristicDescriptor();
+			else if (this.getRoot().getDescriptor() instanceof SSHeuristicDescriptor)
+				desc = new SSHeuristicDescriptor();
+		}
 
 		for(Index ix: rootIndexes) {
 			value =  JOptionPane.showInputDialog(ix.getLabel());

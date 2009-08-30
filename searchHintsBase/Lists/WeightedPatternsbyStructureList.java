@@ -54,7 +54,7 @@ public class WeightedPatternsbyStructureList extends HintsList<WeightedPatternsb
 	 * @see "M&eacute;todo sortByFailureCriteria: del protocolo sorting en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Descriptor<Object>> sortByMeanWeightCriteria(List<Descriptor<Object>> descriptors) {
+	public List<Descriptor> sortByMeanWeightCriteria(List<Descriptor> descriptors) {
 		return this.getSortedDescriptorsList(descriptors, 
 				new Comparator<WeightedDescriptorPattern>() {
 					public int compare(WeightedDescriptorPattern elem1, WeightedDescriptorPattern elem2) {
@@ -126,18 +126,18 @@ public class WeightedPatternsbyStructureList extends HintsList<WeightedPatternsb
 	 * sorted by mean weight.
 	 */
 	@SuppressWarnings("unchecked")
-	private List<Descriptor<Object>> getSortedDescriptorsList(List<Descriptor<Object>> description, Comparator c) {
-		List<Descriptor<Object>> tempList, leftOvers;
+	private List<Descriptor> getSortedDescriptorsList(List<Descriptor> description, Comparator c) {
+		List<Descriptor> tempList, leftOvers;
 		List<WeightedDescriptorPattern> sortedList;
 		WeightedPatternsbyStructure wpbs;
-		Descriptor<Object> descriptor;
+		Descriptor descriptor;
 		WeightedDescriptorPattern wdp;
 		int numElements, numProcessedElts, i;
 		
 		// First thing is to set the number of processed items to 0
 		this.resetPercentageItemsProcessed();
 
-		tempList = new ArrayList<Descriptor<Object>>();
+		tempList = new ArrayList<Descriptor>();
 
 		// Check precondition
 		if (this.isEmpty() || description.isEmpty())
@@ -148,7 +148,7 @@ public class WeightedPatternsbyStructureList extends HintsList<WeightedPatternsb
 		if (wpbs == null) return tempList;
 		sortedList = new ArrayList<WeightedDescriptorPattern>();
 		
-		leftOvers = new ArrayList<Descriptor<Object>>();
+		leftOvers = new ArrayList<Descriptor>();
 		
 		while (!(description.isEmpty())) {
 			descriptor = description.remove(0);

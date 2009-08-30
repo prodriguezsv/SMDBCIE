@@ -5,7 +5,9 @@ package searchHintsBase.Elements.test;
 
 import static org.junit.Assert.*;
 
-import ontology.common.CharacterDescriptor;
+import ontology.common.SSCharacterDescriptor;
+import ontology.common.SVCharacterDescriptor;
+import ontology.values.SingleValue;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -64,18 +66,18 @@ public class SpecificPatternsbyStructureTest {
 		System.out.println("Iniciando pruebas para el método AddPattern()");
 		
 		System.out.println("Verificar que un patron de descriptores se agrega correctamente");
-		assertTrue(patterns.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3), 1)));
+		assertTrue(patterns.addPattern(new SpecificDescriptorPattern(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)), 1)));
 		
-		assertTrue(patterns.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3), 1)));
+		assertTrue(patterns.addPattern(new SpecificDescriptorPattern(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)), 1)));
 		assertTrue(patterns.getPatterns().get(0).getFrequency() == 2);
 	
-		assertTrue(patterns.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata"), 10)));
+		assertTrue(patterns.addPattern(new SpecificDescriptorPattern(new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata"), 10)));
 		assertTrue(patterns.getPatterns().get(0).getFrequency() == 10);
 		
 		System.out.println("Verificar que un patron de descriptores incompatible o incorrecto no se agrega");
 		assertFalse(patterns.addPattern(null));
 		
-		assertFalse(patterns.addPattern(new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Branquias", "Número de hojas branquiales", 6), 1)));
+		assertFalse(patterns.addPattern(new SpecificDescriptorPattern(new SVCharacterDescriptor("Branquias", "Número de hojas branquiales", new SingleValue(6)), 1)));
 	}
 
 	/**
@@ -88,7 +90,7 @@ public class SpecificPatternsbyStructureTest {
 		System.out.println("Iniciando pruebas para el método Contains()");
 		
 		System.out.println("Verificar que no contiene una referencia");
-		specificDescriptorPattern = new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata"), 1);
+		specificDescriptorPattern = new SpecificDescriptorPattern(new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata"), 1);
 		assertFalse(patterns.contains(specificDescriptorPattern));
 		
 		System.out.println("Verificar que sí contiene una referencia");
@@ -106,7 +108,7 @@ public class SpecificPatternsbyStructureTest {
 		System.out.println("Iniciando pruebas para el método ContainsString()");
 		
 		System.out.println("Verificar que no contiene una referencia");
-		specificDescriptorPattern = new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Cuerpo", "Conformación", "Tiene cerata"), 1);
+		specificDescriptorPattern = new SpecificDescriptorPattern(new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata"), 1);
 		assertNull(patterns.getPattern(specificDescriptorPattern.getPattern()));
 		
 		System.out.println("Verificar que sí contiene una referencia");

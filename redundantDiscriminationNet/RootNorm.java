@@ -22,7 +22,7 @@ public class RootNorm extends Norm {
 	 * Constructor de la clase
 	 * @see "M&eacute;todo initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public RootNorm(Descriptor<Object> aDescriptor) {
+	public RootNorm(Descriptor aDescriptor) {
 		super(aDescriptor);
 	}
 	
@@ -30,7 +30,7 @@ public class RootNorm extends Norm {
 	 * @see "M&eacute;todo descriptor del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public Descriptor<Object> getDescriptor() {
+	public Descriptor getDescriptor() {
 		return null;
 	}
 	
@@ -40,14 +40,6 @@ public class RootNorm extends Norm {
 	 */
 	public void setPredecessor(Node aSuccessor) {
 		
-	}
-	
-	/**
-	 * @see "M&eacute;todo addStructure: del protocolo adding-private en SUKIA SmallTalk"
-	 * @param structure
-	 */
-	public void setStructure(String structure) {
-		super.getDescriptor().setStructure(structure);
 	}
 	
 	/**

@@ -21,7 +21,7 @@ public class DescriptorsPattern implements Comparable<DescriptorsPattern> {
 	/**
 	 * Patr&oacute;n utilizado en la resoluci&oacute;n de un(os) caso(s) previo(s)
 	 */
-	private List<Descriptor<Object>> pattern;
+	private List<Descriptor> pattern;
 	/**
 	 * N&uacute;mero de casos previos resueltos positivamente con este patr&oacute;n
 	 */
@@ -36,7 +36,7 @@ public class DescriptorsPattern implements Comparable<DescriptorsPattern> {
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
 	public DescriptorsPattern() {
-		setPattern(new ArrayList<Descriptor<Object>>());
+		setPattern(new ArrayList<Descriptor>());
 		setSuccessFrequency(0);
 		setFailureFrequency(0);
 	}
@@ -45,7 +45,7 @@ public class DescriptorsPattern implements Comparable<DescriptorsPattern> {
 	 * M&eacute;todo constructor alternativo
 	 * @see "M&eacute;todo initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public DescriptorsPattern(List<Descriptor<Object>> pattern, int sf, int ff) {
+	public DescriptorsPattern(List<Descriptor> pattern, int sf, int ff) {
 		setPattern(pattern);
 		setSuccessFrequency(sf);
 		setFailureFrequency(ff);
@@ -120,7 +120,7 @@ public class DescriptorsPattern implements Comparable<DescriptorsPattern> {
 	 * M&eacute;todo accesor de escritura
 	 * @param pattern
 	 */
-	public void setPattern(List<Descriptor<Object>> pattern) {
+	public void setPattern(List<Descriptor> pattern) {
 		this.pattern = pattern;
 	}
 
@@ -129,7 +129,7 @@ public class DescriptorsPattern implements Comparable<DescriptorsPattern> {
 	 * @see "M&eacute;todo pattern del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Descriptor<Object>> getPattern() {
+	public List<Descriptor> getPattern() {
 		return pattern;
 	}
 	
@@ -138,7 +138,7 @@ public class DescriptorsPattern implements Comparable<DescriptorsPattern> {
 	 * @param aDescriptor
 	 * @return
 	 */
-	public boolean addDescriptor(Descriptor<Object> aDescriptor) {
+	public boolean addDescriptor(Descriptor aDescriptor) {
 		if (aDescriptor == null)
 			return false;
 		
@@ -161,11 +161,11 @@ public class DescriptorsPattern implements Comparable<DescriptorsPattern> {
 	 * @param aPattern
 	 * @return v = 0 if they are different; 0 < v < 1 if they are similar in v%; v = 1 if they are equal.
 	 */
-	public double howSimilarTo(List<Descriptor<Object>> aPattern) {
+	public double howSimilarTo(List<Descriptor> aPattern) {
 		int c;
 		
 		c = 0;
-		for (Descriptor<Object> d:aPattern)
+		for (Descriptor d:aPattern)
 			if (this.getPattern().contains(d))
 				c = c + 1;
 
@@ -181,10 +181,10 @@ public class DescriptorsPattern implements Comparable<DescriptorsPattern> {
 	 * @see "M&eacute;todo thereAreContradictions: del protocolo testing en SUKIA SmallTalk"
 	 * @return
 	 */
-	private boolean areThereContradictions(Descriptor<Object> aDescriptor) {
+	private boolean areThereContradictions(Descriptor aDescriptor) {
 		
 		// Para cada par (atributo, valor) de aCase.
-		for(Descriptor<Object> d: this.getPattern()) {
+		for(Descriptor d: this.getPattern()) {
 			if (d.getStructure().equals(aDescriptor.getStructure()) &&
 					d.getAttribute().equals(aDescriptor.getAttribute())	) {
 					return true; // Hay contradiccion

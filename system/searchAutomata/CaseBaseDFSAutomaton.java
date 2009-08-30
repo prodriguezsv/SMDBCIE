@@ -37,12 +37,12 @@ public class CaseBaseDFSAutomaton {
     public Norm currentNorm;
     public int currentLevel;
     public int stopLevel;
-    private List<Descriptor<Object>> tSolutionDesc;
-    private List<Descriptor<Object>> tConfirmedDesc;
-    private List<Descriptor<Object>> tUnconfirmedDesc;
-    private List<Descriptor<Object>> tDoubtfulDesc;
-    private List<Descriptor<Object>> tUnmatchedDesc;
-    private List<Descriptor<Object>> justification;
+    private List<Descriptor> tSolutionDesc;
+    private List<Descriptor> tConfirmedDesc;
+    private List<Descriptor> tUnconfirmedDesc;
+    private List<Descriptor> tDoubtfulDesc;
+    private List<Descriptor> tUnmatchedDesc;
+    private List<Descriptor> justification;
     public SearchStatus status;
     public CaseBaseDFSAutomatonOutput searchOutput;
 
@@ -56,12 +56,12 @@ public class CaseBaseDFSAutomaton {
         currentNorm = null;
         resetLevel();
         setStopLevel(currentLevel);
-        tSolutionDesc = new ArrayList<Descriptor<Object>>();
-        tConfirmedDesc = new ArrayList<Descriptor<Object>>();
-        tUnconfirmedDesc = new ArrayList<Descriptor<Object>>();
-        tDoubtfulDesc = new ArrayList<Descriptor<Object>>();
-        tUnmatchedDesc = new ArrayList<Descriptor<Object>>();
-        justification = new ArrayList<Descriptor<Object>>();
+        tSolutionDesc = new ArrayList<Descriptor>();
+        tConfirmedDesc = new ArrayList<Descriptor>();
+        tUnconfirmedDesc = new ArrayList<Descriptor>();
+        tDoubtfulDesc = new ArrayList<Descriptor>();
+        tUnmatchedDesc = new ArrayList<Descriptor>();
+        justification = new ArrayList<Descriptor>();
         newOutput();
         status = SearchStatus.FAIL;
     }
@@ -90,7 +90,7 @@ public class CaseBaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public void addJustification(Descriptor<Object> aJustificationElement){
+    public void addJustification(Descriptor aJustificationElement){
         justification.add(aJustificationElement);
     }
     
@@ -143,7 +143,7 @@ public class CaseBaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public void addToTConfirmedDescription(Descriptor<Object> aSAVDescriptor){
+    public void addToTConfirmedDescription(Descriptor aSAVDescriptor){
         tConfirmedDesc.add(aSAVDescriptor);
     }
     
@@ -152,7 +152,7 @@ public class CaseBaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public void addToTDoubtfulDescription(Descriptor<Object> aSAVDescriptor){
+    public void addToTDoubtfulDescription(Descriptor aSAVDescriptor){
         tDoubtfulDesc.add(aSAVDescriptor);
     }
     
@@ -161,7 +161,7 @@ public class CaseBaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public void addToTSolutionDescription(Descriptor<Object> aSAVDescriptor){
+    public void addToTSolutionDescription(Descriptor aSAVDescriptor){
         tSolutionDesc.add(aSAVDescriptor);
     }
     
@@ -170,7 +170,7 @@ public class CaseBaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public void addToTUnconfirmedDescription(Descriptor<Object> aSAVDescriptor){
+    public void addToTUnconfirmedDescription(Descriptor aSAVDescriptor){
         tUnconfirmedDesc.add(aSAVDescriptor);
     }
     /**
@@ -178,7 +178,7 @@ public class CaseBaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public void addToTUnmatchedDescription(Descriptor<Object> aSAVDescriptor){
+    public void addToTUnmatchedDescription(Descriptor aSAVDescriptor){
         tUnmatchedDesc.add(aSAVDescriptor);
     }
 
@@ -204,7 +204,7 @@ public class CaseBaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public List<Descriptor<Object>> getJustification(){
+    public List<Descriptor> getJustification(){
         return justification;
     }
     
@@ -257,7 +257,7 @@ public class CaseBaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public List<Descriptor<Object>> getTConfirmedDescription(){
+    public List<Descriptor> getTConfirmedDescription(){
         return tConfirmedDesc;
     }
 
@@ -266,7 +266,7 @@ public class CaseBaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public List<Descriptor<Object>> getTDoubtfulDescription(){
+    public List<Descriptor> getTDoubtfulDescription(){
     	return tDoubtfulDesc;
     }
     
@@ -275,7 +275,7 @@ public class CaseBaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public List<Descriptor<Object>> getTSolutionDescription(){
+    public List<Descriptor> getTSolutionDescription(){
         return tSolutionDesc;
     }
     
@@ -284,7 +284,7 @@ public class CaseBaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public List<Descriptor<Object>> getTUnconfirmedDescription(){
+    public List<Descriptor> getTUnconfirmedDescription(){
         return tUnconfirmedDesc;
     }
     
@@ -293,7 +293,7 @@ public class CaseBaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public List<Descriptor<Object>> getTUnmatchedDescription(){
+    public List<Descriptor> getTUnmatchedDescription(){
         return tUnmatchedDesc;
     }
 
@@ -344,11 +344,11 @@ public class CaseBaseDFSAutomaton {
      * or if the Descriptor<Object> was not found in tConfirmedDescriptor;
      * self - if all OK.
 	 */
-    public boolean removeFromTConfirmedDescription(Descriptor<Object> descritor){
+    public boolean removeFromTConfirmedDescription(Descriptor descritor){
         
         if (currentLevel <= stopLevel) return false;
         
-        for (Descriptor<Object> tcd : getTConfirmedDescription()) {
+        for (Descriptor tcd : getTConfirmedDescription()) {
             if (tcd.equals(descritor)) {
                 addToTUnconfirmedDescription(getTConfirmedDescription()
                 		.remove(getTConfirmedDescription().indexOf(tcd)));
@@ -414,7 +414,7 @@ public class CaseBaseDFSAutomaton {
 	 * @return self : if the process ran OK; cancel : is the user cancels; -1 : error value, if the
 	 * precondition is not met.
  	 */
-    public SearchStatus searchForCasesUnderCurrNormUsing(List<Descriptor<Object>> aProblemDescription,
+    public SearchStatus searchForCasesUnderCurrNormUsing(List<Descriptor> aProblemDescription,
     	List<PossibleSolution> aPossibleSolutionsList){
 
         //Check precondition
@@ -422,13 +422,13 @@ public class CaseBaseDFSAutomaton {
             return SearchStatus.ERROR;
 
         //Create the temporary process lists
-        List<Descriptor<Object>>  tempList = new ArrayList<Descriptor<Object>>();
+        List<Descriptor>  tempList = new ArrayList<Descriptor>();
         List<SheetCase> aCaseList = new ArrayList<SheetCase>();
         //Scan the the Descriptor list of the problem description. Look for indices that strictly point to cases
 
         while (aProblemDescription.isEmpty() != true){
             //Remove the next Descriptor<Object>
-            Descriptor<Object> d = aProblemDescription.remove(0);
+            Descriptor d = aProblemDescription.remove(0);
             //Look for a matching index
 
             Index idx = currentNorm.getSuccessorIndex(d);
@@ -486,7 +486,7 @@ public class CaseBaseDFSAutomaton {
 	 * @return true : if the process ran OK; cancel : is the user cancels; false : error value, if the
 	 * precondition is not met.    
 	 */
-    public SearchStatus searchForCasesUnderRootUsing(List<Descriptor<Object>> aProblemDescription,
+    public SearchStatus searchForCasesUnderRootUsing(List<Descriptor> aProblemDescription,
     		List<PossibleSolution> aPossibleSolutionsList){
         //Check precondition
         
@@ -496,13 +496,13 @@ public class CaseBaseDFSAutomaton {
         		&& (!this.getTSolutionDescription().isEmpty())) return SearchStatus.ERROR;
         
         //Create the temporary process lists
-        List<Descriptor<Object>> tempList = new ArrayList<Descriptor<Object>>();
+        List<Descriptor> tempList = new ArrayList<Descriptor>();
         List<SheetCase> aCaseList = new ArrayList<SheetCase>();
 
         //Scan the the Descriptor list of the problem description. Look for indices that strictly point to cases
         while (aProblemDescription.isEmpty() != true){
             //Remove the next Descriptor<Object>
-            Descriptor<Object> d = aProblemDescription.get(0);
+            Descriptor d = aProblemDescription.get(0);
             //Look for a matching index
             Index idx = currentNorm.getSuccessorIndex(d);
 
@@ -552,7 +552,7 @@ public class CaseBaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public SearchStatus searchForCasesUsing(List<Descriptor<Object>> aProblemDescription) {
+    public SearchStatus searchForCasesUsing(List<Descriptor> aProblemDescription) {
         //If the argument search-list is empty, something wrong happened. Return error value
         if (aProblemDescription.isEmpty()) {
         	prepareFailedOutput();
@@ -645,13 +645,13 @@ public class CaseBaseDFSAutomaton {
         //list is that, depending on the output from the root-search, it may be necessary to put all descriptors
         //back in the solution description, in order to try the next search strategy
 
-        List<Descriptor<Object>> tempDeleteSolution = new ArrayList<Descriptor<Object>>();
+        List<Descriptor> tempDeleteSolution = new ArrayList<Descriptor>();
         moveDescriptorsFrom(getTSolutionDescription(),getTUnmatchedDescription(),tempDeleteSolution);
 
         // Same sitution as with the solution description.  In this case, place the confirmed description items in the
         // unconfirmed description, and also copy them to another temporary list
 
-        List<Descriptor<Object>> tempDeleteConfirmed = new ArrayList<Descriptor<Object>>();
+        List<Descriptor> tempDeleteConfirmed = new ArrayList<Descriptor>();
         moveDescriptorsFrom(getTConfirmedDescription(),getTUnconfirmedDescription(),tempDeleteConfirmed);
         
         // Call the search-cases-under-root method with a clean &amp; empty possible solutions list (its part of the precondition)
@@ -726,10 +726,10 @@ public class CaseBaseDFSAutomaton {
         for (SheetCase mycase: aCaseList){
             PossibleSolution ps = new PossibleSolution();
             ps.setSolution(mycase);
-            ps.setSolutionDescription(new ArrayList<Descriptor<Object>>(getTSolutionDescription()));
-            ps.setConfirmedDescription(new ArrayList<Descriptor<Object>>(getTConfirmedDescription()));
-            ps.setUnconfirmedDescription(new ArrayList<Descriptor<Object>>(getTUnconfirmedDescription()));
-            ps.setDoubtfulDescription(new ArrayList<Descriptor<Object>>(getTDoubtfulDescription()));
+            ps.setSolutionDescription(new ArrayList<Descriptor>(getTSolutionDescription()));
+            ps.setConfirmedDescription(new ArrayList<Descriptor>(getTConfirmedDescription()));
+            ps.setUnconfirmedDescription(new ArrayList<Descriptor>(getTUnconfirmedDescription()));
+            ps.setDoubtfulDescription(new ArrayList<Descriptor>(getTDoubtfulDescription()));
             psList.add(ps);
         }
         
@@ -741,9 +741,10 @@ public class CaseBaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    private void deleteDescriptorsIn(List<Descriptor<Object>> aTempDeleteList,List<Descriptor<Object>> aList,List<Descriptor<Object>> anotherList){
+    private void deleteDescriptorsIn(List<Descriptor> aTempDeleteList,List<Descriptor> aList,
+    		List<Descriptor> anotherList){
         for (int i=0;(i<aTempDeleteList.size());i++){
-            Descriptor<Object> d = aTempDeleteList.get(i);
+            Descriptor d = aTempDeleteList.get(i);
             int j = 0;
             while (j<= aList.size()){
                 if ((aList.get(j).getAttribute().equals(d.getAttribute())) &&(aList.get(j).getAttribute().equals(d.getAttribute()))){
@@ -801,7 +802,7 @@ public class CaseBaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    private void flush(List<Descriptor<Object>> aList){
+    private void flush(List<Descriptor> aList){
         aList.clear();
     }
     
@@ -832,9 +833,10 @@ public class CaseBaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    private void moveDescriptorsFrom(List<Descriptor<Object>> aList,List<Descriptor<Object>> anotherList,List<Descriptor<Object>> aCopyList){
+    private void moveDescriptorsFrom(List<Descriptor> aList,List<Descriptor> anotherList,
+    		List<Descriptor> aCopyList){
         while (aList.isEmpty() != true){
-            Descriptor<Object> d  = aList.remove(0);
+            Descriptor d  = aList.remove(0);
             anotherList.add(d);
             aCopyList.add(d);
         }
@@ -844,7 +846,7 @@ public class CaseBaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public void newSearchWith(List<Descriptor<Object>> anOldProblemDescription){
+    public void newSearchWith(List<Descriptor> anOldProblemDescription){
     	//If the automaton returns a non-empty problem description list, then the REASONER MUST call it again with that remaining description,
         // using this method. Before doing so, all lists, except the doubtful and unconfirmed ones, MUST be flushed. Make sure the new search
         // begins at root level, and all necessary control variables are correctly set. This process repeats until the problem description list is EMPTY"
@@ -1000,7 +1002,6 @@ public class CaseBaseDFSAutomaton {
 	 * retrieveCasesUnderNorm fails; cancel - if the user cancels the dialog; fail - if all alternatives
 	 * were rejected (either because they did not match or the user was in doubt)
 	 */
-    @SuppressWarnings("unchecked")
 	public SearchStatus presentChoices(List<Node> alternativeList){
     	String value = null, message;
     	int answer = -1;
@@ -1010,7 +1011,7 @@ public class CaseBaseDFSAutomaton {
     			if (n.getDescriptor().getValue() instanceof String)
     				value = (String)n.getDescriptor().getValue();
     			else if (n.getDescriptor().getValue() instanceof SingleValue)
-    				value = ((SingleValue<Object>)n.getDescriptor().getValue()).getValue().toString();
+    				value = "" + ((SingleValue)n.getDescriptor().getValue()).getValue();
     			
         		// Prepare the inquiry to be presented to the user
         		message = "¿Presenta la estructura" + n.getDescriptor().getStructure() + 
@@ -1069,8 +1070,7 @@ public class CaseBaseDFSAutomaton {
 	 * cancel - if the user cancels; success - if a case was accepted; fail - if index values point to norms,
 	 * or the user rejected possibilities, or a combination of both situtions occurred.
 	 */
-    @SuppressWarnings("unchecked")
-	public SearchStatus searchCasesDialogUsing(Descriptor<Object> aSAVDescriptor, List<PossibleSolution> aPossibleSolutionsList){
+	public SearchStatus searchCasesDialogUsing(Descriptor aSAVDescriptor, List<PossibleSolution> aPossibleSolutionsList){
         //Partial match: Look for an index under the current norm, whose label matches the
         //descriptor's attribute. Disregard the descriptor's value
         Index idx = currentNorm.getSuccessorIndex(aSAVDescriptor.getAttribute());
@@ -1079,7 +1079,7 @@ public class CaseBaseDFSAutomaton {
 
         //The index was found. Create a temporary possible solutions list
         List<SheetCase> aCaseList = new ArrayList<SheetCase>();
-        List<Descriptor<Object>> descriptorList = new ArrayList<Descriptor<Object>>();
+        List<Descriptor> descriptorList = new ArrayList<Descriptor>();
 
         for (Node n:idx.getSuccessors()){
             //Determine if the successor is a norm
@@ -1113,7 +1113,7 @@ public class CaseBaseDFSAutomaton {
         if (aSAVDescriptor.getValue() instanceof String)
 			oldValue = (String) aSAVDescriptor.getValue();
 		else if (aSAVDescriptor.getValue() instanceof SingleValue)
-			oldValue = ((SingleValue<Object>)aSAVDescriptor.getValue()).getValue().toString();
+			oldValue = "" + ((SingleValue)aSAVDescriptor.getValue()).getValue();
         
         String message =	aSAVDescriptor.getStructure()+":" +  aSAVDescriptor.getAttribute()+  "." +
         			"\nNo reconozco el valor " + oldValue + "\nbrindado en la descripción del espécimen." +
@@ -1123,7 +1123,7 @@ public class CaseBaseDFSAutomaton {
     		if (sc.getDescriptor().getValue() instanceof String)
     			message = message + sc.getDescriptor().getValue() + "\n";
     		else if (sc.getDescriptor().getValue() instanceof SingleValue)
-    			message = message + ((SingleValue<Object>)sc.getDescriptor().getValue()).getValue() + "\n";
+    			message = message + ((SingleValue)sc.getDescriptor().getValue()).getValue() + "\n";
     	}
     	
     	String result = JOptionPane.showInputDialog(message);
@@ -1176,13 +1176,13 @@ public class CaseBaseDFSAutomaton {
      * NOTE: The argument aProblemDescription is a non-empty list of Descriptors.
      * Precondition:
      * 1. aProblemDescription is a non-empty set of SAVDescriptors.
-     * 2. For all s1, s2::Descriptor<Object> in aProblemDescription : (s1 structure) = (s2 structure).
+     * 2. For all s1, s2::Descriptor in aProblemDescription : (s1 structure) = (s2 structure).
      * Automaton reference: bW
 	 * @see Define method name.
 	 * @param my parameters list
 	 * @return null - if the argument is an empty list, or object returned by searchForNormWith:
 	 */
-    public SearchStatus beginWith(List<Descriptor<Object>> aProblemDescription){
+    public SearchStatus beginWith(List<Descriptor> aProblemDescription){
     	String sName;
     	
         //Check part 1. of the precondition
@@ -1190,7 +1190,7 @@ public class CaseBaseDFSAutomaton {
     
         sName = aProblemDescription.get(0).getStructure();
         
-        for (Descriptor<Object> d: aProblemDescription)
+        for (Descriptor d: aProblemDescription)
             if ((sName.equals(d.getStructure())) != true) return SearchStatus.ERROR;
 
         //Initialization steps. At this point, nextLevel = 1. Thus, the root level is 1
@@ -1232,7 +1232,7 @@ public class CaseBaseDFSAutomaton {
 	 * @return self, or object returned by retrieveCasesUnderCurrNorm, or object returned by
 	 * searchForCasesUsing:
 	 */
-    public SearchStatus searchForNormWith(List<Descriptor<Object>> aProblemDescription){
+    public SearchStatus searchForNormWith(List<Descriptor> aProblemDescription){
         //If the problem description is empty, all its descriptors matched norms. Make the current norm
         //the stop-level norm, and start the search for cases under it
         if (aProblemDescription.isEmpty()){
@@ -1242,7 +1242,7 @@ public class CaseBaseDFSAutomaton {
         
         //Scan the problem description
         int i = 0;
-        Descriptor<Object> d = null;
+        Descriptor d = null;
         Norm nextNorm = null;
         while (i<=aProblemDescription.size()){
             //Search for a norm whose descriptor matches the scanned descriptor. If found,
@@ -1276,21 +1276,20 @@ public class CaseBaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public void updateNormSearchWith(Descriptor<Object> aSAVDescriptor, Norm aNewNorm){
+    public void updateNormSearchWith(Descriptor aSAVDescriptor, Norm aNewNorm){
         addToTSolutionDescription(aSAVDescriptor);
         currentNorm = aNewNorm;
         setNextLevel();
     }
     
-    @SuppressWarnings("unchecked")
 	SheetCase getSheetCase(Object value, List<SheetCase> aCaseList) {
     	for (SheetCase sc:aCaseList) {
     		if (sc.getDescriptor().getValue() instanceof String) {
     			if (value.equals(sc.getDescriptor().getValue()))
     				return sc;
     		} else if (sc.getDescriptor().getValue() instanceof SingleValue) {
-    				if (((SingleValue<Object>)sc.getDescriptor().getValue())
-    						.equals((value)))
+    				if (((SingleValue)sc.getDescriptor().getValue())
+    						.equals((value))) //Ojo revisar
         				return sc;
     		}
     	}

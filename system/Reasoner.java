@@ -28,10 +28,10 @@ import system.searchAutomata.output.CaseBaseDFSAutomatonOutput;
  *
  */
 public class Reasoner {
-	private List<Descriptor<Object>> caseMemorySearchJustification;
-	private List<Descriptor<Object>> taxonHierarchySearchJustification;
-	private List<Descriptor<Object>> routeSelectJustification;
-	private List<Descriptor<Object>> description;
+	private List<Descriptor> caseMemorySearchJustification;
+	private List<Descriptor> taxonHierarchySearchJustification;
+	private List<Descriptor> routeSelectJustification;
+	private List<Descriptor> description;
 	private List<Hypothesis> failGHConflictSet;
 	private List<Hypothesis> succGHConflictSet;
 	private List<Hypothesis> succStructConflictSet;
@@ -76,7 +76,7 @@ public class Reasoner {
 		//if (this.getMinSimilarityDegree().isEmpty()) return;
 
 		// List with Structures that constitute the morphological description given by the user
-		setDescription(new ArrayList<Descriptor<Object>>());
+		setDescription(new ArrayList<Descriptor>());
 
 
 		/* CONFLICT SET: Hypotheses that contain successful possible solutions (i.e., positive cases or taxa) 
@@ -103,20 +103,20 @@ public class Reasoner {
 		setProposedSolutions(null);
 
 		// Justification list: route selection (using the HintsBase) 
-		setRouteSelectJustification(new ArrayList<Descriptor<Object>>());
+		setRouteSelectJustification(new ArrayList<Descriptor>());
 
 		// Justification list: case memory search 
-		setCaseMemorySearchJustification(new ArrayList<Descriptor<Object>>());
+		setCaseMemorySearchJustification(new ArrayList<Descriptor>());
 
 		// Justification list: taxonomic hierarchy serach
-		setTaxonHierarchySearchJustification(new ArrayList<Descriptor<Object>>());
+		setTaxonHierarchySearchJustification(new ArrayList<Descriptor>());
 	}
 
 	/**
 	 * Método de instancia agregado
 	 * @param caseMemorySearchJustification
 	 */
-	public void setCaseMemorySearchJustification(List<Descriptor<Object>> caseMemorySearchJustification) {
+	public void setCaseMemorySearchJustification(List<Descriptor> caseMemorySearchJustification) {
 		this.caseMemorySearchJustification = caseMemorySearchJustification;
 	}
 	
@@ -124,7 +124,7 @@ public class Reasoner {
 	 * @see "Método caseMemorySearchJustification: del protocolo adding en SUKIA SmallTalk"
 	 * @param aJustificationItem
 	 */
-	public void addCaseMemorySearchJustification(Descriptor<Object> aJustificationItem) {
+	public void addCaseMemorySearchJustification(Descriptor aJustificationItem) {
 		this.getCaseMemorySearchJustification().add(aJustificationItem);
 	}
 
@@ -132,7 +132,7 @@ public class Reasoner {
 	 * @see "Método caseMemorySearchJustification del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Descriptor<Object>> getCaseMemorySearchJustification() {
+	public List<Descriptor> getCaseMemorySearchJustification() {
 		return caseMemorySearchJustification;
 	}
 
@@ -188,7 +188,7 @@ public class Reasoner {
 	 * Método de instancia agregado
 	 * @param groupHDescription
 	 */
-	public void setDescription(List<Descriptor<Object>> description) {
+	public void setDescription(List<Descriptor> description) {
 		this.description = description;
 	}
 	
@@ -196,7 +196,7 @@ public class Reasoner {
 	 * @see "Método groupHDescription: del protocolo adding en SUKIA SmallTalk"
 	 * @param aHypothesis
 	 */
-	public void addToDescription(Descriptor<Object> descriptor) {
+	public void addToDescription(Descriptor descriptor) {
 		if (!this.getDescription().contains(descriptor))
 			this.getDescription().add(descriptor);
 	}
@@ -205,7 +205,7 @@ public class Reasoner {
 	 * @see "Método groupHDescription del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Descriptor<Object>> getDescription() {
+	public List<Descriptor> getDescription() {
 		return description;
 	}
 
@@ -333,7 +333,7 @@ public class Reasoner {
 	 * Método de instancia agregado
 	 * @param routeSelectJustification
 	 */
-	public void setRouteSelectJustification(List<Descriptor<Object>> routeSelectJustification) {
+	public void setRouteSelectJustification(List<Descriptor> routeSelectJustification) {
 		this.routeSelectJustification = routeSelectJustification;
 	}
 	
@@ -341,7 +341,7 @@ public class Reasoner {
 	 * @see "Método routeSelectJustification: del protocolo adding en SUKIA SmallTalk"
 	 * @param aJustificationItem
 	 */
-	public void addRouteSelectJustification(Descriptor<Object> aJustificationItem) {
+	public void addRouteSelectJustification(Descriptor aJustificationItem) {
 		this.getRouteSelectJustification().add(aJustificationItem);
 	}
 
@@ -349,7 +349,7 @@ public class Reasoner {
 	 * @see "Método routeSelectJustification del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Descriptor<Object>> getRouteSelectJustification() {
+	public List<Descriptor> getRouteSelectJustification() {
 		return routeSelectJustification;
 	}
 	
@@ -405,7 +405,7 @@ public class Reasoner {
 	 * Método de instancia agregado
 	 * @param taxonHierarchySearchJustification
 	 */
-	public void setTaxonHierarchySearchJustification(List<Descriptor<Object>> taxonHierarchySearchJustification) {
+	public void setTaxonHierarchySearchJustification(List<Descriptor> taxonHierarchySearchJustification) {
 		this.taxonHierarchySearchJustification = taxonHierarchySearchJustification;
 	}
 	
@@ -413,7 +413,7 @@ public class Reasoner {
 	 * @see "Método routeSelectJustification: del protocolo adding en SUKIA SmallTalk"
 	 * @param aJustificationItem
 	 */
-	public void addTaxonHierarchySearchJustification(Descriptor<Object> aJustificationItem) {
+	public void addTaxonHierarchySearchJustification(Descriptor aJustificationItem) {
 		this.getTaxonHierarchySearchJustification().add(aJustificationItem);
 	}
 
@@ -421,7 +421,7 @@ public class Reasoner {
 	 * @see "Método taxonHierarchySearchJustification del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Descriptor<Object>> getTaxonHierarchySearchJustification() {
+	public List<Descriptor> getTaxonHierarchySearchJustification() {
 		return taxonHierarchySearchJustification;
 	}
 	
@@ -690,7 +690,7 @@ public class Reasoner {
 		RootNorm caseNetRoot;
 		CaseBaseDFSAutomaton searchAutomaton1;
 		TaxonomySearchAutomaton searchAutomaton2;
-		List<Descriptor<Object>> problemDescription;
+		List<Descriptor> problemDescription;
 		SearchStatus status;
 		List<String> heuristicList;
 		
@@ -899,7 +899,7 @@ public class Reasoner {
 	public boolean searchCaseStructures() {
 		String s;
 		Hypothesis hypothesis1, hypothesis2;
-		List<Descriptor<Object>> problemDescription;
+		List<Descriptor> problemDescription;
 		RDNet net;
 		RootNorm caseNetRoot;
 		CaseBaseDFSAutomaton searchAutomaton1;
@@ -1104,7 +1104,7 @@ public class Reasoner {
 		String h;
 		Hypothesis hypothesis;
 		SearchStatus status;
-		List<Descriptor<Object>> problemDescription;
+		List<Descriptor> problemDescription;
 		TaxonomySearchAutomaton searchAutomaton;
 		List<String> heuristicList;
 		
@@ -1165,7 +1165,7 @@ public class Reasoner {
 		String s;
 		Hypothesis hypothesis;
 		SearchStatus status;
-		List<Descriptor<Object>> problemDescription;
+		List<Descriptor> problemDescription;
 		TaxonomySearchAutomaton searchAutomaton;
 		GoalApproachingDialog dialog;
 		List<String> characterList;
@@ -1232,12 +1232,12 @@ public class Reasoner {
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
-	public List<Descriptor<Object>> getCharacterList() {
-		List<Descriptor<Object>> characterList;
+	public List<Descriptor> getCharacterList() {
+		List<Descriptor> characterList;
 		
-		characterList = new ArrayList<Descriptor<Object>>();
+		characterList = new ArrayList<Descriptor>();
 		
-		for(Descriptor<Object> d: this.getDescription()) {
+		for(Descriptor d: this.getDescription()) {
 			if (d instanceof CharacterDescriptor) { 
 				// Determine if the structure name in Deescriptor has already been included in structureList
 				if (!(characterList.contains(d.getStructure()))) {
@@ -1254,12 +1254,12 @@ public class Reasoner {
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
-	public List<Descriptor<Object>> getHeuristicList() {
-		List<Descriptor<Object>> heuristicList;
+	public List<Descriptor> getHeuristicList() {
+		List<Descriptor> heuristicList;
 		
-		heuristicList = new ArrayList<Descriptor<Object>>();
+		heuristicList = new ArrayList<Descriptor>();
 		
-		for(Descriptor<Object> d: this.getDescription()) {
+		for(Descriptor d: this.getDescription()) {
 			if (d instanceof HeuristicDescriptor) { 
 				// Determine if the structure name in Deescriptor has already been included in structureList
 				if (!(heuristicList.contains(d.getStructure()))) {
@@ -1281,7 +1281,7 @@ public class Reasoner {
 		
 		structuresList = new ArrayList<String>();
 		
-		for(Descriptor<Object> d: this.getDescription()) {
+		for(Descriptor d: this.getDescription()) {
 			if (d instanceof CharacterDescriptor) { 
 				// Determine if the structure name in Deescriptor has already been included in structureList
 				if (!(structuresList.contains(d.getStructure()))) {
@@ -1303,7 +1303,7 @@ public class Reasoner {
 		
 		structuresList = new ArrayList<String>();
 		
-		for(Descriptor<Object> d: this.getDescription()) {
+		for(Descriptor d: this.getDescription()) {
 			if (d instanceof HeuristicDescriptor) { 
 				// Determine if the structure name in Deescriptor has already been included in structureList
 				if (!(structuresList.contains(d.getStructure()))) {
@@ -1320,12 +1320,12 @@ public class Reasoner {
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de descriptores relacionados a aStructureName
 	 */
-	public List<Descriptor<Object>> getDescription(String aStructureName) {
-		List<Descriptor<Object>> description;
+	public List<Descriptor> getDescription(String aStructureName) {
+		List<Descriptor> description;
 		
-		description = new ArrayList<Descriptor<Object>>();
+		description = new ArrayList<Descriptor>();
 		
-		for(Descriptor<Object> d: this.getDescription()) {
+		for(Descriptor d: this.getDescription()) {
 			// Determine if the structure name in Deescriptor has already been included in structureList
 			if (d.getStructure().equals(aStructureName)) {
 				description.add(d);

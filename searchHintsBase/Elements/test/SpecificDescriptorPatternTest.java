@@ -5,7 +5,9 @@ package searchHintsBase.Elements.test;
 
 import static org.junit.Assert.*;
 
-import ontology.common.CharacterDescriptor;
+import ontology.common.SSCharacterDescriptor;
+import ontology.common.SVCharacterDescriptor;
+import ontology.values.SingleValue;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -28,7 +30,7 @@ public class SpecificDescriptorPatternTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		System.out.println("Iniciando pruebas para la clase " + SpecificDescriptorPattern.class.getName());
-		pattern = new SpecificDescriptorPattern(new CharacterDescriptor<Object>("Cuerpo", "Longitud", 0.3), 5);
+		pattern = new SpecificDescriptorPattern(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)), 5);
 	}
 
 	/**
@@ -62,14 +64,14 @@ public class SpecificDescriptorPatternTest {
 		
 		System.out.println("Verificar que el patrón de descriptores es igual con otro patrón de descriptores" +
 				"según el criterio de comparación");
-		assertEquals(0, pattern.compareTo(new SpecificDescriptorPattern(new CharacterDescriptor<Object>
+		assertEquals(0, pattern.compareTo(new SpecificDescriptorPattern(new SSCharacterDescriptor
 			("Cuerpo", "Forma", "Ovalado"), 5)));
 		
 		System.out.println("Verificar que el patrón de descriptores es distinto con otro patrón de descriptores" +
 				"según el criterio de comparación");
-		assertTrue(pattern.compareTo(new SpecificDescriptorPattern(new CharacterDescriptor<Object>
+		assertTrue(pattern.compareTo(new SpecificDescriptorPattern(new SSCharacterDescriptor
 		("Cuerpo", "Forma", "Ovalado"), 6)) > 0);
-		assertTrue(pattern.compareTo(new SpecificDescriptorPattern(new CharacterDescriptor<Object>
+		assertTrue(pattern.compareTo(new SpecificDescriptorPattern(new SSCharacterDescriptor
 		("Cuerpo", "Forma", "Ovalado"), 3)) < 0);
 	}
 

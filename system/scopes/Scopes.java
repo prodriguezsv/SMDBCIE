@@ -62,7 +62,7 @@ public class Scopes {
 			} else if (scopeItems.get(i-1) instanceof Attribute) {
 				if (((Attribute)scopeItems.get(i-1)).getName().equals(aScopeItemName))
 					return true;
-			} else if (scopeItems.get(i-1) instanceof Attribute) {
+			} else if (scopeItems.get(i-1) instanceof GroupingHeuristic) {
 				if (((GroupingHeuristic)scopeItems.get(i-1)).getName().equals(aScopeItemName))
 					return true;
 			}
@@ -79,7 +79,7 @@ public class Scopes {
 			} else if (scopeItems.get(i-1) instanceof Attribute) {
 				if (((Attribute)scopeItems.get(i-1)).getName().equals(aScopeItemName))
 					return scopeItems.get(i-1);
-			} else if (scopeItems.get(i-1) instanceof Attribute) {
+			} else if (scopeItems.get(i-1) instanceof GroupingHeuristic) {
 				if (((GroupingHeuristic)scopeItems.get(i-1)).getName().equals(aScopeItemName))
 					return scopeItems.get(i-1);
 			}

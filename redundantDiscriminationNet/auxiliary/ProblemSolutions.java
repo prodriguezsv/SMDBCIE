@@ -123,7 +123,7 @@ public class ProblemSolutions {
 	 * @return El valor de anAttribute o null si el atributo no existe
 	 */ 
 	public Object getValue(String anAttribute) {
-		for(Descriptor<Object> d: this.getProblemCase().getProblem().getDescription()) {
+		for(Descriptor d: this.getProblemCase().getProblem().getDescription()) {
 			if (d.getAttribute().equals(anAttribute))
 				return d.getValue();
 		}
@@ -137,7 +137,7 @@ public class ProblemSolutions {
 	 * @param aDescriptor
 	 * @return true si agrega el descriptor o false de lo contrario
 	 */
-	public boolean addToDescription(Descriptor<Object> aDescriptor) {
+	public boolean addToDescription(Descriptor aDescriptor) {
 		if (this.getProblemCase().addToDescription(aDescriptor)) {
 			this.getWeights().add(0);
 			return true;
@@ -187,7 +187,7 @@ public class ProblemSolutions {
 		Object valor;
 		
 		// Para cada par (atributo, valor) de aCase.
-		for(Descriptor<Object> d: aCase.getProblem().getDescription()) {
+		for(Descriptor d: aCase.getProblem().getDescription()) {
 			valor = this.getValue(d.getAttribute());
 
 			if (!(valor == null)) {

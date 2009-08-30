@@ -59,7 +59,7 @@ public class SpecificPatternsbyStructureList extends HintsList<SpecificPatternsb
 	 * @see "M&eacute;todo sortBySuccessCriteria: del protocolo sorting en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Descriptor<Object>> sortBySuccessCriteria(List<Descriptor<Object>> description) {
+	public List<Descriptor> sortBySuccessCriteria(List<Descriptor> description) {
 		return this.getSortedSpecificDescriptorsList(description, 
 				new Comparator<SpecificDescriptorPattern>() {
 					public int compare(SpecificDescriptorPattern elem1, SpecificDescriptorPattern elem2) {
@@ -134,21 +134,21 @@ public class SpecificPatternsbyStructureList extends HintsList<SpecificPatternsb
 	 * the structure, possibly sorted by frequency.
 	 */
 	@SuppressWarnings("unchecked")
-	private List<Descriptor<Object>> getSortedSpecificDescriptorsList(List<Descriptor<Object>>  description, Comparator c) {
-		List<Descriptor<Object>> tempList, leftOvers, outList;
+	private List<Descriptor> getSortedSpecificDescriptorsList(List<Descriptor>  description, Comparator c) {
+		List<Descriptor> tempList, leftOvers, outList;
 		List<SpecificDescriptorPattern> sortedList;
 		SpecificPatternsbyStructure spbs;
-		Descriptor<Object> descriptor;
+		Descriptor descriptor;
 		SpecificDescriptorPattern sdp;
 		int numElements, numProcessedElts, i;
 		
 		// First thing is to set the number of processed items to 0
 		this.resetPercentageItemsProcessed();
 
-		tempList = new ArrayList<Descriptor<Object>>();
+		tempList = new ArrayList<Descriptor>();
 		/* Output list: all sorted attributes are stored in this list, as well as in the structure's attribute list.  However, outList
 		 is the list to be returned as result from this process because the structure's attribute list is sorted by name (default).*/
-		outList = new ArrayList<Descriptor<Object>>(description);
+		outList = new ArrayList<Descriptor>(description);
 
 		// Check precondition
 		if (this.isEmpty() || outList.isEmpty())
@@ -159,7 +159,7 @@ public class SpecificPatternsbyStructureList extends HintsList<SpecificPatternsb
 		if (spbs == null) return tempList;
 		sortedList = new ArrayList<SpecificDescriptorPattern>();
 		
-		leftOvers = new ArrayList<Descriptor<Object>>();
+		leftOvers = new ArrayList<Descriptor>();
 
 		while (!(outList.isEmpty())) {
 			descriptor = outList.remove(0);

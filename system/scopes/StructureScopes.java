@@ -27,7 +27,4 @@ public class StructureScopes extends Scopes {
 
 		return ((Structure)getScopeItem(aStructureName)).getAttributes();
 	}
-
-	
-
 }
