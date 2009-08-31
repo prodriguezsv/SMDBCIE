@@ -139,6 +139,12 @@ public class DescriptorsPattern implements Comparable<DescriptorsPattern> {
 	 * @return
 	 */
 	public boolean addDescriptor(Descriptor aDescriptor) {
+		if (aDescriptor == null) return false;
+		
+		if (!this.getPattern().isEmpty())
+			if (!this.getPattern().get(0).getStructure().equals(aDescriptor.getStructure()))
+				return false;
+				
 		return this.getPattern().addToConcreteDescription(aDescriptor);
 	}
 	

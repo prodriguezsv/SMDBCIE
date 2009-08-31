@@ -7,8 +7,8 @@ package system.test;
 
 import java.util.ArrayList;
 import java.util.List;
-import ontology.common.CharacterDescriptor;
 import ontology.common.Modifier;
+import ontology.common.SSCharacterDescriptor;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
 import ontology.taxonomy.Taxonomy;
@@ -28,7 +28,7 @@ import static org.junit.Assert.*;
  * @author pabloq
  */
 public class PossibleSolutionSelectorTest {
-    Taxon rootTaxon,taxon1,taxon2,taxon3,taxon4,taxon5,taxon6,taxon7;
+    Taxon taxon1,taxon2,taxon3,taxon4,taxon5,taxon6,taxon7;
     Taxonomy taxonomy;
 
     public PossibleSolutionSelectorTest() {
@@ -44,57 +44,41 @@ public class PossibleSolutionSelectorTest {
 
     @Before
     public void setUp() {
-        rootTaxon = new Taxon();
-        rootTaxon.setName(null);
-        rootTaxon.setLevel(TaxonomicRank.ROOT);
-        taxon1 = new Taxon();
-        taxon1.setName("Chromodorididae");
-        taxon1.setLevel(TaxonomicRank.FAMILY);
-        taxon1.addToDescription(new CharacterDescriptor<Object>("cuerpo","forma","alargado"),
+        //rootTaxon = new Taxon(TaxonomicRank.ROOT, null);
+        taxon1 = new Taxon(TaxonomicRank.FAMILY, "Chromodorididae");
+        taxon1.addToDescription(new SSCharacterDescriptor("cuerpo","forma","alargado"),
                                     new Modifier(1.0,1.0,0.8));
 
-        taxon1.addToDescription(new CharacterDescriptor<Object>("cuerpo","forma","ovalado"),
+        taxon1.addToDescription(new SSCharacterDescriptor("cuerpo","forma","ovalado"),
                                     new Modifier(1.0,1.0,0.1));
 
-        taxon2 = new Taxon();
-        taxon2.setName("Chromodorididae fake");
-        taxon2.setLevel(TaxonomicRank.FAMILY);
-        taxon2.addToDescription(new CharacterDescriptor<Object>("cuerpo1","forma","ovalado"),
+        taxon2 = new Taxon(TaxonomicRank.FAMILY, "Chromodorididae fake");
+        taxon2.addToDescription(new SSCharacterDescriptor("cuerpo1","forma","ovalado"),
                                     new Modifier(1.0,1.0,1.0));
-        taxon2.addToDescription(new CharacterDescriptor<Object>("cuerpo2","forma","ovalado"),
+        taxon2.addToDescription(new SSCharacterDescriptor("cuerpo2","forma","ovalado"),
                                     new Modifier(1.0,1.0,1.0));
-        taxon3 = new Taxon();
-        taxon3.setName("Chromodoris");
-        taxon3.setLevel(TaxonomicRank.GENUS);
-        taxon3.addToDescription(new CharacterDescriptor<Object>("cuerpo3","forma","ovalado"),
+        taxon3 = new Taxon(TaxonomicRank.GENUS, "Chromodoris");
+        taxon3.addToDescription(new SSCharacterDescriptor("cuerpo3","forma","ovalado"),
                                     new Modifier(1.0,1.0,1.0));
-        taxon4 = new Taxon();
-        taxon4.setName("Chromodoris fake");
-        taxon4.setLevel(TaxonomicRank.GENUS);
-        taxon4.addToDescription(new CharacterDescriptor<Object>("cuerpo4","forma","ovalado"),
+        taxon4 = new Taxon(TaxonomicRank.GENUS, "Chromodoris fake");
+        taxon4.addToDescription(new SSCharacterDescriptor("cuerpo4","forma","ovalado"),
                                     new Modifier(1.0,1.0,1.0));
-        taxon5 = new Taxon();
-        taxon5.setName("Chromodoris_sphoni");
-        taxon5.setLevel(TaxonomicRank.SPECIES);
-        taxon5.addToDescription(new CharacterDescriptor<Object>("cuerpo5","forma","ovalado"),
+        taxon5 = new Taxon(TaxonomicRank.SPECIES, "Chromodoris sphoni");
+        taxon5.addToDescription(new SSCharacterDescriptor("cuerpo5","forma","ovalado"),
                                     new Modifier(1.0,1.0,1.0));
-        taxon6 = new Taxon();
-        taxon6.setName("Chromodoris_clenchi");
-        taxon6.setLevel(TaxonomicRank.SPECIES);
-        taxon6.addToDescription(new CharacterDescriptor<Object>("cuerpo6","forma","ovalado"),
+        taxon6 = new Taxon(TaxonomicRank.SPECIES, "Chromodoris clenchi");
+        taxon6.addToDescription(new SSCharacterDescriptor("cuerpo6","forma","ovalado"),
                                     new Modifier(1.0,1.0,1.0));
-        taxon7 = new Taxon();
-        taxon7.setName("Chromodoris_kempfi");
-        taxon7.setLevel(TaxonomicRank.SPECIES);
-        taxon7.addToDescription(new CharacterDescriptor<Object>("cuerpo7","forma","ovalado"),
+        taxon7 = new Taxon(TaxonomicRank.SPECIES, "Chromodoris_kempfi");
+        taxon7.addToDescription(new SSCharacterDescriptor("cuerpo7","forma","ovalado"),
                                     new Modifier(1.0,1.0,1.0));
 
 
-        taxonomy = new Taxonomy();
+        taxonomy = new Taxonomy("Mollusca");
 
-        taxon1.setPredecessor(rootTaxon);
-        assertTrue(taxonomy.addTaxon(taxon1, rootTaxon));
-        assertTrue(taxonomy.addTaxon(taxon2, rootTaxon));
+        //taxon1.setPredecessor(rootTaxon);
+        assertTrue(taxonomy.addTaxon(taxon1, taxonomy.getRootTaxon()));
+        assertTrue(taxonomy.addTaxon(taxon2, taxonomy.getRootTaxon()));
         assertTrue(taxonomy.addTaxon(taxon3, taxon1));
         assertTrue(taxonomy.addTaxon(taxon4, taxon2));
         assertTrue(taxonomy.addTaxon(taxon5, taxon3));

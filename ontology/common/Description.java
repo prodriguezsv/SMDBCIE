@@ -105,9 +105,7 @@ public class Description extends ArrayList<Descriptor> {
 	public boolean addToConcreteDescription(Descriptor aDescriptor) {
 		if (aDescriptor == null) return false;
 		
-		if (aDescriptor instanceof MSCharacterDescriptor
-				|| aDescriptor instanceof RVCharacterDescriptor
-				|| aDescriptor instanceof MSHeuristicDescriptor
+		if (aDescriptor instanceof RVCharacterDescriptor
 				|| aDescriptor instanceof RVHeuristicDescriptor)
 			return false;
 		
