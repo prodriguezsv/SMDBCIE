@@ -8,8 +8,6 @@ import java.util.Collections;
 import java.util.List;
 
 import ontology.common.Descriptor;
-import ontology.common.GroupingHeuristic;
-import ontology.common.Structure;
 
 
 /**

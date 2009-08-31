@@ -183,88 +183,57 @@ public class PossibleSolutionEvaluator {
 	 * @param aPointAccumulatingScheme
 	 */
 	public void evaluate(List<Hypothesis> aConflictSet, List<Hypothesis> aCompConflictSet, String aPointAccumulatingScheme) {
-		List<Hypothesis> tempList;
-		Hypothesis evalHypothesis, compHypothesis;
-		PossibleSolution evalPossibleSolution, compPossibleSolution;
 		Taxon evalPossibleSolutionTaxon, compPossibleSolutionTaxon;
-		int k;
-		
-		// Check the precondition
-		if (aConflictSet.isEmpty() || aCompConflictSet.isEmpty())
-			return;
 
-		tempList = new ArrayList<Hypothesis>();
+                //do nothing in case that one of them is empty
+                if (aConflictSet.isEmpty() || aCompConflictSet.isEmpty()) return;
 
-		// Process while aConflicSet is not empty
-		while (!(aConflictSet.isEmpty())) {
-			// Remove the next hypothesis-to-evaluate from aConflictSet
-			evalHypothesis = aConflictSet.remove(0);
+                for (Hypothesis evalHypothesis:aConflictSet){
+                    // Scan the entire list of possible solutions belonging to the current hypothesis-to-evaluate
+                    for (PossibleSolution evalPossibleSolution: evalHypothesis.getPossibleSolutions()){
+                        // Get the corresponding taxon of the possibleSolution-to-evaluate, if applicable
+                        if (evalPossibleSolution.getSolution() instanceof Taxon)
+                            evalPossibleSolutionTaxon = (Taxon) evalPossibleSolution.getSolution();
+                        else
+                            evalPossibleSolutionTaxon = this.getTaxonomy().getTaxonFromLevelIndex(evalPossibleSolution.getName(), evalPossibleSolution.getLevel());
 
-			// Scan the entire list of possible solutions belonging to the current hypothesis-to-evaluate
-			for( int i = 1; i <= evalHypothesis.getPossibleSolutions().size(); i++) {
-				// Get the next possibleSolution-to-evaluate, which belongs to the current hypothesis-to-evaluate
-				evalPossibleSolution = evalHypothesis.getPossibleSolutions().get(i-1);
+                        if (evalPossibleSolutionTaxon == null) return;
 
-				// Get the corresponding taxon of the possibleSolution-to-evaluate, if applicable
-				if (evalPossibleSolution.getSolution() instanceof Taxon)
-					evalPossibleSolutionTaxon = (Taxon) evalPossibleSolution.getSolution();
-				else evalPossibleSolutionTaxon = this.getTaxonomy().getTaxonFromLevelIndex(evalPossibleSolution.getName(), evalPossibleSolution.getLevel());
-				
-				if (evalPossibleSolutionTaxon == null) return;
-		
-				// Scan all the hypotheses in aCompConflictSet
-				for( int j = 1; j <= aCompConflictSet.size(); j++) {
-					// Get the next hypothesis-to-compare from aConflictSet
-					compHypothesis = aCompConflictSet.get(j-1);
+                        for (Hypothesis compHypothesis:aCompConflictSet){
+                            for (PossibleSolution compPossibleSolution: compHypothesis.getPossibleSolutions()){
+                                if (compPossibleSolution.getSolution() instanceof Taxon)
+                                    compPossibleSolutionTaxon = (Taxon) compPossibleSolution.getSolution();
+                                else
+                                    compPossibleSolutionTaxon = this.getTaxonomy().getTaxonFromLevelIndex(compPossibleSolution.getName(), compPossibleSolution.getLevel());
 
-					// Scan the entire list of possible solutions belonging to the current hypothesis-to-compare"
-					k = 1;
-					while (k <= compHypothesis.getPossibleSolutions().size()) {
-						// Get the next possibleSolution-to-comapre, which belongs to the current hypothesis-to-compare
-						compPossibleSolution = compHypothesis.getPossibleSolutions().get(k-1);
-
-						if (compPossibleSolution.getSolution() instanceof Taxon)
-							compPossibleSolutionTaxon = (Taxon) compPossibleSolution.getSolution();
-						else compPossibleSolutionTaxon = this.getTaxonomy().getTaxonFromLevelIndex(compPossibleSolution.getName(), compPossibleSolution.getLevel());
-						
-						if (compPossibleSolutionTaxon == null) return;
-
-						// Check if the possible solutions are the same object
-						if (evalPossibleSolutionTaxon == compPossibleSolutionTaxon) {
-							if (aPointAccumulatingScheme.equals(PossibleSolutionEvaluator.winPoints())) {
-								// Inherit the compare solution's descriptions and remove it from the hypothesis-to-compare possibleSolutions list
-								this.inheritPossibleSolutionDescriptionsFrom(compPossibleSolution, evalPossibleSolution);
-								evalPossibleSolution.incrementPoints();
-							} else {
-								// AQUI SE DEBE PONER LAS DESCRIPCIONES EN LA JUSTIFICACION, NO HEREDARLAS
-								evalPossibleSolution.incrementPointsBy(-1);
-							}
-
-							compHypothesis.getPossibleSolutions().remove(k-1);
-						} else {
-							// At this point, evalPossibleSolutionTaxon and compPossibleSolutionTaxon are different objects
-							// Determine if the possibleSolution-to-evaluate is a successor taxon of the possibleSolution-to-compare
-							if (evalPossibleSolutionTaxon.isSuccessorOf(compPossibleSolutionTaxon)) {
-								if (aPointAccumulatingScheme.equals(PossibleSolutionEvaluator.winPoints())) {
-									this.inheritPossibleSolutionDescriptionsFrom(compPossibleSolution, evalPossibleSolution);
-									evalPossibleSolution.incrementPoints();
-								} else {
-									// AQUI SE DEBE PONER LAS DESCRIPCIONES EN LA JUSTIFICACION, NO HEREDARLAS
-									evalPossibleSolution.incrementPointsBy(-1); 
-								}
-							}
-						}
-
-						k = k + 1;
-					}
-				}
-			}
-			tempList.add(evalHypothesis);
-			evalHypothesis = null;
-		}
-		
-		while (!(tempList.isEmpty()))
-				aConflictSet.add(tempList.remove(0));
+                                if (compPossibleSolutionTaxon == null) return;
+                                // Check if the possible solutions are the same object
+                                if (evalPossibleSolutionTaxon == compPossibleSolutionTaxon) {
+                                    if (aPointAccumulatingScheme.equals(PossibleSolutionEvaluator.winPoints())) {
+                                        // Inherit the compare solution's descriptions and remove it from the hypothesis-to-compare possibleSolutions list
+                                        this.inheritPossibleSolutionDescriptionsFrom(compPossibleSolution, evalPossibleSolution);
+                                        evalPossibleSolution.incrementPoints();
+                                    } else {
+                                        // AQUI SE DEBE PONER LAS DESCRIPCIONES EN LA JUSTIFICACION, NO HEREDARLAS
+                                        evalPossibleSolution.incrementPointsBy(-1);
+                                    }
+                                } else {
+                                    // At this point, evalPossibleSolutionTaxon and compPossibleSolutionTaxon are different objects
+                                    // Determine if the possibleSolution-to-evaluate is a successor taxon of the possibleSolution-to-compare
+                                    if (evalPossibleSolutionTaxon.isSuccessorOf(compPossibleSolutionTaxon)) {
+                                        if (aPointAccumulatingScheme.equals(PossibleSolutionEvaluator.winPoints())) {
+                                            this.inheritPossibleSolutionDescriptionsFrom(compPossibleSolution, evalPossibleSolution);
+                                            evalPossibleSolution.incrementPoints();
+                                        } else {
+                                            // AQUI SE DEBE PONER LAS DESCRIPCIONES EN LA JUSTIFICACION, NO HEREDARLAS
+                                            evalPossibleSolution.incrementPointsBy(-1);
+                                        }
+                                    }
+                                }//end if (evalPossibleSolutionTaxon == compPossibleSolutionTaxon)
+                            }//end for (PossibleSolution compPossibleSolution: compHypothesis.getPossibleSolutions())
+                        }//end for (Hypothesis compHypothesis:aCompConflictSet)
+                    }//end for (PossibleSolution evalPossibleSolution: evalHypothesis.getPossibleSolutions())
+                }//end for (Hypothesis evalHypothesis:aConflictSet)
 	}
 	
 	/**
@@ -294,88 +263,57 @@ public class PossibleSolutionEvaluator {
 	 * @param aPointAccumulatingScheme
 	 */
 	public void evaluate(List<Hypothesis> aConflictSet, String aPointAccumulatingScheme) {
-		List<Hypothesis> tempList;
-		Hypothesis evalHypothesis, compHypothesis;
-		PossibleSolution evalPossibleSolution, compPossibleSolution;
 		Taxon evalPossibleSolutionTaxon, compPossibleSolutionTaxon;
-		int k;
-		
-		// Check the precondition
-		if (aConflictSet.isEmpty())
-			return;
 
-		tempList = new ArrayList<Hypothesis>();
+                //do nothing in case that one of them is empty
+                if (aConflictSet.isEmpty()) return;
 
-		// Process while aConflicSet size has at least two hypotheses
-		while (aConflictSet.size() > 1) {
-			// Remove the next hypothesis-to-evaluate from aConflictSet
-			evalHypothesis = aConflictSet.remove(0);
+                for (Hypothesis evalHypothesis:aConflictSet){
+                    // Scan the entire list of possible solutions belonging to the current hypothesis-to-evaluate
+                    for (PossibleSolution evalPossibleSolution: evalHypothesis.getPossibleSolutions()){
+                        // Get the corresponding taxon of the possibleSolution-to-evaluate, if applicable
+                        if (evalPossibleSolution.getSolution() instanceof Taxon)
+                            evalPossibleSolutionTaxon = (Taxon) evalPossibleSolution.getSolution();
+                        else
+                            evalPossibleSolutionTaxon = this.getTaxonomy().getTaxonFromLevelIndex(evalPossibleSolution.getName(), evalPossibleSolution.getLevel());
 
-			// Scan the entire list of possible solutions belonging to the current hypothesis-to-evaluate
-			for( int i = 1; i <= evalHypothesis.getPossibleSolutions().size(); i++) {
-				// Get the next possibleSolution-to-evaluate, which belongs to the current hypothesis-to-evaluate
-				evalPossibleSolution = evalHypothesis.getPossibleSolutions().get(i-1);
+                        if (evalPossibleSolutionTaxon == null) return;
 
-				// Get the corresponding taxon of the possibleSolution-to-evaluate, if applicable
-				if (evalPossibleSolution.getSolution() instanceof Taxon)
-					evalPossibleSolutionTaxon = (Taxon) evalPossibleSolution.getSolution();
-				else evalPossibleSolutionTaxon = this.getTaxonomy().getTaxonFromLevelIndex(evalPossibleSolution.getName(), evalPossibleSolution.getLevel());
-				
-				if (evalPossibleSolutionTaxon == null) return;
-				
-				// Scan all the hypotheses in aCompConflictSet
-				for( int j = 1; j <= aConflictSet.size(); j++) {
-					// Get the next hypothesis-to-compare from aConflictSet
-					compHypothesis = aConflictSet.get(j-1);
+                        for (Hypothesis compHypothesis:aConflictSet){
+                            for (PossibleSolution compPossibleSolution: compHypothesis.getPossibleSolutions()){
+                                if (compPossibleSolution.getSolution() instanceof Taxon)
+                                    compPossibleSolutionTaxon = (Taxon) compPossibleSolution.getSolution();
+                                else
+                                    compPossibleSolutionTaxon = this.getTaxonomy().getTaxonFromLevelIndex(compPossibleSolution.getName(), compPossibleSolution.getLevel());
 
-					// Scan the entire list of possible solutions belonging to the current hypothesis-to-compare"
-					k = 1;
-					while (k <= compHypothesis.getPossibleSolutions().size()) {
-						// Get the next possibleSolution-to-comapre, which belongs to the current hypothesis-to-compare
-						compPossibleSolution = compHypothesis.getPossibleSolutions().get(k-1);
-
-						if (compPossibleSolution.getSolution() instanceof Taxon)
-							compPossibleSolutionTaxon = (Taxon) compPossibleSolution.getSolution();
-						else compPossibleSolutionTaxon = this.getTaxonomy().getTaxonFromLevelIndex(compPossibleSolution.getName(), compPossibleSolution.getLevel());
-						
-						if (compPossibleSolutionTaxon == null) return;
-
-						// Check if the possible solutions are the same object
-						if (evalPossibleSolutionTaxon == compPossibleSolutionTaxon) {
-							if (aPointAccumulatingScheme.equals(PossibleSolutionEvaluator.winPoints())) {
-								// Inherit the compare solution's descriptions and remove it from the hypothesis-to-compare possibleSolutions list
-								this.inheritPossibleSolutionDescriptionsFrom(compPossibleSolution, evalPossibleSolution);
-								evalPossibleSolution.incrementPoints();
-							} else {
-								// AQUI SE DEBE PONER LAS DESCRIPCIONES EN LA JUSTIFICACION, NO HEREDARLAS
-								evalPossibleSolution.incrementPointsBy(-1);
-							}
-
-							compHypothesis.getPossibleSolutions().remove(k-1);
-						} else {
-							// At this point, evalPossibleSolutionTaxon and compPossibleSolutionTaxon are different objects
-							// Determine if the possibleSolution-to-evaluate is a successor taxon of the possibleSolution-to-compare
-							if (evalPossibleSolutionTaxon.isSuccessorOf(compPossibleSolutionTaxon)) {
-								if (aPointAccumulatingScheme.equals(PossibleSolutionEvaluator.winPoints())) {
-									this.inheritPossibleSolutionDescriptionsFrom(compPossibleSolution, evalPossibleSolution);
-									evalPossibleSolution.incrementPoints();
-								} else {
-									// AQUI SE DEBE PONER LAS DESCRIPCIONES EN LA JUSTIFICACION, NO HEREDARLAS
-									evalPossibleSolution.incrementPointsBy(-1); 
-								}
-							}
-						}
-
-						k = k + 1;
-					}
-				}
-			}
-			tempList.add(evalHypothesis);
-			evalHypothesis = null;
-		}
-		
-		while (!(tempList.isEmpty()))
-				aConflictSet.add(tempList.remove(0));
+                                if (compPossibleSolutionTaxon == null) return;
+                                // Check if the possible solutions are the same object
+                                if (evalPossibleSolutionTaxon == compPossibleSolutionTaxon) {
+                                    if (aPointAccumulatingScheme.equals(PossibleSolutionEvaluator.winPoints())) {
+                                        // Inherit the compare solution's descriptions and remove it from the hypothesis-to-compare possibleSolutions list
+                                        this.inheritPossibleSolutionDescriptionsFrom(compPossibleSolution, evalPossibleSolution);
+                                        evalPossibleSolution.incrementPoints();
+                                    } else {
+                                        // AQUI SE DEBE PONER LAS DESCRIPCIONES EN LA JUSTIFICACION, NO HEREDARLAS
+                                        evalPossibleSolution.incrementPointsBy(-1);
+                                    }
+                                } else {
+                                    // At this point, evalPossibleSolutionTaxon and compPossibleSolutionTaxon are different objects
+                                    // Determine if the possibleSolution-to-evaluate is a successor taxon of the possibleSolution-to-compare
+                                    if (evalPossibleSolutionTaxon.isSuccessorOf(compPossibleSolutionTaxon)) {
+                                        if (aPointAccumulatingScheme.equals(PossibleSolutionEvaluator.winPoints())) {
+                                            this.inheritPossibleSolutionDescriptionsFrom(compPossibleSolution, evalPossibleSolution);
+                                            evalPossibleSolution.incrementPoints();
+                                        } else {
+                                            // AQUI SE DEBE PONER LAS DESCRIPCIONES EN LA JUSTIFICACION, NO HEREDARLAS
+                                            evalPossibleSolution.incrementPointsBy(-1);
+                                        }
+                                    }
+                                }//end if (evalPossibleSolutionTaxon == compPossibleSolutionTaxon)
+                            }//end for (PossibleSolution compPossibleSolution: compHypothesis.getPossibleSolutions())
+                        }//end for (Hypothesis compHypothesis:aCompConflictSet)
+                    }//end for (PossibleSolution evalPossibleSolution: evalHypothesis.getPossibleSolutions())
+                }//end for (Hypothesis evalHypothesis:aConflictSet)
 	}
 	
 	/**
