@@ -49,12 +49,4 @@ public class RootNorm extends Norm {
 	public String getStructure() {
 		return super.getDescriptor().getStructure();
 	}
-	
-	/**
-	 * @see "Método value del protocolo accessing en SUKIA SmallTalk"
-	 * @return
-	 */
-	public Object getValue() {
-		return null;
-	}
 }

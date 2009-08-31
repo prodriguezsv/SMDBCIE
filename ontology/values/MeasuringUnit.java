@@ -18,6 +18,7 @@ public enum MeasuringUnit {
 	 */
 	MM("mm"),
 	CM("cm"),
+	M("m"),
 	INCH("inch"),
 	COUNT("count");
 	

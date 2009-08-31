@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import ontology.common.Description;
 import ontology.common.Descriptor;
 
 
@@ -110,7 +111,7 @@ public class PatternsbyStructure implements Comparable<PatternsbyStructure> {
 	 * @param aPattern
 	 * @return
 	 */
-	public DescriptorsPattern getPattern(List<Descriptor> aPattern) {
+	public DescriptorsPattern getPattern(Description aPattern) {
 		
 		if (aPattern == null)
 			return null;

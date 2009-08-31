@@ -20,19 +20,16 @@ public class System {
 	private HintsBase hintsBase;
 	private Object learner;
 	private Reasoner reasoner;
-	private String taxonomicGroupName;
 	private Taxonomy taxonomy;
 
 	/**
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public System(String aCommonName) {
+	public System() {
 		// Initialize scope classes
 		StructureScopes.initialize();
 		AttributeScopes.initialize();
 		GroupingHeuristicScopes.initialize();
-
-		setTaxonomicGroupName(aCommonName);
 
 		setHintsBase(new HintsBase());
 		if (this.loadHintsBase() == null) return;
@@ -40,7 +37,7 @@ public class System {
 		setCaseMemory(new RDMultiNet());
 		if (this.loadCaseMemory() == null) return;
 
-		setTaxonomy(new Taxonomy());
+		setTaxonomy(new Taxonomy("Mollusca"));
 		if (this.loadTaxonomy() == null) return;
 
 		this.loadReasoner();
@@ -128,22 +125,6 @@ public class System {
 	 */
 	public Reasoner getReasoner() {
 		return reasoner;
-	}
-
-	/**
-	 * Examples of the argument aCommonName: #plant, #mollusk, #fungus
-	 * @param aCommonName
-	 */
-	public void setTaxonomicGroupName(String aCommonName) {
-		this.taxonomicGroupName = aCommonName;
-	}
-
-	/**
-	 * @see "Método taxonomicGroupName del protocolo accessing en SUKIA SmallTalk"
-	 * @return
-	 */
-	public String getTaxonomicGroupName() {
-		return taxonomicGroupName;
 	}
 
 	/**

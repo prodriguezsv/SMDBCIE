@@ -18,6 +18,7 @@ import ontology.common.SSCharacterDescriptor;
 import ontology.common.SSHeuristicDescriptor;
 import ontology.common.SVCharacterDescriptor;
 import ontology.common.SVHeuristicDescriptor;
+import ontology.values.SingleValue;
 
 import redundantDiscriminationNet.auxiliary.ComparingTable;
 import redundantDiscriminationNet.auxiliary.ComparingTableTuple;
@@ -515,15 +516,13 @@ public class RDNet {
 				// If the case-to-insert value is non-null, attach it to the index
 				if (!(tuple.getACIValue() == null)) {
 					if (this.getRoot().getDescriptor() instanceof CharacterDescriptor) {
-						if (this.getRoot().getDescriptor() instanceof SVCharacterDescriptor)
+						if (tuple.getACIValue() instanceof SingleValue)
 							d = new SVCharacterDescriptor();
-						else if (this.getRoot().getDescriptor() instanceof SSCharacterDescriptor)
-							d = new SSCharacterDescriptor();
+						else d = new SSCharacterDescriptor();
 					} else {
-						if (this.getRoot().getDescriptor() instanceof SVHeuristicDescriptor)
+						if (tuple.getACIValue() instanceof SingleValue)
 							d = new SVHeuristicDescriptor();
-						else if (this.getRoot().getDescriptor() instanceof SSHeuristicDescriptor)
-							d = new SSHeuristicDescriptor();
+						else d = new SSHeuristicDescriptor();
 					}
 					
 					d.set(this.getRoot().getStructure(), tuple.getAttribute(), tuple.getACIValue());
@@ -533,15 +532,13 @@ public class RDNet {
 				// If the case-to-compare value is non-nil, attach it to the index"
 				if (!(tuple.getACCValue() == null)) {
 					if (this.getRoot().getDescriptor() instanceof CharacterDescriptor) {
-						if (this.getRoot().getDescriptor() instanceof SVCharacterDescriptor)
+						if (tuple.getACCValue() instanceof SingleValue)
 							d = new SVCharacterDescriptor();
-						else if (this.getRoot().getDescriptor() instanceof SSCharacterDescriptor)
-							d = new SSCharacterDescriptor();
+						else d = new SSCharacterDescriptor();
 					} else {
-						if (this.getRoot().getDescriptor() instanceof SVHeuristicDescriptor)
+						if (tuple.getACCValue() instanceof SingleValue)
 							d = new SVHeuristicDescriptor();
-						else if (this.getRoot().getDescriptor() instanceof SSHeuristicDescriptor)
-							d = new SSHeuristicDescriptor();
+						else d = new SSHeuristicDescriptor();
 					}
 					
 					d.set(this.getRoot().getStructure(), tuple.getAttribute(), tuple.getACCValue());
@@ -550,15 +547,13 @@ public class RDNet {
 			} else {
 				// Create an empty norm and fill its values
 				if (this.getRoot().getDescriptor() instanceof CharacterDescriptor) {
-					if (this.getRoot().getDescriptor() instanceof SVCharacterDescriptor)
+					if (tuple.getACCValue() instanceof SingleValue)
 						d = new SVCharacterDescriptor();
-					else if (this.getRoot().getDescriptor() instanceof SSCharacterDescriptor)
-						d = new SSCharacterDescriptor();
+					else d = new SSCharacterDescriptor();
 				} else {
-					if (this.getRoot().getDescriptor() instanceof SVHeuristicDescriptor)
+					if (tuple.getACCValue() instanceof SingleValue)
 						d = new SVHeuristicDescriptor();
-					else if (this.getRoot().getDescriptor() instanceof SSHeuristicDescriptor)
-						d = new SSHeuristicDescriptor();
+					else d = new SSHeuristicDescriptor();
 				}
 				
 				d.set(this.getRoot().getStructure(), tuple.getAttribute(), tuple.getACCValue());

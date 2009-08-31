@@ -493,6 +493,9 @@ public class GoalApproachingDialog {
     	String msg;
     	String values = "\n";
     	
+    	if (descriptors.isEmpty())
+    		return null;
+    	
     	for (Descriptor d:descriptors) {
     		if (d.getValue() instanceof String)
     			values = values + d.getValue() + "    ";

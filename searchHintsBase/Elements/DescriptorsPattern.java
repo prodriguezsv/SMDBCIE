@@ -5,9 +5,9 @@
  */
 package searchHintsBase.Elements;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import ontology.common.Description;
 import ontology.common.Descriptor;
 
 
@@ -21,7 +21,7 @@ public class DescriptorsPattern implements Comparable<DescriptorsPattern> {
 	/**
 	 * Patr&oacute;n utilizado en la resoluci&oacute;n de un(os) caso(s) previo(s)
 	 */
-	private List<Descriptor> pattern;
+	private Description pattern;
 	/**
 	 * N&uacute;mero de casos previos resueltos positivamente con este patr&oacute;n
 	 */
@@ -36,7 +36,7 @@ public class DescriptorsPattern implements Comparable<DescriptorsPattern> {
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
 	public DescriptorsPattern() {
-		setPattern(new ArrayList<Descriptor>());
+		setPattern(new Description());
 		setSuccessFrequency(0);
 		setFailureFrequency(0);
 	}
@@ -45,7 +45,7 @@ public class DescriptorsPattern implements Comparable<DescriptorsPattern> {
 	 * M&eacute;todo constructor alternativo
 	 * @see "M&eacute;todo initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public DescriptorsPattern(List<Descriptor> pattern, int sf, int ff) {
+	public DescriptorsPattern(Description pattern, int sf, int ff) {
 		setPattern(pattern);
 		setSuccessFrequency(sf);
 		setFailureFrequency(ff);
@@ -120,7 +120,7 @@ public class DescriptorsPattern implements Comparable<DescriptorsPattern> {
 	 * M&eacute;todo accesor de escritura
 	 * @param pattern
 	 */
-	public void setPattern(List<Descriptor> pattern) {
+	public void setPattern(Description pattern) {
 		this.pattern = pattern;
 	}
 
@@ -129,7 +129,7 @@ public class DescriptorsPattern implements Comparable<DescriptorsPattern> {
 	 * @see "M&eacute;todo pattern del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Descriptor> getPattern() {
+	public Description getPattern() {
 		return pattern;
 	}
 	
@@ -139,19 +139,7 @@ public class DescriptorsPattern implements Comparable<DescriptorsPattern> {
 	 * @return
 	 */
 	public boolean addDescriptor(Descriptor aDescriptor) {
-		if (aDescriptor == null)
-			return false;
-		
-		if (this.getPattern().contains(aDescriptor) || this.areThereContradictions(aDescriptor))
-			return false;
-		
-		if (!this.getPattern().isEmpty())
-			// Basta con probar el primer descriptor para verificar si son compatibles
-			if (this.getPattern().get(0).getStructure()!= aDescriptor.getStructure()
-					|| !aDescriptor.getClass().getName().equals(this.getPattern().get(0).getClass().getName()))
-				return false;
-		
-		return this.getPattern().add(aDescriptor);
+		return this.getPattern().addToConcreteDescription(aDescriptor);
 	}
 	
 	/**
@@ -172,26 +160,6 @@ public class DescriptorsPattern implements Comparable<DescriptorsPattern> {
 		if (aPattern.size() >= this.getPattern().size())
 			return (c / (double)aPattern.size());
 		else return (c / (double)this.getPattern().size());
-	}
-	
-	/**
-	 * Verifica si existen contradicciones entre los descriptores (estructura, atributo, valor) del caso
-	 * Se dice que existe contradiccion  si existe dos descripciones distintas para el mismo par
-	 * (estructura, atributo)
-	 * @see "M&eacute;todo thereAreContradictions: del protocolo testing en SUKIA SmallTalk"
-	 * @return
-	 */
-	private boolean areThereContradictions(Descriptor aDescriptor) {
-		
-		// Para cada par (atributo, valor) de aCase.
-		for(Descriptor d: this.getPattern()) {
-			if (d.getStructure().equals(aDescriptor.getStructure()) &&
-					d.getAttribute().equals(aDescriptor.getAttribute())	) {
-					return true; // Hay contradiccion
-			}
-		}
-
-		return false;  //No hubo contradiccion
 	}
 	
 	/**

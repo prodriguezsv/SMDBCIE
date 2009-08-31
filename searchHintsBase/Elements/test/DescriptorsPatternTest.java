@@ -5,9 +5,7 @@ package searchHintsBase.Elements.test;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import ontology.common.Description;
 import ontology.common.Descriptor;
 import ontology.common.SSCharacterDescriptor;
 import ontology.common.SSHeuristicDescriptor;
@@ -77,7 +75,7 @@ public class DescriptorsPatternTest {
 		System.out.println("Verificar que no haya contradicciones en la descripción o duplicados");
 		assertFalse(descriptorsPattern.addDescriptor(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3))));
 		assertFalse(descriptorsPattern.addDescriptor(new SSCharacterDescriptor("Pie", "Disposición", "Sobresale al manto")));
-		assertFalse(descriptorsPattern.addDescriptor(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3))));
+		assertFalse(descriptorsPattern.addDescriptor(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(3))));
 		assertFalse(descriptorsPattern.addDescriptor(new SSHeuristicDescriptor("Alimentación", "Alimentación", "Carnivoro")));
 		
 		System.out.println("Verificar que se agregue un descriptor válido");
@@ -90,24 +88,24 @@ public class DescriptorsPatternTest {
 	 */
 	@Test
 	public void testHowSimilarTo() {
-		List<Descriptor> dl;
+		Description dl;
 		
 		System.out.println("Iniciando pruebas para el método HowSimilarTo()");
 		
 		System.out.println("Verificar que el patrón es igual a una lista de descriptores");
-		dl = new ArrayList<Descriptor>();
-		dl.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
+		dl = new Description();
+		dl.addToConcreteDescription(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
 		assertEquals(1, descriptorsPattern.howSimilarTo(dl));
 		
 		System.out.println("Verificar que el patrón es completamente distinto a una lista de descriptores");
 		dl.clear();
-		dl.add(new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata"));
+		dl.addToConcreteDescription(new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata"));
 		assertEquals(0, descriptorsPattern.howSimilarTo(dl));
 		
 		System.out.println("Verificar que el patrón es medianamente distinto a una lista de descriptores");
 		dl.clear();
-		dl.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
-		dl.add(new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata"));
+		dl.addToConcreteDescription(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
+		dl.addToConcreteDescription(new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata"));
 		assertEquals(0.5, descriptorsPattern.howSimilarTo(dl));
 	}
 	
@@ -116,15 +114,15 @@ public class DescriptorsPatternTest {
 	 */
 	@Test
 	public void testCompareTo() {
-		List<Descriptor> dl;
+		Description dl;
 		DescriptorsPattern dp;
 		
 		System.out.println("Iniciando pruebas para el método CompareTo()");
 		
 		System.out.println("Verificar que el patrón de descriptores es igual con otro patrón de descriptores" +
 				"según el criterio de comparación");
-		dl = new ArrayList<Descriptor>();
-		dl.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
+		dl = new Description();
+		dl.addToConcreteDescription(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
 		dp = new DescriptorsPattern(dl, 0, 1);
 		assertEquals(0, descriptorsPattern.compareTo(dp));
 		
@@ -133,8 +131,8 @@ public class DescriptorsPatternTest {
 		dl.clear();
 		assertTrue(descriptorsPattern.compareTo(dp) < 0);
 	
-		dl.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
-		dl.add(new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata"));
+		dl.addToConcreteDescription(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
+		dl.addToConcreteDescription(new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata"));
 		assertTrue(descriptorsPattern.compareTo(dp) > 0);
 	}
 }

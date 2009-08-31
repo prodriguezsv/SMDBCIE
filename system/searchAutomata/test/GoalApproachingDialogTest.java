@@ -53,7 +53,7 @@ public class GoalApproachingDialogTest extends GoalApproachingDialog {
 	public static void setUpBeforeClass() throws Exception {
 		System.out.println("Iniciando pruebas para la clase " + GoalApproachingDialog.class.getName());
 		
-		taxonomy = new Taxonomy();
+		taxonomy = new Taxonomy("Mollusca");
         rootTaxon = new Taxon(TaxonomicRank.ROOT, null);
 //-----------------------Taxon No. 1---------------------
         taxon = new Taxon(TaxonomicRank.GENUS, "Chromodorididae"); //Ojo la información es de prueba
@@ -243,7 +243,6 @@ public class GoalApproachingDialogTest extends GoalApproachingDialog {
 		
 		System.out.println("Verificar que se obtienen distintos resultados válidos");
 		description = new ArrayList<Descriptor>();
-		description.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
 		
 		assertNull(this.valueDescriptorDialog(description));
 

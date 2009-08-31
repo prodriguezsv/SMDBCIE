@@ -6,6 +6,10 @@
 package searchHintsBase.Elements;
 
 import ontology.common.Descriptor;
+import ontology.common.MSCharacterDescriptor;
+import ontology.common.MSHeuristicDescriptor;
+import ontology.common.RVCharacterDescriptor;
+import ontology.common.RVHeuristicDescriptor;
 
 /**
  * @author Armando
@@ -29,6 +33,10 @@ public class SpecificDescriptorPattern implements Comparable<SpecificDescriptorP
 	 * @param pattern
 	 */
 	public void setPattern(Descriptor pattern) {
+		if (!(pattern instanceof MSCharacterDescriptor
+				|| pattern instanceof RVCharacterDescriptor
+				|| pattern instanceof MSHeuristicDescriptor
+				|| pattern instanceof RVHeuristicDescriptor)) //Ojo analizar comportamiento si condición falla
 		this.pattern = pattern;
 	}
 

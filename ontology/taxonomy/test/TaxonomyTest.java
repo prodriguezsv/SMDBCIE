@@ -44,7 +44,7 @@ public class TaxonomyTest {
 
 	@Before
     public void setUp() {
-        taxonomy = new Taxonomy();
+        taxonomy = new Taxonomy("Mollusca");
         rootTaxon = new Taxon(TaxonomicRank.ROOT, null);
 //-----------------------Taxon No. 1---------------------
         taxon1 = new Taxon(TaxonomicRank.FAMILY, "Chromodorididae");
@@ -69,7 +69,7 @@ public class TaxonomyTest {
 		//-----------------------Structure No. 2---------------------
 		taxon1.addToDescription(new SSCharacterDescriptor("Branquia","Posición durante desplazamiento","Hacia atras"),
 		        new Modifier(0.8,1.0,0.8));
-		taxon1.addToDescription(new SSCharacterDescriptor("Branquia","¨Posición del ano con respecto a la branquia","En el centro"),
+		taxon1.addToDescription(new SSCharacterDescriptor("Branquia","Posición del ano con respecto a la branquia","En el centro"),
 		                new Modifier(0.8,1.0,0.8));
 		taxon1.addToDescription(new RVCharacterDescriptor("Branquia","Número hojas branquiales", 
 				new RangeValue(6.0, 9.0)), new Modifier(0.8,1.0,1.0));
@@ -101,7 +101,7 @@ public class TaxonomyTest {
 		//-----------------------Structure No. 7---------------------
 		taxon1.addToDescription(new SSCharacterDescriptor("Tentáculos orales","Contextura","Macizo"),
 		        new Modifier(1.0,1.0,0.7));
-		taxon1.addToDescription(new SSCharacterDescriptor("Tentaculos orales","Contextura","Surcado"),
+		taxon1.addToDescription(new SSCharacterDescriptor("Tentáculos orales","Contextura","Surcado"),
 		        new Modifier(1.0,1.0,0.2));
 		//-----------------------Grouping Heuristic No. 1---------------------
 		taxon1.addToDescription(new SSHeuristicDescriptor("Alimentación", "Alimentación","Esponjas"),
@@ -120,7 +120,7 @@ public class TaxonomyTest {
 
         taxonomy.addTaxon(taxon1, rootTaxon);
 
-        taxonomyEmpty = new Taxonomy();
+        taxonomyEmpty = new Taxonomy("Mollusca");
     }
 
     @After

@@ -23,12 +23,12 @@ public class Taxonomy {
 	/**
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public Taxonomy() {
+	public Taxonomy(String aCommonName) {
 		List<Taxon> level;
 
 		setDescriptorsIndex(new HashMap<Descriptor, List<Taxon>>());
 		
-		rootTaxon = new Taxon(TaxonomicRank.ROOT, null);
+		rootTaxon = new Taxon(TaxonomicRank.ROOT, aCommonName);
 		
 		setLevelIndex(new ArrayList<List<Taxon>>());
 			

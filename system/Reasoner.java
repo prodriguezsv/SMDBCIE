@@ -454,7 +454,7 @@ public class Reasoner {
 	 * @return
 	 */
 	public String getTaxonomicGroupName() {
-		return this.getIdentSystem().getTaxonomicGroupName();
+		return this.getIdentSystem().getTaxonomy().getRootTaxon().getName();
 	}
 
 	/**

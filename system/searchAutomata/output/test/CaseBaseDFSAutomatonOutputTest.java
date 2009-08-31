@@ -49,7 +49,7 @@ public class CaseBaseDFSAutomatonOutputTest {
 
     @Before
     public void setUp() {
-        aTaxonomy = new Taxonomy();
+        aTaxonomy = new Taxonomy("Mollusca");
 
         rootTaxon = new Taxon(TaxonomicRank.ROOT, null);
 //-----------------------Taxon No. 1---------------------
