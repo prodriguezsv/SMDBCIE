@@ -206,35 +206,35 @@ public class PossibleSolutionSelectorTest {
         aPossibleSolution.setPoints(10.0);
         assertTrue(aPossibleSolution.setSolution(taxon1));
         Hypothesis aHypothesis = new Hypothesis();
-        aHypothesis.addPossibleSolutions(aPossibleSolution);
+        aHypothesis.addPossibleSolution(aPossibleSolution);
         aConflictSet.add(aHypothesis);
 
         aPossibleSolution = new PossibleSolution ();
         aPossibleSolution.setPoints(9.0);
         assertTrue(aPossibleSolution.setSolution(taxon2));
         aHypothesis = new Hypothesis();
-        aHypothesis.addPossibleSolutions(aPossibleSolution);
+        aHypothesis.addPossibleSolution(aPossibleSolution);
         aConflictSet.add(aHypothesis);
 
         aPossibleSolution = new PossibleSolution ();
         aPossibleSolution.setPoints(8.0);
         assertTrue(aPossibleSolution.setSolution(taxon3));
         aHypothesis = new Hypothesis();
-        aHypothesis.addPossibleSolutions(aPossibleSolution);
+        aHypothesis.addPossibleSolution(aPossibleSolution);
         aConflictSet.add(aHypothesis);
 
         aPossibleSolution = new PossibleSolution ();
         aPossibleSolution.setPoints(7.0);
         assertTrue(aPossibleSolution.setSolution(taxon4));
         aHypothesis = new Hypothesis();
-        aHypothesis.addPossibleSolutions(aPossibleSolution);
+        aHypothesis.addPossibleSolution(aPossibleSolution);
         aConflictSet.add(aHypothesis);
 
         aPossibleSolution = new PossibleSolution ();
         aPossibleSolution.setPoints(6.0);
         assertTrue(aPossibleSolution.setSolution(taxon5));
         aHypothesis = new Hypothesis();
-        aHypothesis.addPossibleSolutions(aPossibleSolution);
+        aHypothesis.addPossibleSolution(aPossibleSolution);
         aConflictSet.add(aHypothesis);
 
 
@@ -261,35 +261,35 @@ public class PossibleSolutionSelectorTest {
         aPossibleSolution.setPoints(1.0);
         assertTrue(aPossibleSolution.setSolution(taxon1));
         Hypothesis aHypothesis = new Hypothesis();
-        aHypothesis.addPossibleSolutions(aPossibleSolution);
+        aHypothesis.addPossibleSolution(aPossibleSolution);
         aConflictSet.add(aHypothesis);
 
         aPossibleSolution = new PossibleSolution ();
         aPossibleSolution.setPoints(2.0);
         assertTrue(aPossibleSolution.setSolution(taxon2));
         aHypothesis = new Hypothesis();
-        aHypothesis.addPossibleSolutions(aPossibleSolution);
+        aHypothesis.addPossibleSolution(aPossibleSolution);
         aConflictSet.add(aHypothesis);
 
         aPossibleSolution = new PossibleSolution ();
         aPossibleSolution.setPoints(3.0);
         assertTrue(aPossibleSolution.setSolution(taxon3));
         aHypothesis = new Hypothesis();
-        aHypothesis.addPossibleSolutions(aPossibleSolution);
+        aHypothesis.addPossibleSolution(aPossibleSolution);
         aConflictSet.add(aHypothesis);
 
         aPossibleSolution = new PossibleSolution ();
         aPossibleSolution.setPoints(4.0);
         assertTrue(aPossibleSolution.setSolution(taxon4));
         aHypothesis = new Hypothesis();
-        aHypothesis.addPossibleSolutions(aPossibleSolution);
+        aHypothesis.addPossibleSolution(aPossibleSolution);
         aConflictSet.add(aHypothesis);
 
         aPossibleSolution = new PossibleSolution ();
         aPossibleSolution.setPoints(5.0);
         assertTrue(aPossibleSolution.setSolution(taxon5));
         aHypothesis = new Hypothesis();
-        aHypothesis.addPossibleSolutions(aPossibleSolution);
+        aHypothesis.addPossibleSolution(aPossibleSolution);
         aConflictSet.add(aHypothesis);
 
 

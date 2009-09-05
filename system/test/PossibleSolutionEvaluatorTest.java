@@ -121,13 +121,13 @@ public class PossibleSolutionEvaluatorTest {
         Hypothesis aHypothesis = new Hypothesis();
         aPossibleSolution1 = new PossibleSolution ();
         assertTrue(aPossibleSolution1.setSolution(taxon1));
-        aHypothesis.addPossibleSolutions(aPossibleSolution1);
+        aHypothesis.addPossibleSolution(aPossibleSolution1);
         aConflictSet.add(aHypothesis);
 
         aHypothesis = new Hypothesis();
         aPossibleSolution2 = new PossibleSolution ();
         assertTrue(aPossibleSolution2.setSolution(taxon3));
-        aHypothesis.addPossibleSolutions(aPossibleSolution2);
+        aHypothesis.addPossibleSolution(aPossibleSolution2);
         aConflictSet.add(aHypothesis);
 
         List<Hypothesis> aCompConflictSet = new ArrayList<Hypothesis>();
@@ -135,13 +135,13 @@ public class PossibleSolutionEvaluatorTest {
         aHypothesis = new Hypothesis();
         aPossibleSolution3 = new PossibleSolution ();
         assertTrue(aPossibleSolution3.setSolution(taxon1));
-        aHypothesis.addPossibleSolutions(aPossibleSolution3);
+        aHypothesis.addPossibleSolution(aPossibleSolution3);
         aCompConflictSet.add(aHypothesis);
 
         aHypothesis = new Hypothesis();
         aPossibleSolution4 = new PossibleSolution ();
         assertTrue(aPossibleSolution4.setSolution(taxon4));
-        aHypothesis.addPossibleSolutions(aPossibleSolution4);
+        aHypothesis.addPossibleSolution(aPossibleSolution4);
         aCompConflictSet.add(aHypothesis);
 
 
@@ -162,13 +162,13 @@ public class PossibleSolutionEvaluatorTest {
         aHypothesis = new Hypothesis();
         aPossibleSolution1 = new PossibleSolution ();
         assertTrue(aPossibleSolution1.setSolution(taxon3));
-        aHypothesis.addPossibleSolutions(aPossibleSolution1);
+        aHypothesis.addPossibleSolution(aPossibleSolution1);
         aConflictSet.add(aHypothesis);
 
         aHypothesis = new Hypothesis();
         aPossibleSolution2 = new PossibleSolution ();
         assertTrue(aPossibleSolution2.setSolution(taxon4));
-        aHypothesis.addPossibleSolutions(aPossibleSolution2);
+        aHypothesis.addPossibleSolution(aPossibleSolution2);
         aConflictSet.add(aHypothesis);
 
 
@@ -177,13 +177,13 @@ public class PossibleSolutionEvaluatorTest {
         aHypothesis = new Hypothesis();
         aPossibleSolution3 = new PossibleSolution ();
         assertTrue(aPossibleSolution3.setSolution(taxon3));
-        aHypothesis.addPossibleSolutions(aPossibleSolution3);
+        aHypothesis.addPossibleSolution(aPossibleSolution3);
         aCompConflictSet.add(aHypothesis);
 
         aHypothesis = new Hypothesis();
         aPossibleSolution4 = new PossibleSolution ();
         assertTrue(aPossibleSolution4.setSolution(taxon1));
-        aHypothesis.addPossibleSolutions(aPossibleSolution4);
+        aHypothesis.addPossibleSolution(aPossibleSolution4);
         aCompConflictSet.add(aHypothesis);
 
         assertEquals(0.0,aPossibleSolution1.getPoints(),0.0);
@@ -204,13 +204,13 @@ public class PossibleSolutionEvaluatorTest {
         aHypothesis = new Hypothesis();
         aPossibleSolution1 = new PossibleSolution ();
         assertTrue(aPossibleSolution1.setSolution(taxon3));
-        aHypothesis.addPossibleSolutions(aPossibleSolution1);
+        aHypothesis.addPossibleSolution(aPossibleSolution1);
         aConflictSet.add(aHypothesis);
 
         aHypothesis = new Hypothesis();
         aPossibleSolution2 = new PossibleSolution ();
         assertTrue(aPossibleSolution2.setSolution(taxon4));
-        aHypothesis.addPossibleSolutions(aPossibleSolution2);
+        aHypothesis.addPossibleSolution(aPossibleSolution2);
         aConflictSet.add(aHypothesis);
 
 
@@ -219,13 +219,13 @@ public class PossibleSolutionEvaluatorTest {
         aHypothesis = new Hypothesis();
         aPossibleSolution3 = new PossibleSolution ();
         assertTrue(aPossibleSolution3.setSolution(taxon3));
-        aHypothesis.addPossibleSolutions(aPossibleSolution3);
+        aHypothesis.addPossibleSolution(aPossibleSolution3);
         aCompConflictSet.add(aHypothesis);
 
         aHypothesis = new Hypothesis();
         aPossibleSolution4 = new PossibleSolution ();
         assertTrue(aPossibleSolution4.setSolution(taxon1));
-        aHypothesis.addPossibleSolutions(aPossibleSolution4);
+        aHypothesis.addPossibleSolution(aPossibleSolution4);
         aCompConflictSet.add(aHypothesis);
 
         assertEquals(0.0,aPossibleSolution1.getPoints(),0.0);
@@ -270,13 +270,13 @@ public class PossibleSolutionEvaluatorTest {
         Hypothesis aHypothesis = new Hypothesis();
         aPossibleSolution1 = new PossibleSolution ();
         assertTrue(aPossibleSolution1.setSolution(taxon1));
-        aHypothesis.addPossibleSolutions(aPossibleSolution1);
+        aHypothesis.addPossibleSolution(aPossibleSolution1);
         aConflictSet.add(aHypothesis);
 
         aHypothesis = new Hypothesis();
         aPossibleSolution2 = new PossibleSolution ();
         assertTrue(aPossibleSolution2.setSolution(taxon3));
-        aHypothesis.addPossibleSolutions(aPossibleSolution2);
+        aHypothesis.addPossibleSolution(aPossibleSolution2);
         aConflictSet.add(aHypothesis);
 
         assertEquals(0.0,aPossibleSolution1.getPoints(),0.0);
@@ -297,13 +297,13 @@ public class PossibleSolutionEvaluatorTest {
         aHypothesis = new Hypothesis();
         aPossibleSolution1 = new PossibleSolution ();
         assertTrue(aPossibleSolution1.setSolution(taxon3));
-        aHypothesis.addPossibleSolutions(aPossibleSolution1);
+        aHypothesis.addPossibleSolution(aPossibleSolution1);
         aConflictSet.add(aHypothesis);
 
         aHypothesis = new Hypothesis();
         aPossibleSolution2 = new PossibleSolution ();
         assertTrue(aPossibleSolution2.setSolution(taxon4));
-        aHypothesis.addPossibleSolutions(aPossibleSolution2);
+        aHypothesis.addPossibleSolution(aPossibleSolution2);
         aConflictSet.add(aHypothesis);
 
 
@@ -326,13 +326,13 @@ public class PossibleSolutionEvaluatorTest {
         aHypothesis = new Hypothesis();
         aPossibleSolution1 = new PossibleSolution ();
         assertTrue(aPossibleSolution1.setSolution(taxon3));
-        aHypothesis.addPossibleSolutions(aPossibleSolution1);
+        aHypothesis.addPossibleSolution(aPossibleSolution1);
         aConflictSet.add(aHypothesis);
 
         aHypothesis = new Hypothesis();
         aPossibleSolution2 = new PossibleSolution ();
         assertTrue(aPossibleSolution2.setSolution(taxon4));
-        aHypothesis.addPossibleSolutions(aPossibleSolution2);
+        aHypothesis.addPossibleSolution(aPossibleSolution2);
         aConflictSet.add(aHypothesis);
 
         assertEquals(0.0,aPossibleSolution1.getPoints(),0.0);

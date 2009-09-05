@@ -4,9 +4,9 @@
 package system;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import ontology.common.Description;
 import ontology.common.Descriptor;
 
 
@@ -15,9 +15,9 @@ import ontology.common.Descriptor;
  *
  */
 public class Hypothesis {
-	private List<Descriptor> description;
-	private List<Descriptor> justification;
-	private List<Descriptor> unmatchedDescription;
+	private Description description;
+	private Description justification;
+	private Description unmatchedDescription;
 	private List<PossibleSolution> possibleSolutions;
 	private double points;
 
@@ -26,14 +26,14 @@ public class Hypothesis {
 	 */
 	// Ojo el ordenamiento
 	public Hypothesis() {
-		setDescription(new ArrayList<Descriptor>());
+		setDescription(new Description());
 
 		// Sort criteria: taxonomic level
 		setPossibleSolutions(new ArrayList<PossibleSolution>());
 
 		// Sort criteria: concatenated structure and attribute names
-		setUnmatchedDescription(new ArrayList<Descriptor>());
-		setJustification(new ArrayList<Descriptor>());
+		setUnmatchedDescription(new Description());
+		setJustification(new Description());
 		setPoints(0);
 	}
 
@@ -41,7 +41,7 @@ public class Hypothesis {
 	 * @see "Método descriptiveElement: del protocolo adding en SUKIA SmallTalk"
 	 * @param aDescElt
 	 */
-	public boolean setDescription(List<Descriptor> aDescElt) {
+	public boolean setDescription(Description aDescElt) {
 		this.description = aDescElt;
 		
 		return true;
@@ -51,7 +51,7 @@ public class Hypothesis {
 	 * @see "Método descriptiveElement del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Descriptor> getDescription() {
+	public Description getDescription() {
 		return description;
 	}
 
@@ -59,7 +59,7 @@ public class Hypothesis {
 	 * Método de instancia agregado
 	 * @param justification
 	 */
-	public void setJustification(List<Descriptor> justification) {
+	public void setJustification(Description justification) {
 		this.justification = justification;
 	}
 
@@ -67,7 +67,7 @@ public class Hypothesis {
 	 * @see "Método justification del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Descriptor> getJustification() {
+	public Description getJustification() {
 		return justification;
 	}
 	
@@ -75,8 +75,8 @@ public class Hypothesis {
 	 * @see "Método justification: del protocolo adding en SUKIA SmallTalk"
 	 * @param aJustification
 	 */
-	public void addJustification(Descriptor aJustification) {
-		justification.add(aJustification);
+	public void addToJustification(Descriptor aJustification) {
+		justification.addToConcreteDescription(aJustification);
 	}
 
 	/**
@@ -127,7 +127,7 @@ public class Hypothesis {
 	 * @param aPossibleSolution
 	 * @return
 	 */
-	public boolean addPossibleSolutions(PossibleSolution aPossibleSolution) {
+	public boolean addPossibleSolution(PossibleSolution aPossibleSolution) {
 		boolean firstEltStatus, possSolStatus;
 	
 		if (this.getPossibleSolutions().isEmpty()) {
@@ -160,7 +160,7 @@ public class Hypothesis {
 	 * Método de instancia agregado
 	 * @param unmatchedDescription
 	 */
-	public void setUnmatchedDescription(List<Descriptor> unmatchedDescription) {
+	public void setUnmatchedDescription(Description unmatchedDescription) {
 		this.unmatchedDescription = unmatchedDescription;
 	}
 
@@ -169,22 +169,15 @@ public class Hypothesis {
 	 * @param aDescriptor
 	 * @return
 	 */
-	public boolean addUnmatchedDescription(Descriptor aDescriptor) {
-		if (this.getUnmatchedDescription().contains(aDescriptor))
-			return false;
-
-		this.getUnmatchedDescription().add(aDescriptor);
-		Collections.sort(this.getUnmatchedDescription());
-		
-		return true;
-
+	public boolean addToUnmatchedDescription(Descriptor aDescriptor) {
+		return this.getUnmatchedDescription().addToConcreteDescription(aDescriptor);
 	}
 	
 	/**
 	 * @see "Método unmatchedDescription del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Descriptor> getUnmatchedDescription() {
+	public Description getUnmatchedDescription() {
 		return unmatchedDescription;
 	}
 	
@@ -195,9 +188,11 @@ public class Hypothesis {
 	 */
 	public boolean copyToJustificationFrom(List<Descriptor> aJustificationDescription) {
 		if (aJustificationDescription == null) return false;
-                for (Descriptor d:aJustificationDescription){
-                    this.addJustification(d);
-                }
+		
+        for (Descriptor d:aJustificationDescription){
+            this.addToJustification(d);
+        }
+        
 		return true;
 	}
 	
@@ -209,7 +204,7 @@ public class Hypothesis {
 	public boolean copyToUnmatchedDescriptionFrom(List<Descriptor> anUnmatchedDescription) {
 		if (anUnmatchedDescription == null)return false;
                 for (Descriptor d:anUnmatchedDescription){
-                    this.addUnmatchedDescription(d);
+                    this.addToUnmatchedDescription(d);
                 }
 		return true;
 	}

@@ -637,8 +637,8 @@ public class Reasoner {
 
 			/* Attempt to add the possible solution to the first hypothesis. If not successful, attempt
 			to add it to the second hypothesis. If unsuccessful again, return an error value*/
-			if (hypothesis1.addPossibleSolutions(ps) == false)
-				if (hypothesis2.addPossibleSolutions(ps) == false) return false;
+			if (hypothesis1.addPossibleSolution(ps) == false)
+				if (hypothesis2.addPossibleSolution(ps) == false) return false;
 		}
 		
 		// Once all possible solutions have been loaded, copy the search automaton's unmatched description
@@ -701,11 +701,11 @@ public class Reasoner {
 
 			// Create a first instance of Hypothesis and assign the grouping heuristic as descriptive element
 			hypothesis1 = new Hypothesis();
-			hypothesis1.setDescription(this.getDescription(h));
+			hypothesis1.setDescription((Description)this.getDescription(h));//Ojo con el cast
 
 			// Create a second instance of hypothesis, and again, assign the same grouping heuristic as descriptive element
 			hypothesis2 = new Hypothesis();
-			hypothesis2.setDescription(this.getDescription(h));
+			hypothesis2.setDescription((Description)this.getDescription(h));//Ojo con el cast
 			
 			problemDescription = this.getDescription(h);
 			if (problemDescription == null) return false;
@@ -758,7 +758,7 @@ public class Reasoner {
 				while (!(searchAutomaton2.getSearchOutput().getPossibleSolutions().isEmpty())) {
 					/* Attempt to add the possible solution to the first hypothesis. If not successful,
 					 return an error value*/
-					 if (hypothesis1.addPossibleSolutions(searchAutomaton2.getSearchOutput().getPossibleSolutions().remove(0)) == false)
+					 if (hypothesis1.addPossibleSolution(searchAutomaton2.getSearchOutput().getPossibleSolutions().remove(0)) == false)
 						 return false;
 				}
 				
@@ -819,8 +819,8 @@ public class Reasoner {
 			to add it to the second hypothesis. If unsuccessful again, return an error value. At the 
 			end of this loop, the following assertion will always hold: hypothesis1 will never be empty
 			(it will always have at least ONE element), and hypothesis2 may be empty*/
-			if (hypothesis1.addPossibleSolutions(ps) == false)
-				if (hypothesis2.addPossibleSolutions(ps) == false) return false;
+			if (hypothesis1.addPossibleSolution(ps) == false)
+				if (hypothesis2.addPossibleSolution(ps) == false) return false;
 		}
 		
 		// Once all possible solutions have been loaded, copy the search automaton's unmatched description
@@ -916,11 +916,11 @@ public class Reasoner {
 
 			// Create a first instance of Hypothesis and assign the structure as descriptive element
 			hypothesis1 = new Hypothesis();
-			hypothesis1.setDescription(this.getDescription(s));
+			hypothesis1.setDescription((Description)this.getDescription(s));//Ojo con el cast
 
 			// Create a second instance of hypothesis, and again, assign the same structure as descriptive element
 			hypothesis2 = new Hypothesis();
-			hypothesis2.setDescription(this.getDescription(s));
+			hypothesis2.setDescription((Description)this.getDescription(s));//Ojo con el cast
 			
 			// Get the SAV problem description from the structure. If no description available, return error value
 			problemDescription = this.getDescription(s);
@@ -1004,7 +1004,7 @@ public class Reasoner {
 				while (!(searchAutomaton2.getSearchOutput().getPossibleSolutions().isEmpty())) {
 					/* Attempt to add the possible solution to the first hypothesis. If not successful,
 					 return an error value*/
-					 if (hypothesis1.addPossibleSolutions(searchAutomaton2.getSearchOutput().getPossibleSolutions().remove(0)) == false)
+					 if (hypothesis1.addPossibleSolution(searchAutomaton2.getSearchOutput().getPossibleSolutions().remove(0)) == false)
 						 return false;
 				}
 				
@@ -1076,18 +1076,17 @@ public class Reasoner {
 		
 		hb = this.getHintsBase();
 
-		if (!(hb.getWeightedPatternsbyStructureList().sortByMeanWeightCriteria(this.getCharacterList())
-				.isEmpty()))
+		if (!(hb.getWeightedPatternsbyStructureList().sortByMeanWeightCriteria(this.getCharacterList()).isEmpty()))
 			if (hb.getWeightedPatternsbyStructureList().getPercentageItemsProcessed() > 0.0) return false;
 		
 		if (!(hb.getPatternsbyStructureList().sortBySuccessFrecuencyCriteria(this.getCharacterList()).isEmpty()))
 			if (hb.getPatternsbyStructureList().getPercentageItemsProcessed() > 0.0) return false;
 
 		for( int i = 1; i <= this.getCharacterList().size(); i++) {
-			hb.getSpecStructAttrList().resetPercentageItemsProcessed();
+			hb.getSpecificPatternsbyStructureList().resetPercentageItemsProcessed();
 
 			//s = this.getCharacterList().get(i-1); Ojo
-			hb.getSpecStructAttrList().sortBySuccessCriteria(this.getCharacterList());
+			hb.getSpecificPatternsbyStructureList().sortBySuccessCriteria(this.getCharacterList());
 		}
 		
 		return true;
@@ -1115,7 +1114,7 @@ public class Reasoner {
 
 			// Create a first instance of Hypothesis and assign the grouping heuristic as descriptive element
 			hypothesis = new Hypothesis();
-			hypothesis.setDescription(this.getDescription(h));
+			hypothesis.setDescription((Description)this.getDescription(h));//Ojo con el cast
 
 			// Get the SAV problem description from the grouping heuristic
 			problemDescription = this.getDescription(h);
@@ -1134,7 +1133,7 @@ public class Reasoner {
 				// Load all the possible solutions into the hypothesis
 				while (!(searchAutomaton.getSearchOutput().getPossibleSolutions().isEmpty())) {
 					// Attempt to add the possible solution to the hypothesis. If not successful, return an error value*/
-					 if (hypothesis.addPossibleSolutions(searchAutomaton.getSearchOutput().getPossibleSolutions().remove(0)) == false)
+					 if (hypothesis.addPossibleSolution(searchAutomaton.getSearchOutput().getPossibleSolutions().remove(0)) == false)
 						 return false;
 				}
 				
@@ -1177,7 +1176,7 @@ public class Reasoner {
 			
 			// Create a first instance of Hypothesis and assign the grouping heuristic as descriptive element
 			hypothesis = new Hypothesis();
-			hypothesis.setDescription(this.getDescription(s));
+			hypothesis.setDescription((Description)this.getDescription(s));//Ojo con el cast
 
 			// Get the SAV problem description from the structure
 			problemDescription = this.getDescription(s);
@@ -1196,7 +1195,7 @@ public class Reasoner {
 				// Load all the possible solutions into the hypothesis
 				while (!(searchAutomaton.getSearchOutput().getPossibleSolutions().isEmpty())) {
 					// Attempt to add the possible solution to the hypothesis. If not successful, return an error value*/
-					 if (hypothesis.addPossibleSolutions(searchAutomaton.getSearchOutput().getPossibleSolutions().remove(0)) == false)
+					 if (hypothesis.addPossibleSolution(searchAutomaton.getSearchOutput().getPossibleSolutions().remove(0)) == false)
 						 return false;
 				}
 				

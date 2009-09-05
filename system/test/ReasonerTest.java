@@ -5,15 +5,22 @@ package system.test;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import ontology.common.Descriptor;
 import ontology.common.Modifier;
 import ontology.common.RVCharacterDescriptor;
 import ontology.common.RVHeuristicDescriptor;
 import ontology.common.SSCharacterDescriptor;
 import ontology.common.SSHeuristicDescriptor;
+import ontology.common.SVCharacterDescriptor;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
 import ontology.values.MeasuringUnit;
 import ontology.values.RangeValue;
+import ontology.values.SingleValue;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -260,11 +267,11 @@ public class ReasonerTest {
 	    taxon5.addToDescription(new SSCharacterDescriptor("Branquia","Coloración","Celeste pálido"),
 		        new Modifier(0.8,1.0,0.5));
 	    
-	    oracleIDSystem.getTaxonomy().addTaxon(taxon1, oracleIDSystem.getTaxonomy().getRootTaxon());
+	    /*oracleIDSystem.getTaxonomy().addTaxon(taxon1, oracleIDSystem.getTaxonomy().getRootTaxon());
 	    oracleIDSystem.getTaxonomy().addTaxon(taxon2, taxon1);
 	    oracleIDSystem.getTaxonomy().addTaxon(taxon3, taxon2);
 	    oracleIDSystem.getTaxonomy().addTaxon(taxon4, taxon2);
-	    oracleIDSystem.getTaxonomy().addTaxon(taxon5, taxon2);
+	    oracleIDSystem.getTaxonomy().addTaxon(taxon5, taxon2);*/
 
 //-----------------------Taxon No. 6---------------------
 	    taxon1 = new Taxon(TaxonomicRank.GENUS, "Cadlina");
@@ -502,7 +509,7 @@ public class ReasonerTest {
         taxon8.addToDescription(new SSCharacterDescriptor("Radula","Forma de los dientes","Bicuspidos y denticulados"),
         		new Modifier(0.0,1.0,1.0));   	    
 	    
-	    oracleIDSystem.getTaxonomy().addTaxon(taxon1, oracleIDSystem.getTaxonomy()
+	    /*oracleIDSystem.getTaxonomy().addTaxon(taxon1, oracleIDSystem.getTaxonomy()
 	    		.getTaxonFromLevelIndex("Chromodorididae"));
 	    oracleIDSystem.getTaxonomy().addTaxon(taxon2, taxon1);
 	    oracleIDSystem.getTaxonomy().addTaxon(taxon3, oracleIDSystem.getTaxonomy()
@@ -513,7 +520,7 @@ public class ReasonerTest {
 	    oracleIDSystem.getTaxonomy().addTaxon(taxon6, taxon5);
 	    oracleIDSystem.getTaxonomy().addTaxon(taxon7, taxon5);
 	    oracleIDSystem.getTaxonomy().addTaxon(taxon8, oracleIDSystem.getTaxonomy()
-	    		.getTaxonFromLevelIndex("Chromodorididae"));
+	    		.getTaxonFromLevelIndex("Chromodorididae"));*/
 	    
 //-----------------------Taxon No. 14---------------------
 	    taxon1 = new Taxon(TaxonomicRank.SPECIES, "Mexichromis antonii");
@@ -676,7 +683,7 @@ public class ReasonerTest {
 	    taxon7.addToDescription(new SSCharacterDescriptor("Manto","Disposición","No cubre dorsalmente a la concha ni los bordes"),
   		        new Modifier(0.0,1.0,1.0));
 	    
-	    oracleIDSystem.getTaxonomy().addTaxon(taxon1, oracleIDSystem.getTaxonomy()
+	    /*oracleIDSystem.getTaxonomy().addTaxon(taxon1, oracleIDSystem.getTaxonomy()
 	    		.getTaxonFromLevelIndex("Mexichromis"));
 	    oracleIDSystem.getTaxonomy().addTaxon(taxon2, oracleIDSystem.getTaxonomy().getRootTaxon());
 	    oracleIDSystem.getTaxonomy().addTaxon(taxon3, oracleIDSystem.getTaxonomy()
@@ -688,7 +695,7 @@ public class ReasonerTest {
 	    oracleIDSystem.getTaxonomy().addTaxon(taxon6, oracleIDSystem.getTaxonomy()
 	    		.getTaxonFromLevelIndex("Aplysiidae"));
 	    oracleIDSystem.getTaxonomy().addTaxon(taxon7, oracleIDSystem.getTaxonomy()
-	    		.getTaxonFromLevelIndex("Aplysiidae"));
+	    		.getTaxonFromLevelIndex("Aplysiidae"));*/
 
 //-----------------------Taxon No. 21---------------------
 	    taxon1 = new Taxon(TaxonomicRank.SPECIES, "Dolabrifera dolabrifera");
@@ -805,7 +812,7 @@ public class ReasonerTest {
   		taxon5.addToDescription(new SSCharacterDescriptor("Pie","Forma","Estrecho y alargado"),
   		        new Modifier(0.0,1.0,1.0)); 
   		
-	    oracleIDSystem.getTaxonomy().addTaxon(taxon1, oracleIDSystem.getTaxonomy()
+	    /*oracleIDSystem.getTaxonomy().addTaxon(taxon1, oracleIDSystem.getTaxonomy()
 	    		.getTaxonFromLevelIndex("Dolabrifera"));
 	    oracleIDSystem.getTaxonomy().addTaxon(taxon2, oracleIDSystem.getTaxonomy()
 	    		.getTaxonFromLevelIndex("Petalifera"));
@@ -814,7 +821,7 @@ public class ReasonerTest {
 	    oracleIDSystem.getTaxonomy().addTaxon(taxon4, oracleIDSystem.getTaxonomy()
 	    		.getTaxonFromLevelIndex("Aplysiia"));
 	    oracleIDSystem.getTaxonomy().addTaxon(taxon5, oracleIDSystem.getTaxonomy()
-	    		.getTaxonFromLevelIndex("Notarchus"));
+	    		.getTaxonFromLevelIndex("Notarchus"));*/
 	}
 
 	/**
@@ -877,6 +884,8 @@ public class ReasonerTest {
 				"Rosado palido y crema"));
 		
 		//assertTrue(mySystem.oracleIDSystem.getReasoner().identify());
+		
+		oracleIDSystem.getReasoner().getDescription().clear();
 	}
 
 	/**
@@ -900,7 +909,24 @@ public class ReasonerTest {
 	 */
 	@Test
 	public void testGetCharacterList() {
-		fail("Not yet implemented");
+		List<Descriptor> sl;
+		
+		System.out.println("Iniciando pruebas para el método GetCharacterList()");
+		
+		System.out.println("Verificar que se obtenga una lista de descriptores de caracter");
+		
+		oracleIDSystem.getReasoner().addToDescription(new SVCharacterDescriptor("Cuerpo", "Longitud",
+				new SingleValue(0.3)));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Pie","Forma",
+				"Estrecho y alargado"));
+		
+		sl = new ArrayList<Descriptor>();
+		sl.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
+		sl.add(new SSCharacterDescriptor("Pie","Forma", "Estrecho y alargado"));
+		
+		assertEquals(sl, oracleIDSystem.getReasoner().getCharacterList());
+		
+		oracleIDSystem.getReasoner().getDescription().clear();
 	}
 
 	/**
@@ -908,7 +934,25 @@ public class ReasonerTest {
 	 */
 	@Test
 	public void testGetHeuristicList() {
-		fail("Not yet implemented");
+		List<Descriptor> sl;
+		
+		System.out.println("Iniciando pruebas para el método GetHeuristicList()");
+		
+		System.out.println("Verificar que se obtenga una lista de descriptores de heuristicas");
+		
+		oracleIDSystem.getReasoner().addToDescription(new SSHeuristicDescriptor("Alimentación", 
+				"Alimentación","Esponjas"));
+		oracleIDSystem.getReasoner().addToDescription(new RVHeuristicDescriptor("Profundidad donde se encuentra",
+  				"Profundidad donde se encuentra", new RangeValue(0.0, 20.0, MeasuringUnit.M)));
+		
+		sl = new ArrayList<Descriptor>();
+		sl.add(new SSHeuristicDescriptor("Alimentación", "Alimentación","Esponjas"));
+		sl.add(new RVHeuristicDescriptor("Profundidad donde se encuentra",
+  				"Profundidad donde se encuentra", new RangeValue(0.0, 20.0, MeasuringUnit.M)));
+		
+		assertEquals(sl, oracleIDSystem.getReasoner().getHeuristicList());
+		
+		oracleIDSystem.getReasoner().getDescription().clear();
 	}
 
 	/**
@@ -916,7 +960,23 @@ public class ReasonerTest {
 	 */
 	@Test
 	public void testGetCharacterStructuresList() {
-		fail("Not yet implemented");
+		List<String> sl;
+		
+		System.out.println("Iniciando pruebas para el método GetCharacterStructuresList()");
+		
+		System.out.println("Verificar que se obtenga una lista de nombres de estructura");
+		
+		oracleIDSystem.getReasoner().addToDescription(new SVCharacterDescriptor("Cuerpo", "Longitud",
+				new SingleValue(0.3)));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Pie","Forma",
+				"Estrecho y alargado"));
+		
+		sl = new ArrayList<String>();
+		sl.addAll(Arrays.asList("Cuerpo", "Pie"));
+		
+		assertEquals(sl, oracleIDSystem.getReasoner().getCharacterStructuresList());
+		
+		oracleIDSystem.getReasoner().getDescription().clear();
 	}
 
 	/**
@@ -924,7 +984,23 @@ public class ReasonerTest {
 	 */
 	@Test
 	public void testGetHeuristicStructuresList() {
-		fail("Not yet implemented");
+		List<String> sl;
+		
+		System.out.println("Iniciando pruebas para el método GetHeuristicStructuresList()");
+		
+		System.out.println("Verificar que se obtenga una lista de nombres de heuristicas");
+		
+		oracleIDSystem.getReasoner().addToDescription(new SSHeuristicDescriptor("Alimentación", 
+				"Alimentación","Esponjas"));
+		oracleIDSystem.getReasoner().addToDescription(new RVHeuristicDescriptor("Profundidad donde se encuentra",
+  				"Profundidad donde se encuentra", new RangeValue(0.0, 20.0, MeasuringUnit.M)));
+		
+		sl = new ArrayList<String>();
+		sl.addAll(Arrays.asList("Alimentación", "Profundidad donde se encuentra"));
+		
+		assertEquals(sl, oracleIDSystem.getReasoner().getHeuristicStructuresList());
+		
+		oracleIDSystem.getReasoner().getDescription().clear();
 	}
 
 	/**
@@ -932,7 +1008,18 @@ public class ReasonerTest {
 	 */
 	@Test
 	public void testGetDescriptionString() {
-		fail("Not yet implemented");
+		List<Descriptor> dl = new ArrayList<Descriptor>();
+		
+		System.out.println("Iniciando pruebas para el método GetDescription()");
+		
+		oracleIDSystem.getReasoner().addToDescription(new SVCharacterDescriptor("Cuerpo", "Longitud",
+				new SingleValue(0.3)));
+		
+		System.out.println("Verificar que se obtenga una descripción asociada a una estructura");
+		dl.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
+		assertEquals(dl, oracleIDSystem.getReasoner().getDescription("Cuerpo"));
+		
+		oracleIDSystem.getReasoner().getDescription().clear();
 	}
 
 }

@@ -7,6 +7,8 @@ package system.test;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import ontology.common.Description;
 import ontology.common.Descriptor;
 import ontology.common.SSCharacterDescriptor;
 import ontology.taxonomy.Taxon;
@@ -55,13 +57,13 @@ public class HypothesisTest {
         Hypothesis instance = new Hypothesis();
         PossibleSolution aPossibleSolution = new PossibleSolution();
 
-        assertTrue(instance.addPossibleSolutions(aPossibleSolution));
+        assertTrue(instance.addPossibleSolution(aPossibleSolution));
 
         assertSame(1,instance.getPossibleSolutions().size());
 
         aPossibleSolution.setSolution(new Taxon(TaxonomicRank.SPECIES, "Chromodoris sphoni"));
 
-        assertTrue(instance.addPossibleSolutions(aPossibleSolution));
+        assertTrue(instance.addPossibleSolution(aPossibleSolution));
 
         assertSame(2,instance.getPossibleSolutions().size());
 
@@ -69,7 +71,7 @@ public class HypothesisTest {
         aPossibleSolution.setSolution(new Taxon(TaxonomicRank.SPECIES, "Chromodoris sphoni"));
         aPossibleSolution.setSolution(new Taxon(TaxonomicRank.SPECIES, "Chromodoris clenchi"));
 
-        assertTrue(instance.addPossibleSolutions(aPossibleSolution));
+        assertTrue(instance.addPossibleSolution(aPossibleSolution));
 
         assertSame(3,instance.getPossibleSolutions().size());
 
@@ -87,9 +89,9 @@ public class HypothesisTest {
         /*
          * just true when unique descriptor
          */
-        assertTrue(instance.addUnmatchedDescription(new SSCharacterDescriptor("01cuerpo","forma","alargado")));
-        assertFalse(instance.addUnmatchedDescription(new SSCharacterDescriptor("01cuerpo","forma","alargado")));
-        assertTrue(instance.addUnmatchedDescription(new SSCharacterDescriptor("00acuerpo","forma","alargado")));
+        assertTrue(instance.addToUnmatchedDescription(new SSCharacterDescriptor("01cuerpo","forma","alargado")));
+        assertFalse(instance.addToUnmatchedDescription(new SSCharacterDescriptor("01cuerpo","forma","alargado")));
+        assertTrue(instance.addToUnmatchedDescription(new SSCharacterDescriptor("00acuerpo","forma","alargado")));
 
         /*
          * Must be sorted
@@ -154,10 +156,10 @@ public class HypothesisTest {
     public void testContains() {
         java.lang.System.out.println("contains");
         Hypothesis instance = new Hypothesis();
-        List<Descriptor> aDescription = new ArrayList<Descriptor>();
-        aDescription.add(new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro"));
-        aDescription.add(new SSCharacterDescriptor("pie","coloracion","crema"));
-        aDescription.add(new SSCharacterDescriptor("branquia","posicion_durante_desplazamiento","hacia_atras"));
+        Description aDescription = new Description();
+        aDescription.addToConcreteDescription(new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro"));
+        aDescription.addToConcreteDescription(new SSCharacterDescriptor("pie","coloracion","crema"));
+        aDescription.addToConcreteDescription(new SSCharacterDescriptor("branquia","posicion_durante_desplazamiento","hacia_atras"));
         /*
          * Must be on list on the system
          */

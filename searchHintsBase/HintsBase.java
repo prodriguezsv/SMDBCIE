@@ -43,7 +43,7 @@ public class HintsBase {
 	 * @see "Método specStructAttrList del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public SpecificPatternsbyStructureList getSpecStructAttrList() {
+	public SpecificPatternsbyStructureList getSpecificPatternsbyStructureList() {
 		return specStructAttrList;
 	}
 

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ontology.CBR.SimilarityDegree;
+import ontology.common.Description;
 import ontology.common.Descriptor;
 import ontology.common.Modifier;
 import ontology.common.RVCharacterDescriptor;
@@ -168,7 +169,7 @@ public class GoalApproachingDialogTest extends GoalApproachingDialog {
 	public void testDoDialog() {
 		Taxon predecessorTaxon;
 		PossibleSolution ps1;
-		List<Descriptor> description;
+		Description description;
 		
 		System.out.println("Iniciando pruebas para el método DoDialog()");
 		
@@ -179,9 +180,9 @@ public class GoalApproachingDialogTest extends GoalApproachingDialog {
 		ps1.setSolution(taxon);
 		this.addProcessList(ps1);
 		
-		description = new ArrayList<Descriptor>();
-		description.add(new SSCharacterDescriptor("Cuerpo","Forma","Alargado"));
-		description.add(new RVCharacterDescriptor("Cuerpo","Longitud", new RangeValue(0.3, 4.0,
+		description = new Description();
+		description.addToConcreteDescription(new SSCharacterDescriptor("Cuerpo","Forma","Alargado"));
+		description.addToConcreteDescription(new RVCharacterDescriptor("Cuerpo","Longitud", new RangeValue(0.3, 4.0,
         		MeasuringUnit.CM)));
 		this.getHypothesis().setDescription(description);
 		assertEquals(SearchStatus.SUCCESS, this.doDialog());

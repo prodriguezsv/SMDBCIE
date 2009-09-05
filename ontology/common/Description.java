@@ -4,6 +4,7 @@
 package ontology.common;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -114,6 +115,7 @@ public class Description extends ArrayList<Descriptor> {
 			return false;
 		
 		this.add(aDescriptor);
+		Collections.sort(this);
 		aDescriptor.setAssociatedObject(this);
 		
 		return true;
@@ -133,6 +135,8 @@ public class Description extends ArrayList<Descriptor> {
 			return false;
 		
 		this.add(aDescriptor);
+		Collections.sort(this);
+		aDescriptor.setAssociatedObject(this);
 		
 		return true;
 	}

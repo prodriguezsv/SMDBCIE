@@ -343,7 +343,7 @@ public class GoalApproachingDialog {
                             			
                                     	addOKList(ps);
                                     	return doDialog();
-                                	} else hypothesis.addUnmatchedDescription(new SVCharacterDescriptor(d.getStructure(),
+                                	} else hypothesis.addToUnmatchedDescription(new SVCharacterDescriptor(d.getStructure(),
                             					d.getAttribute(), new SingleValue(value)));
                                 } else {
                                     // Make sure the SAV descriptor is not already processed (i.e., included in 
