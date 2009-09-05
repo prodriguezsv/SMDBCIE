@@ -7,9 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ontology.CBR.SimilarityDegree;
-import ontology.common.CharacterDescriptor;
+import ontology.common.Description;
 import ontology.common.Descriptor;
-import ontology.common.HeuristicDescriptor;
 import ontology.taxonomy.TaxonomicRank;
 import ontology.taxonomy.Taxonomy;
 
@@ -31,7 +30,7 @@ public class Reasoner {
 	private List<Descriptor> caseMemorySearchJustification;
 	private List<Descriptor> taxonHierarchySearchJustification;
 	private List<Descriptor> routeSelectJustification;
-	private List<Descriptor> description;
+	private Description description;
 	private List<Hypothesis> failGHConflictSet;
 	private List<Hypothesis> succGHConflictSet;
 	private List<Hypothesis> succStructConflictSet;
@@ -76,7 +75,7 @@ public class Reasoner {
 		//if (this.getMinSimilarityDegree().isEmpty()) return;
 
 		// List with Structures that constitute the morphological description given by the user
-		setDescription(new ArrayList<Descriptor>());
+		setDescription(new Description());
 
 
 		/* CONFLICT SET: Hypotheses that contain successful possible solutions (i.e., positive cases or taxa) 
@@ -188,7 +187,7 @@ public class Reasoner {
 	 * Método de instancia agregado
 	 * @param groupHDescription
 	 */
-	public void setDescription(List<Descriptor> description) {
+	public void setDescription(Description description) {
 		this.description = description;
 	}
 	
@@ -205,7 +204,7 @@ public class Reasoner {
 	 * @see "Método groupHDescription del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Descriptor> getDescription() {
+	public Description getDescription() {
 		return description;
 	}
 
@@ -1233,21 +1232,7 @@ public class Reasoner {
 	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
 	public List<Descriptor> getCharacterList() {
-		List<Descriptor> characterList;
-		
-		characterList = new ArrayList<Descriptor>();
-		
-		for(Descriptor d: this.getDescription()) {
-			if (d instanceof CharacterDescriptor) { 
-				// Determine if the structure name in Deescriptor has already been included in structureList
-				if (!(characterList.contains(d.getStructure()))) {
-					// The structure name was not found in structureList. Append it to structureList
-					characterList.add(d);
-				} else continue;
-			}
-		}
-		
-		return characterList;
+		return this.getDescription().getCharacterList();
 	}
 	
 	/**
@@ -1255,21 +1240,7 @@ public class Reasoner {
 	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
 	public List<Descriptor> getHeuristicList() {
-		List<Descriptor> heuristicList;
-		
-		heuristicList = new ArrayList<Descriptor>();
-		
-		for(Descriptor d: this.getDescription()) {
-			if (d instanceof HeuristicDescriptor) { 
-				// Determine if the structure name in Deescriptor has already been included in structureList
-				if (!(heuristicList.contains(d.getStructure()))) {
-					// The structure name was not found in structureList. Append it to structureList
-					heuristicList.add(d);
-				} else continue;
-			}
-		}
-		
-		return heuristicList;
+		return this.getDescription().getHeuristicList();
 	}
 	
 	/**
@@ -1277,21 +1248,7 @@ public class Reasoner {
 	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
 	public List<String> getCharacterStructuresList() {
-		List<String> structuresList;
-		
-		structuresList = new ArrayList<String>();
-		
-		for(Descriptor d: this.getDescription()) {
-			if (d instanceof CharacterDescriptor) { 
-				// Determine if the structure name in Deescriptor has already been included in structureList
-				if (!(structuresList.contains(d.getStructure()))) {
-					// The structure name was not found in structureList. Append it to structureList
-					structuresList.add(d.getStructure());
-				} else continue;
-			}
-		}
-		
-		return structuresList;
+		return this.getDescription().getCharacterStructuresList();
 	}
 	
 	/**
@@ -1299,21 +1256,7 @@ public class Reasoner {
 	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
 	public List<String> getHeuristicStructuresList() {
-		List<String> structuresList;
-		
-		structuresList = new ArrayList<String>();
-		
-		for(Descriptor d: this.getDescription()) {
-			if (d instanceof HeuristicDescriptor) { 
-				// Determine if the structure name in Deescriptor has already been included in structureList
-				if (!(structuresList.contains(d.getStructure()))) {
-					// The structure name was not found in structureList. Append it to structureList
-					structuresList.add(d.getStructure());
-				} else continue;
-			}
-		}
-		
-		return structuresList;
+		return this.getDescription().getHeuristicStructuresList();
 	}
 	
 	/**
@@ -1321,17 +1264,6 @@ public class Reasoner {
 	 * @return una lista de descriptores relacionados a aStructureName
 	 */
 	public List<Descriptor> getDescription(String aStructureName) {
-		List<Descriptor> description;
-		
-		description = new ArrayList<Descriptor>();
-		
-		for(Descriptor d: this.getDescription()) {
-			// Determine if the structure name in Deescriptor has already been included in structureList
-			if (d.getStructure().equals(aStructureName)) {
-				description.add(d);
-			} else continue;
-		}
-		
-		return description;
+		return this.getDescription().getDescription(aStructureName);
 	}
 }

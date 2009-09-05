@@ -3,6 +3,8 @@
  */
 package system.test;
 
+import static org.junit.Assert.*;
+
 import ontology.common.Modifier;
 import ontology.common.RVCharacterDescriptor;
 import ontology.common.RVHeuristicDescriptor;
@@ -17,22 +19,25 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Test;
+
+import system.Reasoner;
 
 /**
  * @author Armando
  *
  */
-public class SystemTest {
-	public static system.System oracleIDSystem;
+public class ReasonerTest {
+	private static system.System oracleIDSystem;
 
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		System.out.println("Iniciando pruebas para la clase " + Reasoner.class.getName());
 		Taxon taxon1, taxon2, taxon3, taxon4, taxon5, taxon6, taxon7, taxon8;
-		
-		System.out.println("Iniciando pruebas para la clase " + system.System.class.getName());
+
 		oracleIDSystem = new system.System();
         
 //-----------------------Taxon No. 1---------------------
@@ -782,7 +787,7 @@ public class SystemTest {
 	    taxon4.addToDescription(new SSCharacterDescriptor("Cuerpo","Coloración del fondo","Cafesuzco a verde oliva con anillos u ocelos de pigmento oscuro"),
   		        new Modifier(0.0,1.0,1.0));
 	//-----------------------Structure No. 2---------------------
-  		taxon3.addToDescription(new SSCharacterDescriptor("Pie","Forma","Estrecho y prolongado en cola larga"),
+  		taxon4.addToDescription(new SSCharacterDescriptor("Pie","Forma","Estrecho y prolongado en cola larga"),
   		        new Modifier(0.0,1.0,1.0));	    
 //-----------------------Taxon No. 25---------------------
 	    taxon5 = new Taxon(TaxonomicRank.SPECIES, "Notarchus punctatus");
@@ -817,6 +822,7 @@ public class SystemTest {
 	 */
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
+		System.out.println("Teminando pruebas para la clase " + Reasoner.class.getName());
 	}
 
 	/**
@@ -832,4 +838,101 @@ public class SystemTest {
 	@After
 	public void tearDown() throws Exception {
 	}
+
+	/**
+	 * Test method for {@link system.Reasoner#evaluatePossibleSolutions()}.
+	 */
+	@Test
+	public void testEvaluatePossibleSolutions() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link system.Reasoner#selectSolutions()}.
+	 */
+	@Test
+	public void testSelectSolutions() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link system.Reasoner#identify()}.
+	 */
+	@Test
+	public void testIdentify() {
+		oracleIDSystem.getReasoner().setIdentGoal(TaxonomicRank.FAMILY);
+	//-----------------------Structure No. 1---------------------
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Cuerpo","Coloración",
+				"Rosado pálido y crema"));
+	//-----------------------Structure No. 2---------------------
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Branquia","Coloración",
+				"Rosado palido y crema"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Branquia","Forma hojas branquiales",
+				"Tripinnada"));
+	//-----------------------Structure No. 3---------------------
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Manto","Forma del borde","Ondulado"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Manto","Textura","Lisa"));
+	//-----------------------Structure No. 4---------------------
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Rinoforos","Coloración",
+				"Rosado palido y crema"));
+		
+		//assertTrue(mySystem.oracleIDSystem.getReasoner().identify());
+	}
+
+	/**
+	 * Test method for {@link system.Reasoner#searchCaseGroupingHeuristics()}.
+	 */
+	@Test
+	public void testSearchCaseGroupingHeuristics() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link system.Reasoner#searchCaseStructures()}.
+	 */
+	@Test
+	public void testSearchCaseStructures() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link system.Reasoner#getCharacterList()}.
+	 */
+	@Test
+	public void testGetCharacterList() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link system.Reasoner#getHeuristicList()}.
+	 */
+	@Test
+	public void testGetHeuristicList() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link system.Reasoner#getCharacterStructuresList()}.
+	 */
+	@Test
+	public void testGetCharacterStructuresList() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link system.Reasoner#getHeuristicStructuresList()}.
+	 */
+	@Test
+	public void testGetHeuristicStructuresList() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link system.Reasoner#getDescription(java.lang.String)}.
+	 */
+	@Test
+	public void testGetDescriptionString() {
+		fail("Not yet implemented");
+	}
+
 }

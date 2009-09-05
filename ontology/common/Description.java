@@ -177,4 +177,48 @@ public class Description extends ArrayList<Descriptor> {
 		
 		return attributesList;
 	}
+	
+	/**
+	 * M&eacute;todo de instancia agregado
+	 * @return una lista de cadenas representando el nombre de las estructuras
+	 */
+	public final List<Descriptor> getCharacterList() {
+		List<Descriptor> characterList;
+		
+		characterList = new ArrayList<Descriptor>();
+		
+		for(Descriptor d: this) {
+			if (d instanceof CharacterDescriptor) { 
+				// Determine if the structure name in Deescriptor has already been included in structureList
+				if (!(characterList.contains(d.getStructure()))) {
+					// The structure name was not found in structureList. Append it to structureList
+					characterList.add(d);
+				} else continue;
+			}
+		}
+		
+		return characterList;
+	}
+	
+	/**
+	 * M&eacute;todo de instancia agregado
+	 * @return una lista de cadenas representando el nombre de las estructuras
+	 */
+	public final List<Descriptor> getHeuristicList() {
+		List<Descriptor> heuristicList;
+		
+		heuristicList = new ArrayList<Descriptor>();
+		
+		for(Descriptor d: this) {
+			if (d instanceof HeuristicDescriptor) { 
+				// Determine if the structure name in Deescriptor has already been included in structureList
+				if (!(heuristicList.contains(d.getStructure()))) {
+					// The structure name was not found in structureList. Append it to structureList
+					heuristicList.add(d);
+				} else continue;
+			}
+		}
+		
+		return heuristicList;
+	}
 }

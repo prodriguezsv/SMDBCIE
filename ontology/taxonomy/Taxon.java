@@ -98,8 +98,10 @@ public class Taxon implements Comparable<Taxon>{
 	public void setPredecessor(Taxon predecessor) {
 		if (predecessor == null) return; //Ojo revisar comportamiento
 		
-		this.predecessor = predecessor;
-		this.predecessor.addSuccessor(this);
+		if (this.predecessor != predecessor) {
+			this.predecessor = predecessor;
+			this.predecessor.addSuccessor(this);
+		}
 	}
 
 	/**
