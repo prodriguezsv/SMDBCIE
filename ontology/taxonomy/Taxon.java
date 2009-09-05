@@ -381,24 +381,19 @@ public class Taxon implements Comparable<Taxon>{
 				 predecessor's level is not ROOT*/
 				pt = aParentTaxon;
 				while(!(pt.getLevel().equals(TaxonomicRank.ROOT))) {
+
 					for (Descriptor d2:pt.getDescription()) {
-						if (d2.getValue() instanceof RangeValue) {
-							/*Value descriptor found. If the measuring units for the receiver's retrieved range value and the 
-							 predecessor's range value are different, then there is an inconsistency*/
-							if (!((RangeValue) d2.getValue()).getMeasuringUnit()
-									.equals(((RangeValue) d.getValue()).getMeasuringUnit()))
-								return false;
-							else {
-								/* Measuring units are the same for both ranges.  Determine if the receiver's value descriptor
-								 range lies within the predecessor's value descriptor range */
-								if (((RangeValue) d2.getValue()).isRangeWithin(((RangeValue) d.getValue())
-										.getLowerBound(), ((RangeValue) d.getValue()).getUpperBound())) 
-									return true;
-								else return false; 
-							}
-						}
-					}
-				}
+                                           if (!(d2.getValue() instanceof RangeValue)) 
+                                             continue;
+                                           
+                                            
+                                            if (!((RangeValue) d2.getValue()).getMeasuringUnit().equals(((RangeValue) d.getValue()).getMeasuringUnit())){
+                                                    return false;
+                                            }
+                                            return (((RangeValue) d2.getValue()).isRangeWithin(((RangeValue) d.getValue()).getLowerBound(), ((RangeValue) d.getValue()).getUpperBound()));
+					}//end for (Descriptor d2:pt.getDescription())
+                                        pt = pt.getPredecessor();
+				}//end while
 			}
 		}
 											

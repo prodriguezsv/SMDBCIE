@@ -85,7 +85,7 @@ public class RangeValue extends Value {
 	public boolean isRangeWithin(double aLowerBound, double anUpperBound) {
 		if (aLowerBound > anUpperBound) return false;
 
-		return ((this.getLowerBound() >= aLowerBound) && (this.getUpperBound() <= anUpperBound));
+		return ((aLowerBound >= this.getLowerBound()) && (anUpperBound <=  this.getUpperBound()));
 	}
 	
 	/**

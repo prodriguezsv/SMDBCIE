@@ -60,8 +60,8 @@ public class Taxonomy {
 			} else {
 				for(Descriptor d2:this.getDescriptorsIndex().keySet()) {
 					if (d2.equals(d)) {
-						if (!d2.getAssociatedObject().equals(aNewTaxon) &&
-								!this.getDescriptorsIndex().get(d).contains(aNewTaxon)); // OJO
+                                            if ((!d2.getAssociatedObject().equals(aNewTaxon)) &&
+                                                    (!this.getDescriptorsIndex().get(d).contains(aNewTaxon)))
 						this.getDescriptorsIndex().get(d).add(aNewTaxon);
 					}
 						
