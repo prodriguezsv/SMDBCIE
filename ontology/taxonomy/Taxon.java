@@ -385,12 +385,14 @@ public class Taxon implements Comparable<Taxon>{
 					for (Descriptor d2:pt.getDescription()) {
                                            if (!(d2.getValue() instanceof RangeValue)) 
                                              continue;
-                                           
+
+                                             if (d.getStructure().equals(d2.getStructure()) && d.getAttribute().equals(d2.getAttribute())){
+                                                if (!((RangeValue) d2.getValue()).getMeasuringUnit().equals(((RangeValue) d.getValue()).getMeasuringUnit())){
+                                                        return false;
+                                                }
+                                                return (((RangeValue) d2.getValue()).isRangeWithin(((RangeValue) d.getValue()).getLowerBound(), ((RangeValue) d.getValue()).getUpperBound()));
+                                             }
                                             
-                                            if (!((RangeValue) d2.getValue()).getMeasuringUnit().equals(((RangeValue) d.getValue()).getMeasuringUnit())){
-                                                    return false;
-                                            }
-                                            return (((RangeValue) d2.getValue()).isRangeWithin(((RangeValue) d.getValue()).getLowerBound(), ((RangeValue) d.getValue()).getUpperBound()));
 					}//end for (Descriptor d2:pt.getDescription())
                                         pt = pt.getPredecessor();
 				}//end while
