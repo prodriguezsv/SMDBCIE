@@ -1175,7 +1175,7 @@ public class Reasoner {
 			
 			// Create a first instance of Hypothesis and assign the grouping heuristic as descriptive element
 			hypothesis = new Hypothesis();
-			hypothesis.setDescription((Description)this.getDescription(s));//Ojo con el cast
+			hypothesis.setDescription(this.getDescription(s));
 
 			// Get the SAV problem description from the structure
 			problemDescription = this.getDescription(s);
@@ -1215,11 +1215,10 @@ public class Reasoner {
 				// Add the hypothesis to the successful conflict set
 				this.addSuccStructConflictSet(hypothesis);
 
-				return this.searchTaxonStructures();
-			}
-			
-			// Search was unsuccessful. Add hypothesis to the no-results set
-			this.addNoResultsSet(hypothesis);
+				//return this.searchTaxonStructures();
+			} else 		
+				// Search was unsuccessful. Add hypothesis to the no-results set
+				this.addNoResultsSet(hypothesis);
 		}
 			
 		return true;
@@ -1229,7 +1228,7 @@ public class Reasoner {
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
-	public List<Descriptor> getCharacterList() {
+	public Description getCharacterList() {
 		return this.getDescription().getCharacterList();
 	}
 	
@@ -1237,7 +1236,7 @@ public class Reasoner {
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
-	public List<Descriptor> getHeuristicList() {
+	public Description getHeuristicList() {
 		return this.getDescription().getHeuristicList();
 	}
 	
@@ -1261,7 +1260,7 @@ public class Reasoner {
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de descriptores relacionados a aStructureName
 	 */
-	public List<Descriptor> getDescription(String aStructureName) {
+	public Description getDescription(String aStructureName) {
 		return this.getDescription().getDescription(aStructureName);
 	}
 }

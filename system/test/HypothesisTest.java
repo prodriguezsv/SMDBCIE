@@ -110,7 +110,7 @@ public class HypothesisTest {
 
         assertFalse(instance.addAllToJustification(null));
         assertTrue(instance.addAllToJustification(aJustificationDescription));
-        assertSame(3,instance.getJustification().size());
+        assertSame(2,instance.getJustification().size());
     }
 
     /**
@@ -127,7 +127,7 @@ public class HypothesisTest {
 
         assertFalse(instance.addAllToUnmatchedDescription(null));
         assertTrue(instance.addAllToUnmatchedDescription(anUnmatchedDescription));
-        assertSame(3,instance.getUnmatchedDescription().size());
+        assertSame(2,instance.getUnmatchedDescription().size());
     }
 
 //    /**

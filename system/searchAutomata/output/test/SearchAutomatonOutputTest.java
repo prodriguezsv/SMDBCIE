@@ -145,7 +145,7 @@ public class SearchAutomatonOutputTest {
         anUnmatchedDescription.add(new SSCharacterDescriptor("pie","disposicion","other new"));
 
         instance.addAllToUnmatchedDescription(anUnmatchedDescription);
-        assertSame(4,instance.getUnmatchedDescription().size());
+        assertSame(2,instance.getUnmatchedDescription().size());
         /*
          * Must keep the sames, descriptor already exists.
          */

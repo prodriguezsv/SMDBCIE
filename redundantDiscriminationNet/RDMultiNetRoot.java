@@ -26,7 +26,7 @@ public class RDMultiNetRoot {
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
 	public RDMultiNetRoot() {
-		nets = null;
+		nets = new ArrayList<RDNet>();
 	}
 
 	/**

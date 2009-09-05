@@ -61,10 +61,10 @@ public class Description extends ArrayList<Descriptor> {
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de descriptores relacionados a aStructureName
 	 */
-	public final List<Descriptor> getDescription(String aStructureName) {
-		List<Descriptor> description;
+	public final Description getDescription(String aStructureName) {
+		Description description;
 		
-		description = new ArrayList<Descriptor>();
+		description = new Description();
 		
 		for(Descriptor d: this) {
 			// Determine if the structure name in Deescriptor has already been included in structureList
@@ -175,10 +175,10 @@ public class Description extends ArrayList<Descriptor> {
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de descriptores relacionados a aStructureName y aAttributeName
 	 */
-	public final List<Descriptor> getDescription(String aStructureName, String anAttributeName) {
-		List<Descriptor> description;
+	public final Description getDescription(String aStructureName, String anAttributeName) {
+		Description description;
 		
-		description = new ArrayList<Descriptor>();
+		description = new Description();
 		
 		for(Descriptor d: this) {
 			// Determine if the structure name in Deescriptor has already been included in structureList
@@ -216,10 +216,10 @@ public class Description extends ArrayList<Descriptor> {
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
-	public final List<Descriptor> getCharacterList() {
-		List<Descriptor> characterList;
+	public final Description getCharacterList() {
+		Description characterList;
 		
-		characterList = new ArrayList<Descriptor>();
+		characterList = new Description();
 		
 		for(Descriptor d: this) {
 			if (d instanceof CharacterDescriptor) { 
@@ -238,10 +238,10 @@ public class Description extends ArrayList<Descriptor> {
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
-	public final List<Descriptor> getHeuristicList() {
-		List<Descriptor> heuristicList;
+	public final Description getHeuristicList() {
+		Description heuristicList;
 		
-		heuristicList = new ArrayList<Descriptor>();
+		heuristicList = new Description();
 		
 		for(Descriptor d: this) {
 			if (d instanceof HeuristicDescriptor) { 
