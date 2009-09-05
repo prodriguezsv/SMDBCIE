@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import ontology.CBR.SimilarityDegree;
+import ontology.common.Description;
 import ontology.common.Descriptor;
 import ontology.taxonomy.Taxon;
 import ontology.values.RangeValue;
@@ -23,10 +24,10 @@ import system.similarityAssessment.SimilarityAssessor;
 
 public class TaxonomySearchAutomaton {
     private List<Value> valueDescriptors;
-    private List<Descriptor> justification;
+    private Description justification;
     private List<PossibleSolution> possibleSolutionList;
-    private List<Descriptor> tSolutionDescription;
-    private List<Descriptor> tUnmatchedDescription;
+    private Description tSolutionDescription;
+    private Description tUnmatchedDescription;
     private Map<Descriptor, List<Taxon>> searchIndex;
     private SearchStatus status;
     private TaxonomyAutomatonOutput searchOutput;
@@ -37,8 +38,8 @@ public class TaxonomySearchAutomaton {
         searchOutput = new TaxonomyAutomatonOutput();
         possibleSolutionList = new ArrayList<PossibleSolution>();
         valueDescriptors = new ArrayList<Value>();
-        tSolutionDescription = new ArrayList<Descriptor>();
-        tUnmatchedDescription = new ArrayList<Descriptor>();
+        tSolutionDescription = new Description();
+        tUnmatchedDescription = new Description();
         this.setSearchIndex(searchIndex);
         this.minSimilarityDegree = minSimilarityDegree;
         status = SearchStatus.FAIL;
@@ -85,9 +86,7 @@ public class TaxonomySearchAutomaton {
 	 * @return my return values
 	 */
     public boolean addToTSolutionDescription(Descriptor aDescriptor){
-        if (tSolutionDescription.contains(aDescriptor)) return true;
-        tSolutionDescription.add(aDescriptor);
-        return true;
+    	return tSolutionDescription.addToConcreteDescription(aDescriptor);
     }
 
 	/**
@@ -96,9 +95,7 @@ public class TaxonomySearchAutomaton {
 	 * @return my return values
 	 */
     public boolean addToTUnmatchedDescription(Descriptor aDescriptor){
-        if (tUnmatchedDescription.contains(aDescriptor)) return true;
-        tUnmatchedDescription.add(aDescriptor);
-        return true;
+    	return tUnmatchedDescription.addToConcreteDescription(aDescriptor);
     }
 
 	/**
@@ -126,11 +123,11 @@ public class TaxonomySearchAutomaton {
         return possibleSolutionList;
     }
     
-    public List<Descriptor> getTSolutionDescription(){
+    public Description getTSolutionDescription(){
         return tSolutionDescription;
     }
     
-    public List<Descriptor>  getTUnmatchedDescription(){
+    public Description  getTUnmatchedDescription(){
         return tUnmatchedDescription;
     }
     
@@ -153,7 +150,7 @@ public class TaxonomySearchAutomaton {
         for (Taxon tx : aTaxonList){
             PossibleSolution ps = new PossibleSolution();
             ps.setSolution(tx);
-            ps.setSolutionDescription(new ArrayList<Descriptor>(tSolutionDescription));
+            ps.getSolutionDescription().addAllToConcreteDescription(tSolutionDescription);
             psList.add(ps);
         }
         return psList;

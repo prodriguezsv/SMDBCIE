@@ -317,11 +317,11 @@ public class GoalApproachingDialog {
                         						((RangeValue)d.getValue()).getUpperBound()) / (double)2;
                             			
                             			if (d instanceof CharacterDescriptor) {
-                    						ps.addUnconfirmedDescription(new SVCharacterDescriptor(d.getStructure(),
+                    						ps.addToUnconfirmedDescription(new SVCharacterDescriptor(d.getStructure(),
                                     				d.getAttribute(), new SingleValue(value)));
 
                     					} else {
-                    						ps.addUnconfirmedDescription(new SVHeuristicDescriptor(d.getStructure(),
+                    						ps.addToUnconfirmedDescription(new SVHeuristicDescriptor(d.getStructure(),
                                     				d.getAttribute(), new SingleValue(value)));
                     					}
                             		}
@@ -336,9 +336,9 @@ public class GoalApproachingDialog {
                             	        //call to doDialog, in order to process the next possible solution in processList
                             			ps.setSolution(t);
                             			if (d instanceof HeuristicDescriptor)
-                            				ps.addConfirmedDescription(new SVHeuristicDescriptor(d.getStructure(),
+                            				ps.addToConfirmedDescription(new SVHeuristicDescriptor(d.getStructure(),
                             						d.getAttribute(), new SingleValue(value)));
-                            			else ps.addConfirmedDescription(new SVCharacterDescriptor(d.getStructure(),
+                            			else ps.addToConfirmedDescription(new SVCharacterDescriptor(d.getStructure(),
                             					d.getAttribute(), new SingleValue(value)));
                             			
                                     	addOKList(ps);
@@ -373,7 +373,7 @@ public class GoalApproachingDialog {
 
                                 if (response.equals("reject")){
                                     while (OKSAVDescriptorList.isEmpty() != true){
-                                        ps.addUnconfirmedDescription(OKSAVDescriptorList.remove(0));
+                                        ps.addToUnconfirmedDescription(OKSAVDescriptorList.remove(0));
                                     }
                                     continue;
                                 }
@@ -382,7 +382,7 @@ public class GoalApproachingDialog {
                                 //description. Continue processing the next attribute
                                 if (response.equals("doubtful")){
                                     while (OKSAVDescriptorList.isEmpty() != true){
-                                        ps.addDoubtfulDescription(OKSAVDescriptorList.remove(0));
+                                        ps.addToDoubtfulDescription(OKSAVDescriptorList.remove(0));
                                     }
                                     continue;
                                 }
@@ -397,9 +397,9 @@ public class GoalApproachingDialog {
                                 
                                 ps.setSolution(t);
                                 if (d instanceof HeuristicDescriptor)
-                    				ps.addConfirmedDescription(new SVHeuristicDescriptor(d.getStructure(),
+                    				ps.addToConfirmedDescription(new SVHeuristicDescriptor(d.getStructure(),
                     						d.getAttribute(), new SingleValue(value)));
-                    			else ps.addConfirmedDescription(new SVCharacterDescriptor(d.getStructure(),
+                    			else ps.addToConfirmedDescription(new SVCharacterDescriptor(d.getStructure(),
                     					d.getAttribute(), new SingleValue(value)));
                                 
                                 OKList.add(ps);

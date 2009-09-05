@@ -27,9 +27,9 @@ import system.searchAutomata.output.CaseBaseDFSAutomatonOutput;
  *
  */
 public class Reasoner {
-	private List<Descriptor> caseMemorySearchJustification;
-	private List<Descriptor> taxonHierarchySearchJustification;
-	private List<Descriptor> routeSelectJustification;
+	private Description caseMemorySearchJustification;
+	private Description taxonHierarchySearchJustification;
+	private Description routeSelectJustification;
 	private Description description;
 	private List<Hypothesis> failGHConflictSet;
 	private List<Hypothesis> succGHConflictSet;
@@ -102,20 +102,20 @@ public class Reasoner {
 		setProposedSolutions(null);
 
 		// Justification list: route selection (using the HintsBase) 
-		setRouteSelectJustification(new ArrayList<Descriptor>());
+		setRouteSelectJustification(new Description());
 
 		// Justification list: case memory search 
-		setCaseMemorySearchJustification(new ArrayList<Descriptor>());
+		setCaseMemorySearchJustification(new Description());
 
 		// Justification list: taxonomic hierarchy serach
-		setTaxonHierarchySearchJustification(new ArrayList<Descriptor>());
+		setTaxonHierarchyJustification(new Description());
 	}
 
 	/**
 	 * Método de instancia agregado
 	 * @param caseMemorySearchJustification
 	 */
-	public void setCaseMemorySearchJustification(List<Descriptor> caseMemorySearchJustification) {
+	public void setCaseMemorySearchJustification(Description caseMemorySearchJustification) {
 		this.caseMemorySearchJustification = caseMemorySearchJustification;
 	}
 	
@@ -123,15 +123,15 @@ public class Reasoner {
 	 * @see "Método caseMemorySearchJustification: del protocolo adding en SUKIA SmallTalk"
 	 * @param aJustificationItem
 	 */
-	public void addCaseMemorySearchJustification(Descriptor aJustificationItem) {
-		this.getCaseMemorySearchJustification().add(aJustificationItem);
+	public void addToCaseMemoryJustification(Descriptor aJustificationItem) {
+		this.getCaseMemoryJustification().add(aJustificationItem);
 	}
 
 	/**
 	 * @see "Método caseMemorySearchJustification del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Descriptor> getCaseMemorySearchJustification() {
+	public Description getCaseMemoryJustification() {
 		return caseMemorySearchJustification;
 	}
 
@@ -196,8 +196,7 @@ public class Reasoner {
 	 * @param aHypothesis
 	 */
 	public void addToDescription(Descriptor descriptor) {
-		if (!this.getDescription().contains(descriptor))
-			this.getDescription().add(descriptor);
+		this.getDescription().addToConcreteDescription(descriptor);
 	}
 
 	/**
@@ -332,7 +331,7 @@ public class Reasoner {
 	 * Método de instancia agregado
 	 * @param routeSelectJustification
 	 */
-	public void setRouteSelectJustification(List<Descriptor> routeSelectJustification) {
+	public void setRouteSelectJustification(Description routeSelectJustification) {
 		this.routeSelectJustification = routeSelectJustification;
 	}
 	
@@ -340,15 +339,15 @@ public class Reasoner {
 	 * @see "Método routeSelectJustification: del protocolo adding en SUKIA SmallTalk"
 	 * @param aJustificationItem
 	 */
-	public void addRouteSelectJustification(Descriptor aJustificationItem) {
-		this.getRouteSelectJustification().add(aJustificationItem);
+	public void addToRouteSelectJustification(Descriptor aJustificationItem) {
+		this.getRouteSelectJustification().addToConcreteDescription(aJustificationItem);
 	}
 
 	/**
 	 * @see "Método routeSelectJustification del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Descriptor> getRouteSelectJustification() {
+	public Description getRouteSelectJustification() {
 		return routeSelectJustification;
 	}
 	
@@ -402,25 +401,25 @@ public class Reasoner {
 
 	/**
 	 * Método de instancia agregado
-	 * @param taxonHierarchySearchJustification
+	 * @param aJustification
 	 */
-	public void setTaxonHierarchySearchJustification(List<Descriptor> taxonHierarchySearchJustification) {
-		this.taxonHierarchySearchJustification = taxonHierarchySearchJustification;
+	public void setTaxonHierarchyJustification(Description aJustification) {
+		this.taxonHierarchySearchJustification = aJustification;
 	}
 	
 	/**
 	 * @see "Método routeSelectJustification: del protocolo adding en SUKIA SmallTalk"
 	 * @param aJustificationItem
 	 */
-	public void addTaxonHierarchySearchJustification(Descriptor aJustificationItem) {
-		this.getTaxonHierarchySearchJustification().add(aJustificationItem);
+	public void addToTaxonHierarchyJustification(Descriptor aJustificationItem) {
+		this.getTaxonHierarchyJustification().addToConcreteDescription(aJustificationItem);
 	}
 
 	/**
 	 * @see "Método taxonHierarchySearchJustification del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Descriptor> getTaxonHierarchySearchJustification() {
+	public Description getTaxonHierarchyJustification() {
 		return taxonHierarchySearchJustification;
 	}
 	
@@ -643,17 +642,17 @@ public class Reasoner {
 		
 		// Once all possible solutions have been loaded, copy the search automaton's unmatched description
 		if (!(hypothesis1.getPossibleSolutions().isEmpty()))
-			hypothesis1.copyToUnmatchedDescriptionFrom(searchAutomaton.getSearchOutput().getUnmatchedDescription());
+			hypothesis1.addAllToUnmatchedDescription(searchAutomaton.getSearchOutput().getUnmatchedDescription());
 
 		if (!(hypothesis2.getPossibleSolutions().isEmpty()))
-			hypothesis2.copyToUnmatchedDescriptionFrom(searchAutomaton.getSearchOutput().getUnmatchedDescription());
+			hypothesis2.addAllToUnmatchedDescription(searchAutomaton.getSearchOutput().getUnmatchedDescription());
 
 		// Now copy the justification
 		if (!(hypothesis1.getPossibleSolutions().isEmpty()))
-			hypothesis1.copyToJustificationFrom(searchAutomaton.getSearchOutput().getJustification());
+			hypothesis1.addAllToJustification(searchAutomaton.getSearchOutput().getJustification());
 
 		if (!(hypothesis2.getPossibleSolutions().isEmpty()))
-			hypothesis1.copyToJustificationFrom(searchAutomaton.getSearchOutput().getJustification());
+			hypothesis1.addAllToJustification(searchAutomaton.getSearchOutput().getJustification());
 		
 		// Finally, add the hypotheses to conflict sets
 		index = 1;
@@ -732,8 +731,8 @@ public class Reasoner {
 				if (status == SearchStatus.FAIL) {
 					/* Copy the unmatched description and the justification to the first hypothesis, which is the one
 					 we'll continue to use from now on.*/
-					hypothesis1.copyToUnmatchedDescriptionFrom(searchAutomaton1.getSearchOutput().getUnmatchedDescription());
-					hypothesis1.copyToJustificationFrom(searchAutomaton1.getSearchOutput().getJustification());
+					hypothesis1.addAllToUnmatchedDescription(searchAutomaton1.getSearchOutput().getUnmatchedDescription());
+					hypothesis1.addAllToJustification(searchAutomaton1.getSearchOutput().getJustification());
 				}
 			}
 		
@@ -762,9 +761,9 @@ public class Reasoner {
 						 return false;
 				}
 				
-				hypothesis1.copyToUnmatchedDescriptionFrom(searchAutomaton2.getSearchOutput().getUnmatchedDescription());
+				hypothesis1.addAllToUnmatchedDescription(searchAutomaton2.getSearchOutput().getUnmatchedDescription());
 				//hypothesis1.copyToJustificationFrom(searchAutomaton.getSearchOutput().getJustification());
-				hypothesis1.copyToUnmatchedDescriptionFrom(searchAutomaton2.getSearchOutput().getUnmatchedDescription());
+				hypothesis1.addAllToUnmatchedDescription(searchAutomaton2.getSearchOutput().getUnmatchedDescription());
 	
 				// Add the hypothesis to the successful conflict set
 				this.addSuccGHConflictSet(hypothesis1);
@@ -775,8 +774,8 @@ public class Reasoner {
 			if (status == SearchStatus.FAIL) {
 				/* Copy the unmatched description and the justification to the first hypothesis, which is the one
 				 we'll continue to use from now on.*/
-				hypothesis1.copyToUnmatchedDescriptionFrom(searchAutomaton2.getSearchOutput().getUnmatchedDescription());
-				hypothesis1.copyToJustificationFrom(searchAutomaton2.getSearchOutput().getJustification());
+				hypothesis1.addAllToUnmatchedDescription(searchAutomaton2.getSearchOutput().getUnmatchedDescription());
+				hypothesis1.addAllToJustification(searchAutomaton2.getSearchOutput().getJustification());
 			}
 			
 			// Search was unsuccessful. Add hypothesis to the no-results set
@@ -825,17 +824,17 @@ public class Reasoner {
 		
 		// Once all possible solutions have been loaded, copy the search automaton's unmatched description
 		if (!(hypothesis1.getPossibleSolutions().isEmpty()))
-			hypothesis1.copyToUnmatchedDescriptionFrom(anOutputCopy.getUnmatchedDescription());
+			hypothesis1.addAllToUnmatchedDescription(anOutputCopy.getUnmatchedDescription());
 
 		if (!(hypothesis2.getPossibleSolutions().isEmpty()))
-			hypothesis2.copyToUnmatchedDescriptionFrom(anOutputCopy.getUnmatchedDescription());
+			hypothesis2.addAllToUnmatchedDescription(anOutputCopy.getUnmatchedDescription());
 
 		// Now copy the justification
 		if (!(hypothesis1.getPossibleSolutions().isEmpty()))
-			hypothesis1.copyToJustificationFrom(anOutputCopy.getJustification());
+			hypothesis1.addAllToJustification(anOutputCopy.getJustification());
 
 		if (!(hypothesis2.getPossibleSolutions().isEmpty()))
-			hypothesis1.copyToJustificationFrom(anOutputCopy.getJustification());
+			hypothesis1.addAllToJustification(anOutputCopy.getJustification());
 		
 		/* HYPOTHESIS1: If none of the possible solutions is equal to, or more specific than
 		 the identification goal, establish a new dialog with the user, in order to try to draw
@@ -959,9 +958,9 @@ public class Reasoner {
 					if (status == SearchStatus.ERROR || status == SearchStatus.CANCEL)
 						return false;
 
-					outputCopy.appendToPossibleSolutions(searchAutomaton1.getSearchOutput().getPossibleSolutions());
-					outputCopy.appendToJustification(searchAutomaton1.getSearchOutput().getJustification());
-					outputCopy.appendToUnmatchedDescription(searchAutomaton1.getSearchOutput().getUnmatchedDescription());
+					outputCopy.addAllToPossibleSolutions(searchAutomaton1.getSearchOutput().getPossibleSolutions());
+					outputCopy.addAllToJustification(searchAutomaton1.getSearchOutput().getJustification());
+					outputCopy.addAllToUnmatchedDescription(searchAutomaton1.getSearchOutput().getUnmatchedDescription());
 				}
 				
 				outputCopy.compress();
@@ -979,8 +978,8 @@ public class Reasoner {
 				 condition (outputCopy possibleSolutions isEmpty) ifFalse:. Thus, is must be #fail. Copy 
 				 the unmatched description and the justification to the first hypothesis, which is the one
 			   	 we'll continue to use from now on.*/
-				hypothesis1.copyToUnmatchedDescriptionFrom(outputCopy.getUnmatchedDescription());
-				hypothesis1.copyToJustificationFrom(outputCopy.getJustification());
+				hypothesis1.addAllToUnmatchedDescription(outputCopy.getUnmatchedDescription());
+				hypothesis1.addAllToJustification(outputCopy.getJustification());
 			}
 		
 			/* At this point, either: a) no net root was found, or b) the status of the net search was unsuccessful 
@@ -1008,9 +1007,9 @@ public class Reasoner {
 						 return false;
 				}
 				
-				hypothesis1.copyToUnmatchedDescriptionFrom(searchAutomaton2.getSearchOutput().getUnmatchedDescription());
+				hypothesis1.addAllToUnmatchedDescription(searchAutomaton2.getSearchOutput().getUnmatchedDescription());
 				//hypothesis1.copyToJustificationFrom(searchAutomaton.getSearchOutput().getJustification());
-				hypothesis1.copyToUnmatchedDescriptionFrom(searchAutomaton2.getSearchOutput().getUnmatchedDescription());
+				hypothesis1.addAllToUnmatchedDescription(searchAutomaton2.getSearchOutput().getUnmatchedDescription());
 
 				/*HYPOTHESIS1: If none of the possible solutions is equal to, or more specific than the identification goal, 
 				 establish a new dialog with the user, in order to try to draw the existing possible solutions nearer to the goal*/
@@ -1137,8 +1136,8 @@ public class Reasoner {
 						 return false;
 				}
 				
-				hypothesis.copyToUnmatchedDescriptionFrom(searchAutomaton.getSearchOutput().getUnmatchedDescription());
-				hypothesis.copyToUnmatchedDescriptionFrom(searchAutomaton.getSearchOutput().getUnmatchedDescription());
+				hypothesis.addAllToUnmatchedDescription(searchAutomaton.getSearchOutput().getUnmatchedDescription());
+				hypothesis.addAllToUnmatchedDescription(searchAutomaton.getSearchOutput().getUnmatchedDescription());
 
 				// Add the hypothesis to the successful conflict set
 				this.addSuccGHConflictSet(hypothesis);
@@ -1199,8 +1198,8 @@ public class Reasoner {
 						 return false;
 				}
 				
-				hypothesis.copyToUnmatchedDescriptionFrom(searchAutomaton.getSearchOutput().getUnmatchedDescription());
-				hypothesis.copyToUnmatchedDescriptionFrom(searchAutomaton.getSearchOutput().getUnmatchedDescription());
+				hypothesis.addAllToUnmatchedDescription(searchAutomaton.getSearchOutput().getUnmatchedDescription());
+				hypothesis.addAllToUnmatchedDescription(searchAutomaton.getSearchOutput().getUnmatchedDescription());
 				
 				/* Determine if necessary to establish a dialog with the user (in case none of the possible solutions is
 				 equal to or more specific than the identification goal)*/

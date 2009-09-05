@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import ontology.common.Description;
 import ontology.common.Descriptor;
 import ontology.values.SingleValue;
 
@@ -37,12 +38,12 @@ public class CaseBaseDFSAutomaton {
     public Norm currentNorm;
     public int currentLevel;
     public int stopLevel;
-    private List<Descriptor> tSolutionDesc;
-    private List<Descriptor> tConfirmedDesc;
-    private List<Descriptor> tUnconfirmedDesc;
-    private List<Descriptor> tDoubtfulDesc;
-    private List<Descriptor> tUnmatchedDesc;
-    private List<Descriptor> justification;
+    private Description tSolutionDesc;
+    private Description tConfirmedDesc;
+    private Description tUnconfirmedDesc;
+    private Description tDoubtfulDesc;
+    private Description tUnmatchedDesc;
+    private Description justification;
     public SearchStatus status;
     public CaseBaseDFSAutomatonOutput searchOutput;
 
@@ -56,12 +57,12 @@ public class CaseBaseDFSAutomaton {
         currentNorm = null;
         resetLevel();
         setStopLevel(currentLevel);
-        tSolutionDesc = new ArrayList<Descriptor>();
-        tConfirmedDesc = new ArrayList<Descriptor>();
-        tUnconfirmedDesc = new ArrayList<Descriptor>();
-        tDoubtfulDesc = new ArrayList<Descriptor>();
-        tUnmatchedDesc = new ArrayList<Descriptor>();
-        justification = new ArrayList<Descriptor>();
+        tSolutionDesc = new Description();
+        tConfirmedDesc = new Description();
+        tUnconfirmedDesc = new Description();
+        tDoubtfulDesc = new Description();
+        tUnmatchedDesc = new Description();
+        justification = new Description();
         newOutput();
         status = SearchStatus.FAIL;
     }
@@ -90,8 +91,8 @@ public class CaseBaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public void addJustification(Descriptor aJustificationElement){
-        justification.add(aJustificationElement);
+    public void addToJustification(Descriptor aJustificationElement){
+        justification.addToConcreteDescription(aJustificationElement);
     }
     
     /**
@@ -144,7 +145,7 @@ public class CaseBaseDFSAutomaton {
 	 * @return my return values
 	 */
     public void addToTConfirmedDescription(Descriptor aSAVDescriptor){
-        tConfirmedDesc.add(aSAVDescriptor);
+        tConfirmedDesc.addToConcreteDescription(aSAVDescriptor);
     }
     
     /**
@@ -153,7 +154,7 @@ public class CaseBaseDFSAutomaton {
 	 * @return my return values
 	 */
     public void addToTDoubtfulDescription(Descriptor aSAVDescriptor){
-        tDoubtfulDesc.add(aSAVDescriptor);
+        tDoubtfulDesc.addToConcreteDescription(aSAVDescriptor);
     }
     
     /**
@@ -162,7 +163,7 @@ public class CaseBaseDFSAutomaton {
 	 * @return my return values
 	 */
     public void addToTSolutionDescription(Descriptor aSAVDescriptor){
-        tSolutionDesc.add(aSAVDescriptor);
+        tSolutionDesc.addToConcreteDescription(aSAVDescriptor);
     }
     
     /**
@@ -171,7 +172,7 @@ public class CaseBaseDFSAutomaton {
 	 * @return my return values
 	 */
     public void addToTUnconfirmedDescription(Descriptor aSAVDescriptor){
-        tUnconfirmedDesc.add(aSAVDescriptor);
+        tUnconfirmedDesc.addToConcreteDescription(aSAVDescriptor);
     }
     /**
 	 * @see Define method name.
@@ -179,7 +180,7 @@ public class CaseBaseDFSAutomaton {
 	 * @return my return values
 	 */
     public void addToTUnmatchedDescription(Descriptor aSAVDescriptor){
-        tUnmatchedDesc.add(aSAVDescriptor);
+        tUnmatchedDesc.addToConcreteDescription(aSAVDescriptor);
     }
 
     /**
@@ -204,7 +205,7 @@ public class CaseBaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public List<Descriptor> getJustification(){
+    public Description getJustification(){
         return justification;
     }
     
@@ -257,7 +258,7 @@ public class CaseBaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public List<Descriptor> getTConfirmedDescription(){
+    public Description getTConfirmedDescription(){
         return tConfirmedDesc;
     }
 
@@ -266,7 +267,7 @@ public class CaseBaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public List<Descriptor> getTDoubtfulDescription(){
+    public Description getTDoubtfulDescription(){
     	return tDoubtfulDesc;
     }
     
@@ -275,7 +276,7 @@ public class CaseBaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public List<Descriptor> getTSolutionDescription(){
+    public Description getTSolutionDescription(){
         return tSolutionDesc;
     }
     
@@ -284,7 +285,7 @@ public class CaseBaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public List<Descriptor> getTUnconfirmedDescription(){
+    public Description getTUnconfirmedDescription(){
         return tUnconfirmedDesc;
     }
     
@@ -293,7 +294,7 @@ public class CaseBaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public List<Descriptor> getTUnmatchedDescription(){
+    public Description getTUnmatchedDescription(){
         return tUnmatchedDesc;
     }
 
@@ -726,10 +727,10 @@ public class CaseBaseDFSAutomaton {
         for (SheetCase mycase: aCaseList){
             PossibleSolution ps = new PossibleSolution();
             ps.setSolution(mycase);
-            ps.setSolutionDescription(new ArrayList<Descriptor>(getTSolutionDescription()));
-            ps.setConfirmedDescription(new ArrayList<Descriptor>(getTConfirmedDescription()));
-            ps.setUnconfirmedDescription(new ArrayList<Descriptor>(getTUnconfirmedDescription()));
-            ps.setDoubtfulDescription(new ArrayList<Descriptor>(getTDoubtfulDescription()));
+            ps.getSolutionDescription().addAllToConcreteDescription(getTSolutionDescription());
+            ps.getConfirmedDescription().addAllToConcreteDescription(getTSolutionDescription());
+            ps.getUnconfirmedDescription().addAllToConcreteDescription(getTUnconfirmedDescription());
+            ps.getDoubtfulDescription().addAllToConcreteDescription(getTDoubtfulDescription());
             psList.add(ps);
         }
         

@@ -122,6 +122,36 @@ public class Description extends ArrayList<Descriptor> {
 	}
 	
 	/**
+	 * @see "Método copyToJustificationFrom: del protocolo adding en SUKIA SmallTalk"
+	 * @param aDescription
+	 * @return
+	 */
+	public boolean addAllToConcreteDescription(Description aDescription) {
+		if (aDescription == null) return false;
+		
+        for (Descriptor d:aDescription){
+            this.addToConcreteDescription(d);
+        }
+        
+		return true;
+	}
+	
+	/**
+	 * @see "Método copyToJustificationFrom: del protocolo adding en SUKIA SmallTalk"
+	 * @param aDescription
+	 * @return
+	 */
+	public boolean addAllToAbstractDescription(Description aDescription) {
+		if (aDescription == null) return false;
+		
+        for (Descriptor d:aDescription){
+            this.addToAbstractDescription(d);
+        }
+        
+		return true;
+	}
+	
+	/**
 	 * Appends aDescriptor to the variable description
 	 * @see "M&eacute;todo addToDescription: del protocolo adding en SUKIA SmallTalk"
 	 * @param aDescriptor

@@ -186,14 +186,8 @@ public class Hypothesis {
 	 * @param aJustificationDescription
 	 * @return
 	 */
-	public boolean copyToJustificationFrom(List<Descriptor> aJustificationDescription) {
-		if (aJustificationDescription == null) return false;
-		
-        for (Descriptor d:aJustificationDescription){
-            this.addToJustification(d);
-        }
-        
-		return true;
+	public boolean addAllToJustification(Description aJustificationDescription) {
+		return this.getJustification().addAllToConcreteDescription(aJustificationDescription);
 	}
 	
 	/**
@@ -201,56 +195,7 @@ public class Hypothesis {
 	 * @param anUnmatchedDescription
 	 * @return
 	 */
-	public boolean copyToUnmatchedDescriptionFrom(List<Descriptor> anUnmatchedDescription) {
-		if (anUnmatchedDescription == null)return false;
-                for (Descriptor d:anUnmatchedDescription){
-                    this.addToUnmatchedDescription(d);
-                }
-		return true;
-	}
-
-	/**
-	 * Determines if the argument aSAVDescriptor is a member of the argument aDescription.
-	 * Returns:	-1 (error value) : if aDescription is NOT a description list belonging to self.
-	 * nil : if aSAVDescriptor was NOT found in aDescription.
-	 * not nil: the instance in aDescription that matched aSAVDescriptor's structure and attribute names.
-	 * @see "Método includes:in: del protocolo testing en SUKIA SmallTalk"
-	 * @param aDescriptor
-	 * @param aDescription
-	 * @return
-	 */
-	public boolean contains(Descriptor aDescriptor, List<Descriptor> aDescription) {
-		// Make sure that aDescription is indeed one of my description lists. If not, return the -1 error value
-		 if (!(aDescription == this.getUnmatchedDescription()))
-			 return false;
-                for (Descriptor d:aDescription){
-                    if (d.getStructure().equals(aDescriptor.getStructure()) &&
-                            (d.getAttribute().equals(aDescriptor.getAttribute())))
-                        return true;
-			// Stop searching if the next descriptor's structure name is (alphabetically) greater than the argument's structure name
-                        if (aDescriptor.getStructure().compareTo(d.getStructure()) < 0)
-                                return false;
-                }
-		return false;
-	}
-	
-	/**
-	 * Verifica si existen contradicciones entre los descriptores (estructura, atributo, valor)
-	 * Se dice que existe contradiccion  si existe dos descripciones distintas para el mismo par
-	 * (estructura, atributo)
-	 * @see "M&eacute;todo thereAreContradictions: del protocolo testing en SUKIA SmallTalk"
-	 * @return
-	 */
-	public boolean areThereContradictions(Descriptor aDescriptor, 
-		List<Descriptor> aDescription) {
-
-		for(Descriptor d: aDescription) {
-			if (d.getStructure().equals(aDescriptor.getStructure()) &&
-					d.getAttribute().equals(aDescriptor.getAttribute())	) {
-					return true; // Hay contradiccion
-			}
-		}
-				
-	    return false;
+	public boolean addAllToUnmatchedDescription(Description anUnmatchedDescription) {
+		return this.getUnmatchedDescription().addAllToConcreteDescription(anUnmatchedDescription);
 	}
 }

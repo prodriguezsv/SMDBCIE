@@ -9,7 +9,7 @@ package system.searchAutomata.output;
 import java.util.ArrayList;
 import java.util.List;
 
-import ontology.common.Descriptor;
+import ontology.common.Description;
 import system.PossibleSolution;
 
 
@@ -19,38 +19,36 @@ import system.PossibleSolution;
  */
 public class SearchAutomatonOutput {
     private List<PossibleSolution> possibleSolutions;
-    private List<Descriptor> unmatchedDescription;
-    private List<Descriptor> justification;
+    private Description unmatchedDescription;
+    private Description justification;
 
 
     public SearchAutomatonOutput() {
         possibleSolutions = new ArrayList<PossibleSolution>();
-        unmatchedDescription = new ArrayList<Descriptor>();
-        justification = new ArrayList<Descriptor>();
+        unmatchedDescription = new Description();
+        justification = new Description();
 
     }
 
 	 /**
 	 *Category adding
 	 */
-    public void setJustification(List<Descriptor> aJustificationsList){
-        justification = aJustificationsList; // .copy()
+    public void setJustification(Description aJustificationsList){
+        justification = aJustificationsList;
     }
     
     public void setPossibleSolutions(List<PossibleSolution> aPossibleSolutionList){
-        possibleSolutions.clear();
-        possibleSolutions.addAll(aPossibleSolutionList);
-//        possibleSolutions = aPossibleSolutionList.subList(0, aPossibleSolutionList.size());
+        possibleSolutions = aPossibleSolutionList;
     }
     
-    public void setUnmatchedDescription(List<Descriptor> anUnmatchedDescription){
-        unmatchedDescription = anUnmatchedDescription; // .copy();
+    public void setUnmatchedDescription(Description anUnmatchedDescription){
+        unmatchedDescription = anUnmatchedDescription;
     }
     
 	 /**
 	 *Category accessing
 	 */
-    public List<Descriptor> getJustification(){
+    public Description getJustification(){
         return justification;
     }
     
@@ -58,65 +56,27 @@ public class SearchAutomatonOutput {
         return possibleSolutions;
     }
     
-    public List<Descriptor> getUnmatchedDescription(){
+    public Description getUnmatchedDescription(){
         return unmatchedDescription;
     }
     
 	 /**
 	 *Category appending
 	 */
-    public void appendToJustification(List<Descriptor> aJustificationList){
-        if (aJustificationList != null) {
-            justification.addAll(aJustificationList);
-        }
+    public void addAllToJustification(Description aJustificationList){
+    	justification.addAllToConcreteDescription(aJustificationList);        
     }
-    public void appendToPossibleSolutions(List<PossibleSolution> aPossibleSolutionsList){
+    
+    /*
+     * 
+     */
+    public void addAllToPossibleSolutions(List<PossibleSolution> aPossibleSolutionsList){
         if (aPossibleSolutionsList != null) {
             possibleSolutions.addAll(aPossibleSolutionsList);
         }
     }
     
-    public void appendToUnmatchedDescription(List<Descriptor> anUnmatchedDescription){
-        if (anUnmatchedDescription != null) {
-            for (Descriptor d : anUnmatchedDescription) {
-                 if (!this.contains(d, this.unmatchedDescription)){
-                    this.unmatchedDescription.add(d);
-                 }
-            }
-        }
-    }
-    
-	/**
-	 * Determines if a full aSAVDescriptor is already a member of aDescription. The argument aSAVDescriptor is a member of
-	 * aDescriptionList when its structure, attribute and value match with the structure name, attribute name, and value of a list element.
-	 * Returns: 	-1 (error state): The argument aDescriptionList IS NOT a valid list for self.
-	 * nil: aSAVDescriptor IS NOT a member of aDescriptionList.
-	 * not nil: an element of aDescriptionList whose structure and attribute names match those of aSAVDescriptor
-	 *Category testing
-	 */
-    public Descriptor getDescriptor(Descriptor aDescriptor, List<Descriptor> aDescription){
-        if (!(this.unmatchedDescription.equals(aDescription))) return null;
-        
-        for (Descriptor d : unmatchedDescription) {
-            if (d.getStructure().equals(aDescriptor.getStructure()) && d.getAttribute().equals(aDescriptor.getAttribute())
-            		&& d.getValue().equals(aDescriptor.getValue())) {
-                return d;
-            }
-        }
-        
-        return null;
-    }
-    
-    public boolean contains(Descriptor aSAVDescriptor, List<Descriptor> aDescription){
-        if (!(aDescription.equals(unmatchedDescription))) return false;
-        
-        for (Descriptor d : unmatchedDescription) {
-            if (d.getStructure().equals(aSAVDescriptor.getStructure()) && d.getAttribute().equals(aSAVDescriptor.getAttribute())
-            		&& d.getValue().equals(aSAVDescriptor.getValue())) {
-                return true;
-            }
-        }
-        
-        return false;
+    public void addAllToUnmatchedDescription(Description anUnmatchedDescription){
+    	this.unmatchedDescription.addAllToConcreteDescription(anUnmatchedDescription);
     }
 }

@@ -58,9 +58,9 @@ public class PossibleSolutionTest {
 		Descriptor aDescriptor;
 		
 		aDescriptor = new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(3));
-		aPossibleSolution.addConfirmedDescription(aDescriptor);
+		aPossibleSolution.addToConfirmedDescription(aDescriptor);
 		aDescriptor = new SSCharacterDescriptor("Pie", "Disposición", "Sobresale al manto");
-		aPossibleSolution.addConfirmedDescription(aDescriptor);
+		aPossibleSolution.addToConfirmedDescription(aDescriptor);
 	}
 
 	/**
@@ -71,7 +71,7 @@ public class PossibleSolutionTest {
 	}
 
 	/**
-	 * Test method for {@link system.PossibleSolution#addConfirmedDescription(ontology.common.Descriptor)}.
+	 * Test method for {@link system.PossibleSolution#addToConfirmedDescription(ontology.common.Descriptor)}.
 	 */
 	@Test
 	public void testAddConfirmedDescription() {
@@ -81,20 +81,20 @@ public class PossibleSolutionTest {
 		
 		System.out.println("Verificar que no haya contradicciones en la descripción o duplicados");
 		aDescriptor = new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3));
-		aPossibleSolution.addConfirmedDescription(aDescriptor);
+		aPossibleSolution.addToConfirmedDescription(aDescriptor);
 		aDescriptor = new SSCharacterDescriptor("Pie", "Disposición", "Sobresale al manto");
-		aPossibleSolution.addConfirmedDescription(aDescriptor);
+		aPossibleSolution.addToConfirmedDescription(aDescriptor);
 	
-		assertFalse(aPossibleSolution.addConfirmedDescription(new SVCharacterDescriptor("Cuerpo", 
+		assertFalse(aPossibleSolution.addToConfirmedDescription(new SVCharacterDescriptor("Cuerpo", 
 				"Longitud", new SingleValue(0.3))));
-		assertFalse(aPossibleSolution.addConfirmedDescription(new SSCharacterDescriptor("Pie", 
+		assertFalse(aPossibleSolution.addToConfirmedDescription(new SSCharacterDescriptor("Pie", 
 				"Disposición", "Sobresale al manto")));
 		
 		System.out.println("Verificar que se agregue un descriptor válido");
 		aDescriptor = new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata");
-		assertTrue(aPossibleSolution.addConfirmedDescription(aDescriptor));
+		assertTrue(aPossibleSolution.addToConfirmedDescription(aDescriptor));
 		aDescriptor = new SVCharacterDescriptor("Branquias", "Número de hojas branquiales", new SingleValue(6));
-		assertTrue(aPossibleSolution.addConfirmedDescription(aDescriptor));
+		assertTrue(aPossibleSolution.addToConfirmedDescription(aDescriptor));
 	}
 
 	/**
@@ -107,25 +107,25 @@ public class PossibleSolutionTest {
 		System.out.println("Iniciando pruebas para el método AddContradictions()");
 		
 		aDescriptor = new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3));
-		aPossibleSolution.addContradictions(aDescriptor);
+		aPossibleSolution.addToContradictions(aDescriptor);
 		aDescriptor = new SSCharacterDescriptor("Pie", "Disposición", "Sobresale al manto");
-		aPossibleSolution.addContradictions(aDescriptor);
+		aPossibleSolution.addToContradictions(aDescriptor);
 		
 		System.out.println("Verificar que no haya duplicados");
-		assertFalse(aPossibleSolution.addContradictions(new SVCharacterDescriptor("Cuerpo", 
+		assertFalse(aPossibleSolution.addToContradictions(new SVCharacterDescriptor("Cuerpo", 
 				"Longitud", new SingleValue(0.3))));
-		assertFalse(aPossibleSolution.addContradictions(new SSCharacterDescriptor("Pie",
+		assertFalse(aPossibleSolution.addToContradictions(new SSCharacterDescriptor("Pie",
 				"Disposición", "Sobresale al manto")));
 		
 		System.out.println("Verificar que se agregue un descriptor válido");
 		aDescriptor = new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata");
-		assertTrue(aPossibleSolution.addContradictions(aDescriptor));
+		assertTrue(aPossibleSolution.addToContradictions(aDescriptor));
 		aDescriptor = new SVCharacterDescriptor("Branquias", "Número de hojas branquiales", new SingleValue(6));
-		assertTrue(aPossibleSolution.addContradictions(aDescriptor));
+		assertTrue(aPossibleSolution.addToContradictions(aDescriptor));
 	}
 
 	/**
-	 * Test method for {@link system.PossibleSolution#addDoubtfulDescription(ontology.common.Descriptor)}.
+	 * Test method for {@link system.PossibleSolution#addToDoubtfulDescription(ontology.common.Descriptor)}.
 	 */
 	@Test
 	public void testAddDoubtfulDescription() {
@@ -134,22 +134,22 @@ public class PossibleSolutionTest {
 		System.out.println("Iniciando pruebas para el método AddDoubtfulDescription()");
 		
 		aDescriptor = new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3));
-		aPossibleSolution.addDoubtfulDescription(aDescriptor);
+		aPossibleSolution.addToDoubtfulDescription(aDescriptor);
 		aDescriptor = new SSCharacterDescriptor("Pie", "Disposición", "Sobresale al manto");
-		aPossibleSolution.addDoubtfulDescription(aDescriptor);
+		aPossibleSolution.addToDoubtfulDescription(aDescriptor);
 		
 		System.out.println("Verificar que no haya duplicados");
-		assertFalse(aPossibleSolution.addDoubtfulDescription(new SVCharacterDescriptor("Cuerpo", 
+		assertFalse(aPossibleSolution.addToDoubtfulDescription(new SVCharacterDescriptor("Cuerpo", 
 				"Longitud", new SingleValue(0.3))));
-		assertFalse(aPossibleSolution.addDoubtfulDescription(new SSCharacterDescriptor("Pie", 
+		assertFalse(aPossibleSolution.addToDoubtfulDescription(new SSCharacterDescriptor("Pie", 
 				"Disposición", "Sobresale al manto")));
 		
 		System.out.println("Verificar que se agregue un descriptor válido");
 		aDescriptor = new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata");
-		assertTrue(aPossibleSolution.addDoubtfulDescription(aDescriptor));
+		assertTrue(aPossibleSolution.addToDoubtfulDescription(aDescriptor));
 		aDescriptor = new SVCharacterDescriptor("Branquias", "Número de hojas branquiales", 
 				new SingleValue(6));
-		assertTrue(aPossibleSolution.addDoubtfulDescription(aDescriptor));
+		assertTrue(aPossibleSolution.addToDoubtfulDescription(aDescriptor));
 	}
 
 	/**
@@ -171,7 +171,7 @@ public class PossibleSolutionTest {
 	}
 
 	/**
-	 * Test method for {@link system.PossibleSolution#addSolutionDescription(ontology.common.Descriptor)}.
+	 * Test method for {@link system.PossibleSolution#addToSolutionDescription(ontology.common.Descriptor)}.
 	 */
 	@Test
 	public void testAddSolutionDescription() {
@@ -180,25 +180,25 @@ public class PossibleSolutionTest {
 		System.out.println("Iniciando pruebas para el método AddSolutionDescription()");
 		
 		aDescriptor = new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3));
-		aPossibleSolution.addSolutionDescription(aDescriptor);
+		aPossibleSolution.addToSolutionDescription(aDescriptor);
 		aDescriptor = new SSCharacterDescriptor("Pie", "Disposición", "Sobresale al manto");
-		aPossibleSolution.addSolutionDescription(aDescriptor);
+		aPossibleSolution.addToSolutionDescription(aDescriptor);
 		
 		System.out.println("Verificar que no haya duplicados");
-		assertFalse(aPossibleSolution.addSolutionDescription(new SVCharacterDescriptor("Cuerpo",
+		assertFalse(aPossibleSolution.addToSolutionDescription(new SVCharacterDescriptor("Cuerpo",
 				"Longitud", new SingleValue(0.3))));
-		assertFalse(aPossibleSolution.addSolutionDescription(new SSCharacterDescriptor("Pie", "Disposición",
+		assertFalse(aPossibleSolution.addToSolutionDescription(new SSCharacterDescriptor("Pie", "Disposición",
 				"Sobresale al manto")));
 		
 		System.out.println("Verificar que se agregue un descriptor válido");
 		aDescriptor = new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata");
-		assertTrue(aPossibleSolution.addSolutionDescription(aDescriptor));
+		assertTrue(aPossibleSolution.addToSolutionDescription(aDescriptor));
 		aDescriptor = new SVCharacterDescriptor("Branquias", "Número de hojas branquiales", new SingleValue(6));
-		assertTrue(aPossibleSolution.addSolutionDescription(aDescriptor));
+		assertTrue(aPossibleSolution.addToSolutionDescription(aDescriptor));
 	}
 
 	/**
-	 * Test method for {@link system.PossibleSolution#addUnconfirmedDescription(ontology.common.Descriptor)}.
+	 * Test method for {@link system.PossibleSolution#addToUnconfirmedDescription(ontology.common.Descriptor)}.
 	 */
 	@Test
 	public void testAddUnconfirmedDescription() {
@@ -207,21 +207,21 @@ public class PossibleSolutionTest {
 		System.out.println("Iniciando pruebas para el método AddUnconfirmedDescription()");
 		
 		aDescriptor = new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3));
-		aPossibleSolution.addUnconfirmedDescription(aDescriptor);
+		aPossibleSolution.addToUnconfirmedDescription(aDescriptor);
 		aDescriptor = new SSCharacterDescriptor("Pie", "Disposición", "Sobresale al manto");
-		aPossibleSolution.addUnconfirmedDescription(aDescriptor);
+		aPossibleSolution.addToUnconfirmedDescription(aDescriptor);
 		
 		System.out.println("Verificar que no haya duplicados");
-		assertFalse(aPossibleSolution.addUnconfirmedDescription(new SVCharacterDescriptor("Cuerpo", 
+		assertFalse(aPossibleSolution.addToUnconfirmedDescription(new SVCharacterDescriptor("Cuerpo", 
 				"Longitud", new SingleValue(0.3))));
-		assertFalse(aPossibleSolution.addUnconfirmedDescription(new SSCharacterDescriptor("Pie", 
+		assertFalse(aPossibleSolution.addToUnconfirmedDescription(new SSCharacterDescriptor("Pie", 
 				"Disposición", "Sobresale al manto")));
 		
 		System.out.println("Verificar que se agregue un descriptor válido");
 		aDescriptor = new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata");
-		assertTrue(aPossibleSolution.addUnconfirmedDescription(aDescriptor));
+		assertTrue(aPossibleSolution.addToUnconfirmedDescription(aDescriptor));
 		aDescriptor = new SVCharacterDescriptor("Branquias", "Número de hojas branquiales", new SingleValue(6));
-		assertTrue(aPossibleSolution.addUnconfirmedDescription(aDescriptor));
+		assertTrue(aPossibleSolution.addToUnconfirmedDescription(aDescriptor));
 	}
 
 	/**

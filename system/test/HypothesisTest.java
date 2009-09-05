@@ -5,11 +5,7 @@
 
 package system.test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ontology.common.Description;
-import ontology.common.Descriptor;
 import ontology.common.SSCharacterDescriptor;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
@@ -106,14 +102,14 @@ public class HypothesisTest {
     @Test
     public void testCopyToJustificationFrom() {
         java.lang.System.out.println("copyToJustificationFrom");
-        List<Descriptor> aJustificationDescription = new ArrayList<Descriptor>();
+        Description aJustificationDescription = new Description();
         Hypothesis instance = new Hypothesis();
         aJustificationDescription.add(new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro"));
         aJustificationDescription.add(new SSCharacterDescriptor("pie","coloracion","crema"));
         aJustificationDescription.add(new SSCharacterDescriptor("branquia","posicion_durante_desplazamiento","hacia_atras"));
 
-        assertFalse(instance.copyToJustificationFrom(null));
-        assertTrue(instance.copyToJustificationFrom(aJustificationDescription));
+        assertFalse(instance.addAllToJustification(null));
+        assertTrue(instance.addAllToJustification(aJustificationDescription));
         assertSame(3,instance.getJustification().size());
     }
 
@@ -124,13 +120,13 @@ public class HypothesisTest {
     public void testCopyToUnmatchedDescriptionFrom() {
         java.lang.System.out.println("copyToUnmatchedDescriptionFrom");
         Hypothesis instance = new Hypothesis();
-        List<Descriptor> anUnmatchedDescription = new ArrayList<Descriptor>();
+        Description anUnmatchedDescription = new Description();
         anUnmatchedDescription.add(new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro"));
         anUnmatchedDescription.add(new SSCharacterDescriptor("pie","coloracion","crema"));
         anUnmatchedDescription.add(new SSCharacterDescriptor("branquia","posicion_durante_desplazamiento","hacia_atras"));
 
-        assertFalse(instance.copyToUnmatchedDescriptionFrom(null));
-        assertTrue(instance.copyToUnmatchedDescriptionFrom(anUnmatchedDescription));
+        assertFalse(instance.addAllToUnmatchedDescription(null));
+        assertTrue(instance.addAllToUnmatchedDescription(anUnmatchedDescription));
         assertSame(3,instance.getUnmatchedDescription().size());
     }
 
@@ -163,14 +159,17 @@ public class HypothesisTest {
         /*
          * Must be on list on the system
          */
-        assertFalse(instance.contains(new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro"), aDescription));
+        assertFalse(instance.getUnmatchedDescription().contains(new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro")));
+        assertFalse(instance.getDescription().contains(new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro")));
+        assertFalse(instance.getJustification().contains(new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro")));
+        
         instance.setUnmatchedDescription(aDescription);
-        assertTrue(instance.contains(new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro"), aDescription));
-        assertTrue(instance.contains(new SSCharacterDescriptor("pie","coloracion","crema"), aDescription));
-        /*
-         * The first name on the list is greater, so error.
-         */
-        assertFalse(instance.contains(new SSCharacterDescriptor("branquia","posicion_durante_desplazamiento","hacia_atras"), aDescription));
+        instance.setDescription(aDescription);
+        instance.setJustification(aDescription);
+        
+        assertTrue(instance.getUnmatchedDescription().contains(new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro")));
+        assertTrue(instance.getDescription().contains(new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro")));
+        assertTrue(instance.getJustification().contains(new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro")));
     }
 
     /**
@@ -180,17 +179,19 @@ public class HypothesisTest {
     public void testAreThereContradictions() {
         java.lang.System.out.println("areThereContradictions");
         Hypothesis instance = new Hypothesis();
-        List<Descriptor> aDescription = new ArrayList<Descriptor>();
+        Description aDescription = new Description();
         aDescription.add(new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro"));
         aDescription.add(new SSCharacterDescriptor("pie","coloracion","crema"));
         aDescription.add(new SSCharacterDescriptor("branquia","posicion_durante_desplazamiento","hacia_atras"));
 
-        assertTrue(instance.areThereContradictions(new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro"), aDescription));
-        assertTrue(instance.areThereContradictions(new SSCharacterDescriptor("pie","coloracion","crema"), aDescription));
+        instance.setUnmatchedDescription(aDescription);
+        
+        assertTrue(instance.getUnmatchedDescription().areThereContradictions(new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro")));
+        assertTrue(instance.getUnmatchedDescription().areThereContradictions(new SSCharacterDescriptor("pie","coloracion","crema")));
         /*
          * Contradiccion, it doesn't exist
          */
-        assertFalse(instance.areThereContradictions(new SSCharacterDescriptor("weird structure","posicion_durante_desplazamiento","hacia_atras"), aDescription));
+        assertFalse(instance.getUnmatchedDescription().areThereContradictions(new SSCharacterDescriptor("weird structure","posicion_durante_desplazamiento","hacia_atras")));
     }
 
 }

@@ -107,17 +107,17 @@ public class CaseBaseDFSAutomatonOutput extends SearchAutomatonOutput {
     	}
 
     	// Put all processed taxa back in the possible solutions list
-    	this.appendToPossibleSolutions(tempList);
+    	this.addAllToPossibleSolutions(tempList);
 
     	return true;
     }
     
     private void inheritPossibleSolutionDescriptionsFrom(PossibleSolution anOldPossibleSolution,
     		PossibleSolution aNewPossibleSolution){
-        aNewPossibleSolution.appendToSolutionDescription(anOldPossibleSolution.getSolutionDescription());
-        aNewPossibleSolution.appendToConfirmedDescription(anOldPossibleSolution.getConfirmedDescription());
-        aNewPossibleSolution.appendToUnconfirmedDescription(anOldPossibleSolution.getUnconfirmedDescription());
-        aNewPossibleSolution.appendToDoubtfulDescription(anOldPossibleSolution.getDoubtfulDescription());
+        aNewPossibleSolution.addAllToSolutionDescription(anOldPossibleSolution.getSolutionDescription());
+        aNewPossibleSolution.addAllToConfirmedDescription(anOldPossibleSolution.getConfirmedDescription());
+        aNewPossibleSolution.addAllToUnconfirmedDescription(anOldPossibleSolution.getUnconfirmedDescription());
+        aNewPossibleSolution.addAllToDoubtfulDescription(anOldPossibleSolution.getDoubtfulDescription());
     }
 	 /**
 	 *Category accessing

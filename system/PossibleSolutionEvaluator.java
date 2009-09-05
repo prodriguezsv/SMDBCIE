@@ -321,9 +321,9 @@ public class PossibleSolutionEvaluator {
 	 * @param aNewPossibleSolution
 	 */
 	public void inheritPossibleSolutionDescriptionsFrom(PossibleSolution anOldPossibleSolution, PossibleSolution aNewPossibleSolution) {
-		aNewPossibleSolution.appendToSolutionDescription(anOldPossibleSolution.getSolutionDescription());
-		aNewPossibleSolution.appendToConfirmedDescription(anOldPossibleSolution.getConfirmedDescription());
-		aNewPossibleSolution.appendToUnconfirmedDescription(anOldPossibleSolution.getUnconfirmedDescription());
-		aNewPossibleSolution.appendToDoubtfulDescription(anOldPossibleSolution.getDoubtfulDescription());
+		aNewPossibleSolution.addAllToSolutionDescription(anOldPossibleSolution.getSolutionDescription());
+		aNewPossibleSolution.addAllToConfirmedDescription(anOldPossibleSolution.getConfirmedDescription());
+		aNewPossibleSolution.addAllToUnconfirmedDescription(anOldPossibleSolution.getUnconfirmedDescription());
+		aNewPossibleSolution.addAllToDoubtfulDescription(anOldPossibleSolution.getDoubtfulDescription());
 	}
 }

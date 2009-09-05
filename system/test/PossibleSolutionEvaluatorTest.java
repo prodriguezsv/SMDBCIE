@@ -357,10 +357,10 @@ public class PossibleSolutionEvaluatorTest {
         PossibleSolution aNewPossibleSolution = new PossibleSolution ();
         assertTrue(aNewPossibleSolution.setSolution(taxon6));
         
-        anOldPossibleSolution.addSolutionDescription(new SSCharacterDescriptor("solutions","forma","ovalado"));
-        anOldPossibleSolution.addConfirmedDescription(new SSCharacterDescriptor("confirmed","forma","ovalado"));
-        anOldPossibleSolution.addUnconfirmedDescription(new SSCharacterDescriptor("unconfirmed","forma","ovalado"));
-        anOldPossibleSolution.addDoubtfulDescription(new SSCharacterDescriptor("doubts","forma","ovalado"));
+        anOldPossibleSolution.addToSolutionDescription(new SSCharacterDescriptor("solutions","forma","ovalado"));
+        anOldPossibleSolution.addToConfirmedDescription(new SSCharacterDescriptor("confirmed","forma","ovalado"));
+        anOldPossibleSolution.addToUnconfirmedDescription(new SSCharacterDescriptor("unconfirmed","forma","ovalado"));
+        anOldPossibleSolution.addToDoubtfulDescription(new SSCharacterDescriptor("doubts","forma","ovalado"));
 
         assertEquals(0,aNewPossibleSolution.getSolutionDescription().size());
         assertEquals(0,aNewPossibleSolution.getConfirmedDescription().size());

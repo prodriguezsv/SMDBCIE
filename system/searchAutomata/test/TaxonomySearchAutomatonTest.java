@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import ontology.CBR.SimilarityDegree;
+import ontology.common.Description;
 import ontology.common.Descriptor;
 import ontology.common.Modifier;
 import ontology.common.RVCharacterDescriptor;
@@ -248,10 +249,10 @@ public class TaxonomySearchAutomatonTest {
         System.out.println("prepareFailedOutput");
         TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton(searchIndex,SimilarityDegree.DIFERENTE);
 
-        List<Descriptor> aDescriptorList = new ArrayList<Descriptor>();
-        aDescriptorList.add(new SSCharacterDescriptor("cuerpo","posicion_de_la_banda_dorsal_continua","centro"));
-        aDescriptorList.add(new SSCharacterDescriptor("manto","forma","elongado_y_ovalado"));
-        aDescriptorList.add(new SSCharacterDescriptor("radula","posicion_del_diente_mas_conspicuo","centro"));
+        Description aDescriptorList = new Description();
+        aDescriptorList.addToConcreteDescription(new SSCharacterDescriptor("cuerpo","posicion_de_la_banda_dorsal_continua","centro"));
+        aDescriptorList.addToConcreteDescription(new SSCharacterDescriptor("manto","forma","elongado_y_ovalado"));
+        aDescriptorList.addToConcreteDescription(new SSCharacterDescriptor("radula","posicion_del_diente_mas_conspicuo","centro"));
 
         assertTrue(instance.prepareFailedOutput());
 
