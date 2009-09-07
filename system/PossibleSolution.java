@@ -315,8 +315,9 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 		return null;
 	}
 	
-	/*
-	 * 
+	/**
+	 * Devuelve el estado de la solución que representa PossibleSolution
+	 * @return true si la solución es un Taxon o el caso es positivo o false si el caso es negativo
 	 */
 	public boolean getStatus() {
 		// Taxon instances always have a positive status

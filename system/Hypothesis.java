@@ -24,7 +24,6 @@ public class Hypothesis {
 	/**
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
-	// Ojo el ordenamiento
 	public Hypothesis() {
 		setDescription(new Description());
 
@@ -34,6 +33,7 @@ public class Hypothesis {
 		// Sort criteria: concatenated structure and attribute names
 		setUnmatchedDescription(new Description());
 		setJustification(new Description());
+		
 		setPoints(0);
 	}
 
@@ -136,9 +136,11 @@ public class Hypothesis {
 			return true;
 		}
 
+		//Obtener el estado de la posible solución del primer elemento y la solución a insertar
 		firstEltStatus = this.getPossibleSolutions().get(0).getStatus();
 		possSolStatus = aPossibleSolution.getStatus();
 
+		//Los estados de ambos deben ser iguales
 		if (firstEltStatus == possSolStatus){
 			this.getPossibleSolutions().add(aPossibleSolution);
 			aPossibleSolution.setHypothesis(this);

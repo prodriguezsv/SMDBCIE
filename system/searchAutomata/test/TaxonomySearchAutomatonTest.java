@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import ontology.CBR.SimilarityDegree;
-import ontology.common.Description;
 import ontology.common.Descriptor;
 import ontology.common.Modifier;
 import ontology.common.RVCharacterDescriptor;
@@ -140,17 +139,17 @@ public class TaxonomySearchAutomatonTest {
         Descriptor aDescriptor3 = new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro");
         Descriptor aDescriptor4 = new SSCharacterDescriptor("cuerpo","conformacion","tiene_cerata");
 
-        assertTrue(instance.addToTSolutionDescription(aDescriptor1));
-        assertSame(1,instance.getTSolutionDescription().size());
-        assertTrue(instance.addToTSolutionDescription(aDescriptor1));
-        assertSame(1,instance.getTSolutionDescription().size());
+        assertTrue(instance.addToCurrentTaxonSolutionDescription(aDescriptor1));
+        assertSame(1,instance.getCurrentTaxonSolutionDescription().size());
+        assertTrue(instance.addToCurrentTaxonSolutionDescription(aDescriptor1));
+        assertSame(1,instance.getCurrentTaxonSolutionDescription().size());
 
-        assertTrue(instance.addToTSolutionDescription(aDescriptor2));
-        assertTrue(instance.addToTSolutionDescription(aDescriptor3));
-        assertTrue(instance.addToTSolutionDescription(aDescriptor3));
-        assertTrue(instance.addToTSolutionDescription(aDescriptor3));
-        assertTrue(instance.addToTSolutionDescription(aDescriptor4));
-        assertSame(4,instance.getTSolutionDescription().size());
+        assertTrue(instance.addToCurrentTaxonSolutionDescription(aDescriptor2));
+        assertTrue(instance.addToCurrentTaxonSolutionDescription(aDescriptor3));
+        assertTrue(instance.addToCurrentTaxonSolutionDescription(aDescriptor3));
+        assertTrue(instance.addToCurrentTaxonSolutionDescription(aDescriptor3));
+        assertTrue(instance.addToCurrentTaxonSolutionDescription(aDescriptor4));
+        assertSame(4,instance.getCurrentTaxonSolutionDescription().size());
     }
 
     /**
@@ -165,17 +164,17 @@ public class TaxonomySearchAutomatonTest {
         Descriptor aDescriptor3 = new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro");
         Descriptor aDescriptor4 = new SSCharacterDescriptor("cuerpo","conformacion","tiene_cerata");
 
-        assertTrue(instance.addToTUnmatchedDescription(aDescriptor1));
-        assertSame(1,instance.getTUnmatchedDescription().size());
-        assertTrue(instance.addToTUnmatchedDescription(aDescriptor1));
-        assertSame(1,instance.getTUnmatchedDescription().size());
+        assertTrue(instance.addToCurrentTaxonUnmatchedDescription(aDescriptor1));
+        assertSame(1,instance.getCurrentTaxonUnmatchedDescription().size());
+        assertTrue(instance.addToCurrentTaxonUnmatchedDescription(aDescriptor1));
+        assertSame(1,instance.getCurrentTaxonUnmatchedDescription().size());
 
-        assertTrue(instance.addToTUnmatchedDescription(aDescriptor2));
-        assertTrue(instance.addToTUnmatchedDescription(aDescriptor3));
-        assertTrue(instance.addToTUnmatchedDescription(aDescriptor3));
-        assertTrue(instance.addToTUnmatchedDescription(aDescriptor3));
-        assertTrue(instance.addToTUnmatchedDescription(aDescriptor4));
-        assertSame(4,instance.getTUnmatchedDescription().size());
+        assertTrue(instance.addToCurrentTaxonUnmatchedDescription(aDescriptor2));
+        assertTrue(instance.addToCurrentTaxonUnmatchedDescription(aDescriptor3));
+        assertTrue(instance.addToCurrentTaxonUnmatchedDescription(aDescriptor3));
+        assertTrue(instance.addToCurrentTaxonUnmatchedDescription(aDescriptor3));
+        assertTrue(instance.addToCurrentTaxonUnmatchedDescription(aDescriptor4));
+        assertSame(4,instance.getCurrentTaxonUnmatchedDescription().size());
     }
 
     /**
@@ -241,55 +240,13 @@ public class TaxonomySearchAutomatonTest {
         assertFalse(instance.checkPrecondition(aProblemDescription));
     }
 
-    /**
-     * Test of prepareFailedOutput method, of class TaxonomySearchAutomaton.
-     */
-    @Test
-    public void testPrepareFailedOutput() {
-        System.out.println("prepareFailedOutput");
-        TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton(searchIndex,SimilarityDegree.DIFERENTE);
-
-        Description aDescriptorList = new Description();
-        aDescriptorList.addToConcreteDescription(new SSCharacterDescriptor("cuerpo","posicion_de_la_banda_dorsal_continua","centro"));
-        aDescriptorList.addToConcreteDescription(new SSCharacterDescriptor("manto","forma","elongado_y_ovalado"));
-        aDescriptorList.addToConcreteDescription(new SSCharacterDescriptor("radula","posicion_del_diente_mas_conspicuo","centro"));
-
-        assertTrue(instance.prepareFailedOutput());
-
-        instance.getSearchOutput().setJustification(aDescriptorList);
-
-        assertFalse(instance.prepareFailedOutput());
-        
-    }
-
-    /**
-     * Test of prepareSuccessfulOutputWith method, of class TaxonomySearchAutomaton.
-     */
-    @Test
-    public void testPrepareSuccessfulOutputWith() {
-        System.out.println("prepareSuccessfulOutputWith");
-        List<PossibleSolution> aPossibleSolutionsList = new ArrayList<PossibleSolution>();
-        aPossibleSolutionsList.add(new PossibleSolution());
-        aPossibleSolutionsList.add(new PossibleSolution());
-        TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton(searchIndex,SimilarityDegree.CONSIDERABLEMENTESIMILAR);
-        assertEquals(SearchStatus.SUCCESS,instance.prepareSuccessfulOutputWith(aPossibleSolutionsList));
-        /*
-         * doesnt nothing in case that it had been assigned
-         */
-        List<PossibleSolution>  otherPossibleSolutionsList = new ArrayList<PossibleSolution>();
-        otherPossibleSolutionsList.add(new PossibleSolution());
-        assertEquals(SearchStatus.SUCCESS,instance.prepareSuccessfulOutputWith(otherPossibleSolutionsList));
-
-        assertNotSame(1,instance.getSearchOutput().getPossibleSolutions().size());
-        assertSame(2,instance.getSearchOutput().getPossibleSolutions().size());
-    }
 
     /**
      * Test of beginWith method, of class TaxonomySearchAutomaton.
      */
     @Test
-    public void testBeginWith() {
-        System.out.println("beginWith");
+    public void testBeginSearch() {
+        System.out.println("beginSearch");
         TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton(searchIndex,SimilarityDegree.CONSIDERABLEMENTESIMILAR);
 
         List<Descriptor> aProblemDescription = new ArrayList<Descriptor>();
@@ -298,7 +255,7 @@ public class TaxonomySearchAutomatonTest {
          * Empty Problem Description
          */
 
-        assertEquals(SearchStatus.ERROR, instance.beginWith(aProblemDescription));
+        assertEquals(SearchStatus.ERROR, instance.beginSearch(aProblemDescription));
 
 
         aProblemDescription.add(new SSCharacterDescriptor("cuerpo","forma","alargado"));
@@ -308,7 +265,7 @@ public class TaxonomySearchAutomatonTest {
          * not same structure.
          */
 
-        assertEquals(SearchStatus.ERROR, instance.beginWith(aProblemDescription));
+        assertEquals(SearchStatus.ERROR, instance.beginSearch(aProblemDescription));
 
 
 
@@ -319,7 +276,7 @@ public class TaxonomySearchAutomatonTest {
         /*
          * not description that match with a taxon.
          */
-        assertEquals(SearchStatus.ERROR, instance.beginWith(aProblemDescription));
+        assertEquals(SearchStatus.ERROR, instance.beginSearch(aProblemDescription));
 
 
 
@@ -329,7 +286,7 @@ public class TaxonomySearchAutomatonTest {
 
 
 
-        assertEquals(SearchStatus.SUCCESS, instance.beginWith(aProblemDescription));
+        assertEquals(SearchStatus.SUCCESS, instance.beginSearch(aProblemDescription));
     }
 
     /**
@@ -343,7 +300,8 @@ public class TaxonomySearchAutomatonTest {
         aProblemDescription.add(new SSCharacterDescriptor("cuerpo","forma","corta"));
 
         TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton(searchIndex,SimilarityDegree.MEDIANAMENTESIMILAR);
-        assertTrue( instance.searchPossibleSolutions(aProblemDescription));
+        instance.searchPossibleSolutions(aProblemDescription);
+        assertFalse(instance.getPossibleSolutions().isEmpty());
     }
 
     /**
@@ -358,12 +316,12 @@ public class TaxonomySearchAutomatonTest {
          */
         Descriptor aDescriptor = new SSCharacterDescriptor("cuerpo","forma","alargado");
 
-        assertSame(taxon1, instance.determineSimilarityFor(aDescriptor, taxon1));
+        assertSame(taxon1, instance.determineSimilarity(aDescriptor, taxon1));
         /*
          * Descriptor that doesnt  exist on taxon2 (null when it fails)
          */
-        assertNotSame(taxon1, instance.determineSimilarityFor(aDescriptor, taxon2));
-        assertSame(null, instance.determineSimilarityFor(aDescriptor, taxon2));
+        assertNotSame(taxon1, instance.determineSimilarity(aDescriptor, taxon2));
+        assertSame(null, instance.determineSimilarity(aDescriptor, taxon2));
     }
 
 }

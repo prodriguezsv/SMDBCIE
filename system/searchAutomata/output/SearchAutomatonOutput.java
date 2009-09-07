@@ -30,8 +30,8 @@ public class SearchAutomatonOutput {
 
     }
 
-	 /**
-	 *Category adding
+	/**
+	 * Category adding
 	 */
     public void setJustification(Description aJustificationsList){
         justification = aJustificationsList;
@@ -60,8 +60,8 @@ public class SearchAutomatonOutput {
         return unmatchedDescription;
     }
     
-	 /**
-	 *Category appending
+	/**
+	 * Category appending
 	 */
     public void addAllToJustification(Description aJustificationList){
     	justification.addAllToConcreteDescription(aJustificationList);        

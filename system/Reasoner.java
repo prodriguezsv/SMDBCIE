@@ -99,7 +99,7 @@ public class Reasoner {
 		setNoResultsSet(new ArrayList<Hypothesis>());
 
 		// Set of solutions to present to the user
-		setProposedSolutions(null);
+		setProposedSolutions(new ArrayList<ProposedSolution>());
 
 		// Justification list: route selection (using the HintsBase) 
 		setRouteSelectJustification(new Description());
@@ -528,7 +528,7 @@ public class Reasoner {
 		// If there are no available possible solutions, exit
 		if (this.getSuccStructConflictSet().isEmpty() && this.getFailStructConflictSet().isEmpty() &&
 			this.getSuccGHConflictSet().isEmpty() && this.getFailGHConflictSet().isEmpty())
-			return false; // Ojo
+			return false;
 
 		// Evaluate all possible solutions
 		if (this.evaluatePossibleSolutions() == false)
@@ -546,37 +546,40 @@ public class Reasoner {
 	 * 1) identGoal: the identification goal; a taxonomic level defined in TaxonomicLevels.
 	 * 2) maxNumberSolutions: maximum number of solutions that the user wants to see.
 	 * 3) presentFailedSolutions: true if the user wants to inspect cases previously solved incorrectly.
-	 * 4) minSimilarityDegree: minimal similarity degree that user expects the system to consider when comparing values (see SimRanges).
+	 * 4) minSimilarityDegree: minimal similarity degree that user expects the system to consider when 
+	 * comparing values (see SimRanges).
 	 * 5) structDescription: problem description in terms of Structures.
 	 * 6) groupHDescription: problem description in terms of GroupingHeuristics.
-	 * For now (8-Oct-1999), this method will not enter a dialog with the user. The before-mentioned variables will be
-	 * updated via method calls (see the adding category) from one of Smalltalk's workspace screens.  Once this method
-	 * is developed, it must satisfy the following conditions:
+	 * For now (8-Oct-1999), this method will not enter a dialog with the user. The before-mentioned
+	 * variables will be updated via method calls (see the adding category) from one of Smalltalk's
+	 * workspace screens.  Once this method is developed, it must satisfy the following conditions:
 	 * -Aceptar una meta de identificación:el nombre de un nivel taxonómico
-	 * -Aceptar la descripción del especímen a identificar: : una lista de Estructuras y Heurísticas de agrupamiento
+	 * -Aceptar la descripción del especímen a identificar: : una lista de Estructuras y Heurísticas de
+	 * agrupamiento.
 	 * Condiciones que debe cumplir la descripción
 	 * i) La descripción no puede tener dos Estructuras con el mismo nombre.
-	 * ii) Las Estructuras pueden tener asignado un peso entre 0.0 y 1.0, el cual se interpreta como 'el grado de interés
-	 * que el usuario muestra por la estructura descrita.
+	 * ii) Las Estructuras pueden tener asignado un peso entre 0.0 y 1.0, el cual se interpreta como el grado
+	 * de interés que el usuario muestra por la estructura descrita.
 	 * iii) Cada Estructura debe tener al menos un atributo.
 	 * iv) Ninguna Estructura puede tener dos atributos con el mismo nombre.
 	 * v) El atributo de una Estructura debe tener solo un valor.
 	 * vi) El valor de un atributo debe ser ByteSymbol o Número (no rango).
-	 * vii) El valor de un atributo puede ser obtenido de la lista de valores definidos para ese atributo, o ser un valor nuevo.
-	 * viii) El valor de un atributo puede tener un peso asignado, el cual se interpreta como 'el grado de certidumbre del
-	 * usuario': 0.0 -- no tiene grado de certidumbre asignado; 0.5 - el usuario no está eguro del valor brindado;
-	 * 1.0 - el usuario está eguro del valor brindado.
+	 * vii) El valor de un atributo puede ser obtenido de la lista de valores definidos para ese atributo,
+	 * o ser un valor nuevo.
+	 * viii) El valor de un atributo puede tener un peso asignado, el cual se interpreta como 'el grado de 
+	 * certidumbre del usuario': 0.0 -- no tiene grado de certidumbre asignado; 0.5 - el usuario no está seguro
+	 * del valor brindado; 1.0 - el usuario está eguro del valor brindado.
 	 * ix) La descripción no puede tener dos Heurísticas de Agrupamiento con el mismo nombre
-	 * x) Las Heurísticas de Agrupamiento pueden tener asignado un peso entre 0.0 y 1.0, el cual se interpreta como
-	 * 'el grado de interés que el usuario muestra por la heurística de agrupamiento descrita'.
+	 * x) Las Heurísticas de Agrupamiento pueden tener asignado un peso entre 0.0 y 1.0, el cual se 
+	 * interpreta como 'el grado de interés que el usuario muestra por la heurística de agrupamiento descrita'.
 	 * xi) Cada Heurística de Agrupamiento debe tener solo un valor.
 	 * xii) El valor de una Heurística de Agrupamiento debe ser ByteSymbol o Número (no rango).
-	 * xiii) El valor de una Heurística de Agrupamiento puede ser obtenido de la lista de valores definidos para esa Heurística
-	 * de Agrupamiento, o ser un valor nuevo.
-	 * xiv) El valor de una Heurística de Agrupamiento puede tener un peso asignado, interpretado como 'el grado de certidumbre
-	 * del usuario': 0.0 -- no tiene grado de certidumbre asignado; 0.5 - el usuario no está eguro del valor brindado; 1.0 - el
-	 * usuario está seguro del valor brindado. (Ojo falta)
-	 * @see "Método getProblemDescription del protocolo private-general en SUKIA SmallTalk"
+	 * xiii) El valor de una Heurística de Agrupamiento puede ser obtenido de la lista de valores definidos
+	 * para esa Heurística de Agrupamiento, o ser un valor nuevo.
+	 * xiv) El valor de una Heurística de Agrupamiento puede tener un peso asignado, interpretado como 
+	 * 'el grado de certidumbre del usuario': 0.0 -- no tiene grado de certidumbre asignado; 0.5 - el usuario
+	 * no está eguro del valor brindado; 1.0 - el usuario está seguro del valor brindado.
+	 * @see "M&eacute;todo getProblemDescription del protocolo private-general en SUKIA SmallTalk"
 	 * @return
 	 */
 	private Object getProblemDescription() {
@@ -584,7 +587,7 @@ public class Reasoner {
 	}
 	
 	/**
-	 * @see "Método useCaseMemory del protocolo private-general en SUKIA SmallTalk"
+	 * @see "M&eacute;todo useCaseMemory del protocolo private-general en SUKIA SmallTalk"
 	 * @return
 	 */
 	private boolean useCaseMemory() {
@@ -598,7 +601,7 @@ public class Reasoner {
 	}
 	
 	/**
-	 * @see "Método useCaseMemory del protocolo private-general en SUKIA SmallTalk"
+	 * @see "M&eacute;todo useCaseMemory del protocolo private-general en SUKIA SmallTalk"
 	 * @return
 	 */
 	private boolean useTaxonomicHierarchy() {
@@ -613,12 +616,11 @@ public class Reasoner {
 	
 	/**
 	 * PRECONDITION: (Search atuomaton's possible solutions list is NOT empty)
-	 * RETURNS:	nil - if the precondition is not met, OR an error occurred.
-	 * self - if all OK
+	 * @see "M&eacute;todo processSuccessfulStructSearchOutputWith:and:and: del protocolo private-case search"
 	 * @param searchAutomaton
 	 * @param hypothesis1
 	 * @param hypothesis2
-	 * @return
+	 * @return nil - if the precondition is not met, OR an error occurred; self - if all OK
 	 */
 	private boolean processSuccessfulGHSearchOutputWith(CaseBaseDFSAutomaton searchAutomaton, Hypothesis hypothesis1, Hypothesis hypothesis2) {
 		Hypothesis currHypothesis;
@@ -746,7 +748,7 @@ public class Reasoner {
 			// Perform a taxonomic search
 			searchAutomaton2 = new TaxonomySearchAutomaton(this.getTaxonomy().getDescriptorsIndex(),
 					this.getMinSimilarityDegree());
-			searchAutomaton2.beginWith(problemDescription);
+			searchAutomaton2.beginSearch(problemDescription);
 			status = searchAutomaton2.getStatus();
 	
 			if (status == SearchStatus.ERROR || status == SearchStatus.CANCEL)
@@ -915,11 +917,11 @@ public class Reasoner {
 
 			// Create a first instance of Hypothesis and assign the structure as descriptive element
 			hypothesis1 = new Hypothesis();
-			hypothesis1.setDescription((Description)this.getDescription(s));//Ojo con el cast
+			hypothesis1.setDescription(this.getDescription(s));
 
 			// Create a second instance of hypothesis, and again, assign the same structure as descriptive element
 			hypothesis2 = new Hypothesis();
-			hypothesis2.setDescription((Description)this.getDescription(s));//Ojo con el cast
+			hypothesis2.setDescription(this.getDescription(s));
 			
 			// Get the SAV problem description from the structure. If no description available, return error value
 			problemDescription = this.getDescription(s);
@@ -991,7 +993,7 @@ public class Reasoner {
 	
 			// Perform a taxonomic search
 			searchAutomaton2 = new TaxonomySearchAutomaton(this.getTaxonomy().getDescriptorsIndex(), this.getMinSimilarityDegree());
-			searchAutomaton2.beginWith(problemDescription);
+			searchAutomaton2.beginSearch(problemDescription);
 			status = searchAutomaton2.getStatus();
 	
 			if (status == SearchStatus.ERROR || status == SearchStatus.CANCEL)
@@ -1122,7 +1124,7 @@ public class Reasoner {
 			// Perform a taxonomic search
 			searchAutomaton = new TaxonomySearchAutomaton(this.getTaxonomy().getDescriptorsIndex()
 					, this.getMinSimilarityDegree());
-			searchAutomaton.beginWith(problemDescription);
+			searchAutomaton.beginSearch(problemDescription);
 			status = searchAutomaton.getStatus();
 
 			if (status == SearchStatus.ERROR || status == SearchStatus.CANCEL)
@@ -1184,7 +1186,7 @@ public class Reasoner {
 			// Perform a taxonomic search
 			searchAutomaton = new TaxonomySearchAutomaton(this.getTaxonomy().getDescriptorsIndex()
 					,this.getMinSimilarityDegree());
-			searchAutomaton.beginWith(problemDescription);
+			searchAutomaton.beginSearch(problemDescription);
 			status = searchAutomaton.getStatus();
 
 			if (status == SearchStatus.ERROR || status == SearchStatus.CANCEL)
@@ -1193,13 +1195,14 @@ public class Reasoner {
 			if (status == SearchStatus.SUCCESS) {
 				// Load all the possible solutions into the hypothesis
 				while (!(searchAutomaton.getSearchOutput().getPossibleSolutions().isEmpty())) {
-					// Attempt to add the possible solution to the hypothesis. If not successful, return an error value*/
+					/* Attempt to add the possible solution to the hypothesis. If not successful, return 
+					an error value*/
 					 if (hypothesis.addPossibleSolution(searchAutomaton.getSearchOutput().getPossibleSolutions().remove(0)) == false)
 						 return false;
 				}
 				
 				hypothesis.addAllToUnmatchedDescription(searchAutomaton.getSearchOutput().getUnmatchedDescription());
-				hypothesis.addAllToUnmatchedDescription(searchAutomaton.getSearchOutput().getUnmatchedDescription());
+				//hypothesis.addAllToUnmatchedDescription(searchAutomaton.getSearchOutput().getUnmatchedDescription());
 				
 				/* Determine if necessary to establish a dialog with the user (in case none of the possible solutions is
 				 equal to or more specific than the identification goal)*/
@@ -1216,9 +1219,7 @@ public class Reasoner {
 				this.addSuccStructConflictSet(hypothesis);
 
 				//return this.searchTaxonStructures();
-			} else 		
-				// Search was unsuccessful. Add hypothesis to the no-results set
-				this.addNoResultsSet(hypothesis);
+			} else this.addNoResultsSet(hypothesis); // Search was unsuccessful. Add hypothesis to the no-results set
 		}
 			
 		return true;

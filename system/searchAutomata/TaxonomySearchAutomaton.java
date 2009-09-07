@@ -11,7 +11,6 @@ import ontology.common.Description;
 import ontology.common.Descriptor;
 import ontology.taxonomy.Taxon;
 import ontology.values.RangeValue;
-import ontology.values.Value;
 
 import system.PossibleSolution;
 import system.searchAutomata.output.TaxonomyAutomatonOutput;
@@ -23,24 +22,22 @@ import system.similarityAssessment.SimilarityAssessor;
  */
 
 public class TaxonomySearchAutomaton {
-    private List<Value> valueDescriptors;
-    private Description justification;
-    private List<PossibleSolution> possibleSolutionList;
-    private Description tSolutionDescription;
-    private Description tUnmatchedDescription;
-    private Map<Descriptor, List<Taxon>> searchIndex;
-    private SearchStatus status;
-    private TaxonomyAutomatonOutput searchOutput;
-    private SimilarityDegree minSimilarityDegree;
+	private Description justification;
+	private Description currentTaxonSolutionDescription;
+	private Description currentTaxonUnmatchedDescription;
+	private List<PossibleSolution> possibleSolutions;
+	private TaxonomyAutomatonOutput searchOutput;
+	private final Map<Descriptor, List<Taxon>> searchIndex;
+	private final SimilarityDegree minSimilarityDegree;
+	private SearchStatus status;
 
    public TaxonomySearchAutomaton (Map<Descriptor, List<Taxon>> searchIndex,
 		   SimilarityDegree minSimilarityDegree) {
         searchOutput = new TaxonomyAutomatonOutput();
-        possibleSolutionList = new ArrayList<PossibleSolution>();
-        valueDescriptors = new ArrayList<Value>();
-        tSolutionDescription = new Description();
-        tUnmatchedDescription = new Description();
-        this.setSearchIndex(searchIndex);
+        possibleSolutions = new ArrayList<PossibleSolution>();
+        currentTaxonSolutionDescription = new Description();
+        currentTaxonUnmatchedDescription = new Description();
+        this.searchIndex = searchIndex;
         this.minSimilarityDegree = minSimilarityDegree;
         status = SearchStatus.FAIL;
    }
@@ -49,7 +46,9 @@ public class TaxonomySearchAutomaton {
  *Category adding
  */
 
-
+   /**
+    * 
+    */
 	public Map<Descriptor, List<Taxon>> getSearchIndex() {
 		return searchIndex;
 	}
@@ -62,9 +61,31 @@ public class TaxonomySearchAutomaton {
     public void setStatus(SearchStatus aStatusValue){
         status = aStatusValue;
     }
+
+	/**
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
+    public void addToPossibleSolutions(PossibleSolution aPossibleSolution){
+        this.possibleSolutions.add(aPossibleSolution);
+    }
+
+    /**
+     * 
+     * @param possibleSolutions
+     */
+    public void setPossibleSolutions(List<PossibleSolution> possibleSolutions){
+    	        this.possibleSolutions = possibleSolutions;
+    }
     
-    public void setSearchIndex(Map<Descriptor, List<Taxon>> aSearchIndex) {
-        searchIndex = aSearchIndex;
+	/**
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
+    public boolean addToCurrentTaxonSolutionDescription(Descriptor aDescriptor){
+    	return currentTaxonSolutionDescription.addToConcreteDescription(aDescriptor);
     }
 
 	/**
@@ -72,45 +93,16 @@ public class TaxonomySearchAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public void addToPossibleSolutionList(PossibleSolution aPossibleSolution){
-        this.possibleSolutionList.add(aPossibleSolution);
-    }
-
-    public void setPossibleSolutionList(List<PossibleSolution> possibleSolutionList){
-    	        this.possibleSolutionList = possibleSolutionList;
-    	}
-    
-	/**
-	 * @see Define method name.
-	 * @param my parameters list
-	 * @return my return values
-	 */
-    public boolean addToTSolutionDescription(Descriptor aDescriptor){
-    	return tSolutionDescription.addToConcreteDescription(aDescriptor);
-    }
-
-	/**
-	 * @see Define method name.
-	 * @param my parameters list
-	 * @return my return values
-	 */
-    public boolean addToTUnmatchedDescription(Descriptor aDescriptor){
-    	return tUnmatchedDescription.addToConcreteDescription(aDescriptor);
-    }
-
-	/**
-	 * @see Define method name.
-	 * @param my parameters list
-	 * @return my return values
-	 */
-    public boolean setValueDescriptors(List<Value> aValueDescriptorList){
-        return valueDescriptors.addAll(aValueDescriptorList);
+    public boolean addToCurrentTaxonUnmatchedDescription(Descriptor aDescriptor){
+    	return currentTaxonUnmatchedDescription.addToConcreteDescription(aDescriptor);
     }
 
 /**
  *Category accessing
  */
-
+    /**
+     * 
+     */
     public TaxonomyAutomatonOutput getSearchOutput(){
         return searchOutput;
     }
@@ -119,20 +111,16 @@ public class TaxonomySearchAutomaton {
         return status;
     }
     
-    public List<PossibleSolution> getPossibleSolutionList(){
-        return possibleSolutionList;
+    public List<PossibleSolution> getPossibleSolutions(){
+        return possibleSolutions;
     }
     
-    public Description getTSolutionDescription(){
-        return tSolutionDescription;
+    public Description getCurrentTaxonSolutionDescription(){
+        return currentTaxonSolutionDescription;
     }
     
-    public Description  getTUnmatchedDescription(){
-        return tUnmatchedDescription;
-    }
-    
-    public List<Value> getValueDescriptors(){
-        return valueDescriptors;
+    public Description  getCurrentTaxonUnmatchedDescription(){
+        return currentTaxonUnmatchedDescription;
     }
 
 /**
@@ -150,7 +138,7 @@ public class TaxonomySearchAutomaton {
         for (Taxon tx : aTaxonList){
             PossibleSolution ps = new PossibleSolution();
             ps.setSolution(tx);
-            ps.getSolutionDescription().addAllToConcreteDescription(tSolutionDescription);
+            ps.getSolutionDescription().addAllToConcreteDescription(currentTaxonSolutionDescription);
             psList.add(ps);
         }
         return psList;
@@ -174,17 +162,17 @@ public class TaxonomySearchAutomaton {
     }
 
 	/**
-	 * @see This method is called from beginWith, and is executed whenn the automaton has failed to provide a solution for the given problem description.
+	 * @see This method is called from beginWith, and is executed whenn the automaton has failed to provide
+	 * a solution for the given problem description.
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public boolean prepareFailedOutput(){
-        if (searchOutput.getJustification().size() != 0) return false;
-        
+    protected void prepareFailedOutput(){
         searchOutput.setJustification(justification);
-        searchOutput.setUnmatchedDescription(tUnmatchedDescription);
-        
-        return true;
+        //this.getJustification().clear();
+        searchOutput.setUnmatchedDescription(currentTaxonUnmatchedDescription);
+        //this.getCurrentTaxonUnmatchedDescription().clear();
+        status = SearchStatus.FAIL;
     }
 
 	/**
@@ -192,15 +180,14 @@ public class TaxonomySearchAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public SearchStatus prepareSuccessfulOutputWith(List<PossibleSolution> aPossibleSolutionsList){
-        if (searchOutput.getPossibleSolutions().size() != 0)
-        	return status;
-        
-        searchOutput.setPossibleSolutions(aPossibleSolutionsList);
+    protected void prepareSuccessfulOutput(){
+        searchOutput.setPossibleSolutions(possibleSolutions);
+        //this.getPossibleSolutions().clear();
         searchOutput.setJustification(justification);
-        searchOutput.setUnmatchedDescription(tUnmatchedDescription);
+        //this.getJustification().clear();
+        searchOutput.setUnmatchedDescription(currentTaxonUnmatchedDescription);
+        //this.getCurrentTaxonUnmatchedDescription().clear();
         status = SearchStatus.SUCCESS;
-        return status;
     }
     
     /**
@@ -215,27 +202,22 @@ public class TaxonomySearchAutomaton {
      * @return nil - if the precondition was not met, or an error occurred, or the process failed to find
      * possible solutions. value returned by prepareSuccessfulOutputWith:
      */
-    public SearchStatus beginWith(List<Descriptor> aProblemDescription){
+    public SearchStatus beginSearch(List<Descriptor> aProblemDescription){
     	//Check general description precondition
         if (checkPrecondition(aProblemDescription) == false) {
         	setStatus(SearchStatus.ERROR);
         	return status;
         }
         
-        if (searchPossibleSolutions(aProblemDescription) == false) {
-        	setStatus(SearchStatus.ERROR);
-        	return status;
-        }
+        searchPossibleSolutions(aProblemDescription);
 
-        if (getPossibleSolutionList().isEmpty()) {
+        if (getPossibleSolutions().isEmpty()) {
         	prepareFailedOutput();
-        	return status;
+        } else {
+	        this.compressPossibleSolutions();
+	        prepareSuccessfulOutput();
         }
-
-        if (compress())
-        	return prepareSuccessfulOutputWith(getPossibleSolutionList());
         
-        prepareFailedOutput();
     	return status;
     }
 
@@ -249,8 +231,7 @@ public class TaxonomySearchAutomaton {
      * @return -1 : if a processing error occurred; nil : if no value descriptors were found; self : if at
      * least one descriptor was found.
      */
-    public boolean searchPossibleSolutions(List<Descriptor> descriptionProblem){
-    	boolean response = false; 
+    public void searchPossibleSolutions(List<Descriptor> descriptionProblem) {
     	List<Descriptor> tempList;
     	
     	tempList = new ArrayList<Descriptor>();
@@ -258,53 +239,45 @@ public class TaxonomySearchAutomaton {
         	List<Taxon> taxa = this.getSearchIndex().get(d);
         	
         	if (taxa == null)
-        		addToTUnmatchedDescription(d);
+        		addToCurrentTaxonUnmatchedDescription(d);
         	else {
         		if (d.getValue() instanceof RangeValue){
                     //Value desscriptor is a range. Associate all taxa to possible solutions, place them in the taxon list
 
         			//Extract the taxa included in each of the retrieved value descriptors
-                    addToTSolutionDescription(d);
+                    addToCurrentTaxonSolutionDescription(d);
                     List<PossibleSolution> ps = associateTaxaToPossibleSolutions(taxa);
-                    getTSolutionDescription().clear();
-                    while(ps.isEmpty() != true){
-                        addToPossibleSolutionList(ps.remove(0));
-                        response = true;
-                    }
-                } else //Value descriptor is not a range. Place it in a temporary list
-                    tempList.add(d);
+                    getCurrentTaxonSolutionDescription().clear();
+                    
+                    while(ps.isEmpty() != true)
+                        addToPossibleSolutions(ps.remove(0));
+                   
+                } else tempList.add(d); //Value descriptor is not a range. Place it in a temporary list
         	}
         }
         
-        //At this point, all descriptors have been verified and processed. If there are no exact-match value descriptors left, return
-        if (tempList.isEmpty()) return response;
+        /*At this point, all descriptors have been verified and processed. If there are no exact-match value
+        descriptors left, return*/
+        if (tempList.isEmpty()) return;
         
         List<Taxon> taxaTempList = new ArrayList<Taxon>();
         
         for (Descriptor d: tempList) {
         	List<Taxon> taxa = this.getSearchIndex().get(d);
         	
-        	if (taxa == null)
-        		addToTUnmatchedDescription(d);
-        	else {
-        		
-        		while (!taxa.isEmpty()) {
-    				Taxon taxon = determineSimilarityFor(d, taxa.remove(0));
-    				if (!(taxon == null)) taxaTempList.add(taxon);
-        		}
-        			
-    			//Extract the taxa included in each of the retrieved value descriptors
-                addToTSolutionDescription(d);
-                List<PossibleSolution> ps = associateTaxaToPossibleSolutions(taxaTempList);
-                getTSolutionDescription().clear();
-                while(ps.isEmpty() != true){
-                    addToPossibleSolutionList(ps.remove(0));
-                    response = true;
-                }
-        	}
+    		while (!taxa.isEmpty()) {
+				Taxon taxon = determineSimilarity(d, taxa.remove(0));
+				if (!(taxon == null)) taxaTempList.add(taxon);
+    		}
+    			
+			//Extract the taxa included in each of the retrieved value descriptors
+            addToCurrentTaxonSolutionDescription(d);
+            List<PossibleSolution> ps = associateTaxaToPossibleSolutions(taxaTempList);
+            getCurrentTaxonSolutionDescription().clear();
+            
+            while(ps.isEmpty() != true)
+                addToPossibleSolutions(ps.remove(0));
         }
-        
-        return response;
     }
     
     /**
@@ -323,21 +296,17 @@ public class TaxonomySearchAutomaton {
      * time, then all possible solutions must contain exactly one Descriptor in their solution
      * description; null - if the precondition is not met; self - the process ran OK.
      */
-    private boolean compress(){
-        if (this.getPossibleSolutionList().isEmpty()) return false;
-        
+    public void compressPossibleSolutions(){
         List<PossibleSolution> tempList = new ArrayList<PossibleSolution>();
         List<Descriptor> inheritedDescription = new ArrayList<Descriptor>();
 
-        while (this.getPossibleSolutionList().isEmpty() != true){
-            PossibleSolution ps = this.getPossibleSolutionList().remove(0);
-            if (ps.getSolutionDescription().size() > 1) return false;
+        while (this.getPossibleSolutions().isEmpty() != true){
+            PossibleSolution ps = this.getPossibleSolutions().remove(0);
 
             int i = 0;
-            while (i < getPossibleSolutionList().size()){
+            while (i < getPossibleSolutions().size()){
                 //get the next possible solution to compare against
-                PossibleSolution compSolution = getPossibleSolutionList().get(i);
-                if (compSolution.getSolutionDescription().size() > 1) return false;
+                PossibleSolution compSolution = getPossibleSolutions().get(i);
 
                 //Determine if the current possible solution's attribute is different from the compare possible solution's attribute
                 if (ps.getSolutionDescription().get(0).getAttribute()
@@ -347,9 +316,10 @@ public class TaxonomySearchAutomaton {
                     //Check if the proposed solutions are the same object
                     if (ps.getSolution().equals(compSolution.getSolution())) {
                         //Inherit the compare solutions solutionDescription and remove it from the taxonList
-                        while (compSolution.getSolutionDescription().isEmpty() != true){
+                        while (compSolution.getSolutionDescription().isEmpty() != true)
                             inheritedDescription.add(compSolution.getSolutionDescription().remove(0));
-                        }
+
+                        getPossibleSolutions().remove(i);
                     } else {//At this point, ps and compSolution are different taxa
                         //Check if ps is a successor of compSolution
                         if (((Taxon)ps.getSolution()).isSuccessorOf((Taxon)compSolution.getSolution())){
@@ -357,27 +327,22 @@ public class TaxonomySearchAutomaton {
                             for (Descriptor d: compSolution.getSolutionDescription()){
                                 inheritedDescription.add(d);
                             }
-                            i += 1;
                         }
+                        i += 1;
                     }
                 }
             }
             
             //Place the current possible solution in a temporary list
-            while (inheritedDescription.isEmpty() != true){
+            while (inheritedDescription.isEmpty() != true)
                 ps.getSolutionDescription().add(inheritedDescription.remove(0));
-            }
-            
+                        
             tempList.add(ps);
-            ps = null;
         }
         
         //Put all processed taxa back in the taxonList
-        while (tempList.isEmpty() != true){
-        	getPossibleSolutionList().add(tempList.remove(0));
-        }
-        
-        return true;
+        while (tempList.isEmpty() != true)
+        	getPossibleSolutions().add(tempList.remove(0));
     }
     
     /**
@@ -388,16 +353,16 @@ public class TaxonomySearchAutomaton {
      * @param my parameters list
      * @return nil : if there is no similarity; aTaxon : if there was an acceptable degree of similarity.
      */
-        public Taxon determineSimilarityFor(Descriptor aDescriptor,Taxon aTaxon){
-            Map<Object, Double> weightedValues = aTaxon.retriveValuesUsing(aDescriptor.getStructure(),
-            		aDescriptor.getAttribute());
-            
-            SimilarityDegree similarity = SimilarityAssessor.similarityRangeOf(aDescriptor.getValue(),
-            		weightedValues);
-            
-            if (EnumSet.range(minSimilarityDegree, SimilarityDegree.IGUAL).contains(similarity) != true)
-            	return null;
-            
-            return aTaxon;
-        }
+    public Taxon determineSimilarity(Descriptor aDescriptor, Taxon aTaxon){
+        Map<Object, Double> weightedValues = aTaxon.retriveValuesUsing(aDescriptor.getStructure(),
+        		aDescriptor.getAttribute());
+        
+        SimilarityDegree similarity = SimilarityAssessor.similarityRangeOf(aDescriptor.getValue(),
+        		weightedValues);
+        
+        if (EnumSet.range(minSimilarityDegree, SimilarityDegree.IGUAL).contains(similarity) != true)
+        	return null;
+        
+        return aTaxon;
+    }
 }

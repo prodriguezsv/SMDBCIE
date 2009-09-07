@@ -18,6 +18,8 @@ import ontology.taxonomy.TaxonomicRank;
 public class PossibleSolutionSelector {
 	private List<Hypothesis> failedGrpHeuristicConflictSet;
 	private List<Hypothesis> failedStructConflictSet;
+	private List<Hypothesis> successfulGrpHeuristicConflictSet;
+	private List<Hypothesis> successfulStructConflictSet;
 	private List<ProposedSolution> generalSolutions;
 	private List<ProposedSolution> goalSolutions;
 	private TaxonomicRank identificationGoal;
@@ -25,8 +27,6 @@ public class PossibleSolutionSelector {
 	private boolean showFailedSolutions;
 	private List<ProposedSolution> specificSolutions;
 	private boolean status;
-	private List<Hypothesis> successfulGrpHeuristicConflictSet;
-	private List<Hypothesis> successfulStructConflictSet;
 
 	/**
 	 * Método de instancia agregado
@@ -326,11 +326,9 @@ public class PossibleSolutionSelector {
 		/* Condition to stop the process: either the number of elements in either the specific or goal 
 		 solutions lists is equal to maximum expected by the user, OR the sum of both lists satisfies
 		 this user expectation*/
-		if (
-                        (this.getGoalSolutions().size() == this.getMaxNumberSolutions()) ||
-                        (this.getSpecificSolutions().size() == this.getMaxNumberSolutions()) ||
-                        ((this.getGoalSolutions().size() + this.getSpecificSolutions().size()) >= this.getMaxNumberSolutions())
-                    )
+		if ((this.getGoalSolutions().size() == this.getMaxNumberSolutions()) ||
+	            (this.getSpecificSolutions().size() == this.getMaxNumberSolutions()) ||
+	            ((this.getGoalSolutions().size() + this.getSpecificSolutions().size()) >= this.getMaxNumberSolutions()))
 			return true;
 
 		// Try to load some more PossibleSolutions to the solutions lists
@@ -400,18 +398,20 @@ public class PossibleSolutionSelector {
 		pSolutions = new ArrayList<PossibleSolution>();
 
 		// FIRST CHOICE: Load all successful (i.e., positive) structure possible solutions, if any
-                for (Hypothesis hypothesis:this.getSuccessfulStructConflictSet()){
-                    for (PossibleSolution aPossibleSolution:hypothesis.getPossibleSolutions()){
-                        pSolutions.add(aPossibleSolution);
-                    }
-                }
+        for (Hypothesis hypothesis:this.getSuccessfulStructConflictSet()){
+            for (PossibleSolution aPossibleSolution:hypothesis.getPossibleSolutions()){
+                pSolutions.add(aPossibleSolution);
+            }
+        }
+        
 		// SECOND CHOICE: Load all successful (i.e., positive) grouping heuristic possible solutions, if any
-                for (Hypothesis hypothesis:this.getSuccessfulGrpHeuristicConflictSet()){
-                    for (PossibleSolution aPossibleSolution:hypothesis.getPossibleSolutions()){
-                        pSolutions.add(aPossibleSolution);
-                    }
-                }
-                this.sort(pSolutions);
+        for (Hypothesis hypothesis:this.getSuccessfulGrpHeuristicConflictSet()){
+            for (PossibleSolution aPossibleSolution:hypothesis.getPossibleSolutions()){
+                pSolutions.add(aPossibleSolution);
+            }
+        }
+        this.sort(pSolutions);
+        
 		if (!(pSolutions.isEmpty())) {
 			this.setStatus(true);
 			return pSolutions;
@@ -421,17 +421,17 @@ public class PossibleSolutionSelector {
 		  load them in the list*/
 		if (this.isShowFailedSolutions()) {
 			// Load all failed (i.e., negative) structure possible solutions, if any
-                        for (Hypothesis hypothesis:this.getFailedStructConflictSet()){
-                            for (PossibleSolution aPossibleSolution:hypothesis.getPossibleSolutions()){
-                                pSolutions.add(aPossibleSolution);
-                            }
-                        }
+            for (Hypothesis hypothesis:this.getFailedStructConflictSet()){
+                for (PossibleSolution aPossibleSolution:hypothesis.getPossibleSolutions()){
+                    pSolutions.add(aPossibleSolution);
+                }
+            }
 			// Load all failed (i.e., negative) grouping heuristic possible solutions, if any
-                        for (Hypothesis hypothesis:this.getFailedGrpHeuristicConflictSet()){
-                            for (PossibleSolution aPossibleSolution:hypothesis.getPossibleSolutions()){
-                                pSolutions.add(aPossibleSolution);
-                            }
-                        }
+            for (Hypothesis hypothesis:this.getFailedGrpHeuristicConflictSet()){
+                for (PossibleSolution aPossibleSolution:hypothesis.getPossibleSolutions()){
+                    pSolutions.add(aPossibleSolution);
+                }
+            }
 			this.sort(pSolutions);
 			if (!(pSolutions.isEmpty()))
 				this.setStatus(false);

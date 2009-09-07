@@ -70,11 +70,11 @@ public class RangeValueTest {
         //same
         assertTrue(aRangeDescriptor.isRangeWithin(0.0, 0.5));
         //is range well
-        assertTrue(aRangeDescriptor.isRangeWithin(-0.1, 0.5));
-        assertTrue(aRangeDescriptor.isRangeWithin(0.0, 0.54));
+        assertFalse(aRangeDescriptor.isRangeWithin(-0.1, 0.5));
+        assertFalse(aRangeDescriptor.isRangeWithin(0.0, 0.56));
         //is not inside
-        assertFalse(aRangeDescriptor.isRangeWithin(0.1, 0.5));
-        assertFalse(aRangeDescriptor.isRangeWithin(0.0, 0.4));
+        assertTrue(aRangeDescriptor.isRangeWithin(0.1, 0.5));
+        assertTrue(aRangeDescriptor.isRangeWithin(0.0, 0.4));
         
     }
 

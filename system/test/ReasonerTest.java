@@ -16,6 +16,7 @@ import ontology.common.RVHeuristicDescriptor;
 import ontology.common.SSCharacterDescriptor;
 import ontology.common.SSHeuristicDescriptor;
 import ontology.common.SVCharacterDescriptor;
+import ontology.common.SVHeuristicDescriptor;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
 import ontology.values.MeasuringUnit;
@@ -873,7 +874,7 @@ public class ReasonerTest {
 				"Rosado pálido y crema"));
 	//-----------------------Structure No. 2---------------------
 		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Branquia","Coloración",
-				"Rosado palido y crema"));
+				"Rosado pálido y crema"));
 		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Branquia","Forma hojas branquiales",
 				"Tripinnada"));
 	//-----------------------Structure No. 3---------------------
@@ -885,7 +886,23 @@ public class ReasonerTest {
 		
 		assertTrue(oracleIDSystem.getReasoner().identify());
 		
-		oracleIDSystem.getReasoner().getDescription().clear();
+		oracleIDSystem.getReasoner().initialize();
+		
+		oracleIDSystem.getReasoner().setIdentGoal(TaxonomicRank.SPECIES);
+	//-----------------------Structure No. 1---------------------
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Cuerpo","Coloración",
+				"Blanquecino"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Cuerpo","Forma",
+				"Ovalado"));
+	//-----------------------Structure No. 2---------------------
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Manto","Coloración del borde","Amarillo"));
+	//-----------------------Structure No. 3---------------------
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Rinoforos","Coloración de los ápices",
+				"Rojo"));
+		
+		assertTrue(oracleIDSystem.getReasoner().identify());
+		
+		oracleIDSystem.getReasoner().initialize();
 	}
 
 	/**
@@ -942,13 +959,13 @@ public class ReasonerTest {
 		
 		oracleIDSystem.getReasoner().addToDescription(new SSHeuristicDescriptor("Alimentación", 
 				"Alimentación","Esponjas"));
-		oracleIDSystem.getReasoner().addToDescription(new RVHeuristicDescriptor("Profundidad donde se encuentra",
-  				"Profundidad donde se encuentra", new RangeValue(0.0, 20.0, MeasuringUnit.M)));
+		oracleIDSystem.getReasoner().addToDescription(new SVHeuristicDescriptor("Profundidad donde se encuentra",
+  				"Profundidad donde se encuentra", new SingleValue(16, MeasuringUnit.M)));
 		
 		sl = new ArrayList<Descriptor>();
 		sl.add(new SSHeuristicDescriptor("Alimentación", "Alimentación","Esponjas"));
-		sl.add(new RVHeuristicDescriptor("Profundidad donde se encuentra",
-  				"Profundidad donde se encuentra", new RangeValue(0.0, 20.0, MeasuringUnit.M)));
+		sl.add(new SVHeuristicDescriptor("Profundidad donde se encuentra",
+  				"Profundidad donde se encuentra", new SingleValue(16, MeasuringUnit.M)));
 		
 		assertEquals(sl, oracleIDSystem.getReasoner().getHeuristicList());
 		
@@ -992,8 +1009,8 @@ public class ReasonerTest {
 		
 		oracleIDSystem.getReasoner().addToDescription(new SSHeuristicDescriptor("Alimentación", 
 				"Alimentación","Esponjas"));
-		oracleIDSystem.getReasoner().addToDescription(new RVHeuristicDescriptor("Profundidad donde se encuentra",
-  				"Profundidad donde se encuentra", new RangeValue(0.0, 20.0, MeasuringUnit.M)));
+		oracleIDSystem.getReasoner().addToDescription(new SVHeuristicDescriptor("Profundidad donde se encuentra",
+  				"Profundidad donde se encuentra", new SingleValue(16, MeasuringUnit.M)));
 		
 		sl = new ArrayList<String>();
 		sl.addAll(Arrays.asList("Alimentación", "Profundidad donde se encuentra"));
