@@ -390,7 +390,7 @@ public class Taxon implements Comparable<Taxon>{
                                                 if (!((RangeValue) d2.getValue()).getMeasuringUnit().equals(((RangeValue) d.getValue()).getMeasuringUnit())){
                                                         return false;
                                                 }
-                                                return (((RangeValue) d2.getValue()).isRangeWithin(((RangeValue) d.getValue()).getLowerBound(), ((RangeValue) d.getValue()).getUpperBound()));
+                                                return (((RangeValue) d2.getValue()).isWithinthisBounds(((RangeValue) d.getValue()).getLowerBound(), ((RangeValue) d.getValue()).getUpperBound()));
                                              }
                                             
 					}//end for (Descriptor d2:pt.getDescription())

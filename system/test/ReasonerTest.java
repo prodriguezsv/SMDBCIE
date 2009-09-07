@@ -930,6 +930,7 @@ public class ReasonerTest {
 		
 		System.out.println("Iniciando pruebas para el método GetCharacterList()");
 		
+		oracleIDSystem.getReasoner().getDescription().clear();
 		System.out.println("Verificar que se obtenga una lista de descriptores de caracter");
 		
 		oracleIDSystem.getReasoner().addToDescription(new SVCharacterDescriptor("Cuerpo", "Longitud",
@@ -938,8 +939,8 @@ public class ReasonerTest {
 				"Estrecho y alargado"));
 		
 		sl = new ArrayList<Descriptor>();
-		sl.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
 		sl.add(new SSCharacterDescriptor("Pie","Forma", "Estrecho y alargado"));
+		sl.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
 		
 		assertEquals(sl, oracleIDSystem.getReasoner().getCharacterList());
 		

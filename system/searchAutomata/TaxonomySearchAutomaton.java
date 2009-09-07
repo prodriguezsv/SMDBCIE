@@ -10,7 +10,9 @@ import ontology.CBR.SimilarityDegree;
 import ontology.common.Description;
 import ontology.common.Descriptor;
 import ontology.taxonomy.Taxon;
+import ontology.taxonomy.Taxonomy;
 import ontology.values.RangeValue;
+import ontology.values.SingleValue;
 
 import system.PossibleSolution;
 import system.searchAutomata.output.TaxonomyAutomatonOutput;
@@ -27,17 +29,17 @@ public class TaxonomySearchAutomaton {
 	private Description currentTaxonUnmatchedDescription;
 	private List<PossibleSolution> possibleSolutions;
 	private TaxonomyAutomatonOutput searchOutput;
-	private final Map<Descriptor, List<Taxon>> searchIndex;
+	private final Taxonomy taxonomy;
 	private final SimilarityDegree minSimilarityDegree;
 	private SearchStatus status;
 
-   public TaxonomySearchAutomaton (Map<Descriptor, List<Taxon>> searchIndex,
+   public TaxonomySearchAutomaton (Taxonomy searchIndex,
 		   SimilarityDegree minSimilarityDegree) {
         searchOutput = new TaxonomyAutomatonOutput();
         possibleSolutions = new ArrayList<PossibleSolution>();
         currentTaxonSolutionDescription = new Description();
         currentTaxonUnmatchedDescription = new Description();
-        this.searchIndex = searchIndex;
+        this.taxonomy = searchIndex;
         this.minSimilarityDegree = minSimilarityDegree;
         status = SearchStatus.FAIL;
    }
@@ -49,8 +51,8 @@ public class TaxonomySearchAutomaton {
    /**
     * 
     */
-	public Map<Descriptor, List<Taxon>> getSearchIndex() {
-		return searchIndex;
+	public Taxonomy getTaxonomy() {
+		return taxonomy;
 	}
 
 	/**
@@ -232,28 +234,48 @@ public class TaxonomySearchAutomaton {
      * least one descriptor was found.
      */
     public void searchPossibleSolutions(List<Descriptor> descriptionProblem) {
-    	List<Descriptor> tempList;
+    	List<Descriptor> tempList, matchedDescriptors;
+    	Description descriptors;
     	
     	tempList = new ArrayList<Descriptor>();
+    	matchedDescriptors = new ArrayList<Descriptor>();
+    	
         for (Descriptor d: descriptionProblem) {
-        	List<Taxon> taxa = this.getSearchIndex().get(d);
+        	descriptors = this.getTaxonomy().searchBySA(d.getStructure(), d.getAttribute());
         	
-        	if (taxa == null)
-        		addToCurrentTaxonUnmatchedDescription(d);
-        	else {
-        		if (d.getValue() instanceof RangeValue){
-                    //Value desscriptor is a range. Associate all taxa to possible solutions, place them in the taxon list
+    		
+			for (Descriptor d2: descriptors) {
+				if (d.getValue() instanceof SingleValue) {
+    				if (d2.getValue() instanceof RangeValue) {
+    					if (((RangeValue)d2.getValue()).containsNumber(((SingleValue)d.getValue()).getValue()))
+    						matchedDescriptors.add(d2);
+    				}
+				}
+				
+				if (d.equals(d2))
+					matchedDescriptors.add(d2);
+			}
+    		
+    		for (Descriptor d3: matchedDescriptors) {
+            	List<Taxon> taxa = this.getTaxonomy().getDescriptorsIndex().get(d3);
+            	
+            	if (taxa == null)
+            		addToCurrentTaxonUnmatchedDescription(d);
+            	else {
+            		if (d3.getValue() instanceof RangeValue){
+                        //Value desscriptor is a range. Associate all taxa to possible solutions, place them in the taxon list
 
-        			//Extract the taxa included in each of the retrieved value descriptors
-                    addToCurrentTaxonSolutionDescription(d);
-                    List<PossibleSolution> ps = associateTaxaToPossibleSolutions(taxa);
-                    getCurrentTaxonSolutionDescription().clear();
-                    
-                    while(ps.isEmpty() != true)
-                        addToPossibleSolutions(ps.remove(0));
-                   
-                } else tempList.add(d); //Value descriptor is not a range. Place it in a temporary list
-        	}
+            			//Extract the taxa included in each of the retrieved value descriptors
+                        addToCurrentTaxonSolutionDescription(d);
+                        List<PossibleSolution> ps = associateTaxaToPossibleSolutions(taxa);
+                        getCurrentTaxonSolutionDescription().clear();
+                        
+                        while(ps.isEmpty() != true)
+                            addToPossibleSolutions(ps.remove(0));
+                       
+                    } else tempList.add(d3); //Value descriptor is not a range. Place it in a temporary list
+            	}
+            }
         }
         
         /*At this point, all descriptors have been verified and processed. If there are no exact-match value
@@ -263,7 +285,7 @@ public class TaxonomySearchAutomaton {
         List<Taxon> taxaTempList = new ArrayList<Taxon>();
         
         for (Descriptor d: tempList) {
-        	List<Taxon> taxa = this.getSearchIndex().get(d);
+        	List<Taxon> taxa = this.getTaxonomy().getDescriptorsIndex().get(d);
         	
     		while (!taxa.isEmpty()) {
 				Taxon taxon = determineSimilarity(d, taxa.remove(0));

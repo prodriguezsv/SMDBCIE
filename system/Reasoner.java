@@ -746,8 +746,7 @@ public class Reasoner {
 			if (problemDescription == null) return false;
 	
 			// Perform a taxonomic search
-			searchAutomaton2 = new TaxonomySearchAutomaton(this.getTaxonomy().getDescriptorsIndex(),
-					this.getMinSimilarityDegree());
+			searchAutomaton2 = new TaxonomySearchAutomaton(this.getTaxonomy(), this.getMinSimilarityDegree());
 			searchAutomaton2.beginSearch(problemDescription);
 			status = searchAutomaton2.getStatus();
 	
@@ -992,7 +991,7 @@ public class Reasoner {
 			if (problemDescription == null) return false;
 	
 			// Perform a taxonomic search
-			searchAutomaton2 = new TaxonomySearchAutomaton(this.getTaxonomy().getDescriptorsIndex(), this.getMinSimilarityDegree());
+			searchAutomaton2 = new TaxonomySearchAutomaton(this.getTaxonomy(), this.getMinSimilarityDegree());
 			searchAutomaton2.beginSearch(problemDescription);
 			status = searchAutomaton2.getStatus();
 	
@@ -1122,8 +1121,7 @@ public class Reasoner {
 			if (problemDescription == null) return false;
 
 			// Perform a taxonomic search
-			searchAutomaton = new TaxonomySearchAutomaton(this.getTaxonomy().getDescriptorsIndex()
-					, this.getMinSimilarityDegree());
+			searchAutomaton = new TaxonomySearchAutomaton(this.getTaxonomy(), this.getMinSimilarityDegree());
 			searchAutomaton.beginSearch(problemDescription);
 			status = searchAutomaton.getStatus();
 
@@ -1139,7 +1137,7 @@ public class Reasoner {
 				}
 				
 				hypothesis.addAllToUnmatchedDescription(searchAutomaton.getSearchOutput().getUnmatchedDescription());
-				hypothesis.addAllToUnmatchedDescription(searchAutomaton.getSearchOutput().getUnmatchedDescription());
+				hypothesis.addAllToJustification(searchAutomaton.getSearchOutput().getJustification());
 
 				// Add the hypothesis to the successful conflict set
 				this.addSuccGHConflictSet(hypothesis);
@@ -1184,8 +1182,7 @@ public class Reasoner {
 			if (problemDescription == null) return false;
 			
 			// Perform a taxonomic search
-			searchAutomaton = new TaxonomySearchAutomaton(this.getTaxonomy().getDescriptorsIndex()
-					,this.getMinSimilarityDegree());
+			searchAutomaton = new TaxonomySearchAutomaton(this.getTaxonomy(), this.getMinSimilarityDegree());
 			searchAutomaton.beginSearch(problemDescription);
 			status = searchAutomaton.getStatus();
 
@@ -1202,7 +1199,7 @@ public class Reasoner {
 				}
 				
 				hypothesis.addAllToUnmatchedDescription(searchAutomaton.getSearchOutput().getUnmatchedDescription());
-				//hypothesis.addAllToUnmatchedDescription(searchAutomaton.getSearchOutput().getUnmatchedDescription());
+				hypothesis.addAllToJustification(searchAutomaton.getSearchOutput().getJustification());
 				
 				/* Determine if necessary to establish a dialog with the user (in case none of the possible solutions is
 				 equal to or more specific than the identification goal)*/

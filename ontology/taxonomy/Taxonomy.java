@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ontology.common.Description;
 import ontology.common.Descriptor;
 
 
@@ -42,7 +43,7 @@ public class Taxonomy {
 	 * Método de instancia agregado
 	 * @param descriptorsIndex
 	 */
-	private void setDescriptorsIndex(Map<Descriptor, List<Taxon>> descriptorsIndex) {
+	public void setDescriptorsIndex(Map<Descriptor, List<Taxon>> descriptorsIndex) {
 		this.descriptorsIndex = descriptorsIndex;
 	}
 	
@@ -94,23 +95,17 @@ public class Taxonomy {
 	}
 
 
-    public List<Object> searchBySA(String aStructure, String anAttribute){
-        List<Object> aListValues = new ArrayList<Object>();
+    public final Description searchBySA(String aStructure, String anAttribute){
+    	Description aDescription = new Description();
 
-        for (List<Taxon> aTaxonList:levelIndex){
-            for (Taxon aTaxon:aTaxonList){
-                for(Descriptor aDescritor:aTaxon.getDescription()){
-                    if (aDescritor.getStructure().equals(aStructure)&&
-                            (aDescritor.getAttribute().equals(anAttribute)))
+        for (Descriptor d:this.getDescriptorsIndex().keySet()){            
+            if (d.getStructure().equals(aStructure)&&
+                    (d.getAttribute().equals(anAttribute)))
 
-                        //TODO fix this
-                        aListValues.add(aDescritor.getValue());
-                }
-
-            }
+                aDescription.add(d);
         }
         
-        return aListValues;
+        return aDescription;
     }
 
 

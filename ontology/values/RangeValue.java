@@ -82,10 +82,25 @@ public class RangeValue extends Value {
 		return upperBound;
 	}	
 	
-	public boolean isRangeWithin(double aLowerBound, double anUpperBound) {
+	/**
+	 * 
+	 * @param aLowerBound
+	 * @param anUpperBound
+	 * @return
+	 */
+	public boolean isWithinthisBounds(double aLowerBound, double anUpperBound) {
 		if (aLowerBound > anUpperBound) return false;
 
 		return ((aLowerBound >= this.getLowerBound()) && (anUpperBound <=  this.getUpperBound()));
+	}
+	
+	/**
+	 * 
+	 * @param aNumber
+	 * @return
+	 */
+	public boolean containsNumber(double aNumber) {
+		return ((aNumber >= this.getLowerBound()) && (aNumber <=  this.getUpperBound()));
 	}
 	
 	/**
@@ -97,9 +112,11 @@ public class RangeValue extends Value {
 		if (aValue == null) return false;
 		if (!(aValue instanceof RangeValue)) return false;
 		
-		if (this.getLowerBound()  >= ((RangeValue)aValue).getLowerBound() &&
-			this.getUpperBound()  <= ((RangeValue)aValue).getUpperBound() &&
-			this.getMeasuringUnit().equals(((RangeValue)aValue).getMeasuringUnit()))
+		if (((this.getLowerBound()  >= ((RangeValue)aValue).getLowerBound() &&
+			this.getUpperBound()  <= ((RangeValue)aValue).getUpperBound()) ||
+			(((RangeValue)aValue).getLowerBound()  >=  this.getLowerBound() &&
+			((RangeValue)aValue).getUpperBound()  <= this.getUpperBound()) &&
+			this.getMeasuringUnit().equals(((RangeValue)aValue).getMeasuringUnit())))
 			return true;
 		
 		else return false;

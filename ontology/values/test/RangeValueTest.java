@@ -68,13 +68,13 @@ public class RangeValueTest {
         System.out.println("isRangeWithin");
         RangeValue aRangeDescriptor = new RangeValue(0.0, 0.5);
         //same
-        assertTrue(aRangeDescriptor.isRangeWithin(0.0, 0.5));
+        assertTrue(aRangeDescriptor.isWithinthisBounds(0.0, 0.5));
         //is range well
-        assertFalse(aRangeDescriptor.isRangeWithin(-0.1, 0.5));
-        assertFalse(aRangeDescriptor.isRangeWithin(0.0, 0.56));
+        assertFalse(aRangeDescriptor.isWithinthisBounds(-0.1, 0.5));
+        assertFalse(aRangeDescriptor.isWithinthisBounds(0.0, 0.56));
         //is not inside
-        assertTrue(aRangeDescriptor.isRangeWithin(0.1, 0.5));
-        assertTrue(aRangeDescriptor.isRangeWithin(0.0, 0.4));
+        assertTrue(aRangeDescriptor.isWithinthisBounds(0.1, 0.5));
+        assertTrue(aRangeDescriptor.isWithinthisBounds(0.0, 0.4));
         
     }
 

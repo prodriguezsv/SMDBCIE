@@ -88,8 +88,9 @@ public class SearchAutomatonOutputTest {
         SearchAutomatonOutput instance = new SearchAutomatonOutput();
         instance.setPossibleSolutions(aPossibleSolutionList);
 
-        assertNotSame(aPossibleSolutionList,instance.getPossibleSolutions());
-        assertSame(((Taxon)aPossibleSolutionList.get(0).getSolution()).getName(),((Taxon)instance.getPossibleSolutions().get(0).getSolution()).getName());
+        assertSame(aPossibleSolutionList,instance.getPossibleSolutions());
+        assertSame(((Taxon)aPossibleSolutionList.get(0).getSolution()).getName(),
+        		((Taxon)instance.getPossibleSolutions().get(0).getSolution()).getName());
     }
 
     /**
@@ -120,7 +121,7 @@ public class SearchAutomatonOutputTest {
 
         instance.addAllToPossibleSolutions(aPossibleSolutionList);
 
-        assertNotSame(aPossibleSolutionList.size(),instance.getPossibleSolutions().size());
+        assertSame(aPossibleSolutionList.size(),instance.getPossibleSolutions().size());
     }
 
     /**
@@ -141,17 +142,17 @@ public class SearchAutomatonOutputTest {
         /*
          * Must add just new ones.
          */
-        anUnmatchedDescription.add(new SSCharacterDescriptor("pie","disposicion","new value"));
-        anUnmatchedDescription.add(new SSCharacterDescriptor("pie","disposicion","other new"));
+        anUnmatchedDescription.addToConcreteDescription(new SSCharacterDescriptor("pie","disposicion","new value"));
+        anUnmatchedDescription.addToConcreteDescription(new SSCharacterDescriptor("pie","disposicion","other new"));
 
         instance.addAllToUnmatchedDescription(anUnmatchedDescription);
         assertSame(2,instance.getUnmatchedDescription().size());
         /*
          * Must keep the sames, descriptor already exists.
          */
-        anUnmatchedDescription.add(new SSCharacterDescriptor("pie","coloracion","blanquecino"));
+        anUnmatchedDescription.addToConcreteDescription(new SSCharacterDescriptor("pie","coloracion","blanquecino"));
         instance.addAllToUnmatchedDescription(anUnmatchedDescription);
-        assertSame(4,instance.getUnmatchedDescription().size());
+        assertSame(2,instance.getUnmatchedDescription().size());
         
     }
 }
