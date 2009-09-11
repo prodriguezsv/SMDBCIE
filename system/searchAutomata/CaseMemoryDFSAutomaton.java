@@ -26,7 +26,7 @@ import redundantDiscriminationNet.Node;
 import redundantDiscriminationNet.Norm;
 import redundantDiscriminationNet.SheetCase;
 import system.PossibleSolution;
-import system.searchAutomata.output.CaseBaseDFSAutomatonOutput;
+import system.searchAutomata.output.CaseMemoryDFSAutomatonOutput;
 
 /**
  * SAVCase Depth-First-Search Automaton.
@@ -50,7 +50,7 @@ public class CaseMemoryDFSAutomaton {
     public int currentLevel;
     public int stopLevel;
     public SearchStatus status;
-    public CaseBaseDFSAutomatonOutput searchOutput;
+    public CaseMemoryDFSAutomatonOutput searchOutput;
 
     /**
 	 * @see Define method name.
@@ -63,15 +63,16 @@ public class CaseMemoryDFSAutomaton {
     }
     
     protected void initialize() {
-    	currentNorm = null;
-        resetLevel();
-        setStopLevel(currentLevel);
         tSolutionDesc = new Description();
         tConfirmedDesc = new Description();
         tUnconfirmedDesc = new Description();
         tDoubtfulDesc = new Description();
         tUnmatchedDesc = new Description();
         justification = new Description();
+        possibleSolutions = new ArrayList<PossibleSolution>();
+        currentNorm = null;
+        resetLevel();
+        setStopLevel(currentLevel);
         newOutput();
         status = SearchStatus.FAIL;
     }
@@ -81,7 +82,7 @@ public class CaseMemoryDFSAutomaton {
  * @return my return values
  */
     public void newOutput(){
-        searchOutput = new CaseBaseDFSAutomatonOutput();
+        searchOutput = new CaseMemoryDFSAutomatonOutput();
     }
 /**
  *Category adding
@@ -266,7 +267,7 @@ public class CaseMemoryDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public CaseBaseDFSAutomatonOutput getSearchOutput(){
+    public CaseMemoryDFSAutomatonOutput getSearchOutput(){
        return searchOutput;
     }
 
@@ -620,6 +621,9 @@ public class CaseMemoryDFSAutomaton {
         
         searchPossibleSolutionsUnderCurrNorm(aProblemDescription);
 
+        if (this.getStatus() == SearchStatus.CANCEL || this.getStatus() == SearchStatus.ERROR)
+        	return;
+        
         // If at the end of the scanning process, the problem description is empty, the possible solutions list MUST have at least
         // one item. Else, something weird happened.  In that situation, return the error value. However, if the case list is not empty,
         // return self
@@ -1057,9 +1061,12 @@ public class CaseMemoryDFSAutomaton {
 		else if (aSAVDescriptor.getValue() instanceof SingleValue)
 			oldValue = "" + ((SingleValue)aSAVDescriptor.getValue()).getValue();
         
-        String message =	aSAVDescriptor.getStructure()+":" +  aSAVDescriptor.getAttribute()+  "." +
-        			"\nNo reconozco el valor " + oldValue + "\nbrindado en la descripción del espécimen." +
-        			"\nSin embargo, sí puedo reconocer los siguientes valores.\n ¿Es alguno valor válido?\n";
+        String message = "No reconozco el valor " + oldValue + " del atributo "+ aSAVDescriptor.getAttribute()+
+        			" de la estructura " +aSAVDescriptor.getStructure()+ "\nbrindado en la descripción del espécimen." +
+        			"\nSin embargo, sí puedo reconocer los siguientes valores.\n ¿Es alguno valor válido?\n" +
+        			"\n\nSi no es posible proveer la respuesta, escriba \"reject\"." +
+					"\nSi tiene dudas de la respuesta, escriba \"doubtful\"." +
+					"\nSi quiere abortar la interacción, haga click en cancelar.\n";
         
         descriptors = new HashMap<String, Descriptor>();
         values = new ArrayList<String>(Arrays.asList("reject", "doubtful"));
@@ -1239,7 +1246,7 @@ public class CaseMemoryDFSAutomaton {
         int i = 0;
         Descriptor d = null;
         Norm nextNorm = null;
-        while (i<=aProblemDescription.size()){
+        while (i < aProblemDescription.size()){
             //Search for a norm whose descriptor matches the scanned descriptor. If found,
             //remove the descriptor from the problem case and stop the loop
             nextNorm = currentNorm.getNearestSuccessorNorm(aProblemDescription.get(i));

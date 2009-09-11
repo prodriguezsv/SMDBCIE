@@ -20,7 +20,7 @@ import system.searchAutomata.GoalApproachingDialog;
 import system.searchAutomata.CaseMemoryDFSAutomaton;
 import system.searchAutomata.SearchStatus;
 import system.searchAutomata.TaxonomySearchAutomaton;
-import system.searchAutomata.output.CaseBaseDFSAutomatonOutput;
+import system.searchAutomata.output.CaseMemoryDFSAutomatonOutput;
 
 /**
  * @author Armando
@@ -554,7 +554,7 @@ public class Reasoner {
 	 * @param hypothesis2
 	 * @return
 	 */
-	private boolean processSuccessfulSearchOutput(CaseBaseDFSAutomatonOutput anOutputCopy, 
+	private boolean processSuccessfulSearchOutput(CaseMemoryDFSAutomatonOutput anOutputCopy, 
 			Hypothesis hypothesis1, Hypothesis hypothesis2) {
 		Hypothesis currHypothesis;
 		PossibleSolution ps;
@@ -655,7 +655,7 @@ public class Reasoner {
 		RDNet net;
 		RootNorm caseNetRoot = null;
 		CaseMemoryDFSAutomaton searchAutomaton;
-		CaseBaseDFSAutomatonOutput outputCopy;
+		CaseMemoryDFSAutomatonOutput outputCopy;
 		SearchStatus status;
 		List<String> structureList;
 		
@@ -735,7 +735,7 @@ public class Reasoner {
 			/* At this point, either: a) no net root was found, or b) the status of the net search was unsuccessful 
 			 (i.e., status = #fail). Try doing a taxonomic search*/
 	
-			if (searchInTaxonomyByStructure(s, hypothesis1) == false);
+			if (searchInTaxonomyByStructure(s, hypothesis1) == false)
 				return false;
 		}
 	
@@ -795,7 +795,7 @@ public class Reasoner {
 			hypothesis = new Hypothesis();
 			hypothesis.setDescription(this.getDescription(s));
 
-			if (searchInTaxonomyByStructure(s, hypothesis) == false);
+			if (searchInTaxonomyByStructure(s, hypothesis) == false)
 				return false;
 		}
 			

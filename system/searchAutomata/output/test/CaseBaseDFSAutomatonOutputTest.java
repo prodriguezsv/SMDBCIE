@@ -23,7 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import system.PossibleSolution;
 import static org.junit.Assert.*;
-import system.searchAutomata.output.CaseBaseDFSAutomatonOutput;
+import system.searchAutomata.output.CaseMemoryDFSAutomatonOutput;
 
 /**
  *
@@ -126,7 +126,7 @@ public class CaseBaseDFSAutomatonOutputTest {
     @Test
     public void testCompress() {
         System.out.println("compress");
-        CaseBaseDFSAutomatonOutput instance = new CaseBaseDFSAutomatonOutput();
+        CaseMemoryDFSAutomatonOutput instance = new CaseMemoryDFSAutomatonOutput();
         instance.setTaxonomy(aTaxonomy);
         instance.setPossibleSolutions(aPossibleSolutionList);
         

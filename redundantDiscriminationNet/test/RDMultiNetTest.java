@@ -7,6 +7,7 @@ import static org.junit.Assert.*;
 
 import ontology.CBR.Case;
 import ontology.common.SSCharacterDescriptor;
+import ontology.taxonomy.TaxonomicRank;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -60,7 +61,7 @@ public class RDMultiNetTest {
 	 */
 	@Test
 	public void testAdd() {
-		Case c1;
+		Case c1, c4, c5914, c67, c8, c10, c11, c12;
 		
 		System.out.println("Iniciando pruebas para el método add()");
 		
@@ -78,9 +79,95 @@ public class RDMultiNetTest {
 		c1.addToDescription(new SSCharacterDescriptor("Cuerpo", "Coloración", "Blanquecino"));
 		c1.addToDescription(new SSCharacterDescriptor("Cuerpo", "Forma", "Ovalado"));
 		c1.addToDescription(new SSCharacterDescriptor("Manto", "Coloración del borde", "Amarillo"));
-		c1.addToDescription(new SSCharacterDescriptor("Rinoforos", "Coloración de los apíces", "Rojo"));
+		c1.addToDescription(new SSCharacterDescriptor("Rinoforos", "Coloración de los ápices", "Rojo"));
 		rdmultinet.add(c1);
 		assertEquals(4, rdmultinet.getRoot().getNets().size());		
-	}
+		
+		System.out.println("Iniciando pruebas más completas");
+		
+		rdmultinet.getRoot().getNets().clear();
+		
+//-----------------------Caso resuelto No. 1---------------------
+		c4 = new Case();
+		c4.getSolution().setTaxonLevel(TaxonomicRank.SPECIES);
+		c4.getSolution().setTaxonName("Glossodoris sedna");
+		c4.setState(true);
+		
+		assertTrue(c4.addToDescription(new SSCharacterDescriptor("Manto", "Coloración del borde", "Amarillo")));
+		assertTrue(c4.addToDescription(new SSCharacterDescriptor("Manto", "Coloración de los ápices", "Rojo")));
+		
+//-----------------------Caso resuelto No. 2---------------------
+		c5914 = new Case();
+		c5914.getSolution().setTaxonLevel(TaxonomicRank.FAMILY);
+		c5914.getSolution().setTaxonName("Chromodorididae");
+		c5914.setState(true);
+		
+		assertTrue((c5914.addToDescription(new SSCharacterDescriptor("Rinoforos", "Coloración del raquis", "Blanco"))));
+		assertTrue((c5914.addToDescription(new SSCharacterDescriptor("Rinoforos", "Coloración", "Blanco"))));
+		assertTrue((c5914.addToDescription(new SSCharacterDescriptor("Branquia", "Coloración", "Blanco"))));
+		assertTrue((c5914.addToDescription(new SSCharacterDescriptor("Pie", "Disposición", "Sobresale al manto"))));
+		
+//-----------------------Caso resuelto No. 3---------------------
+		c67 = new Case();
+		c67.getSolution().setTaxonLevel(TaxonomicRank.SPECIES);
+		c67.getSolution().setTaxonName("Hypselodoris agassizii");
+		c67.setState(true);
+		
+		assertTrue(c67.addToDescription(new SSCharacterDescriptor("Branquia", "Coloración de los ápices", "Azul oscuro a negro")));
+		assertTrue((c67.addToDescription(new SSCharacterDescriptor("Pie", "Disposición", "Sobresale al manto"))));
+		assertTrue((c67.addToDescription(new SSCharacterDescriptor("Manto", "Coloración línea exterior del borde", "Amarillo"))));
+		assertTrue((c67.addToDescription(new SSCharacterDescriptor("Manto", "Coloración línea interior del borde", "Verde claro"))));
+		assertTrue((c67.addToDescription(new SSCharacterDescriptor("Rinoforos", "Coloración del raquis", "Blanco"))));
+		
+//-----------------------Caso resuelto No. 4---------------------
+		c8 = new Case();
+		c8.getSolution().setTaxonLevel(TaxonomicRank.SPECIES);
+		c8.getSolution().setTaxonName("Glossodoris dalli");
+		c8.setState(true);
+		
+		assertTrue((c8.addToDescription(new SSCharacterDescriptor("Cuerpo", "Forma", "Ovalado"))));
 
+//-----------------------Caso resuelto No. 5---------------------
+		c10 = new Case();
+		c10.getSolution().setTaxonLevel(TaxonomicRank.SPECIES);
+		c10.getSolution().setTaxonName("Aplysiia dactylomela");
+		c10.setState(true);
+		
+		assertTrue((c10.addToDescription(new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene una concha interna"))));
+		assertTrue((c10.addToDescription(new SSCharacterDescriptor("Cuerpo", "Coloración del fondo", "Cafesuzco a verde oliva con anillos u ocelos de pigmento oscuro"))));
+		assertTrue((c10.addToDescription(new SSCharacterDescriptor("Cuerpo", "Forma", "Alto alargado y contractil"))));
+		assertTrue((c10.addToDescription(new SSCharacterDescriptor("Parapodio", "Grado de desarrollo", "Mucho"))));
+		assertTrue((c10.addToDescription(new SSCharacterDescriptor("Parapodio", "Simetría", "Simétricos libres"))));
+		
+//-----------------------Caso resuelto No. 6---------------------
+		c11 = new Case();
+		c11.getSolution().setTaxonLevel(TaxonomicRank.SPECIES);
+		c11.getSolution().setTaxonName("Chromodoris kempfi");
+		c11.setState(true);
+		
+		assertTrue((c11.addToDescription(new SSCharacterDescriptor("Manto", "Coloración de la banda dorsal continua", "Blanco"))));
+		
+//-----------------------Caso resuelto No. 7---------------------
+		c12 = new Case();
+		c12.getSolution().setTaxonLevel(TaxonomicRank.SPECIES);
+		c12.getSolution().setTaxonName("Chromodoris kempfi");
+		c12.setState(true);
+		
+		assertTrue((c12.addToDescription(new SSCharacterDescriptor("Cuerpo", "Coloración", "Verduzco"))));
+		assertTrue((c12.addToDescription(new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene una concha interna"))));
+		assertTrue((c12.addToDescription(new SSCharacterDescriptor("Cuerpo", "Consistencia", "Voluminoso"))));
+		
+		/**
+		 * Agregar casos a la memoria
+		 */
+		rdmultinet.add(c4);
+		rdmultinet.add(c5914);
+		rdmultinet.add(c67);
+		rdmultinet.add(c8);
+		rdmultinet.add(c10);
+		rdmultinet.add(c11);
+		rdmultinet.add(c12);
+		
+		assertEquals(7, rdmultinet.getRoot().getNets().size());		
+	}
 }

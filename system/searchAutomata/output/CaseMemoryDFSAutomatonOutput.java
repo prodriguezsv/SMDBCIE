@@ -18,10 +18,10 @@ import system.PossibleSolution;
  * Instances of this class will contain the output values of Depth-First Searches (DFS) done on the Case Memory.
  * @author pabloq
  */
-public class CaseBaseDFSAutomatonOutput extends SearchAutomatonOutput {
+public class CaseMemoryDFSAutomatonOutput extends SearchAutomatonOutput {
     private Taxonomy taxonomy;
    
-    public CaseBaseDFSAutomatonOutput(){
+    public CaseMemoryDFSAutomatonOutput(){
         taxonomy = null;
     }
     
