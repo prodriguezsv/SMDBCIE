@@ -417,10 +417,10 @@ public class TaxonomyTest {
 	    //-----------------------Structure No. 1---------------------
   		assertTrue(taxon1.addToDescription(new SSCharacterDescriptor("Manto","Consistencia","Firme"),
   		        new Modifier(0.0,1.0,1.0)));
-  		assertTrue(taxon1.addToDescription(new SSCharacterDescriptor("Manto","Contextura","Cubierto de espiculas con pequenos tuberculos"),
+  		assertTrue(taxon1.addToDescription(new SSCharacterDescriptor("Manto","Contextura","Cubierto de espiculas con pequeños tuberculos"),
   		        new Modifier(0.0,1.0,1.0)));
   		//-----------------------Structure No. 2---------------------
-  		assertTrue(taxon1.addToDescription(new SSCharacterDescriptor("Glándulas del manto","Tamaño","Grandes en proporcion al cuerpo"),
+  		assertTrue(taxon1.addToDescription(new SSCharacterDescriptor("Glándulas del manto","Tamaño","Grandes en proporción al cuerpo"),
   		        new Modifier(0.0,1.0,1.0)));
   		assertTrue(taxon1.addToDescription(new SSCharacterDescriptor("Glándulas del manto","Disposición",
   				"Rodean completamente al manto"), new Modifier(0.0,1.0,1.0)));
@@ -437,7 +437,7 @@ public class TaxonomyTest {
 	    assertTrue(taxon2.addToDescription(new RVCharacterDescriptor("Cuerpo","Longitud", new RangeValue(1.0, 3.6,
   				MeasuringUnit.CM)), new Modifier(0.0,1.0,1.0)));
 	    //-----------------------Structure No. 2---------------------
-	    assertTrue(taxon2.addToDescription(new SSCharacterDescriptor("Manto","Coloracion de pequenas manchas laterales","Amarillo"),
+	    assertTrue(taxon2.addToDescription(new SSCharacterDescriptor("Manto","Coloración de pequeñas manchas laterales","Amarillo"),
   		        new Modifier(0.0,1.0,1.0)));
 	    //-----------------------Structure No. 3---------------------
 	    assertTrue(taxon2.addToDescription(new SSCharacterDescriptor("Branquia","Coloración","Blancuzco"),
@@ -494,7 +494,7 @@ public class TaxonomyTest {
 	    assertTrue(taxon4.addToDescription(new SSCharacterDescriptor("Branquia","Coloración de los ápices","Azul oscuro a negro"),
 		        new Modifier(0.0,1.0,1.0)));
 	    assertTrue(taxon4.addToDescription(new SSCharacterDescriptor("Branquia","Coloración de los ápices","Celeste claro"),
-		        new Modifier(0.0,1.0,6.0)));
+		        new Modifier(0.0,1.0,0.6)));
 	    //-----------------------Structure No. 4---------------------
   		assertTrue(taxon4.addToDescription(new SSCharacterDescriptor("Rinoforos","Coloración","Negro"),
   		        new Modifier(0.0,1.0,1.0)));

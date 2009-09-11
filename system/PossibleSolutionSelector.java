@@ -16,16 +16,14 @@ import ontology.taxonomy.TaxonomicRank;
  *
  */
 public class PossibleSolutionSelector {
-	private List<Hypothesis> failedGrpHeuristicConflictSet;
-	private List<Hypothesis> failedStructConflictSet;
-	private List<Hypothesis> successfulGrpHeuristicConflictSet;
-	private List<Hypothesis> successfulStructConflictSet;
+	private List<Hypothesis> failureConflictSet;
+	private List<Hypothesis> successfulConflictSet;
 	private List<ProposedSolution> generalSolutions;
 	private List<ProposedSolution> goalSolutions;
+	private List<ProposedSolution> specificSolutions;
 	private TaxonomicRank identificationGoal;
 	private int maxNumberSolutions;
 	private boolean showFailedSolutions;
-	private List<ProposedSolution> specificSolutions;
 	private boolean status;
 
 	/**
@@ -40,13 +38,11 @@ public class PossibleSolutionSelector {
 	 * USER EXPECTATION: showFailed is a boolean argument, that determines whether or not to show failed solutions to the user.
 	 * @see "Método initializeWith:and:and:and:and:and:and: del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public PossibleSolutionSelector(TaxonomicRank anIdentGoal, List<Hypothesis> aSuccSList, List<Hypothesis> aFailSList,
-			List<Hypothesis> aSuccGHList,  List<Hypothesis> aFailGHList, int aNumberOfSolutions, boolean showFailed) {
+	public PossibleSolutionSelector(TaxonomicRank anIdentGoal, List<Hypothesis> aSuccSList, 
+			List<Hypothesis> aFailSList, int aNumberOfSolutions, boolean showFailed) {
 		setIdentificationGoal(anIdentGoal);
-		setSuccessfulStructConflictSet(aSuccSList);
-		setFailedStructConflictSet(aFailSList);
-		setSuccessfulGrpHeuristicConflictSet(aSuccGHList);
-		setFailedGrpHeuristicConflictSet(aFailGHList);
+		setSuccessfulConflictSet(aSuccSList);
+		setFailureConflictSet(aFailSList);
 		setMaxNumberSolutions(aNumberOfSolutions);
 		setShowFailedSolutions(showFailed);
 
@@ -59,34 +55,18 @@ public class PossibleSolutionSelector {
 
 	/**
 	 * Método de instancia agregado
-	 * @param failedGrpHeuristicConflictSet
-	 */
-	public void setFailedGrpHeuristicConflictSet(List<Hypothesis> failedGrpHeuristicConflictSet) {
-		this.failedGrpHeuristicConflictSet = failedGrpHeuristicConflictSet;
-	}
-
-	/**
-	 * @see "Método failedGrpHeuristicConflictSet del protocolo accessing en SUKIA SmallTalk"
-	 * @return
-	 */
-	public List<Hypothesis> getFailedGrpHeuristicConflictSet() {
-		return failedGrpHeuristicConflictSet;
-	}
-
-	/**
-	 * Método de instancia agregado
 	 * @param failedStructConflictSet
 	 */
-	public void setFailedStructConflictSet(List<Hypothesis> failedStructConflictSet) {
-		this.failedStructConflictSet = failedStructConflictSet;
+	public void setFailureConflictSet(List<Hypothesis> failedStructConflictSet) {
+		this.failureConflictSet = failedStructConflictSet;
 	}
 
 	/**
 	 * @see "Método failedStructConflictSet del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Hypothesis> getFailedStructConflictSet() {
-		return failedStructConflictSet;
+	public List<Hypothesis> getFailureConflictSet() {
+		return failureConflictSet;
 	}
 
 	/**
@@ -202,14 +182,6 @@ public class PossibleSolutionSelector {
 	public List<ProposedSolution> getSpecificSolutions() {
 		return specificSolutions;
 	}
-
-	/**
-	 * Método de instancia agregado
-	 * @param successfulGrpHeuristicConflictSet
-	 */
-	public void setSuccessfulGrpHeuristicConflictSet(List<Hypothesis> successfulGrpHeuristicConflictSet) {
-		this.successfulGrpHeuristicConflictSet = successfulGrpHeuristicConflictSet;
-	}
 	
 	/**
 	 * @see "Método specificSolutions: del protocolo adding en SUKIA SmallTalk"
@@ -221,27 +193,19 @@ public class PossibleSolutionSelector {
 	}
 
 	/**
-	 * @see "Método successfulGrpHeuristicConflictSet del protocolo accessing en SUKIA SmallTalk"
-	 * @return
-	 */
-	public List<Hypothesis> getSuccessfulGrpHeuristicConflictSet() {
-		return successfulGrpHeuristicConflictSet;
-	}
-
-	/**
 	 * Método de instancia agregado
 	 * @param successfulStructConflictSet
 	 */
-	public void setSuccessfulStructConflictSet(List<Hypothesis> successfulStructConflictSet) {
-		this.successfulStructConflictSet = successfulStructConflictSet;
+	public void setSuccessfulConflictSet(List<Hypothesis> successfulStructConflictSet) {
+		this.successfulConflictSet = successfulStructConflictSet;
 	}
 
 	/**
 	 * @see "Método successfulStructConflictSet del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Hypothesis> getSuccessfulStructConflictSet() {
-		return successfulStructConflictSet;
+	public List<Hypothesis> getSuccessfulConflictSet() {
+		return successfulConflictSet;
 	}
 
 	/**
@@ -302,9 +266,9 @@ public class PossibleSolutionSelector {
 			ps.setStatus(this.isStatus());
 			ps.setSolution(aSortedPossibleSolutionsList.remove(0));
 
-			if (ps.getSolution().getPoints() < 0.0) ps.setDegreeOfCertainty("uncertain");
-			if (ps.getSolution().getPoints() == 0.0) ps.setDegreeOfCertainty("doubtful");
-			if (ps.getSolution().getPoints() > 0.0) ps.setDegreeOfCertainty("certain");
+			if (ps.getSolution().getPoints() < 0.0) ps.setDegreeOfCertainty(CertaintyDegree.UNCERTAIN);
+			if (ps.getSolution().getPoints() == 0.0) ps.setDegreeOfCertainty(CertaintyDegree.DOUBTFUL);
+			if (ps.getSolution().getPoints() > 0.0) ps.setDegreeOfCertainty(CertaintyDegree.CERTAIN);
 			
 			psLevel = TaxonomicRank.getIndex(ps.getSolution().getLevel());
 
@@ -398,18 +362,12 @@ public class PossibleSolutionSelector {
 		pSolutions = new ArrayList<PossibleSolution>();
 
 		// FIRST CHOICE: Load all successful (i.e., positive) structure possible solutions, if any
-        for (Hypothesis hypothesis:this.getSuccessfulStructConflictSet()){
+        for (Hypothesis hypothesis:this.getSuccessfulConflictSet()){
             for (PossibleSolution aPossibleSolution:hypothesis.getPossibleSolutions()){
                 pSolutions.add(aPossibleSolution);
             }
         }
         
-		// SECOND CHOICE: Load all successful (i.e., positive) grouping heuristic possible solutions, if any
-        for (Hypothesis hypothesis:this.getSuccessfulGrpHeuristicConflictSet()){
-            for (PossibleSolution aPossibleSolution:hypothesis.getPossibleSolutions()){
-                pSolutions.add(aPossibleSolution);
-            }
-        }
         this.sort(pSolutions);
         
 		if (!(pSolutions.isEmpty())) {
@@ -421,18 +379,13 @@ public class PossibleSolutionSelector {
 		  load them in the list*/
 		if (this.isShowFailedSolutions()) {
 			// Load all failed (i.e., negative) structure possible solutions, if any
-            for (Hypothesis hypothesis:this.getFailedStructConflictSet()){
+            for (Hypothesis hypothesis:this.getFailureConflictSet()){
                 for (PossibleSolution aPossibleSolution:hypothesis.getPossibleSolutions()){
                     pSolutions.add(aPossibleSolution);
                 }
             }
-			// Load all failed (i.e., negative) grouping heuristic possible solutions, if any
-            for (Hypothesis hypothesis:this.getFailedGrpHeuristicConflictSet()){
-                for (PossibleSolution aPossibleSolution:hypothesis.getPossibleSolutions()){
-                    pSolutions.add(aPossibleSolution);
-                }
-            }
-			this.sort(pSolutions);
+
+            this.sort(pSolutions);
 			if (!(pSolutions.isEmpty()))
 				this.setStatus(false);
 		}

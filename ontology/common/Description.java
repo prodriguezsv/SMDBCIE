@@ -59,6 +59,26 @@ public class Description extends ArrayList<Descriptor> {
 	
 	/**
 	 * M&eacute;todo de instancia agregado
+	 * @return una lista de cadenas representando el nombre de las heur&iacute;sticas
+	 */
+	public final List<String> getStructuresList() {
+		List<String> structuresList;
+		
+		structuresList = new ArrayList<String>();
+		
+		for(Descriptor d: this) {			 
+			// Determine if the structure name in Deescriptor has already been included in structureList
+			if (!(structuresList.contains(d.getStructure()))) {
+				// The structure name was not found in structureList. Append it to structureList
+				structuresList.add(d.getStructure());
+			} else continue;
+		}
+		
+		return structuresList;
+	}
+	
+	/**
+	 * M&eacute;todo de instancia agregado
 	 * @return una lista de descriptores relacionados a aStructureName
 	 */
 	public final Description getDescription(String aStructureName) {
@@ -131,6 +151,7 @@ public class Description extends ArrayList<Descriptor> {
 		
         for (Descriptor d:aDescription){
             this.addToConcreteDescription(d);
+            Collections.sort(this);
         }
         
 		return true;
@@ -146,6 +167,7 @@ public class Description extends ArrayList<Descriptor> {
 		
         for (Descriptor d:aDescription){
             this.addToAbstractDescription(d);
+            Collections.sort(this);
         }
         
 		return true;
@@ -204,7 +226,7 @@ public class Description extends ArrayList<Descriptor> {
 				// Determine if the structure name in Deescriptor has already been included in structureList
 				if (!(attributesList.contains(d.getAttribute()))) {
 					// The structure name was not found in structureList. Append it to structureList
-					attributesList.add(d.getStructure());
+					attributesList.add(d.getAttribute());
 				} else continue;
 			}
 		}

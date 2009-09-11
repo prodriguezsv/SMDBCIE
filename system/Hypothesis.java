@@ -4,6 +4,7 @@
 package system;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import ontology.common.Description;
@@ -143,6 +144,7 @@ public class Hypothesis {
 		//Los estados de ambos deben ser iguales
 		if (firstEltStatus == possSolStatus){
 			this.getPossibleSolutions().add(aPossibleSolution);
+			Collections.sort(this.getPossibleSolutions());
 			aPossibleSolution.setHypothesis(this);
 			return true;
 		}	

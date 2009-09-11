@@ -132,7 +132,7 @@ public class CaseBaseDFSAutomatonOutputTest {
         
         assertEquals(5,instance.getPossibleSolutions().size());
 
-        assertTrue(instance.compress());
+        assertTrue(instance.compressPossibleSolutions());
 
         assertEquals(2,instance.getPossibleSolutions().size());
     }

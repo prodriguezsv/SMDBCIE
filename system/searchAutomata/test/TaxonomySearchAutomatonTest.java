@@ -298,7 +298,7 @@ public class TaxonomySearchAutomatonTest {
         /*
          * not description that match with a taxon.
          */
-        assertEquals(SearchStatus.ERROR, instance.beginSearch(aProblemDescription));
+        assertEquals(SearchStatus.FAIL, instance.beginSearch(aProblemDescription));
 
 
 

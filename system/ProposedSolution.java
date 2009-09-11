@@ -10,7 +10,7 @@ package system;
  *
  */
 public class ProposedSolution implements Comparable<ProposedSolution> {
-	private String degreeOfCertainty;
+	private CertaintyDegree degreeOfCertainty;
 	private PossibleSolution solution;
 	private boolean status;
 
@@ -20,7 +20,7 @@ public class ProposedSolution implements Comparable<ProposedSolution> {
 	public ProposedSolution() {
 		this.setSolution(null);
 		this.setStatus(true);
-		this.setDegreeOfCertainty("unknown");
+		this.setDegreeOfCertainty(CertaintyDegree.UNKNOWN);
 	}
 
 	/**
@@ -28,23 +28,15 @@ public class ProposedSolution implements Comparable<ProposedSolution> {
 	 * #unknown or #uncertain or #doubfult or #certain
 	 * @param degreeOfCertainty
 	 */
-	public boolean setDegreeOfCertainty(String aDegreeOfCertainty) {
-		if (!(aDegreeOfCertainty.equals("unknown") ||
-		 aDegreeOfCertainty.equals("uncertain") ||
-		 aDegreeOfCertainty.equals("doubfult") ||
-		 aDegreeOfCertainty.equals("certain")))
-			return false;
-
+	public void setDegreeOfCertainty(CertaintyDegree aDegreeOfCertainty) {
 		this.degreeOfCertainty = aDegreeOfCertainty;
-		
-		return true;
 	}
 
 	/**
 	 * @see "Método degreeOfCertainty del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public String getDegreeOfCertainty() {
+	public CertaintyDegree getDegreeOfCertainty() {
 		return degreeOfCertainty;
 	}
 

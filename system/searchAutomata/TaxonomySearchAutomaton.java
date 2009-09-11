@@ -2,6 +2,7 @@
 package system.searchAutomata;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
@@ -33,8 +34,7 @@ public class TaxonomySearchAutomaton {
 	private final SimilarityDegree minSimilarityDegree;
 	private SearchStatus status;
 
-   public TaxonomySearchAutomaton (Taxonomy searchIndex,
-		   SimilarityDegree minSimilarityDegree) {
+   public TaxonomySearchAutomaton (Taxonomy searchIndex, SimilarityDegree minSimilarityDegree) {
         searchOutput = new TaxonomyAutomatonOutput();
         possibleSolutions = new ArrayList<PossibleSolution>();
         currentTaxonSolutionDescription = new Description();
@@ -71,6 +71,7 @@ public class TaxonomySearchAutomaton {
 	 */
     public void addToPossibleSolutions(PossibleSolution aPossibleSolution){
         this.possibleSolutions.add(aPossibleSolution);
+        Collections.sort(this.possibleSolutions);
     }
 
     /**
@@ -79,6 +80,14 @@ public class TaxonomySearchAutomaton {
      */
     public void setPossibleSolutions(List<PossibleSolution> possibleSolutions){
     	        this.possibleSolutions = possibleSolutions;
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public List<PossibleSolution> getPossibleSolutions(){
+        return possibleSolutions;
     }
     
 	/**
@@ -111,10 +120,6 @@ public class TaxonomySearchAutomaton {
     
     public SearchStatus getStatus(){
         return status;
-    }
-    
-    public List<PossibleSolution> getPossibleSolutions(){
-        return possibleSolutions;
     }
     
     public Description getCurrentTaxonSolutionDescription(){
@@ -243,62 +248,65 @@ public class TaxonomySearchAutomaton {
         for (Descriptor d: descriptionProblem) {
         	descriptors = this.getTaxonomy().searchBySA(d.getStructure(), d.getAttribute());
         	
+    		matchedDescriptors.clear();
     		
 			for (Descriptor d2: descriptors) {
 				if (d.getValue() instanceof SingleValue) {
     				if (d2.getValue() instanceof RangeValue) {
     					if (((RangeValue)d2.getValue()).containsNumber(((SingleValue)d.getValue()).getValue()))
     						matchedDescriptors.add(d2);
+    					continue;
     				}
 				}
 				
 				if (d.equals(d2))
 					matchedDescriptors.add(d2);
 			}
+			
+			if (matchedDescriptors.isEmpty())
+				addToCurrentTaxonUnmatchedDescription(d);
     		
     		for (Descriptor d3: matchedDescriptors) {
-            	List<Taxon> taxa = this.getTaxonomy().getDescriptorsIndex().get(d3);
             	
-            	if (taxa == null)
-            		addToCurrentTaxonUnmatchedDescription(d);
-            	else {
-            		if (d3.getValue() instanceof RangeValue){
-                        //Value desscriptor is a range. Associate all taxa to possible solutions, place them in the taxon list
+        		if (d3.getValue() instanceof RangeValue){
+        			List<Taxon> taxa = this.getTaxonomy().getDescriptorsIndex().get(d3);
+                    //Value desscriptor is a range. Associate all taxa to possible solutions, place them in the taxon list
 
-            			//Extract the taxa included in each of the retrieved value descriptors
-                        addToCurrentTaxonSolutionDescription(d);
-                        List<PossibleSolution> ps = associateTaxaToPossibleSolutions(taxa);
-                        getCurrentTaxonSolutionDescription().clear();
-                        
-                        while(ps.isEmpty() != true)
-                            addToPossibleSolutions(ps.remove(0));
-                       
-                    } else tempList.add(d3); //Value descriptor is not a range. Place it in a temporary list
-            	}
+        			//Extract the taxa included in each of the retrieved value descriptors
+                    addToCurrentTaxonSolutionDescription(d);
+                    List<PossibleSolution> ps = associateTaxaToPossibleSolutions(taxa);
+                    getCurrentTaxonSolutionDescription().clear();
+                    
+                    while(ps.isEmpty() != true)
+                        addToPossibleSolutions(ps.remove(0));
+                   
+                } else tempList.add(d3); //Value descriptor is not a range. Place it in a temporary list
             }
-        }
-        
-        /*At this point, all descriptors have been verified and processed. If there are no exact-match value
-        descriptors left, return*/
-        if (tempList.isEmpty()) return;
-        
-        List<Taxon> taxaTempList = new ArrayList<Taxon>();
-        
-        for (Descriptor d: tempList) {
-        	List<Taxon> taxa = this.getTaxonomy().getDescriptorsIndex().get(d);
-        	
-    		while (!taxa.isEmpty()) {
-				Taxon taxon = determineSimilarity(d, taxa.remove(0));
-				if (!(taxon == null)) taxaTempList.add(taxon);
-    		}
-    			
-			//Extract the taxa included in each of the retrieved value descriptors
-            addToCurrentTaxonSolutionDescription(d);
-            List<PossibleSolution> ps = associateTaxaToPossibleSolutions(taxaTempList);
-            getCurrentTaxonSolutionDescription().clear();
+    		
+    	       /*At this point, all descriptors have been verified and processed. If there are no exact-match value
+            descriptors left, return*/
+            if (tempList.isEmpty()) continue;
             
-            while(ps.isEmpty() != true)
-                addToPossibleSolutions(ps.remove(0));
+            List<Taxon> taxaTempList = new ArrayList<Taxon>();
+            
+            for (Descriptor d4: tempList) {
+            	List<Taxon> taxa = this.getTaxonomy().getDescriptorsIndex().get(d4);
+            	
+            	for (Taxon t:taxa) {
+    				Taxon taxon = determineSimilarity(d, t);
+    				if (!(taxon == null)) taxaTempList.add(taxon);
+        		}
+        			
+    			//Extract the taxa included in each of the retrieved value descriptors
+                addToCurrentTaxonSolutionDescription(d);
+                List<PossibleSolution> ps = associateTaxaToPossibleSolutions(taxaTempList);
+                getCurrentTaxonSolutionDescription().clear();
+                
+                while(ps.isEmpty() != true)
+                    addToPossibleSolutions(ps.remove(0));
+            }
+            
+            tempList.clear();
         }
     }
     
@@ -357,7 +365,7 @@ public class TaxonomySearchAutomaton {
             
             //Place the current possible solution in a temporary list
             while (inheritedDescription.isEmpty() != true)
-                ps.getSolutionDescription().add(inheritedDescription.remove(0));
+                ps.getSolutionDescription().addToConcreteDescription(inheritedDescription.remove(0));
                         
             tempList.add(ps);
         }

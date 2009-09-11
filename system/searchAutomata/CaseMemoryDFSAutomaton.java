@@ -8,7 +8,11 @@ package system.searchAutomata;
 
 import redundantDiscriminationNet.RootNorm;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JOptionPane;
 
@@ -33,17 +37,18 @@ import system.searchAutomata.output.CaseBaseDFSAutomatonOutput;
  * @author pabloq
  */
 
-public class CaseBaseDFSAutomaton {
-    public RootNorm netRoot;
-    public Norm currentNorm;
-    public int currentLevel;
-    public int stopLevel;
+public class CaseMemoryDFSAutomaton {
     private Description tSolutionDesc;
     private Description tConfirmedDesc;
     private Description tUnconfirmedDesc;
     private Description tDoubtfulDesc;
     private Description tUnmatchedDesc;
     private Description justification;
+    private List<PossibleSolution> possibleSolutions;
+    public RootNorm netRoot;
+    public Norm currentNorm;
+    public int currentLevel;
+    public int stopLevel;
     public SearchStatus status;
     public CaseBaseDFSAutomatonOutput searchOutput;
 
@@ -52,9 +57,13 @@ public class CaseBaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public CaseBaseDFSAutomaton(RootNorm aSAVRoot){
+    public CaseMemoryDFSAutomaton(RootNorm aSAVRoot){
         netRoot = aSAVRoot;
-        currentNorm = null;
+        this.initialize();
+    }
+    
+    protected void initialize() {
+    	currentNorm = null;
         resetLevel();
         setStopLevel(currentLevel);
         tSolutionDesc = new Description();
@@ -93,6 +102,32 @@ public class CaseBaseDFSAutomaton {
 	 */
     public void addToJustification(Descriptor aJustificationElement){
         justification.addToConcreteDescription(aJustificationElement);
+    }
+    
+	/**
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
+    public void addToPossibleSolutions(PossibleSolution aPossibleSolution){
+        this.possibleSolutions.add(aPossibleSolution);
+        Collections.sort(this.possibleSolutions);
+    }
+
+    /**
+     * 
+     * @param possibleSolutions
+     */
+    public void setPossibleSolutions(List<PossibleSolution> possibleSolutions){
+    	        this.possibleSolutions = possibleSolutions;
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public List<PossibleSolution> getPossibleSolutions(){
+        return possibleSolutions;
     }
     
     /**
@@ -303,18 +338,13 @@ public class CaseBaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public SearchStatus backtrack(){
-        if (!removeFromTConfirmedDescription(currentNorm.getDescriptor())) {
-            prepareFailedOutput();
-            return SearchStatus.FAIL;
+    public void backtrack(){
+        if (!removeFromTConfirmedDescription(currentNorm.getDescriptor()) ||
+        		!processPreviousNorm()) {
+            this.setStatus(SearchStatus.FAIL);
         }
         
-        if(!processPreviousNorm()){
-            prepareFailedOutput();
-            return SearchStatus.FAIL;
-        }
-        
-        return indexDialog();
+        indexDialog();
     }
     
     /**
@@ -329,7 +359,9 @@ public class CaseBaseDFSAutomaton {
 	 */
     public boolean processPreviousNorm(){
         currentNorm = currentNorm.getNearestPredecessorNorm();
+        
         this.setPreviousLevel();
+        
         if ((currentLevel < stopLevel) || (currentNorm == netRoot))
             return false;
 
@@ -415,12 +447,14 @@ public class CaseBaseDFSAutomaton {
 	 * @return self : if the process ran OK; cancel : is the user cancels; -1 : error value, if the
 	 * precondition is not met.
  	 */
-    public SearchStatus searchForCasesUnderCurrNormUsing(List<Descriptor> aProblemDescription,
-    	List<PossibleSolution> aPossibleSolutionsList){
+    public void searchPossibleSolutionsUnderCurrNorm(List<Descriptor> aProblemDescription){
 
         //Check precondition
-        if (aProblemDescription.isEmpty() || (currentNorm == netRoot) || !aPossibleSolutionsList.isEmpty())
-            return SearchStatus.ERROR;
+        if (aProblemDescription.isEmpty() || (currentNorm == netRoot) || 
+        		!this.getPossibleSolutions().isEmpty()) {
+        	this.setStatus(SearchStatus.ERROR);
+        	return;
+        }
 
         //Create the temporary process lists
         List<Descriptor>  tempList = new ArrayList<Descriptor>();
@@ -438,21 +472,24 @@ public class CaseBaseDFSAutomaton {
             //place it in the temporary list
             if (idx == null){
                 //The descriptor may have an inaccurate value. Try to establish a dialog with the user.
-            	SearchStatus result = searchCasesDialogUsing(d, aPossibleSolutionsList);
-                if (result.equals("cancel"))
-                	return SearchStatus.CANCEL;
-                if (result.equals("fail") || result.equals("idxNotFound"))
+            	SearchStatus result = searchPossibleSolutionsDialog(d);
+            	
+                if (result.equals(SearchStatus.CANCEL))
+                	return;
+                
+                if (result.equals(SearchStatus.FAIL) || result.equals(SearchStatus.IDXNOTFOUND))
                 	tempList.add(d);
-                if (result.equals("success"))
+                
+                if (result.equals(SearchStatus.SUCCESS))
                 	addToTUnmatchedDescription(d);
-            }else{
+            } else{
                 //Index found. get the IndexValue successor
                 Node succ = idx.getSuccessor(d);
 
                 //If a matched index points to a Norm, don't process it. Place the descriptor in a temporary list
                 if (succ instanceof Norm){
                     tempList.add(d);
-                }else{
+                } else {
                     //The matched index points to a case. Place the corresponding descriptor in the solution description
                     //and associate the corresponding case to a PossibleSolution. Next, place the possible solution in the
                     //output possible solutions list. Finally, remove the descriptor from the solution description
@@ -460,7 +497,7 @@ public class CaseBaseDFSAutomaton {
                     
                     aCaseList.add((SheetCase)succ);
                     List<PossibleSolution> pSolutionList = associateCasesToPossibleSolutions(aCaseList);
-                    aPossibleSolutionsList.add(pSolutionList.remove(0));
+                    this.addToPossibleSolutions(pSolutionList.remove(0));
                     
                     this.getTSolutionDescription().remove(getTSolutionDescription().size()-1);
                 }
@@ -470,9 +507,6 @@ public class CaseBaseDFSAutomaton {
         //Put the descriptors that didn't match indices back in the problem description list
         while (tempList.isEmpty() != true)
             aProblemDescription.add(tempList.remove(0));
-        
-        return SearchStatus.SUCCESS;
-
     }
 
     /**
@@ -487,14 +521,18 @@ public class CaseBaseDFSAutomaton {
 	 * @return true : if the process ran OK; cancel : is the user cancels; false : error value, if the
 	 * precondition is not met.    
 	 */
-    public SearchStatus searchForCasesUnderRootUsing(List<Descriptor> aProblemDescription,
-    		List<PossibleSolution> aPossibleSolutionsList){
+    public void searchPossibleSolutionsUnderRoot(List<Descriptor> aProblemDescription){
         //Check precondition
-        
-        if (aProblemDescription.isEmpty()){return SearchStatus.ERROR;}
+        if (aProblemDescription.isEmpty()) {
+        	this.setStatus(SearchStatus.ERROR);
+        	return;
+        }
 
-        if ((currentNorm == netRoot) && (aPossibleSolutionsList.isEmpty()) 
-        		&& (!this.getTSolutionDescription().isEmpty())) return SearchStatus.ERROR;
+        if ((currentNorm == netRoot) && (this.getPossibleSolutions().isEmpty()) 
+        		&& (!this.getTSolutionDescription().isEmpty())) {
+        	this.setStatus(SearchStatus.ERROR);
+        	return;
+        }
         
         //Create the temporary process lists
         List<Descriptor> tempList = new ArrayList<Descriptor>();
@@ -517,10 +555,10 @@ public class CaseBaseDFSAutomaton {
                 //However, the descriptor may have an inaccurate value. Try to establish a dialog with the user
                 //using a partial match.
 
-                SearchStatus result = searchCasesDialogUsing(d,aPossibleSolutionsList);
-                if (result.equals("cancel"))
-                	return SearchStatus.CANCEL;
-            }else{
+                SearchStatus result = searchPossibleSolutionsDialog(d);
+                if (result.equals(SearchStatus.CANCEL))
+                	return;
+            } else {
                 //Index found. get the IndexValue successor
                 Node succ = idx.getSuccessor(d);
 
@@ -534,18 +572,18 @@ public class CaseBaseDFSAutomaton {
                     
                     aCaseList.add((SheetCase)succ);
                     List<PossibleSolution> pSolutionList = associateCasesToPossibleSolutions(aCaseList);
-                    aPossibleSolutionsList.add(pSolutionList.remove(0));
+                    this.addToPossibleSolutions(pSolutionList.remove(0));
+                    
                     getTSolutionDescription().remove(getTSolutionDescription().size()-1);
 
                 }
             }
 
         }
+        
         //Put the descriptors that match Norms back in the problem description list
         while (tempList.isEmpty() != true)
             aProblemDescription.add(tempList.remove(0));
-
-        return SearchStatus.SUCCESS;
     }
 
     /**
@@ -553,85 +591,41 @@ public class CaseBaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public SearchStatus searchForCasesUsing(List<Descriptor> aProblemDescription) {
+    public void searchPossibleSolutionsUsingIndices(List<Descriptor> aProblemDescription) {
         //If the argument search-list is empty, something wrong happened. Return error value
         if (aProblemDescription.isEmpty()) {
-        	prepareFailedOutput();
         	status = SearchStatus.ERROR;
-        	return status;
+        	return;
         }
         //Make sure the current level is ALWAYS greater than or equal to the root level
         if (currentLevel < getRootLevel()) {
-        	prepareFailedOutput();
         	status = SearchStatus.ERROR;
-        	return status;
+        	return;
         }
 
-        List<PossibleSolution> possibleSolutions = new ArrayList<PossibleSolution>();
-
         //Check if control is located at the root (i.e., no Norm was ever found in the previous state)
-
         if (currentLevel == getRootLevel()){
             //Search for cases pointed to by indices directly under the root. If there are any, the argument
             //list possibleSolutions will not be empty
-        	SearchStatus result = searchForCasesUnderRootUsing(aProblemDescription, possibleSolutions);
-            if (result.equals("cancel")) {
-            	prepareFailedOutput();
-            	status = SearchStatus.CANCEL;
-            	return status;
-            }
-            
-            if (result == SearchStatus.ERROR ){
-            	prepareFailedOutput();
-            	status = SearchStatus.ERROR;
-            	return status;
-            }
-
-            //If the possible solutions list has at least one item, return self along  with whatever Descriptors
-            //remained in the problem description. This guarantees that all left-over Descriptors point to Norms
-            if (possibleSolutions.isEmpty() != true){
-                prepareSuccessfulOutputWith(possibleSolutions);
-            }
-
-            //If the case list is empty, either the problem description has all descriptors that point to Norms
-            //in other paths, OR all descriptors are located in the unmatched list. Return nil
-            prepareFailedOutput();
-            return SearchStatus.FAIL;
-
+        	searchPossibleSolutionsUnderRoot(aProblemDescription);
+        	
+            return;
         }
+        
         // At this point, control is located on a Norm other than the net root. Initially, scan the Descriptor list in search of indices
         // that strictly point to cases. If a matched index points to a case, remove the corresponding Descriptor from the problem
         // description and place it in the solution description.  Next, associate the retrieved case to a PossibleSolution, and place
         // this possible solution in the case list. Finally, remove the last descriptor of the solution list. If the matched index DOES
         // NOT point to a case, leave the corresponding Descriptor in the problem description
-
-        SearchStatus result = searchForCasesUnderCurrNormUsing(aProblemDescription, possibleSolutions);
-        if (result.equals("cancel")) {
-        	prepareFailedOutput();
-        	status = SearchStatus.CANCEL;
-        	return status;
-        }
         
-        if (result == SearchStatus.ERROR ) {
-        	prepareFailedOutput();
-        	status = SearchStatus.ERROR;
-        	return status;
-        }
+        searchPossibleSolutionsUnderCurrNorm(aProblemDescription);
 
         // If at the end of the scanning process, the problem description is empty, the possible solutions list MUST have at least
         // one item. Else, something weird happened.  In that situation, return the error value. However, if the case list is not empty,
         // return self
-        if (aProblemDescription.isEmpty()){
-            if (possibleSolutions.isEmpty()) {
-            	prepareFailedOutput();
-            	status = SearchStatus.ERROR;
-            	return status;
-            }
-            
-            return prepareSuccessfulOutputWith(possibleSolutions);
-        }else{
-
-        }
+        if (aProblemDescription.isEmpty())
+            return;
+        
         // At this point, the problem description is not empty. Move control to the root and search for
         // indices that strictly point to cases.
         Norm savNorm = currentNorm;
@@ -646,34 +640,21 @@ public class CaseBaseDFSAutomaton {
         //list is that, depending on the output from the root-search, it may be necessary to put all descriptors
         //back in the solution description, in order to try the next search strategy
 
-        List<Descriptor> tempDeleteSolution = new ArrayList<Descriptor>();
-        moveDescriptorsFrom(getTSolutionDescription(),getTUnmatchedDescription(),tempDeleteSolution);
+        List<Descriptor> tempMovedSolution = moveDescriptors(getTSolutionDescription(),getTUnmatchedDescription());
 
         // Same sitution as with the solution description.  In this case, place the confirmed description items in the
         // unconfirmed description, and also copy them to another temporary list
 
-        List<Descriptor> tempDeleteConfirmed = new ArrayList<Descriptor>();
-        moveDescriptorsFrom(getTConfirmedDescription(),getTUnconfirmedDescription(),tempDeleteConfirmed);
+        List<Descriptor> tempMovedConfirmed = moveDescriptors(getTConfirmedDescription(),getTUnconfirmedDescription());
         
         // Call the search-cases-under-root method with a clean &amp; empty possible solutions list (its part of the precondition)
-        List<PossibleSolution> pSolutions = new ArrayList<PossibleSolution>();
+        //List<PossibleSolution> pSolutions = new ArrayList<PossibleSolution>(); OJO
 
-        result = searchForCasesUnderRootUsing(aProblemDescription,pSolutions);
-        if (result.equals("cancel")) {
-        	prepareFailedOutput();
-        	status = SearchStatus.CANCEL;
-        	return status;
-        }
+        searchPossibleSolutionsUnderRoot(aProblemDescription);
         
-        if (result == SearchStatus.ERROR ) {
-        	prepareFailedOutput();
-        	status = SearchStatus.ERROR;
-        	return null;
-        }
-        
-        //Concatenate the solution lists into one single list
-        while (pSolutions.isEmpty() != true){possibleSolutions.add(pSolutions.remove(0));}
-
+        if (this.getStatus().equals(SearchStatus.CANCEL) || this.getStatus().equals(SearchStatus.ERROR))
+        	return;
+                
         //Restore everything to its previous state
 
         setCurrentNorm(savNorm);
@@ -683,13 +664,16 @@ public class CaseBaseDFSAutomaton {
             setNextLevel();
             savLevel = savLevel -1;
         }
+        
         // If after the root-search the possible solutions and problem description lists are empty, the next strategy is to try
         // retrieving cases from the current norm. Therefore, just as with the current norm and current level, both the solution
         // and confirmed descriptions MUST be set back to their original state (i.e., before doing the root-search). So, remove
         // all the matching items in the temporary lists from the unmatched and unconfirmed descriptions and place them back
         // in the corresponding solution and confirmed ones
-        deleteDescriptorsIn(tempDeleteSolution,getTUnmatchedDescription(),getTSolutionDescription());
-        deleteDescriptorsIn(tempDeleteConfirmed,getTUnconfirmedDescription(),getTConfirmedDescription());
+        getTSolutionDescription().addAll(tempMovedSolution);
+        deleteDescriptors(tempMovedSolution, getTUnmatchedDescription());
+        getTConfirmedDescription().addAll(tempMovedConfirmed);
+        deleteDescriptors(tempMovedConfirmed,getTUnconfirmedDescription());
 
         //Upon return from the root search, the following situations may occur:
         //	a) the possible solutions list is empty.
@@ -698,16 +682,11 @@ public class CaseBaseDFSAutomaton {
         //		a2) if the problem description is still NOT empty (i.e., the remaining descriptors point to Norms in other paths), return nil.
         //	b) the possible solutions list is NOT empty. Return self, regardless of whether or not the problem description is empty.
 
-        if (possibleSolutions.isEmpty()){
+        if (possibleSolutions.isEmpty()) {
             //Precondition for method retrieveCasesUnderCurrNorm : isEmpty(aProblemDescription)
-            if (aProblemDescription.isEmpty()){
-                return retrieveCasesUnderCurrentNorm();
-            }
-            prepareFailedOutput();
-            return null;
+            if (aProblemDescription.isEmpty())
+                retrieveCasesUnderCurrentNorm();
         }
-        
-        return prepareSuccessfulOutputWith(possibleSolutions);
     }
 /**
  *Category private
@@ -728,7 +707,7 @@ public class CaseBaseDFSAutomaton {
             PossibleSolution ps = new PossibleSolution();
             ps.setSolution(mycase);
             ps.getSolutionDescription().addAllToConcreteDescription(getTSolutionDescription());
-            ps.getConfirmedDescription().addAllToConcreteDescription(getTSolutionDescription());
+            ps.getConfirmedDescription().addAllToConcreteDescription(getTConfirmedDescription());
             ps.getUnconfirmedDescription().addAllToConcreteDescription(getTUnconfirmedDescription());
             ps.getDoubtfulDescription().addAllToConcreteDescription(getTDoubtfulDescription());
             psList.add(ps);
@@ -742,20 +721,18 @@ public class CaseBaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    private void deleteDescriptorsIn(List<Descriptor> aTempDeleteList,List<Descriptor> aList,
-    		List<Descriptor> anotherList){
-        for (int i=0;(i<aTempDeleteList.size());i++){
+    private void deleteDescriptors(List<Descriptor> aTempDeleteList,List<Descriptor> aList) {
+        for (int i=0;(i<aTempDeleteList.size());i++) {
             Descriptor d = aTempDeleteList.get(i);
             int j = 0;
             while (j<= aList.size()){
-                if ((aList.get(j).getAttribute().equals(d.getAttribute())) &&(aList.get(j).getAttribute().equals(d.getAttribute()))){
+                if ((aList.get(j).equals(d))){
                     aList.remove(0);
                     j = aList.size() + 1;
                 }else{
                     j += 1;
                 }
             }
-            anotherList.add(d);
         }
     }
     
@@ -803,19 +780,11 @@ public class CaseBaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    private void flush(List<Descriptor> aList){
-        aList.clear();
-    }
-    
-    /**
-	 * @see Define method name.
-	 * @param my parameters list
-	 * @return my return values
-	 */
     private boolean isUseless(Node n){
         if ((n instanceof SheetCase)) return false;
         
         if (((Norm)n).successorCases().isEmpty() != true) return false;
+        
         //First, get the list of successors for the current norm
         for (Index idx:((Norm)n).successorIndexes()) {
             //Parse the list of IndexValues associated to the index
@@ -834,72 +803,44 @@ public class CaseBaseDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    private void moveDescriptorsFrom(List<Descriptor> aList,List<Descriptor> anotherList,
-    		List<Descriptor> aCopyList){
+    private List<Descriptor> moveDescriptors(List<Descriptor> aList, List<Descriptor> anotherList) {
+    	List<Descriptor> aCopyList;
+    	
+    	aCopyList = new ArrayList<Descriptor>();
+    	
         while (aList.isEmpty() != true){
             Descriptor d  = aList.remove(0);
             anotherList.add(d);
             aCopyList.add(d);
         }
+        
+        return aCopyList;
     }
+    
 /**
  * @see Define method name.
  * @param my parameters list
  * @return my return values
  */
-    public void newSearchWith(List<Descriptor> anOldProblemDescription){
-    	//If the automaton returns a non-empty problem description list, then the REASONER MUST call it again with that remaining description,
-        // using this method. Before doing so, all lists, except the doubtful and unconfirmed ones, MUST be flushed. Make sure the new search
-        // begins at root level, and all necessary control variables are correctly set. This process repeats until the problem description list is EMPTY"
-        flush(getTSolutionDescription());
-        flush(getTConfirmedDescription());
-        flush(getTUnmatchedDescription());
-        flush(justification);
-        setStatus(SearchStatus.FAIL);
-        setCurrentNorm(null);
+    public void beginNewSearch(List<Descriptor> anOldProblemDescription){
+    	/*If the automaton returns a non-empty problem description list, then the REASONER MUST call it
+    	again with that remaining description, using this method. Before doing so, all lists, except the
+    	doubtful and unconfirmed ones, MUST be flushed. Make sure the new search begins at root level, and
+    	all necessary control variables are correctly set. This process repeats until the problem description
+    	list is EMPTY*/
+    	currentNorm = null;
         resetLevel();
         setStopLevel(currentLevel);
+        tSolutionDesc = new Description();
+        tConfirmedDesc = new Description();
+        tUnmatchedDesc = new Description();
+        justification = new Description();
         newOutput();
+        status = SearchStatus.FAIL;
         
-        beginWith(anOldProblemDescription);
-    }
-    /**
-     * This method is called from indexDialog, and it may be called recursively. However, it needs to be
-     * executed only once. In order to avoid continuous execution of this method, check the (list) variable
-     * 'justification' of searchOutput. Upon termination of the automaton process, 'justification' MUST
-     * always be non-nil. Thus, if it's non-nil, then don't execute this method.
-     * This method is executed whennthe automaton has failed to provide a solution for the given problem
-     * description.
-     * Automaton reference: PFO
-	 * @see Define method name.
-	 * @param my parameters list
-	 * @return my return values
-	 */
-    private boolean prepareFailedOutput(){
-        if (searchOutput.getJustification() != null) return false;
-        searchOutput.setJustification(justification);
-        searchOutput.setUnmatchedDescription(getTUnmatchedDescription());
-        
-        return true;
+        beginSearch(anOldProblemDescription);
     }
 
-    /**
-	 * @see Define method name.
-	 * @param my parameters list
-	 * @return my return values
-	 */
-    private SearchStatus prepareSuccessfulOutputWith(List<PossibleSolution> aPossibleSolutionsList){
-        if (searchOutput.getPossibleSolutions() != null)
-        	return status;
-        
-        searchOutput.setPossibleSolutions(aPossibleSolutionsList);
-        searchOutput.setJustification(justification);
-        searchOutput.setUnmatchedDescription(getTUnmatchedDescription());
-        setStatus(SearchStatus.SUCCESS);
-        
-        return status;
-
-    }
 /**
  *Category user dialog
  */
@@ -917,7 +858,7 @@ public class CaseBaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return null - If the process was unsuccessful in finding a case; self - If one case was found.
 	 */
-    public SearchStatus indexDialog(){
+    public void indexDialog(){
         List<Node> alternativeCases = new ArrayList<Node>();
         List<Node> alternativeNorms = new ArrayList<Node>();
         
@@ -934,46 +875,25 @@ public class CaseBaseDFSAutomaton {
             }
         }
         //Present the list of alternatives (associated to one index) to the user, preferably the cases
-        if (alternativeCases.isEmpty() != true){
-            SearchStatus result = presentChoices(alternativeCases);
+        if (alternativeCases.isEmpty() != true) {
+            presentChoices(alternativeCases);
             
-            if (result == SearchStatus.SUCCESS) return result;
-            
-            if (result == SearchStatus.FAIL) {
-            	prepareFailedOutput();
-            	return status;
-            }
-            
-            if (result == SearchStatus.CANCEL) {
-            	prepareFailedOutput();
-            	status = result;
-            	return status;
-            }
+            return;
         }
-
 
         if (alternativeNorms.isEmpty() != true){
             List<Node> newList = new ArrayList<Node>();
             
+            //Remover las normas más útiles
             while (alternativeNorms.isEmpty() != true){
             	Node n = alternativeNorms.remove(0);
                 if (!isUseless(alternativeNorms.remove(0))) newList.add(n);
             }
+            
             if (newList.isEmpty() != true){
-            	SearchStatus result = presentChoices(newList);
+            	presentChoices(newList);
             	
-            	if (result == SearchStatus.SUCCESS) return result;
-                
-                if (result == SearchStatus.FAIL) {
-                	prepareFailedOutput();
-                	return status;
-                }
-                
-                if (result == SearchStatus.CANCEL) {
-                	prepareFailedOutput();
-                	status = result;
-                	return status;
-                }
+            	return;
             }
 
         }
@@ -985,12 +905,13 @@ public class CaseBaseDFSAutomaton {
         		"ayudado a resolver el problema. \n ¿Desea continuar evaluando otras alternativas?", "OracleID",
         		JOptionPane.YES_NO_OPTION);
 
-        if (answer == JOptionPane.NO_OPTION){
-            prepareFailedOutput();
-            return SearchStatus.CANCEL;
+        if (answer == JOptionPane.NO_OPTION) {
+            this.setStatus(SearchStatus.CANCEL);
+            
+            return;
         }
         
-        return backtrack();
+        backtrack();
     }
 
 
@@ -1003,9 +924,10 @@ public class CaseBaseDFSAutomaton {
 	 * retrieveCasesUnderNorm fails; cancel - if the user cancels the dialog; fail - if all alternatives
 	 * were rejected (either because they did not match or the user was in doubt)
 	 */
-	public SearchStatus presentChoices(List<Node> alternativeList){
+	public void presentChoices(List<Node> alternativeList){
     	String value = null, message;
-    	int answer = -1;
+    	String answer;
+    	String responses[] = {"confirm", "doubtful", "reject"};
     	
     	for (Node n:alternativeList) {
     		if (!this.isUseless(n)) {
@@ -1013,39 +935,55 @@ public class CaseBaseDFSAutomaton {
     				value = (String)n.getDescriptor().getValue();
     			else if (n.getDescriptor().getValue() instanceof SingleValue)
     				value = "" + ((SingleValue)n.getDescriptor().getValue()).getValue();
-    			
+    			    			
         		// Prepare the inquiry to be presented to the user
         		message = "¿Presenta la estructura" + n.getDescriptor().getStructure() + 
         					" la característica " + n.getDescriptor().getAttribute() +
-        					" con el siguiente valor: " + value + "?";
+        					" con el siguiente valor: " + value + "?" +
+        					"\n\nSi no es posible proveer la respuesta, escriba \"reject\"." +
+        					"\nSi tiene dudas de la respuesta, escriba \"doubtful\"." +
+        					"\nSi quiere abortar la interacción, haga click en cancelar.\n";
         		
-        		answer = JOptionPane.showConfirmDialog(null, message, "OracleID", JOptionPane.YES_NO_CANCEL_OPTION);
+        		answer = null;
+        		answer = (String) JOptionPane.showInputDialog(null, message, "OracleID", JOptionPane.QUESTION_MESSAGE, 
+        				null, responses, "confirm");
         		
-        		if (answer == JOptionPane.YES_OPTION) {
+        		if (answer == null) {
+        			this.setStatus(SearchStatus.CANCEL);
+        			return;
+        		}
+        		
+        		if (answer.equals("confirm")) {
         			// The solution is a norm
         			if (n instanceof Norm) {
-        				processNextNormWith((Norm)n);
-        				return retrieveCasesUnderCurrentNorm();
+        				processNextNorm((Norm)n);
+        				retrieveCasesUnderCurrentNorm();
+        				
+        				return;
         			} else if (n instanceof SheetCase) {
         				// The solution is a case
         				addToTConfirmedDescription(n.getDescriptor());
         				List<SheetCase> caseList = new ArrayList<SheetCase>();
         				caseList.add((SheetCase)n);
-        				return prepareSuccessfulOutputWith(associateCasesToPossibleSolutions(caseList));
+        				List<PossibleSolution> ps = associateCasesToPossibleSolutions(caseList);
+        				
+        				while(ps.isEmpty() != true)
+                            addToPossibleSolutions(ps.remove(0));
+        				
+        				return;
         			}
         		}
-        		//Pendiente de revisar
-        		if (answer == JOptionPane.NO_OPTION)
+        		
+        		if (answer.equals("reject"))
         			addToTUnconfirmedDescription(n.getDescriptor());
-        		if (answer == JOptionPane.CANCEL_OPTION)
+        		
+        		if (answer.equals("doubtful"))
         			addToTDoubtfulDescription(n.getDescriptor());
-        		if (answer == -1)
-        			return SearchStatus.CANCEL;
     		}
         	
     	}
 
-    	return SearchStatus.FAIL;
+    	this.setStatus(SearchStatus.FAIL);
     }
     /**
      * Automaton reference: PNN
@@ -1053,7 +991,7 @@ public class CaseBaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public void processNextNormWith(Norm aNorm){
+    public void processNextNorm(Norm aNorm){
         addToTConfirmedDescription(aNorm.getDescriptor());
         setCurrentNorm(aNorm);
         setNextLevel();
@@ -1071,7 +1009,10 @@ public class CaseBaseDFSAutomaton {
 	 * cancel - if the user cancels; success - if a case was accepted; fail - if index values point to norms,
 	 * or the user rejected possibilities, or a combination of both situtions occurred.
 	 */
-	public SearchStatus searchCasesDialogUsing(Descriptor aSAVDescriptor, List<PossibleSolution> aPossibleSolutionsList){
+	public SearchStatus searchPossibleSolutionsDialog(Descriptor aSAVDescriptor){
+		Map<String, Descriptor> descriptors;
+		List<String> values;
+		
         //Partial match: Look for an index under the current norm, whose label matches the
         //descriptor's attribute. Disregard the descriptor's value
         Index idx = currentNorm.getSuccessorIndex(aSAVDescriptor.getAttribute());
@@ -1120,30 +1061,40 @@ public class CaseBaseDFSAutomaton {
         			"\nNo reconozco el valor " + oldValue + "\nbrindado en la descripción del espécimen." +
         			"\nSin embargo, sí puedo reconocer los siguientes valores.\n ¿Es alguno valor válido?\n";
         
+        descriptors = new HashMap<String, Descriptor>();
+        values = new ArrayList<String>(Arrays.asList("reject", "doubtful"));
+        
     	for (SheetCase sc:aCaseList) {
-    		if (sc.getDescriptor().getValue() instanceof String)
-    			message = message + sc.getDescriptor().getValue() + "\n";
-    		else if (sc.getDescriptor().getValue() instanceof SingleValue)
-    			message = message + ((SingleValue)sc.getDescriptor().getValue()).getValue() + "\n";
+    		if (sc.getDescriptor().getValue() instanceof String) {
+    			values.add((String)sc.getDescriptor().getValue());
+    			descriptors.put((String)sc.getDescriptor().getValue(), sc.getDescriptor());
+    		} else if (sc.getDescriptor().getValue() instanceof SingleValue) {
+    			values.add(Double.toString(((SingleValue)sc.getDescriptor().getValue()).getValue()));
+    			descriptors.put(Double.toString(((SingleValue)sc.getDescriptor().getValue()).getValue()),
+    					sc.getDescriptor());
+    		}
     	}
     	
-    	String result = JOptionPane.showInputDialog(message);
+    	String result = (String) JOptionPane.showInputDialog(null, message, "OracleID", JOptionPane.QUESTION_MESSAGE,
+    			null, values.toArray(), "reject");
     	
     	//El usuario rechaza la sugerencia
-        if (result.equals("")){
+        if (result.equals("reject")){
             while (descriptorList.isEmpty() != true){
                 addToTUnconfirmedDescription(descriptorList.remove(0));
             }
+            this.setStatus(SearchStatus.FAIL);
             
             return SearchStatus.FAIL;
         }
 
         //User is in doubt. Flush the descriptor list by placing all SAVDescriptors in the doubtful
         //description. Continue processing the next attribute
-        if (result.equals("doubt")){
+        if (result.equals("doubtful")){
         	while (descriptorList.isEmpty() != true){
                 addToTDoubtfulDescription(descriptorList.remove(0));
             }
+        	this.setStatus(SearchStatus.FAIL);
             
             return SearchStatus.FAIL;
         }
@@ -1152,7 +1103,7 @@ public class CaseBaseDFSAutomaton {
         if (result == null)
         	return (status = SearchStatus.CANCEL);
 
-        SheetCase sc = this.getSheetCase((Object)result, aCaseList);
+        SheetCase sc = this.getSheetCase(descriptors.get(result), aCaseList);
         
         //At this point, the answer must be successful.
         //Associate the confirmed case to PossibleSolution. Then exit successfully
@@ -1160,16 +1111,70 @@ public class CaseBaseDFSAutomaton {
         
         aCaseList.add(sc);
         List<PossibleSolution> pSolutionList = associateCasesToPossibleSolutions(aCaseList);
-        aPossibleSolutionsList.add(pSolutionList.remove(0));
+        this.addToPossibleSolutions(pSolutionList.remove(0));
         
         this.getTSolutionDescription().remove(getTSolutionDescription().size()-1);
         
-        return SearchStatus.SUCCESS;
+        return (status = SearchStatus.SUCCESS);
     }
     
 /**
  *Category norm-pointing search
  */
+	
+	/**
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
+    public boolean checkPrecondition(List<Descriptor>  aProblemDescription){
+        if (aProblemDescription.isEmpty()) return false;
+
+        String sName = aProblemDescription.get(0).getStructure();
+        if (aProblemDescription.size() > 0) {
+            for (int i = 1; i < aProblemDescription.size(); i++)                
+                if (sName.equals(aProblemDescription.get(i).getStructure()) != true) return false;
+        }
+        
+        return true;
+    }
+    
+    /**
+     * This method is called from indexDialog, and it may be called recursively. However, it needs to be
+     * executed only once. In order to avoid continuous execution of this method, check the (list) variable
+     * 'justification' of searchOutput. Upon termination of the automaton process, 'justification' MUST
+     * always be non-nil. Thus, if it's non-nil, then don't execute this method.
+     * This method is executed whennthe automaton has failed to provide a solution for the given problem
+     * description.
+     * Automaton reference: PFO
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
+    protected void prepareFailedOutput(){
+        if (searchOutput.getJustification() != null) return;
+        
+        searchOutput.setJustification(justification);
+        searchOutput.setUnmatchedDescription(getTUnmatchedDescription());
+        
+        setStatus(SearchStatus.FAIL);
+    }
+
+    /**
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return my return values
+	 */
+    protected void prepareSuccessfulOutput(){
+        if (searchOutput.getPossibleSolutions() != null)
+        	return;
+        
+        searchOutput.setPossibleSolutions(getPossibleSolutions());
+        searchOutput.setJustification(justification);
+        searchOutput.setUnmatchedDescription(getTUnmatchedDescription());
+        
+        setStatus(SearchStatus.SUCCESS);
+    }
     
     /**
      * Initial state of the search automaton.  Control is placed on the root norm. The final step is a call
@@ -1183,41 +1188,29 @@ public class CaseBaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return null - if the argument is an empty list, or object returned by searchForNormWith:
 	 */
-    public SearchStatus beginWith(List<Descriptor> aProblemDescription){
-    	String sName;
+    public SearchStatus beginSearch(List<Descriptor> aProblemDescription){
     	
         //Check part 1. of the precondition
-        if (aProblemDescription.isEmpty()) return SearchStatus.ERROR;
-    
-        sName = aProblemDescription.get(0).getStructure();
-        
-        for (Descriptor d: aProblemDescription)
-            if ((sName.equals(d.getStructure())) != true) return SearchStatus.ERROR;
+    	if (checkPrecondition(aProblemDescription) == false) {
+        	setStatus(SearchStatus.ERROR);
+        	return status;
+        }
 
         //Initialization steps. At this point, nextLevel = 1. Thus, the root level is 1
         setCurrentNorm(netRoot);
         setNextLevel();
 
         //Move to the next state, and return its returning value (nil or self)
-        return searchForNormWith(aProblemDescription);
-    }
-    
-    /**
-     * This method attempts to retrieve norm-dependant cases, from the stop-level norm. At this point, the
-     * problem description is empty of descriptors.  If at least one case was retrieved, prepare the
-     * successful output and stop the automaton. Else, start a dialog with the user.
-     * Automaton reference: RCUN
-	 * @see Define method name.
-	 * @param my parameters list
-	 * @return object returned by either prepareSuccessfulOutputWith: (self), or indexDialog.
-	 */
-    public SearchStatus retrieveCasesUnderCurrentNorm(){
-        List<SheetCase> caseList = currentNorm.successorCases();
-        if (caseList.isEmpty() != true){
-            return prepareSuccessfulOutputWith(this.associateCasesToPossibleSolutions(caseList));
+        searchPossibleSolutions(aProblemDescription);
+        
+        if (getPossibleSolutions().isEmpty()) {
+        	prepareFailedOutput();
+        } else {
+	        //this.compressPossibleSolutions();
+	        prepareSuccessfulOutput();
         }
         
-        return indexDialog();
+        return status;
     }
     
     /**
@@ -1233,12 +1226,13 @@ public class CaseBaseDFSAutomaton {
 	 * @return self, or object returned by retrieveCasesUnderCurrNorm, or object returned by
 	 * searchForCasesUsing:
 	 */
-    public SearchStatus searchForNormWith(List<Descriptor> aProblemDescription){
+    public void searchPossibleSolutions(List<Descriptor> aProblemDescription){
         //If the problem description is empty, all its descriptors matched norms. Make the current norm
         //the stop-level norm, and start the search for cases under it
         if (aProblemDescription.isEmpty()){
             setStopLevel(currentLevel);
-            return retrieveCasesUnderCurrentNorm();
+            retrieveCasesUnderCurrentNorm();
+            return;
         }
         
         //Scan the problem description
@@ -1253,23 +1247,43 @@ public class CaseBaseDFSAutomaton {
             if (nextNorm == null){
                 i += 1;
             }else{
-
                 d = aProblemDescription.remove(i);
                 i = aProblemDescription.size() + 1;
-
             }
         }
         //if no descriptor available, the entire list was scanned and no norm was found.  Start the search
         //for indices (using the remaining descriptors) that point to cases
         if (d == null){
             setStopLevel(currentLevel);
-            return searchForCasesUsing(aProblemDescription);
+            searchPossibleSolutionsUsingIndices(aProblemDescription);
+            return;
         }
         
         //A norm with a matching descriptor was found.  Add the removed descriptor to the solution
         //list, and move on to the next (recursive) norm search
-        updateNormSearchWith(d,nextNorm);
-        return searchForNormWith(aProblemDescription);
+        updateNormSearch(d,nextNorm);
+        searchPossibleSolutions(aProblemDescription);
+        return;
+    }
+    
+    /**
+     * This method attempts to retrieve norm-dependant cases, from the stop-level norm. At this point, the
+     * problem description is empty of descriptors.  If at least one case was retrieved, prepare the
+     * successful output and stop the automaton. Else, start a dialog with the user.
+     * Automaton reference: RCUN
+	 * @see Define method name.
+	 * @param my parameters list
+	 * @return object returned by either prepareSuccessfulOutputWith: (self), or indexDialog.
+	 */
+    public void retrieveCasesUnderCurrentNorm(){
+        List<SheetCase> caseList = currentNorm.successorCases();
+        
+        if (caseList.isEmpty() != true) {
+        	List<PossibleSolution> ps = associateCasesToPossibleSolutions(caseList);
+			
+			while(ps.isEmpty() != true)
+                addToPossibleSolutions(ps.remove(0));        
+        } else indexDialog();
     }
     
     /**
@@ -1277,22 +1291,23 @@ public class CaseBaseDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public void updateNormSearchWith(Descriptor aSAVDescriptor, Norm aNewNorm){
+    public void updateNormSearch(Descriptor aSAVDescriptor, Norm aNewNorm){
         addToTSolutionDescription(aSAVDescriptor);
         currentNorm = aNewNorm;
         setNextLevel();
     }
     
-	SheetCase getSheetCase(Object value, List<SheetCase> aCaseList) {
+    /**
+     * 
+     * @param value
+     * @param aCaseList
+     * @return
+     */
+	SheetCase getSheetCase(Descriptor descriptor, List<SheetCase> aCaseList) {
+		
     	for (SheetCase sc:aCaseList) {
-    		if (sc.getDescriptor().getValue() instanceof String) {
-    			if (value.equals(sc.getDescriptor().getValue()))
-    				return sc;
-    		} else if (sc.getDescriptor().getValue() instanceof SingleValue) {
-    				if (((SingleValue)sc.getDescriptor().getValue())
-    						.equals((value))) //Ojo revisar
+    		if (sc.getDescriptor().equals(descriptor))
         				return sc;
-    		}
     	}
     	
     	return null;

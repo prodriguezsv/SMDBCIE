@@ -3,8 +3,10 @@
  */
 package system;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import ontology.common.HeuristicDescriptor;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.Taxonomy;
 
@@ -14,21 +16,17 @@ import ontology.taxonomy.Taxonomy;
  *
  */
 public class PossibleSolutionEvaluator {
-	private List<Hypothesis> failedGrpHeuristicConflictSet;
-	private List<Hypothesis> failedStructConflictSet;
-	private List<Hypothesis> successfulGrpHeuristicConflictSet;
-	private List<Hypothesis> successfulStructConflictSet;
+	private List<Hypothesis> failureConflictSet;
+	private List<Hypothesis> successfulConflictSet;
 	private Taxonomy taxonomy;
 
 	/**
 	 * @see "M&ecute;todo initializeWith:and:and:and:and:and: del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public PossibleSolutionEvaluator(List<Hypothesis> aSuccessfulStructList, List<Hypothesis> aFailedStructList, List<Hypothesis> aSuccessfulGrpHeuristicList,
-			List<Hypothesis> aFailedGrpHeuristicList, Taxonomy aTaxonomy) {
-		setSuccessfulStructConflictSet(aSuccessfulStructList);
-		setFailedStructConflictSet(aFailedStructList);
-		setSuccessfulGrpHeuristicConflictSet(aSuccessfulGrpHeuristicList);
-		setFailedGrpHeuristicConflictSet(aFailedGrpHeuristicList);
+	public PossibleSolutionEvaluator(List<Hypothesis> aSuccessfulStructList, List<Hypothesis> aFailedStructList,
+			Taxonomy aTaxonomy) {
+		setSuccessfulConflictSet(aSuccessfulStructList);
+		setFailureConflictSet(aFailedStructList);
 		setTaxonomy(aTaxonomy);
 	}
 	
@@ -50,68 +48,34 @@ public class PossibleSolutionEvaluator {
 
 	/**
 	 * M&ecute;todo de instancia agregado
-	 * @param failedGrpHeuristicConflictSet
-	 */
-	public void setFailedGrpHeuristicConflictSet(List<Hypothesis> failedGrpHeuristicConflictSet) {
-		this.failedGrpHeuristicConflictSet = failedGrpHeuristicConflictSet;
-	}
-
-	/**
-	 * @see "M&ecute;todo failedGrpHeuristicConflictSet del protocolo accessing en SUKIA SmallTalk"
-	 * @return
-	 */
-	public List<Hypothesis> getFailedGrpHeuristicConflictSet() {
-		return failedGrpHeuristicConflictSet;
-	}
-
-	/**
-	 * M&ecute;todo de instancia agregado
 	 * @param failedStructConflictSet
 	 */
-	public void setFailedStructConflictSet(List<Hypothesis> failedStructConflictSet) {
-		this.failedStructConflictSet = failedStructConflictSet;
+	public void setFailureConflictSet(List<Hypothesis> failedStructConflictSet) {
+		this.failureConflictSet = failedStructConflictSet;
 	}
 
 	/**
 	 * @see "M&ecute;todo failedStructConflictSet del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Hypothesis> getFailedStructConflictSet() {
-		return failedStructConflictSet;
-	}
-
-	/**
-	 * M&ecute;todo de instancia agregado
-	 * @param successfulGrpHeuristicConflictSet
-	 */
-	public void setSuccessfulGrpHeuristicConflictSet(
-			List<Hypothesis> successfulGrpHeuristicConflictSet) {
-		this.successfulGrpHeuristicConflictSet = successfulGrpHeuristicConflictSet;
-	}
-
-	/**
-	 * @see "M&ecute;todo successfulGrpHeuristicConflictSet del protocolo accessing en SUKIA SmallTalk"
-	 * @return
-	 */
-	public List<Hypothesis> getSuccessfulGrpHeuristicConflictSet() {
-		return successfulGrpHeuristicConflictSet;
+	public List<Hypothesis> getFailureConflictSet() {
+		return failureConflictSet;
 	}
 
 	/**
 	 * M&ecute;todo de instancia agregado
 	 * @param successfulStructConflictSet
 	 */
-	public void setSuccessfulStructConflictSet(
-			List<Hypothesis> successfulStructConflictSet) {
-		this.successfulStructConflictSet = successfulStructConflictSet;
+	public void setSuccessfulConflictSet(List<Hypothesis> successfulStructConflictSet) {
+		this.successfulConflictSet = successfulStructConflictSet;
 	}
 
 	/**
 	 * @see "M&ecute;todo successfulStructConflictSet del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Hypothesis> getSuccessfulStructConflictSet() {
-		return successfulStructConflictSet;
+	public List<Hypothesis> getSuccessfulConflictSet() {
+		return successfulConflictSet;
 	}
 
 	/**
@@ -136,26 +100,12 @@ public class PossibleSolutionEvaluator {
 	 */
 	public void evaluate() {
 		// Step 1: Evaluate each conflict set individually
-		this.evaluate(this.getSuccessfulStructConflictSet(), PossibleSolutionEvaluator.winPoints());
-		this.evaluate(this.getFailedStructConflictSet(), PossibleSolutionEvaluator.winPoints());
-		this.evaluate(this.getSuccessfulGrpHeuristicConflictSet(), PossibleSolutionEvaluator.winPoints());
-		this.evaluate(this.getFailedGrpHeuristicConflictSet(), PossibleSolutionEvaluator.winPoints());
+		this.evaluate(this.getSuccessfulConflictSet(), PossibleSolutionEvaluator.winPoints());
+		this.evaluate(this.getFailureConflictSet(), PossibleSolutionEvaluator.winPoints());
 
 		// Step 2: Evaluate every conflict set against other conflict sets
-		this.evaluate(this.getSuccessfulStructConflictSet(), this.getFailedStructConflictSet(), 
+		this.evaluate(this.getSuccessfulConflictSet(), this.getFailureConflictSet(), 
 				PossibleSolutionEvaluator.losePoints());
-		this.evaluate(this.getSuccessfulStructConflictSet(), this.getSuccessfulGrpHeuristicConflictSet(), 
-				PossibleSolutionEvaluator.winPoints());
-		this.evaluate(this.getSuccessfulStructConflictSet(), this.getFailedGrpHeuristicConflictSet(), 
-				PossibleSolutionEvaluator.losePoints());
-
-		this.evaluate(this.getSuccessfulGrpHeuristicConflictSet(), this.getFailedStructConflictSet(), 
-				PossibleSolutionEvaluator.losePoints());
-		this.evaluate(this.getSuccessfulGrpHeuristicConflictSet(), this.getFailedGrpHeuristicConflictSet(), 
-				PossibleSolutionEvaluator.losePoints());
-
-		this.evaluate(this.getFailedStructConflictSet(), this.getFailedGrpHeuristicConflictSet(), 
-				PossibleSolutionEvaluator.winPoints());
 	}
 	
 	/**
@@ -196,6 +146,7 @@ public class PossibleSolutionEvaluator {
         //do nothing in case that one of them is empty
         if (aConflictSet.isEmpty() || aCompConflictSet.isEmpty()) return;
 
+        //Pendiente evaluar si un ordenamiento en la lista de hipotesis mejoraría el proceso
         for (Hypothesis evalHypothesis:aConflictSet){
             // Scan the entire list of possible solutions belonging to the current hypothesis-to-evaluate
             for (PossibleSolution evalPossibleSolution: evalHypothesis.getPossibleSolutions()){
@@ -207,8 +158,12 @@ public class PossibleSolutionEvaluator {
 
                 if (evalPossibleSolutionTaxon == null) return;
 
-                for (Hypothesis compHypothesis:aCompConflictSet){
-                    for (PossibleSolution compPossibleSolution: compHypothesis.getPossibleSolutions()){
+                List<Hypothesis> aConflictSetCopy = new ArrayList<Hypothesis>(aConflictSet);
+                
+                for (Hypothesis compHypothesis:aConflictSetCopy){
+                	List<PossibleSolution> aPossibleSolutionsCopy = new ArrayList<PossibleSolution>(compHypothesis.getPossibleSolutions());
+                	
+                    for (PossibleSolution compPossibleSolution: aPossibleSolutionsCopy){
                         if (compPossibleSolution.getSolution() instanceof Taxon)
                             compPossibleSolutionTaxon = (Taxon) compPossibleSolution.getSolution();
                         else
@@ -218,6 +173,14 @@ public class PossibleSolutionEvaluator {
                         
                         // Check if the possible solutions are the same object
                         if (evalPossibleSolutionTaxon.equals(compPossibleSolutionTaxon)) {
+                        	if (evalHypothesis.getDescription().get(0) instanceof HeuristicDescriptor) {
+                        		aPointAccumulatingScheme = PossibleSolutionEvaluator.losePoints();
+                        	} else {
+                        		if (compHypothesis.getDescription().get(0) instanceof HeuristicDescriptor)
+                        			aPointAccumulatingScheme = PossibleSolutionEvaluator.winPoints();
+                        		else aPointAccumulatingScheme = PossibleSolutionEvaluator.losePoints();
+                        	}
+                        		
                             if (aPointAccumulatingScheme.equals(PossibleSolutionEvaluator.winPoints())) {
                                 // Inherit the compare solution's descriptions and remove it from the hypothesis-to-compare possibleSolutions list
                                 this.inheritPossibleSolutionDescriptionsFrom(compPossibleSolution, evalPossibleSolution);
@@ -226,10 +189,20 @@ public class PossibleSolutionEvaluator {
                                 // AQUI SE DEBE PONER LAS DESCRIPCIONES EN LA JUSTIFICACION, NO HEREDARLAS
                                 evalPossibleSolution.incrementPointsBy(-1);
                             }
+                            
+                            compHypothesis.getPossibleSolutions().remove(compPossibleSolution);
                         } else {
                             // At this point, evalPossibleSolutionTaxon and compPossibleSolutionTaxon are different objects
                             // Determine if the possibleSolution-to-evaluate is a successor taxon of the possibleSolution-to-compare
                             if (evalPossibleSolutionTaxon.isSuccessorOf(compPossibleSolutionTaxon)) {
+                            	if (evalHypothesis.getDescription().get(0) instanceof HeuristicDescriptor) {
+                            		aPointAccumulatingScheme = PossibleSolutionEvaluator.losePoints();
+                            	} else {
+                            		if (compHypothesis.getDescription().get(0) instanceof HeuristicDescriptor)
+                            			aPointAccumulatingScheme = PossibleSolutionEvaluator.winPoints();
+                            		else aPointAccumulatingScheme = PossibleSolutionEvaluator.losePoints();
+                            	}
+                            	
                                 if (aPointAccumulatingScheme.equals(PossibleSolutionEvaluator.winPoints())) {
                                     this.inheritPossibleSolutionDescriptionsFrom(compPossibleSolution, evalPossibleSolution);
                                     evalPossibleSolution.incrementPoints();
@@ -240,6 +213,9 @@ public class PossibleSolutionEvaluator {
                             }
                         }
                     }
+                    
+                    if (compHypothesis.getPossibleSolutions().isEmpty())
+                    	aConflictSet.remove(compHypothesis);
                 }
             }
         }
@@ -273,11 +249,19 @@ public class PossibleSolutionEvaluator {
 	 */
 	public void evaluate(List<Hypothesis> aConflictSet, String aPointAccumulatingScheme) {
 		Taxon evalPossibleSolutionTaxon, compPossibleSolutionTaxon;
+		List<Hypothesis> tempList;
 
         //do nothing in case that one of them is empty
         if (aConflictSet.isEmpty()) return;
+        
+        if (aConflictSet.size() < 2) return;
 
-        for (Hypothesis evalHypothesis:aConflictSet){
+        tempList = new ArrayList<Hypothesis>();
+        
+        //Pendiente evaluar si un ordenamiento en la lista de hipotesis mejoraría el proceso
+        while (!aConflictSet.isEmpty()) {
+        	Hypothesis evalHypothesis = aConflictSet.remove(0);
+
             // Scan the entire list of possible solutions belonging to the current hypothesis-to-evaluate
             for (PossibleSolution evalPossibleSolution: evalHypothesis.getPossibleSolutions()){
                 // Get the corresponding taxon of the possibleSolution-to-evaluate, if applicable
@@ -286,10 +270,14 @@ public class PossibleSolutionEvaluator {
                 else
                     evalPossibleSolutionTaxon = this.getTaxonomy().getTaxonFromLevelIndex(evalPossibleSolution.getName(), evalPossibleSolution.getLevel());
 
-                if (evalPossibleSolutionTaxon == null) return;
-
-                for (Hypothesis compHypothesis:aConflictSet){
-                    for (PossibleSolution compPossibleSolution: compHypothesis.getPossibleSolutions()){
+                if (evalPossibleSolutionTaxon == null) return;           
+                
+                List<Hypothesis> aConflictSetCopy = new ArrayList<Hypothesis>(aConflictSet);
+                
+                for (Hypothesis compHypothesis:aConflictSetCopy){
+                	List<PossibleSolution> aPossibleSolutionsCopy = new ArrayList<PossibleSolution>(compHypothesis.getPossibleSolutions());
+                	
+                    for (PossibleSolution compPossibleSolution: aPossibleSolutionsCopy) {
                         if (compPossibleSolution.getSolution() instanceof Taxon)
                             compPossibleSolutionTaxon = (Taxon) compPossibleSolution.getSolution();
                         else
@@ -298,6 +286,7 @@ public class PossibleSolutionEvaluator {
                         if (compPossibleSolutionTaxon == null) return;
                         // Check if the possible solutions are the same object
                         if (evalPossibleSolutionTaxon.equals(compPossibleSolutionTaxon)) {
+                        	
                             if (aPointAccumulatingScheme.equals(PossibleSolutionEvaluator.winPoints())) {
                                 // Inherit the compare solution's descriptions and remove it from the hypothesis-to-compare possibleSolutions list
                                 this.inheritPossibleSolutionDescriptionsFrom(compPossibleSolution, evalPossibleSolution);
@@ -306,10 +295,13 @@ public class PossibleSolutionEvaluator {
                                 // AQUI SE DEBE PONER LAS DESCRIPCIONES EN LA JUSTIFICACION, NO HEREDARLAS
                                 evalPossibleSolution.incrementPointsBy(-1);
                             }
+                            
+                            compHypothesis.getPossibleSolutions().remove(compPossibleSolution);
                         } else {
                             // At this point, evalPossibleSolutionTaxon and compPossibleSolutionTaxon are different objects
                             // Determine if the possibleSolution-to-evaluate is a successor taxon of the possibleSolution-to-compare
                             if (evalPossibleSolutionTaxon.isSuccessorOf(compPossibleSolutionTaxon)) {
+                            	
                                 if (aPointAccumulatingScheme.equals(PossibleSolutionEvaluator.winPoints())) {
                                     this.inheritPossibleSolutionDescriptionsFrom(compPossibleSolution, evalPossibleSolution);
                                     evalPossibleSolution.incrementPoints();
@@ -320,9 +312,17 @@ public class PossibleSolutionEvaluator {
                             }
                         }
                     }
+                    
+                    if (compHypothesis.getPossibleSolutions().isEmpty())
+                    	aConflictSet.remove(compHypothesis);
                 }
             }
+            
+            tempList.add(evalHypothesis);
         }
+        
+        while (!tempList.isEmpty())
+        	aConflictSet.add(tempList.remove(0));
 	}
 	
 	/**

@@ -145,7 +145,7 @@ public class SimilarityAssessor {
 		p1 = 100 - p1;
 
 		// Compute the length of each range
-		p2 = Math.round((99 - p1) / ((rCopy.size()) - 2));
+		p2 = Math.round((99 - p1) / ((rCopy.size()) - 3));
 
 		/* Start with range name: #diferente.  This should always be the first range. The range values 
 		will go from 0 to p1. Once the range values have been established, increment p1 to be the 

@@ -63,6 +63,7 @@ public class Taxonomy {
 					if (d2.equals(d)) {
                         if (!this.getDescriptorsIndex().get(d).contains(aNewTaxon))
                         	this.getDescriptorsIndex().get(d).add(aNewTaxon);
+                        break;
 					}
 						
 				}

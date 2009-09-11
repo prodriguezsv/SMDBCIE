@@ -98,8 +98,7 @@ public class PossibleSolutionEvaluatorTest {
         java.lang.System.out.println("evaluate");
         PossibleSolution aPossibleSolution1,aPossibleSolution2,aPossibleSolution3,aPossibleSolution4;
         String aPointAccumulatingScheme = "+";
-        PossibleSolutionEvaluator instance = new PossibleSolutionEvaluator(new ArrayList<Hypothesis>(), new ArrayList<Hypothesis>(), new ArrayList<Hypothesis>(),
-			new ArrayList<Hypothesis>(), taxonomy);
+        PossibleSolutionEvaluator instance = new PossibleSolutionEvaluator(new ArrayList<Hypothesis>(), new ArrayList<Hypothesis>(), taxonomy);
         /*
          * taxonomy
          * root
@@ -148,6 +147,7 @@ public class PossibleSolutionEvaluatorTest {
         assertEquals(0.0,aPossibleSolution1.getPoints(),0.0);
         assertEquals(0.0,aPossibleSolution2.getPoints(),0.0);
 
+        //Ojo: la descripción está vacía o es null
         instance.evaluate(aConflictSet, aCompConflictSet, aPointAccumulatingScheme);
 
         assertEquals(1.0,aPossibleSolution1.getPoints(),0.0);
@@ -246,8 +246,7 @@ public class PossibleSolutionEvaluatorTest {
         java.lang.System.out.println("evaluate");
         PossibleSolution aPossibleSolution1,aPossibleSolution2;
         String aPointAccumulatingScheme = "+";
-        PossibleSolutionEvaluator instance = new PossibleSolutionEvaluator(new ArrayList<Hypothesis>(), new ArrayList<Hypothesis>(), new ArrayList<Hypothesis>(),
-			new ArrayList<Hypothesis>(), taxonomy);
+        PossibleSolutionEvaluator instance = new PossibleSolutionEvaluator(new ArrayList<Hypothesis>(), new ArrayList<Hypothesis>(), taxonomy);
         /*
          * taxonomy
          * root
@@ -350,8 +349,7 @@ public class PossibleSolutionEvaluatorTest {
     @Test
     public void testInheritPossibleSolutionDescriptionsFrom() {
         java.lang.System.out.println("inheritPossibleSolutionDescriptionsFrom");
-        PossibleSolutionEvaluator instance = new PossibleSolutionEvaluator(new ArrayList<Hypothesis>(), new ArrayList<Hypothesis>(), new ArrayList<Hypothesis>(),
-			new ArrayList<Hypothesis>(), taxonomy);
+        PossibleSolutionEvaluator instance = new PossibleSolutionEvaluator(new ArrayList<Hypothesis>(), new ArrayList<Hypothesis>(), taxonomy);
         PossibleSolution anOldPossibleSolution = new PossibleSolution ();
         assertTrue(anOldPossibleSolution.setSolution(taxon1));
         PossibleSolution aNewPossibleSolution = new PossibleSolution ();

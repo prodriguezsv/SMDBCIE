@@ -97,7 +97,7 @@ public class PossibleSolutionSelectorTest {
     public void testDistribute() {
         java.lang.System.out.println("distribute");
         PossibleSolutionSelector instance = new PossibleSolutionSelector(TaxonomicRank.SPECIES, new ArrayList<Hypothesis>(),
-                new ArrayList<Hypothesis>(),new ArrayList<Hypothesis> (),  new ArrayList<Hypothesis> (),1, true);
+                new ArrayList<Hypothesis>(),1, true);
         List<PossibleSolution> aSortedPossibleSolutionsList = new ArrayList<PossibleSolution>();
 
         PossibleSolution aPossibleSolution = new PossibleSolution ();
@@ -155,7 +155,7 @@ public class PossibleSolutionSelectorTest {
         aSortedPossibleSolutionsList.add(aPossibleSolution);
 
         instance = new PossibleSolutionSelector(TaxonomicRank.GENUS, new ArrayList<Hypothesis>(),
-                new ArrayList<Hypothesis>(),new ArrayList<Hypothesis> (),  new ArrayList<Hypothesis> (),2, true);
+                new ArrayList<Hypothesis>(),2, true);
 
 
         assertTrue(instance.distribute(aSortedPossibleSolutionsList));
@@ -188,7 +188,7 @@ public class PossibleSolutionSelectorTest {
         aSortedPossibleSolutionsList.add(aPossibleSolution);
 
         instance = new PossibleSolutionSelector(TaxonomicRank.FAMILY, new ArrayList<Hypothesis>(),
-                new ArrayList<Hypothesis>(),new ArrayList<Hypothesis> (),  new ArrayList<Hypothesis> (),2, true);
+                new ArrayList<Hypothesis>(),2, true);
 
         assertTrue(instance.distribute(aSortedPossibleSolutionsList));
 
@@ -239,7 +239,7 @@ public class PossibleSolutionSelectorTest {
 
 
         PossibleSolutionSelector instance = new PossibleSolutionSelector(TaxonomicRank.FAMILY, aConflictSet,
-                new ArrayList<Hypothesis>(),new ArrayList<Hypothesis> (),  new ArrayList<Hypothesis> (),2, true);
+                new ArrayList<Hypothesis>(),2, true);
 
         List<ProposedSolution> aProposedSolution = instance.select();
 
@@ -294,7 +294,7 @@ public class PossibleSolutionSelectorTest {
 
 
         PossibleSolutionSelector instance = new PossibleSolutionSelector(TaxonomicRank.FAMILY, aConflictSet,
-                new ArrayList<Hypothesis>(),new ArrayList<Hypothesis> (),  new ArrayList<Hypothesis> (),2, true);
+                new ArrayList<Hypothesis>(),2, true);
 
         List<PossibleSolution> aProposedSolution = instance.sortPossibleSolutions();
         /*
