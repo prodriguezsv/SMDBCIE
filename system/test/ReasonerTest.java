@@ -849,22 +849,6 @@ public class ReasonerTest {
 	}
 
 	/**
-	 * Test method for {@link system.Reasoner#evaluatePossibleSolutions()}.
-	 */
-	@Test
-	public void testEvaluatePossibleSolutions() {
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link system.Reasoner#selectSolutions()}.
-	 */
-	@Test
-	public void testSelectSolutions() {
-		fail("Not yet implemented");
-	}
-
-	/**
 	 * Test method for {@link system.Reasoner#identify()}.
 	 */
 	@Test
@@ -1087,7 +1071,7 @@ public class ReasonerTest {
 		/**
 		 * Agregando casos a la memoria
 		 */
-		//-----------------------Caso resuelto No. 1---------------------
+//-----------------------Caso resuelto No. 1---------------------
 		c4 = new Case();
 		c4.getSolution().setTaxonLevel(TaxonomicRank.SPECIES);
 		c4.getSolution().setTaxonName("Glossodoris sedna");
@@ -1183,25 +1167,210 @@ public class ReasonerTest {
 		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Parapodio","Grado de desarrollo",
 			"Poco"));
 		
-		assertTrue(oracleIDSystem.getReasoner().identify());
+		//assertTrue(oracleIDSystem.getReasoner().identify());
+
+//---------------------------Caso problema 14---------------------------------		
+		oracleIDSystem.getReasoner().initialize();
+		
+		oracleIDSystem.getReasoner().setIdentGoal(TaxonomicRank.SPECIES);
+		
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Cuerpo","Coloración",
+			"Anaranjado claro"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Rinoforos","Coloración",
+			"Anaranjado claro"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Branquia","Coloración",
+			"Anaranjado claro"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Branquia","Forma hojas branquiales",
+			"Tripinnada"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Pie","Disposición",
+			"Sobresale al manto"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Manto","Forma",
+			"Ondulado"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Manto","Textura",
+			"Lisa"));
+		
+		//assertTrue(oracleIDSystem.getReasoner().identify());
+		
+//---------------------------Caso problema 15---------------------------------		
+		oracleIDSystem.getReasoner().initialize();
+		
+		oracleIDSystem.getReasoner().setIdentGoal(TaxonomicRank.SPECIES);
+		
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Cuerpo","Coloración",
+			"Blanco"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Cuerpo","Forma",
+			"Ovalado"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Cuerpo","Conformación",
+			"No tiene espiculas"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Pie","Disposición",
+			"Sobresale al manto"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Pie","Coloración",
+			"Blanco"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Manto","Textura",
+			"Lisa"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Rinoforos","Coloración",
+			"Blanco"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Branquia","Coloración",
+			"Blanco"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Branquia","Forma hojas branquiales",
+			"Tripinnada"));
+		
+		//assertTrue(oracleIDSystem.getReasoner().identify());
+		
+//---------------------------Caso problema 16---------------------------------		
+		oracleIDSystem.getReasoner().initialize();
+		
+		oracleIDSystem.getReasoner().setIdentGoal(TaxonomicRank.SPECIES);
+		
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Rinoforos","Coloración",
+			"Azul"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Branquia","Coloración",
+			"Blanco"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Branquia","Coloración de los ápices",
+			"Azul"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Cola","Coloración",
+			"Azul"));
+		//OJO: este descriptor tiene una observación en SUKIA
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Cola","Disposición",
+			"Sobresale claramente por detrás del notum"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Cuerpo","Coloración",
+			"Crema blanquecino"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Cuerpo","Forma",
+			"Alargado"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Manto","Coloración del borde",
+			"Melón tenue"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Pie","Coloración",
+			"Blanquecino"));
+		
+		//assertTrue(oracleIDSystem.getReasoner().identify());
+		
+//---------------------------Caso problema 17---------------------------------		
+		oracleIDSystem.getReasoner().initialize();
+		
+		oracleIDSystem.getReasoner().setIdentGoal(TaxonomicRank.SPECIES);
+		
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Cuerpo","Coloración",
+			"Blanco"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Cuerpo","Forma",
+			"Ovalado"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Manto","Textura",
+			"Lisa"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Manto","Coloración del borde",
+			"Amarillo"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Pie","Coloración del borde",
+			"Amarillo"));
+		
+		//assertTrue(oracleIDSystem.getReasoner().identify());
+		
+//---------------------------Caso problema 18---------------------------------		
+		oracleIDSystem.getReasoner().initialize();
+		
+		oracleIDSystem.getReasoner().setIdentGoal(TaxonomicRank.GENUS);
+		
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Cuerpo","Forma",
+			"Ovalado"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Manto","Contextura",
+			"Con glándulas"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Rinoforos","Coloración",
+			"Amarillento"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Pie","Coloración",
+			"Blanco"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Pie","Disposición",
+			"No sobresale al manto"));
+		
+		//assertTrue(oracleIDSystem.getReasoner().identify());
+		
+//---------------------------Caso problema 19---------------------------------		
+		oracleIDSystem.getReasoner().initialize();
+		
+		oracleIDSystem.getReasoner().setIdentGoal(TaxonomicRank.SPECIES);
+		
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Cuerpo","Consistencia",
+			"Voluminoso"));	
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Cuerpo","Forma",
+			"Alargado"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Pie","Disposición",
+			"Sobresale al manto"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Rinoforos","Coloración",
+			"Blanco amarillento"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Rinoforos","Coloración del raquis",
+			"Negro"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Branquia","Coloración",
+			"Café"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Branquia","Coloración de los ápices",
+			"Crema"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Manto","Contextura",
+			"Con tuberculos"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Manto","Coloración de las manchas",
+			"Negro"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Manto","Coloración del borde",
+			"Crema blanquecino"));
+		
+		//assertTrue(oracleIDSystem.getReasoner().identify());
+		
+//---------------------------Caso problema 20---------------------------------		
+		oracleIDSystem.getReasoner().initialize();
+		
+		oracleIDSystem.getReasoner().setIdentGoal(TaxonomicRank.FAMILY);
+		
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Cuerpo","Forma",
+			"Alargado"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Cuerpo","Coloración",
+			"Azul pálido"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Cola","Disposición",
+			"Sobresale claramente por detrás del notum"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Manto","Coloración de las manchas",
+			"Blanco"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Manto","Textura",
+			"Lisa"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Rinoforos","Coloración",
+			"Azul"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Branquia","Coloración",
+			"Azul"));
+		
+		//assertTrue(oracleIDSystem.getReasoner().identify());
+		
+//---------------------------Caso problema 21---------------------------------		
+		oracleIDSystem.getReasoner().initialize();
+		
+		oracleIDSystem.getReasoner().setIdentGoal(TaxonomicRank.GENUS);
+		
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Cuerpo","Consistencia",
+			"Voluminoso"));	
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Cuerpo","Coloración",
+			"Café"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Rinoforos","Contextura",
+			"Lisa"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Parapodio","Disposición",
+			"Libre"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Parapodio","Grado de desarrollo",
+			"Mucho"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Parapodio","Simetría",
+			"Fusionados"));
+		
+		//assertTrue(oracleIDSystem.getReasoner().identify());
+		
+//---------------------------Caso problema 22---------------------------------		
+		oracleIDSystem.getReasoner().initialize();
+		
+		oracleIDSystem.getReasoner().setIdentGoal(TaxonomicRank.SPECIES);
+		
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Cuerpo","Coloración",
+			"Gris"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Cuerpo","Coloración del fondo",
+			"Verde"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Cuerpo","Forma",
+			"Alargado"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Cuerpo","Consistencia",
+			"Voluminoso"));	
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Cuerpo","Conformación",
+			"Tiene una concha interna"));
+		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Parapodio","Grado de desarrollo",
+			"Poco"));
+		
+		//assertTrue(oracleIDSystem.getReasoner().identify());
 		
 		oracleIDSystem.getReasoner().initialize();
-	}
-
-	/**
-	 * Test method for {@link system.Reasoner#searchCaseGroupingHeuristics()}.
-	 */
-	@Test
-	public void testSearchPossibleSolutionsInCaseMemory() {
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link system.Reasoner#searchHypothesisInCaseMemory()}.
-	 */
-	@Test
-	public void testSearchPossibleSolutionsInTaxonomy() {
-		fail("Not yet implemented");
 	}
 
 	/**
@@ -1216,14 +1385,14 @@ public class ReasonerTest {
 		oracleIDSystem.getReasoner().getDescription().clear();
 		System.out.println("Verificar que se obtenga una lista de descriptores de caracter");
 		
-		oracleIDSystem.getReasoner().addToDescription(new SVCharacterDescriptor("Cuerpo", "Longitud",
-				new SingleValue(0.3)));
-		oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Pie","Forma",
-				"Estrecho y alargado"));
+		assertTrue(oracleIDSystem.getReasoner().addToDescription(new SVCharacterDescriptor("Cuerpo", "Longitud",
+				new SingleValue(0.3))));
+		assertTrue(oracleIDSystem.getReasoner().addToDescription(new SSCharacterDescriptor("Pie","Forma",
+				"Estrecho y alargado")));
 		
 		sl = new ArrayList<Descriptor>();
-		sl.add(new SSCharacterDescriptor("Pie","Forma", "Estrecho y alargado"));
 		sl.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
+		sl.add(new SSCharacterDescriptor("Pie","Forma", "Estrecho y alargado"));
 		
 		assertEquals(sl, oracleIDSystem.getReasoner().getCharacterList());
 		

@@ -155,14 +155,6 @@ public class GoalApproachingDialogTest extends GoalApproachingDialog {
 	}
 
 	/**
-	 * Test method for {@link system.searchAutomata.GoalApproachingDialog#chat()}.
-	 */
-	@Test
-	public void testChat() {
-		fail("Not yet implemented");
-	}
-
-	/**
 	 * Test method for {@link system.searchAutomata.GoalApproachingDialog#doDialog()}.
 	 */
 	@Test
@@ -228,7 +220,7 @@ public class GoalApproachingDialogTest extends GoalApproachingDialog {
 		
 		System.out.println("Verificar que se obtienen distintos resultados válidos");
 		assertEquals(null, this.rangeValueDescriptorDialog(new SVCharacterDescriptor
-			("Cuerpo", "Longitud", new SingleValue(0.3))));
+			("Cuerpo", "Longitud", new SingleValue(0.3)), new PossibleSolution()));
 		/*assertNotNull(this.rangeValueDescriptorDialog(new CharacterDescriptor
 			("Cuerpo", "Longitud", new RangeValue(0.3, 4, MeasuringUnit.CM))));*/
 	}
@@ -245,7 +237,7 @@ public class GoalApproachingDialogTest extends GoalApproachingDialog {
 		System.out.println("Verificar que se obtienen distintos resultados válidos");
 		description = new ArrayList<Descriptor>();
 		
-		assertNull(this.valueDescriptorDialog(description));
+		assertNull(this.valueDescriptorDialog(description, new PossibleSolution()));
 
 		description.clear();
 		description.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));

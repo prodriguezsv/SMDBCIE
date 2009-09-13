@@ -7,8 +7,10 @@
 package system.searchAutomata;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -277,8 +279,7 @@ public class GoalApproachingDialog {
 	protected SearchStatus doDialog(){
     	List<Descriptor> description, OKSAVDescriptorList;
     	List<String> attributesList;
-    	double value;
-    	String response;
+    	Descriptor descriptor;
 
     	//Scan the processList
         while(processList.isEmpty() != true) {
@@ -296,8 +297,8 @@ public class GoalApproachingDialog {
                 	description = t.getDescription(hypothesis.getDescription().get(0).getStructure(), a);
                 	
                 	if (!description.isEmpty()){
-                    	for (Descriptor d:description){
-                    		OKSAVDescriptorList = new ArrayList<Descriptor>();
+                		OKSAVDescriptorList = new ArrayList<Descriptor>();
+                    	for (Descriptor d:description) {
                             // Make sure this attribute is not already processed (i.e., included in the solution
                     		// or confirmed descriptions of ANY item in the processList)
                             if (!this.areThereContradictions(d)) {
@@ -306,45 +307,19 @@ public class GoalApproachingDialog {
                                 
                                 //If the value decriptor is a range, do a range-driven dialog
                                 if ((d.getValue() instanceof RangeValue)) {
-                                	response = null;
                                 	//Suponiendo que el usuario introduce valores válidos
-                                    response = this.rangeValueDescriptorDialog(d);
-                            		if (response == null)
-                            			return (status = SearchStatus.CANCEL);
-                            		
-                            		if (response.equals("reject")) {
-                            			value = (((RangeValue)d.getValue()).getLowerBound()  + 
-                        						((RangeValue)d.getValue()).getUpperBound()) / (double)2;
-                            			
-                            			if (d instanceof CharacterDescriptor) {
-                    						ps.addToUnconfirmedDescription(new SVCharacterDescriptor(d.getStructure(),
-                                    				d.getAttribute(), new SingleValue(value)));
-
-                    					} else {
-                    						ps.addToUnconfirmedDescription(new SVHeuristicDescriptor(d.getStructure(),
-                                    				d.getAttribute(), new SingleValue(value)));
-                    					}
-                            		}
-                            		
-                            		value = Double.parseDouble(response);
-                            			
-                            		if (value >= ((RangeValue)d.getValue()).getLowerBound() 
-                            				&& value <= ((RangeValue)d.getValue()).getUpperBound()) {
-                            		     //The user typed a value within the range. Thus result contains a SAVDescriptor
-                            	        //that can be used to update ps confirmedDescription. Additionally, assign
-                            	        //nextLevelTaxon to ps solution, and place ps in the OKList. Finally, do a recursive
-                            	        //call to doDialog, in order to process the next possible solution in processList
-                            			ps.setSolution(t);
-                            			if (d instanceof HeuristicDescriptor)
-                            				ps.addToConfirmedDescription(new SVHeuristicDescriptor(d.getStructure(),
-                            						d.getAttribute(), new SingleValue(value)));
-                            			else ps.addToConfirmedDescription(new SVCharacterDescriptor(d.getStructure(),
-                            					d.getAttribute(), new SingleValue(value)));
-                            			
-                                    	addOKList(ps);
-                                    	return doDialog();
-                                	} else hypothesis.addToUnmatchedDescription(new SVCharacterDescriptor(d.getStructure(),
-                            					d.getAttribute(), new SingleValue(value)));
+                                    descriptor = this.rangeValueDescriptorDialog(d, ps);
+                                    
+                                    if (descriptor == null && status.equals(SearchStatus.CANCEL))
+                                 	   return status;
+                                    
+                                    else if (descriptor != null) {                            
+         	                           ps.setSolution(t); 
+         	                           ps.addToConfirmedDescription(descriptor);
+         	                           OKList.add(ps);
+         	                            
+         	                           return doDialog();
+                                    }
                                 } else {
                                     // Make sure the SAV descriptor is not already processed (i.e., included in 
                                     // the unconfirmed, doubtful, or unmatched descriptions of ANY item in the
@@ -360,52 +335,23 @@ public class GoalApproachingDialog {
                                     }
                                 }
                             }
-                            
-                            // Once all of the attribute's values have been processed, the number of items in
-                            // the display array MUST be equal to the number of descriptors in the descriptor
-                            // list. If such number is greater than zero, display the dialog
-                            if (OKSAVDescriptorList.isEmpty() != true){
-                            	response = null;
-                                response = valueDescriptorDialog(OKSAVDescriptorList);
-
-                                //User rejects. Flush the descriptor list by placing all SAVDescriptors in the unconfirmed
-                                //description. Continue processing the next attribute
-
-                                if (response.equals("reject")){
-                                    while (OKSAVDescriptorList.isEmpty() != true){
-                                        ps.addToUnconfirmedDescription(OKSAVDescriptorList.remove(0));
-                                    }
-                                    continue;
-                                }
-
-                                //User is in doubt. Flush the descriptor list by placing all SAVDescriptors in the doubtful
-                                //description. Continue processing the next attribute
-                                if (response.equals("doubtful")){
-                                    while (OKSAVDescriptorList.isEmpty() != true){
-                                        ps.addToDoubtfulDescription(OKSAVDescriptorList.remove(0));
-                                    }
-                                    continue;
-                                }
-                                
-                                //User cancels. Cancel the process and exit.
-                                if (response == null)
-                                	return (status = SearchStatus.CANCEL);
-                                
-                                //User selects one item. The dialog method returns the value included in a
-                                // SAVDescriptor. Assign nextLevelTaxon to ps solution. Place ps in the OKList. Call doDialog recursively
-                                value = Double.parseDouble(response);
-                                
-                                ps.setSolution(t);
-                                if (d instanceof HeuristicDescriptor)
-                    				ps.addToConfirmedDescription(new SVHeuristicDescriptor(d.getStructure(),
-                    						d.getAttribute(), new SingleValue(value)));
-                    			else ps.addToConfirmedDescription(new SVCharacterDescriptor(d.getStructure(),
-                    					d.getAttribute(), new SingleValue(value)));
-                                
-                                OKList.add(ps);
-                                return doDialog();
-                            }    
-                    	}   
+                    	}
+                    	// Once all of the attribute's values have been processed, the number of items in
+                        // the display array MUST be equal to the number of descriptors in the descriptor
+                        // list. If such number is greater than zero, display the dialog
+                        if (OKSAVDescriptorList.isEmpty() != true){
+                           descriptor = valueDescriptorDialog(OKSAVDescriptorList, ps);
+   
+                           if (descriptor == null && status.equals(SearchStatus.CANCEL))
+                        	   return status;
+                           else if (descriptor != null) {                            
+	                           ps.setSolution(t); 
+	                           ps.addToConfirmedDescription(descriptor);
+	                           OKList.add(ps);
+	                            
+	                           return doDialog();
+                           }
+                        }
                 	}
                 }
             }
@@ -418,9 +364,8 @@ public class GoalApproachingDialog {
             if (goal.equals(OKList.get(0).getLevel()))
             	return (status = SearchStatus.SUCCESS);
 
-            while (OKList.isEmpty() != true){
+            while (OKList.isEmpty() != true)
                 addProcessList(OKList.remove(0));
-            }
             
             return doDialog();
         }
@@ -464,24 +409,77 @@ public class GoalApproachingDialog {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    protected String rangeValueDescriptorDialog(Descriptor descriptor){
-    	String msg;
+    protected Descriptor rangeValueDescriptorDialog(Descriptor descriptor, PossibleSolution ps){
     	double suggestedValue;
+    	String response;
     	
     	if (!(descriptor.getValue() instanceof RangeValue))
     		return null;
 
-		msg =	"\nPor favor digite un valor en unidades de \"" + ((RangeValue)descriptor.getValue())
+		String msg =	"\nPor favor digite un valor en unidades de \"" + ((RangeValue)descriptor.getValue())
 				.getMeasuringUnit().getMeasuringUnit() + "\"" +
 				"\npara el atributo \"" + descriptor.getAttribute() + "\" de la estructura \"" 
 				+ descriptor.getStructure() + "\" o acepte el valor sugerido." +
 				"\n\nSi no es posible proveer la respuesta, escriba \"reject\"." +
+				"\nSi tiene dudas de la respuesta, escriba \"doubtful\"." +
 				"\nSi quiere abortar la interacción, haga click en cancelar.\n";
 	
 		suggestedValue = (((RangeValue)descriptor.getValue()).getLowerBound()  + 
 						((RangeValue)descriptor.getValue()).getUpperBound()) / (double)2;
 	
-		return JOptionPane.showInputDialog(msg, Double.toString(suggestedValue));
+		response =  JOptionPane.showInputDialog(msg, Double.toString(suggestedValue));
+		
+		if (response == null) {
+			status = SearchStatus.CANCEL;
+			return null;
+		}
+		
+		if (response.equals("reject")) {
+			if (descriptor instanceof CharacterDescriptor)
+				ps.addToUnconfirmedDescription(new SVCharacterDescriptor(descriptor.getStructure(),
+					descriptor.getAttribute(), new SingleValue(suggestedValue)));
+			else
+				ps.addToUnconfirmedDescription(new SVHeuristicDescriptor(descriptor.getStructure(),
+					descriptor.getAttribute(), new SingleValue(suggestedValue)));
+			return null;
+		}
+		
+		//OJO: está opción se agregó
+		if (response.equals("doubtful")) {
+			if (descriptor instanceof CharacterDescriptor)
+				ps.addToDoubtfulDescription(new SVCharacterDescriptor(descriptor.getStructure(),
+					descriptor.getAttribute(), new SingleValue(suggestedValue)));
+			else
+				ps.addToDoubtfulDescription(new SVHeuristicDescriptor(descriptor.getStructure(),
+					descriptor.getAttribute(), new SingleValue(suggestedValue)));
+			return null;
+		}
+		
+		suggestedValue = Double.parseDouble(response);
+			
+		if (suggestedValue >= ((RangeValue)descriptor.getValue()).getLowerBound() 
+				&& suggestedValue <= ((RangeValue)descriptor.getValue()).getUpperBound()) {
+		    /*The user typed a value within the range. Thus result contains a SAVDescriptor
+	        that can be used to update ps confirmedDescription. Additionally, assign
+	        nextLevelTaxon to ps solution, and place ps in the OKList. Finally, do a recursive
+	        call to doDialog, in order to process the next possible solution in processList*/
+			if (descriptor instanceof HeuristicDescriptor)
+				 return new SVHeuristicDescriptor(descriptor.getStructure(),
+					descriptor.getAttribute(), new SingleValue(suggestedValue, 
+							((RangeValue)descriptor.getValue()).getMeasuringUnit()));
+			else return new SVCharacterDescriptor(descriptor.getStructure(),
+					descriptor.getAttribute(), new SingleValue(suggestedValue, 
+							((RangeValue)descriptor.getValue()).getMeasuringUnit()));
+    	} else {
+    		if (descriptor instanceof HeuristicDescriptor)
+    			hypothesis.addToUnmatchedDescription(new SVHeuristicDescriptor(descriptor.getStructure(),
+					descriptor.getAttribute(), new SingleValue(suggestedValue, 
+							((RangeValue)descriptor.getValue()).getMeasuringUnit())));
+			else hypothesis.addToUnmatchedDescription(new SVCharacterDescriptor(descriptor.getStructure(),
+					descriptor.getAttribute(), new SingleValue(suggestedValue, 
+							((RangeValue)descriptor.getValue()).getMeasuringUnit())));    		
+    		return null;
+    	}
     }
 
 	/**
@@ -489,29 +487,63 @@ public class GoalApproachingDialog {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-	protected String valueDescriptorDialog(List<Descriptor> descriptors){
-    	String msg;
-    	String values = "\n";
+	protected Descriptor valueDescriptorDialog(List<Descriptor> OKSAVDescriptorList, PossibleSolution ps){
+		Map<String, Descriptor> descriptorsIndex;
+    	List<String> values;
+    	String response;
     	
-    	if (descriptors.isEmpty())
+    	if (OKSAVDescriptorList.isEmpty())
     		return null;
     	
-    	for (Descriptor d:descriptors) {
-    		if (d.getValue() instanceof String)
-    			values = values + d.getValue() + "    ";
-    		else if (d.getValue() instanceof SingleValue)
-    			values = values + ((SingleValue)d.getValue()).getValue() + "    ";
-    		else return null;
+    	descriptorsIndex = new HashMap<String, Descriptor>();
+        values = new ArrayList<String>(Arrays.asList("reject", "doubtful"));
+        
+    	for (Descriptor d:OKSAVDescriptorList) {
+    		if (d.getValue() instanceof String) {
+    			values.add((String)d.getValue());
+    			descriptorsIndex.put((String)d.getValue(), d);
+    		} else if (d.getValue() instanceof SingleValue) {
+    			values.add(Double.toString(((SingleValue)d.getValue()).getValue()));
+    			descriptorsIndex.put(Double.toString(((SingleValue)d.getValue()).getValue()), d);
+    		}    		
     	}
 
-		msg =	"¿Cuál de los siguientes valores: " + values + 
-				"\npresenta el atributo \"" + descriptors.get(0).getAttribute() +
-				"\"\nde la estructura \"" + descriptors.get(0).getStructure() + "\"?" +
+		String msg =	"¿Cuál de los siguientes valores presenta el atributo \"" + 
+				OKSAVDescriptorList.get(0).getAttribute() + "\"\nde la estructura \"" + 
+				OKSAVDescriptorList.get(0).getStructure() + "\"?" +
 				"\n\nSi no es posible proveer la respuesta, escriba \"reject\"." +
 				"\nSi tiene dudas de la respuesta, escriba \"doubtful\"." +
 				"\nSi quiere abortar la interacción, haga click en cancelar.\n";
 
-		return JOptionPane.showInputDialog(msg);		
+		response = (String) JOptionPane.showInputDialog(null, msg, "OracleID", JOptionPane.QUESTION_MESSAGE,
+    			null, values.toArray(), "reject");
+		
+		 //User rejects. Flush the descriptor list by placing all SAVDescriptors in the unconfirmed
+        //description. Continue processing the next attribute
+
+        if (response.equals("reject")){
+            while (OKSAVDescriptorList.isEmpty() != true)
+                ps.addToUnconfirmedDescription(OKSAVDescriptorList.remove(0));
+            
+            return null;
+        }
+
+        //User is in doubt. Flush the descriptor list by placing all SAVDescriptors in the doubtful
+        //description. Continue processing the next attribute
+        if (response.equals("doubtful")){
+            while (OKSAVDescriptorList.isEmpty() != true)
+                ps.addToDoubtfulDescription(OKSAVDescriptorList.remove(0));
+            
+            return null;
+        }
+        
+        //User cancels. Cancel the process and exit.
+        if (response == null) {
+        	status = SearchStatus.CANCEL;
+        	return null;
+        }
+        
+        return descriptorsIndex.get(response);
     }
 
 	/**

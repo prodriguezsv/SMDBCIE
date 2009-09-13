@@ -158,9 +158,9 @@ public class PossibleSolutionEvaluator {
 
                 if (evalPossibleSolutionTaxon == null) return;
 
-                List<Hypothesis> aConflictSetCopy = new ArrayList<Hypothesis>(aConflictSet);
+                List<Hypothesis> aCompConflictSetCopy = new ArrayList<Hypothesis>(aCompConflictSet);
                 
-                for (Hypothesis compHypothesis:aConflictSetCopy){
+                for (Hypothesis compHypothesis:aCompConflictSetCopy){
                 	List<PossibleSolution> aPossibleSolutionsCopy = new ArrayList<PossibleSolution>(compHypothesis.getPossibleSolutions());
                 	
                     for (PossibleSolution compPossibleSolution: aPossibleSolutionsCopy){
@@ -173,6 +173,7 @@ public class PossibleSolutionEvaluator {
                         
                         // Check if the possible solutions are the same object
                         if (evalPossibleSolutionTaxon.equals(compPossibleSolutionTaxon)) {
+                        	//OJO: verificar este discernimiento
                         	if (evalHypothesis.getDescription().get(0) instanceof HeuristicDescriptor) {
                         		aPointAccumulatingScheme = PossibleSolutionEvaluator.losePoints();
                         	} else {
@@ -195,6 +196,7 @@ public class PossibleSolutionEvaluator {
                             // At this point, evalPossibleSolutionTaxon and compPossibleSolutionTaxon are different objects
                             // Determine if the possibleSolution-to-evaluate is a successor taxon of the possibleSolution-to-compare
                             if (evalPossibleSolutionTaxon.isSuccessorOf(compPossibleSolutionTaxon)) {
+                            	//OJO: verificar este discernimiento
                             	if (evalHypothesis.getDescription().get(0) instanceof HeuristicDescriptor) {
                             		aPointAccumulatingScheme = PossibleSolutionEvaluator.losePoints();
                             	} else {
@@ -215,7 +217,7 @@ public class PossibleSolutionEvaluator {
                     }
                     
                     if (compHypothesis.getPossibleSolutions().isEmpty())
-                    	aConflictSet.remove(compHypothesis);
+                    	aCompConflictSet.remove(compHypothesis);
                 }
             }
         }

@@ -175,10 +175,10 @@ public class TaxonomySearchAutomaton {
 	 * @return my return values
 	 */
     protected void prepareFailedOutput(){
+    	/*if (searchOutput.getJustification() != null) return;*/
+    	
         searchOutput.setJustification(justification);
-        //this.getJustification().clear();
         searchOutput.setUnmatchedDescription(currentTaxonUnmatchedDescription);
-        //this.getCurrentTaxonUnmatchedDescription().clear();
         status = SearchStatus.FAIL;
     }
 
@@ -188,12 +188,13 @@ public class TaxonomySearchAutomaton {
 	 * @return my return values
 	 */
     protected void prepareSuccessfulOutput(){
+    	/*if (searchOutput.getPossibleSolutions() != null)
+    	return;*/
+    	
         searchOutput.setPossibleSolutions(possibleSolutions);
-        //this.getPossibleSolutions().clear();
+        
         searchOutput.setJustification(justification);
-        //this.getJustification().clear();
         searchOutput.setUnmatchedDescription(currentTaxonUnmatchedDescription);
-        //this.getCurrentTaxonUnmatchedDescription().clear();
         status = SearchStatus.SUCCESS;
     }
     

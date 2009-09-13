@@ -161,8 +161,8 @@ public class Reasoner {
 	 * @see "Método groupHDescription: del protocolo adding en SUKIA SmallTalk"
 	 * @param aHypothesis
 	 */
-	public void addToDescription(Descriptor descriptor) {
-		this.getDescription().addToConcreteDescription(descriptor);
+	public boolean addToDescription(Descriptor descriptor) {
+		return this.getDescription().addToConcreteDescription(descriptor);
 	}
 
 	/**

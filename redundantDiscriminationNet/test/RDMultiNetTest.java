@@ -168,6 +168,6 @@ public class RDMultiNetTest {
 		rdmultinet.add(c11);
 		rdmultinet.add(c12);
 		
-		assertEquals(7, rdmultinet.getRoot().getNets().size());		
+		assertEquals(6, rdmultinet.getRoot().getNets().size());		
 	}
 }

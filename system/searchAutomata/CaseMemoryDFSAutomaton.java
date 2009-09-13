@@ -45,12 +45,12 @@ public class CaseMemoryDFSAutomaton {
     private Description tUnmatchedDesc;
     private Description justification;
     private List<PossibleSolution> possibleSolutions;
-    public RootNorm netRoot;
-    public Norm currentNorm;
-    public int currentLevel;
-    public int stopLevel;
-    public SearchStatus status;
-    public CaseMemoryDFSAutomatonOutput searchOutput;
+    private RootNorm netRoot;
+    private Norm currentNorm;
+    private int currentLevel;
+    private int stopLevel;
+    private SearchStatus status;
+    private CaseMemoryDFSAutomatonOutput searchOutput;
 
     /**
 	 * @see Define method name.
@@ -120,7 +120,7 @@ public class CaseMemoryDFSAutomaton {
      * @param possibleSolutions
      */
     public void setPossibleSolutions(List<PossibleSolution> possibleSolutions){
-    	        this.possibleSolutions = possibleSolutions;
+    	 this.possibleSolutions = possibleSolutions;
     }
     
     /**
@@ -542,7 +542,7 @@ public class CaseMemoryDFSAutomaton {
         //Scan the the Descriptor list of the problem description. Look for indices that strictly point to cases
         while (aProblemDescription.isEmpty() != true){
             //Remove the next Descriptor<Object>
-            Descriptor d = aProblemDescription.get(0);
+            Descriptor d = aProblemDescription.remove(0);
             //Look for a matching index
             Index idx = currentNorm.getSuccessorIndex(d);
 
@@ -709,7 +709,7 @@ public class CaseMemoryDFSAutomaton {
         
         for (SheetCase mycase: aCaseList){
             PossibleSolution ps = new PossibleSolution();
-            ps.setSolution(mycase);
+            ps.setSolution(mycase.getCase());
             ps.getSolutionDescription().addAllToConcreteDescription(getTSolutionDescription());
             ps.getConfirmedDescription().addAllToConcreteDescription(getTConfirmedDescription());
             ps.getUnconfirmedDescription().addAllToConcreteDescription(getTUnconfirmedDescription());
@@ -1025,7 +1025,6 @@ public class CaseMemoryDFSAutomaton {
 
         //The index was found. Create a temporary possible solutions list
         List<SheetCase> aCaseList = new ArrayList<SheetCase>();
-        List<Descriptor> descriptorList = new ArrayList<Descriptor>();
 
         for (Node n:idx.getSuccessors()){
             //Determine if the successor is a norm
@@ -1063,7 +1062,7 @@ public class CaseMemoryDFSAutomaton {
         
         String message = "No reconozco el valor " + oldValue + " del atributo "+ aSAVDescriptor.getAttribute()+
         			" de la estructura " +aSAVDescriptor.getStructure()+ "\nbrindado en la descripción del espécimen." +
-        			"\nSin embargo, sí puedo reconocer los siguientes valores.\n ¿Es alguno valor válido?\n" +
+        			"\nSin embargo, sí puedo reconocer los siguientes valores.\n ¿Es algun valor válido?" +
         			"\n\nSi no es posible proveer la respuesta, escriba \"reject\"." +
 					"\nSi tiene dudas de la respuesta, escriba \"doubtful\"." +
 					"\nSi quiere abortar la interacción, haga click en cancelar.\n";
@@ -1087,9 +1086,9 @@ public class CaseMemoryDFSAutomaton {
     	
     	//El usuario rechaza la sugerencia
         if (result.equals("reject")){
-            while (descriptorList.isEmpty() != true){
-                addToTUnconfirmedDescription(descriptorList.remove(0));
-            }
+        	for (Descriptor d:descriptors.values())
+                addToTUnconfirmedDescription(d);
+            
             this.setStatus(SearchStatus.FAIL);
             
             return SearchStatus.FAIL;
@@ -1098,9 +1097,9 @@ public class CaseMemoryDFSAutomaton {
         //User is in doubt. Flush the descriptor list by placing all SAVDescriptors in the doubtful
         //description. Continue processing the next attribute
         if (result.equals("doubtful")){
-        	while (descriptorList.isEmpty() != true){
-                addToTDoubtfulDescription(descriptorList.remove(0));
-            }
+        	for (Descriptor d:descriptors.values())
+                addToTDoubtfulDescription(d);
+            
         	this.setStatus(SearchStatus.FAIL);
             
             return SearchStatus.FAIL;
@@ -1159,7 +1158,7 @@ public class CaseMemoryDFSAutomaton {
 	 * @return my return values
 	 */
     protected void prepareFailedOutput(){
-        if (searchOutput.getJustification() != null) return;
+        /*if (searchOutput.getJustification() != null) return;*/
         
         searchOutput.setJustification(justification);
         searchOutput.setUnmatchedDescription(getTUnmatchedDescription());
@@ -1173,8 +1172,8 @@ public class CaseMemoryDFSAutomaton {
 	 * @return my return values
 	 */
     protected void prepareSuccessfulOutput(){
-        if (searchOutput.getPossibleSolutions() != null)
-        	return;
+        /*if (searchOutput.getPossibleSolutions() != null)
+        	return;*/
         
         searchOutput.setPossibleSolutions(getPossibleSolutions());
         searchOutput.setJustification(justification);

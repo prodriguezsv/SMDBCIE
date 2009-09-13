@@ -118,13 +118,21 @@ public class PossibleSolutionEvaluatorTest {
         List<Hypothesis> aConflictSet = new ArrayList<Hypothesis>();
         
         Hypothesis aHypothesis = new Hypothesis();
+        aHypothesis.getDescription().addToConcreteDescription(
+        		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
         aPossibleSolution1 = new PossibleSolution ();
+        aPossibleSolution1.getSolutionDescription().addToConcreteDescription(
+        		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
         assertTrue(aPossibleSolution1.setSolution(taxon1));
         aHypothesis.addPossibleSolution(aPossibleSolution1);
         aConflictSet.add(aHypothesis);
 
         aHypothesis = new Hypothesis();
+        aHypothesis.getDescription().addToConcreteDescription(
+        		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
         aPossibleSolution2 = new PossibleSolution ();
+        aPossibleSolution2.getSolutionDescription().addToConcreteDescription(
+        		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
         assertTrue(aPossibleSolution2.setSolution(taxon3));
         aHypothesis.addPossibleSolution(aPossibleSolution2);
         aConflictSet.add(aHypothesis);
@@ -132,13 +140,21 @@ public class PossibleSolutionEvaluatorTest {
         List<Hypothesis> aCompConflictSet = new ArrayList<Hypothesis>();
 
         aHypothesis = new Hypothesis();
+        aHypothesis.getDescription().addToConcreteDescription(
+        		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
         aPossibleSolution3 = new PossibleSolution ();
+        aPossibleSolution3.getSolutionDescription().addToConcreteDescription(
+        		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
         assertTrue(aPossibleSolution3.setSolution(taxon1));
         aHypothesis.addPossibleSolution(aPossibleSolution3);
         aCompConflictSet.add(aHypothesis);
 
         aHypothesis = new Hypothesis();
+        aHypothesis.getDescription().addToConcreteDescription(
+        		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
         aPossibleSolution4 = new PossibleSolution ();
+        aPossibleSolution4.getSolutionDescription().addToConcreteDescription(
+        		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
         assertTrue(aPossibleSolution4.setSolution(taxon4));
         aHypothesis.addPossibleSolution(aPossibleSolution4);
         aCompConflictSet.add(aHypothesis);
@@ -147,11 +163,11 @@ public class PossibleSolutionEvaluatorTest {
         assertEquals(0.0,aPossibleSolution1.getPoints(),0.0);
         assertEquals(0.0,aPossibleSolution2.getPoints(),0.0);
 
-        //Ojo: la descripción está vacía o es null
         instance.evaluate(aConflictSet, aCompConflictSet, aPointAccumulatingScheme);
 
-        assertEquals(1.0,aPossibleSolution1.getPoints(),0.0);
-        assertEquals(1.0,aPossibleSolution2.getPoints(),0.0);
+        //Ojo:verificar el esqema de acumulación de puntos
+        assertEquals(-1.0,aPossibleSolution1.getPoints(),0.0);
+        assertEquals(0.0,aPossibleSolution2.getPoints(),0.0);
 
         /*
          * Case add points to PossibleSolution1, taxon3 present and has is succesor of taxon1 present on aCompConflictSet
@@ -160,13 +176,21 @@ public class PossibleSolutionEvaluatorTest {
         aConflictSet = new ArrayList<Hypothesis>();
 
         aHypothesis = new Hypothesis();
+        aHypothesis.getDescription().addToConcreteDescription(
+        		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
         aPossibleSolution1 = new PossibleSolution ();
+        aPossibleSolution1.getSolutionDescription().addToConcreteDescription(
+        		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
         assertTrue(aPossibleSolution1.setSolution(taxon3));
         aHypothesis.addPossibleSolution(aPossibleSolution1);
         aConflictSet.add(aHypothesis);
 
         aHypothesis = new Hypothesis();
+        aHypothesis.getDescription().addToConcreteDescription(
+        		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
         aPossibleSolution2 = new PossibleSolution ();
+        aPossibleSolution2.getSolutionDescription().addToConcreteDescription(
+        		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
         assertTrue(aPossibleSolution2.setSolution(taxon4));
         aHypothesis.addPossibleSolution(aPossibleSolution2);
         aConflictSet.add(aHypothesis);
@@ -175,13 +199,21 @@ public class PossibleSolutionEvaluatorTest {
         aCompConflictSet = new ArrayList<Hypothesis>();
 
         aHypothesis = new Hypothesis();
+        aHypothesis.getDescription().addToConcreteDescription(
+        		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
         aPossibleSolution3 = new PossibleSolution ();
+        aPossibleSolution3.getSolutionDescription().addToConcreteDescription(
+        		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
         assertTrue(aPossibleSolution3.setSolution(taxon3));
         aHypothesis.addPossibleSolution(aPossibleSolution3);
         aCompConflictSet.add(aHypothesis);
 
         aHypothesis = new Hypothesis();
+        aHypothesis.getDescription().addToConcreteDescription(
+        		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
         aPossibleSolution4 = new PossibleSolution ();
+        aPossibleSolution4.getSolutionDescription().addToConcreteDescription(
+        		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
         assertTrue(aPossibleSolution4.setSolution(taxon1));
         aHypothesis.addPossibleSolution(aPossibleSolution4);
         aCompConflictSet.add(aHypothesis);
@@ -191,7 +223,7 @@ public class PossibleSolutionEvaluatorTest {
 
         instance.evaluate(aConflictSet, aCompConflictSet, aPointAccumulatingScheme);
 
-        assertEquals(2.0,aPossibleSolution1.getPoints(),0.0);
+        assertEquals(-2.0,aPossibleSolution1.getPoints(),0.0);
         assertEquals(0.0,aPossibleSolution2.getPoints(),0.0);
         /*
          * Case decrease points to PossibleSolution1, taxon3 present and has is succesor of taxon1 present on aCompConflictSet
@@ -202,6 +234,8 @@ public class PossibleSolutionEvaluatorTest {
         aConflictSet = new ArrayList<Hypothesis>();
 
         aHypothesis = new Hypothesis();
+        aHypothesis.getDescription().addToConcreteDescription(
+        		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
         aPossibleSolution1 = new PossibleSolution ();
         assertTrue(aPossibleSolution1.setSolution(taxon3));
         aHypothesis.addPossibleSolution(aPossibleSolution1);
@@ -217,12 +251,16 @@ public class PossibleSolutionEvaluatorTest {
         aCompConflictSet = new ArrayList<Hypothesis>();
 
         aHypothesis = new Hypothesis();
+        aHypothesis.getDescription().addToConcreteDescription(
+        		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
         aPossibleSolution3 = new PossibleSolution ();
         assertTrue(aPossibleSolution3.setSolution(taxon3));
         aHypothesis.addPossibleSolution(aPossibleSolution3);
         aCompConflictSet.add(aHypothesis);
 
         aHypothesis = new Hypothesis();
+        aHypothesis.getDescription().addToConcreteDescription(
+        		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
         aPossibleSolution4 = new PossibleSolution ();
         assertTrue(aPossibleSolution4.setSolution(taxon1));
         aHypothesis.addPossibleSolution(aPossibleSolution4);
@@ -283,8 +321,8 @@ public class PossibleSolutionEvaluatorTest {
 
         instance.evaluate(aConflictSet, aPointAccumulatingScheme);
 
-        assertEquals(1.0,aPossibleSolution1.getPoints(),0.0);
-        assertEquals(2.0,aPossibleSolution2.getPoints(),0.0);
+        assertEquals(0.0,aPossibleSolution1.getPoints(),0.0);
+        assertEquals(0.0,aPossibleSolution2.getPoints(),0.0);
 
         /*
          * Case add points to PossibleSolution1 and PossibleSolution2
@@ -311,8 +349,8 @@ public class PossibleSolutionEvaluatorTest {
 
         instance.evaluate(aConflictSet, aPointAccumulatingScheme);
 
-        assertEquals(1.0,aPossibleSolution1.getPoints(),0.0);
-        assertEquals(1.0,aPossibleSolution2.getPoints(),0.0);
+        assertEquals(0.0,aPossibleSolution1.getPoints(),0.0);
+        assertEquals(0.0,aPossibleSolution2.getPoints(),0.0);
         /*
          * Case decrease points to PossibleSolution1 and PossibleSolution2
          * Same than before but decreasing points
@@ -339,8 +377,8 @@ public class PossibleSolutionEvaluatorTest {
 
         instance.evaluate(aConflictSet, aPointAccumulatingScheme);
 
-        assertEquals(-1.0,aPossibleSolution1.getPoints(),0.0);
-        assertEquals(-1.0,aPossibleSolution2.getPoints(),0.0);
+        assertEquals(0.0,aPossibleSolution1.getPoints(),0.0);
+        assertEquals(0.0,aPossibleSolution2.getPoints(),0.0);
     }
 
     /**
