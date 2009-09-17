@@ -16,6 +16,7 @@ import java.util.Map;
 
 import javax.swing.JOptionPane;
 
+import ontology.CBR.PossibleSolution;
 import ontology.common.Description;
 import ontology.common.Descriptor;
 import ontology.values.SingleValue;
@@ -25,7 +26,6 @@ import redundantDiscriminationNet.Index;
 import redundantDiscriminationNet.Node;
 import redundantDiscriminationNet.Norm;
 import redundantDiscriminationNet.SheetCase;
-import system.PossibleSolution;
 import system.searchAutomata.output.CaseMemoryDFSAutomatonOutput;
 
 /**
@@ -38,11 +38,11 @@ import system.searchAutomata.output.CaseMemoryDFSAutomatonOutput;
  */
 
 public class CaseMemoryDFSAutomaton {
-    private Description tSolutionDesc;
-    private Description tConfirmedDesc;
-    private Description tUnconfirmedDesc;
-    private Description tDoubtfulDesc;
-    private Description tUnmatchedDesc;
+    private Description solutionDescription;
+    private Description confirmedDescription;
+    private Description unconfirmedDescription;
+    private Description doubtfulDescription;
+    private Description unmatchedDescription;
     private Description justification;
     private List<PossibleSolution> possibleSolutions;
     private RootNorm netRoot;
@@ -63,11 +63,11 @@ public class CaseMemoryDFSAutomaton {
     }
     
     protected void initialize() {
-        tSolutionDesc = new Description();
-        tConfirmedDesc = new Description();
-        tUnconfirmedDesc = new Description();
-        tDoubtfulDesc = new Description();
-        tUnmatchedDesc = new Description();
+        solutionDescription = new Description();
+        confirmedDescription = new Description();
+        unconfirmedDescription = new Description();
+        doubtfulDescription = new Description();
+        unmatchedDescription = new Description();
         justification = new Description();
         possibleSolutions = new ArrayList<PossibleSolution>();
         currentNorm = null;
@@ -180,8 +180,8 @@ public class CaseMemoryDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public void addToTConfirmedDescription(Descriptor aSAVDescriptor){
-        tConfirmedDesc.addToConcreteDescription(aSAVDescriptor);
+    public void addToConfirmedDescription(Descriptor aSAVDescriptor){
+        confirmedDescription.addToConcreteDescription(aSAVDescriptor);
     }
     
     /**
@@ -189,8 +189,8 @@ public class CaseMemoryDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public void addToTDoubtfulDescription(Descriptor aSAVDescriptor){
-        tDoubtfulDesc.addToConcreteDescription(aSAVDescriptor);
+    public void addToDoubtfulDescription(Descriptor aSAVDescriptor){
+        doubtfulDescription.addToConcreteDescription(aSAVDescriptor);
     }
     
     /**
@@ -198,8 +198,8 @@ public class CaseMemoryDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public void addToTSolutionDescription(Descriptor aSAVDescriptor){
-        tSolutionDesc.addToConcreteDescription(aSAVDescriptor);
+    public void addToSolutionDescription(Descriptor aSAVDescriptor){
+        solutionDescription.addToConcreteDescription(aSAVDescriptor);
     }
     
     /**
@@ -207,16 +207,16 @@ public class CaseMemoryDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public void addToTUnconfirmedDescription(Descriptor aSAVDescriptor){
-        tUnconfirmedDesc.addToConcreteDescription(aSAVDescriptor);
+    public void addToUnconfirmedDescription(Descriptor aSAVDescriptor){
+        unconfirmedDescription.addToConcreteDescription(aSAVDescriptor);
     }
     /**
 	 * @see Define method name.
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public void addToTUnmatchedDescription(Descriptor aSAVDescriptor){
-        tUnmatchedDesc.addToConcreteDescription(aSAVDescriptor);
+    public void addToUnmatchedDescription(Descriptor aSAVDescriptor){
+        unmatchedDescription.addToConcreteDescription(aSAVDescriptor);
     }
 
     /**
@@ -294,8 +294,8 @@ public class CaseMemoryDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public Description getTConfirmedDescription(){
-        return tConfirmedDesc;
+    public Description getConfirmedDescription(){
+        return confirmedDescription;
     }
 
     /**
@@ -303,8 +303,8 @@ public class CaseMemoryDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public Description getTDoubtfulDescription(){
-    	return tDoubtfulDesc;
+    public Description getDoubtfulDescription(){
+    	return doubtfulDescription;
     }
     
     /**
@@ -312,8 +312,8 @@ public class CaseMemoryDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public Description getTSolutionDescription(){
-        return tSolutionDesc;
+    public Description getSolutionDescription(){
+        return solutionDescription;
     }
     
     /**
@@ -321,8 +321,8 @@ public class CaseMemoryDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public Description getTUnconfirmedDescription(){
-        return tUnconfirmedDesc;
+    public Description getUnconfirmedDescription(){
+        return unconfirmedDescription;
     }
     
     /**
@@ -330,8 +330,8 @@ public class CaseMemoryDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public Description getTUnmatchedDescription(){
-        return tUnmatchedDesc;
+    public Description getUnmatchedDescription(){
+        return unmatchedDescription;
     }
 
     /**
@@ -340,7 +340,7 @@ public class CaseMemoryDFSAutomaton {
 	 * @return my return values
 	 */
     public void backtrack(){
-        if (!removeFromTConfirmedDescription(currentNorm.getDescriptor()) ||
+        if (!removeFromConfirmedDescription(currentNorm.getDescriptor()) ||
         		!processPreviousNorm()) {
             this.setStatus(SearchStatus.FAIL);
         }
@@ -378,14 +378,14 @@ public class CaseMemoryDFSAutomaton {
      * or if the Descriptor<Object> was not found in tConfirmedDescriptor;
      * self - if all OK.
 	 */
-    public boolean removeFromTConfirmedDescription(Descriptor descritor){
+    public boolean removeFromConfirmedDescription(Descriptor descritor){
         
         if (currentLevel <= stopLevel) return false;
         
-        for (Descriptor tcd : getTConfirmedDescription()) {
+        for (Descriptor tcd : getConfirmedDescription()) {
             if (tcd.equals(descritor)) {
-                addToTUnconfirmedDescription(getTConfirmedDescription()
-                		.remove(getTConfirmedDescription().indexOf(tcd)));
+                addToUnconfirmedDescription(getConfirmedDescription()
+                		.remove(getConfirmedDescription().indexOf(tcd)));
                 return true;
             }
 
@@ -418,8 +418,8 @@ public class CaseMemoryDFSAutomaton {
 	                // against the doubtful description. If this time the SAVDescriptior is NOT a member of
 	                // the doubtful description, return self, indicating that there is at least one
 	                // index-value to show to the user
-	                if (!this.getTUnconfirmedDescription().contains(((Norm)idxSucc).getDescriptor())) {
-	                    if (!this.getTDoubtfulDescription().contains(((Norm)idxSucc).getDescriptor()))
+	                if (!this.getUnconfirmedDescription().contains(((Norm)idxSucc).getDescriptor())) {
+	                    if (!this.getDoubtfulDescription().contains(((Norm)idxSucc).getDescriptor()))
 	                        return true;
 	                }
 	            }
@@ -430,7 +430,7 @@ public class CaseMemoryDFSAutomaton {
         // of either the unconfirmed or doubtful descriptions. Return null to indicate that another backtrack
         // must be performed. Before returning, the descriptor of the current norm must be removed from
         // the confirmed description and placed in the unconfirmed description
-        if (!removeFromTConfirmedDescription(currentNorm.getDescriptor()))
+        if (!removeFromConfirmedDescription(currentNorm.getDescriptor()))
             return false;
 
         return processPreviousNorm();
@@ -482,7 +482,7 @@ public class CaseMemoryDFSAutomaton {
                 	tempList.add(d);
                 
                 if (result.equals(SearchStatus.SUCCESS))
-                	addToTUnmatchedDescription(d);
+                	addToUnmatchedDescription(d);
             } else{
                 //Index found. get the IndexValue successor
                 Node succ = idx.getSuccessor(d);
@@ -494,13 +494,13 @@ public class CaseMemoryDFSAutomaton {
                     //The matched index points to a case. Place the corresponding descriptor in the solution description
                     //and associate the corresponding case to a PossibleSolution. Next, place the possible solution in the
                     //output possible solutions list. Finally, remove the descriptor from the solution description
-                    this.addToTSolutionDescription(d);
+                    this.addToSolutionDescription(d);
                     
                     aCaseList.add((SheetCase)succ);
                     List<PossibleSolution> pSolutionList = associateCasesToPossibleSolutions(aCaseList);
                     this.addToPossibleSolutions(pSolutionList.remove(0));
                     
-                    this.getTSolutionDescription().remove(getTSolutionDescription().size()-1);
+                    this.getSolutionDescription().remove(getSolutionDescription().size()-1);
                 }
             }
         }
@@ -530,7 +530,7 @@ public class CaseMemoryDFSAutomaton {
         }
 
         if ((currentNorm == netRoot) && (this.getPossibleSolutions().isEmpty()) 
-        		&& (!this.getTSolutionDescription().isEmpty())) {
+        		&& (!this.getSolutionDescription().isEmpty())) {
         	this.setStatus(SearchStatus.ERROR);
         	return;
         }
@@ -551,7 +551,7 @@ public class CaseMemoryDFSAutomaton {
 
             if (idx == null){
                 //At this point, the descriptor inevitably goes to the unmatched description
-                addToTUnmatchedDescription(d);
+                addToUnmatchedDescription(d);
 
                 //However, the descriptor may have an inaccurate value. Try to establish a dialog with the user
                 //using a partial match.
@@ -569,13 +569,13 @@ public class CaseMemoryDFSAutomaton {
                     //The matched index points to a case. Place the corresponding descriptor in the solution description
                     //and associate the corresponding case to a PossibleSolution. Next, place the possible solution in the
                     //output possible solutions list. Finally, remove the descriptor from the solution description
-                    addToTSolutionDescription(d);
+                    addToSolutionDescription(d);
                     
                     aCaseList.add((SheetCase)succ);
                     List<PossibleSolution> pSolutionList = associateCasesToPossibleSolutions(aCaseList);
                     this.addToPossibleSolutions(pSolutionList.remove(0));
                     
-                    getTSolutionDescription().remove(getTSolutionDescription().size()-1);
+                    getSolutionDescription().remove(getSolutionDescription().size()-1);
 
                 }
             }
@@ -644,12 +644,12 @@ public class CaseMemoryDFSAutomaton {
         //list is that, depending on the output from the root-search, it may be necessary to put all descriptors
         //back in the solution description, in order to try the next search strategy
 
-        List<Descriptor> tempMovedSolution = moveDescriptors(getTSolutionDescription(),getTUnmatchedDescription());
+        List<Descriptor> tempMovedSolution = moveDescriptors(getSolutionDescription(),getUnmatchedDescription());
 
         // Same sitution as with the solution description.  In this case, place the confirmed description items in the
         // unconfirmed description, and also copy them to another temporary list
 
-        List<Descriptor> tempMovedConfirmed = moveDescriptors(getTConfirmedDescription(),getTUnconfirmedDescription());
+        List<Descriptor> tempMovedConfirmed = moveDescriptors(getConfirmedDescription(),getUnconfirmedDescription());
         
         // Call the search-cases-under-root method with a clean &amp; empty possible solutions list (its part of the precondition)
         //List<PossibleSolution> pSolutions = new ArrayList<PossibleSolution>(); OJO
@@ -674,10 +674,10 @@ public class CaseMemoryDFSAutomaton {
         // and confirmed descriptions MUST be set back to their original state (i.e., before doing the root-search). So, remove
         // all the matching items in the temporary lists from the unmatched and unconfirmed descriptions and place them back
         // in the corresponding solution and confirmed ones
-        getTSolutionDescription().addAll(tempMovedSolution);
-        deleteDescriptors(tempMovedSolution, getTUnmatchedDescription());
-        getTConfirmedDescription().addAll(tempMovedConfirmed);
-        deleteDescriptors(tempMovedConfirmed,getTUnconfirmedDescription());
+        getSolutionDescription().addAll(tempMovedSolution);
+        deleteDescriptors(tempMovedSolution, getUnmatchedDescription());
+        getConfirmedDescription().addAll(tempMovedConfirmed);
+        deleteDescriptors(tempMovedConfirmed,getUnconfirmedDescription());
 
         //Upon return from the root search, the following situations may occur:
         //	a) the possible solutions list is empty.
@@ -710,10 +710,10 @@ public class CaseMemoryDFSAutomaton {
         for (SheetCase mycase: aCaseList){
             PossibleSolution ps = new PossibleSolution();
             ps.setSolution(mycase.getCase());
-            ps.getSolutionDescription().addAllToConcreteDescription(getTSolutionDescription());
-            ps.getConfirmedDescription().addAllToConcreteDescription(getTConfirmedDescription());
-            ps.getUnconfirmedDescription().addAllToConcreteDescription(getTUnconfirmedDescription());
-            ps.getDoubtfulDescription().addAllToConcreteDescription(getTDoubtfulDescription());
+            ps.getSolutionDescription().addAllToConcreteDescription(getSolutionDescription());
+            ps.getConfirmedDescription().addAllToConcreteDescription(getConfirmedDescription());
+            ps.getUnconfirmedDescription().addAllToConcreteDescription(getUnconfirmedDescription());
+            ps.getDoubtfulDescription().addAllToConcreteDescription(getDoubtfulDescription());
             psList.add(ps);
         }
         
@@ -766,8 +766,8 @@ public class CaseMemoryDFSAutomaton {
                     List<Node> idxSuccessors = idx.getSuccessors();
                     for (int j = 0; (j<idxSuccessors.size());j++) {
                         //Make sure that the descriptor is NOT already included in neither the unconfirmed and doubtful descriptions
-                        if (!getTUnconfirmedDescription().contains(idxSuccessors.get(j).getDescriptor()) &&
-                        		!getTDoubtfulDescription().contains(idxSuccessors.get(j).getDescriptor())) {
+                        if (!getUnconfirmedDescription().contains(idxSuccessors.get(j).getDescriptor()) &&
+                        		!getDoubtfulDescription().contains(idxSuccessors.get(j).getDescriptor())) {
                             newList.add((Norm)normAlternative);
                         }
                     }
@@ -794,8 +794,8 @@ public class CaseMemoryDFSAutomaton {
             //Parse the list of IndexValues associated to the index
             for (Node idxSuccessor:idx.getSuccessors()) {
                 //Make sure that the descriptor is NOT already included in neither the unconfirmed and doubtful descriptions
-                if (!getTUnconfirmedDescription().contains(idxSuccessor.getDescriptor())
-                		&& !getTDoubtfulDescription().contains(idxSuccessor.getDescriptor()))
+                if (!getUnconfirmedDescription().contains(idxSuccessor.getDescriptor())
+                		&& !getDoubtfulDescription().contains(idxSuccessor.getDescriptor()))
                 	return false;
             }
         }
@@ -835,9 +835,9 @@ public class CaseMemoryDFSAutomaton {
     	currentNorm = null;
         resetLevel();
         setStopLevel(currentLevel);
-        tSolutionDesc = new Description();
-        tConfirmedDesc = new Description();
-        tUnmatchedDesc = new Description();
+        solutionDescription = new Description();
+        confirmedDescription = new Description();
+        unmatchedDescription = new Description();
         justification = new Description();
         newOutput();
         status = SearchStatus.FAIL;
@@ -873,8 +873,8 @@ public class CaseMemoryDFSAutomaton {
             //Parse the list of IndexValues associated to the index            
             for (Node idxSuccessor:idx.getSuccessors()){
                 //Make sure that the descriptor is NOT already included in neither the unconfirmed and doubtful descriptions
-                if (!getTUnconfirmedDescription().contains(idxSuccessor.getDescriptor())
-                		&& !getTDoubtfulDescription().contains(idxSuccessor.getDescriptor()))
+                if (!getUnconfirmedDescription().contains(idxSuccessor.getDescriptor())
+                		&& !getDoubtfulDescription().contains(idxSuccessor.getDescriptor()))
                     alternativeCases.add(idxSuccessor);                
             }
         }
@@ -966,7 +966,7 @@ public class CaseMemoryDFSAutomaton {
         				return;
         			} else if (n instanceof SheetCase) {
         				// The solution is a case
-        				addToTConfirmedDescription(n.getDescriptor());
+        				addToConfirmedDescription(n.getDescriptor());
         				List<SheetCase> caseList = new ArrayList<SheetCase>();
         				caseList.add((SheetCase)n);
         				List<PossibleSolution> ps = associateCasesToPossibleSolutions(caseList);
@@ -979,10 +979,10 @@ public class CaseMemoryDFSAutomaton {
         		}
         		
         		if (answer.equals("reject"))
-        			addToTUnconfirmedDescription(n.getDescriptor());
+        			addToUnconfirmedDescription(n.getDescriptor());
         		
         		if (answer.equals("doubtful"))
-        			addToTDoubtfulDescription(n.getDescriptor());
+        			addToDoubtfulDescription(n.getDescriptor());
     		}
         	
     	}
@@ -996,7 +996,7 @@ public class CaseMemoryDFSAutomaton {
 	 * @return my return values
 	 */
     public void processNextNorm(Norm aNorm){
-        addToTConfirmedDescription(aNorm.getDescriptor());
+        addToConfirmedDescription(aNorm.getDescriptor());
         setCurrentNorm(aNorm);
         setNextLevel();
     }
@@ -1031,11 +1031,11 @@ public class CaseMemoryDFSAutomaton {
             if ((n instanceof Norm) != true){
                 //Since this descriptor corresponds to a partial match, make sure that it is NOT already
                 //included in neither the unconfirmed, doubtful, unmatched, solution, or confirmed descriptions
-                if (!this.getTUnconfirmedDescription().contains(n.getDescriptor()) &&
-                		!this.getTDoubtfulDescription().contains(n.getDescriptor()) &&
-                		!this.getTUnmatchedDescription().contains(n.getDescriptor()) &&
-                		!this.getTSolutionDescription().contains(n.getDescriptor()) &&
-                		!this.getTConfirmedDescription().contains(n.getDescriptor())) {
+                if (!this.getUnconfirmedDescription().contains(n.getDescriptor()) &&
+                		!this.getDoubtfulDescription().contains(n.getDescriptor()) &&
+                		!this.getUnmatchedDescription().contains(n.getDescriptor()) &&
+                		!this.getSolutionDescription().contains(n.getDescriptor()) &&
+                		!this.getConfirmedDescription().contains(n.getDescriptor())) {
                     //FUTURE IMPROVEMENT (documented by HB on 10-Sep-1999):
                     //1. Retrieve the taxon corresponding to the successor case.
                     //2. Retrieve the structure-atribute, from the taxon's description, that matches (d structure) and (d attribbute).
@@ -1087,7 +1087,7 @@ public class CaseMemoryDFSAutomaton {
     	//El usuario rechaza la sugerencia
         if (result.equals("reject")){
         	for (Descriptor d:descriptors.values())
-                addToTUnconfirmedDescription(d);
+                addToUnconfirmedDescription(d);
             
             this.setStatus(SearchStatus.FAIL);
             
@@ -1098,7 +1098,7 @@ public class CaseMemoryDFSAutomaton {
         //description. Continue processing the next attribute
         if (result.equals("doubtful")){
         	for (Descriptor d:descriptors.values())
-                addToTDoubtfulDescription(d);
+                addToDoubtfulDescription(d);
             
         	this.setStatus(SearchStatus.FAIL);
             
@@ -1113,13 +1113,13 @@ public class CaseMemoryDFSAutomaton {
         
         //At this point, the answer must be successful.
         //Associate the confirmed case to PossibleSolution. Then exit successfully
-        addToTConfirmedDescription(sc.getDescriptor());
+        addToConfirmedDescription(sc.getDescriptor());
         
         aCaseList.add(sc);
         List<PossibleSolution> pSolutionList = associateCasesToPossibleSolutions(aCaseList);
         this.addToPossibleSolutions(pSolutionList.remove(0));
         
-        this.getTSolutionDescription().remove(getTSolutionDescription().size()-1);
+        this.getSolutionDescription().remove(getSolutionDescription().size()-1);
         
         return (status = SearchStatus.SUCCESS);
     }
@@ -1161,7 +1161,7 @@ public class CaseMemoryDFSAutomaton {
         /*if (searchOutput.getJustification() != null) return;*/
         
         searchOutput.setJustification(justification);
-        searchOutput.setUnmatchedDescription(getTUnmatchedDescription());
+        searchOutput.setUnmatchedDescription(getUnmatchedDescription());
         
         setStatus(SearchStatus.FAIL);
     }
@@ -1177,7 +1177,7 @@ public class CaseMemoryDFSAutomaton {
         
         searchOutput.setPossibleSolutions(getPossibleSolutions());
         searchOutput.setJustification(justification);
-        searchOutput.setUnmatchedDescription(getTUnmatchedDescription());
+        searchOutput.setUnmatchedDescription(getUnmatchedDescription());
         
         setStatus(SearchStatus.SUCCESS);
     }
@@ -1298,7 +1298,7 @@ public class CaseMemoryDFSAutomaton {
 	 * @return my return values
 	 */
     public void updateNormSearch(Descriptor aSAVDescriptor, Norm aNewNorm){
-        addToTSolutionDescription(aSAVDescriptor);
+        addToSolutionDescription(aSAVDescriptor);
         currentNorm = aNewNorm;
         setNextLevel();
     }

@@ -7,6 +7,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
+import ontology.CBR.PossibleSolution;
 import ontology.CBR.SimilarityDegree;
 import ontology.common.Description;
 import ontology.common.Descriptor;
@@ -15,7 +16,6 @@ import ontology.taxonomy.Taxonomy;
 import ontology.values.RangeValue;
 import ontology.values.SingleValue;
 
-import system.PossibleSolution;
 import system.searchAutomata.output.TaxonomyAutomatonOutput;
 import system.similarityAssessment.SimilarityAssessor;
 
@@ -26,8 +26,8 @@ import system.similarityAssessment.SimilarityAssessor;
 
 public class TaxonomySearchAutomaton {
 	private Description justification;
-	private Description currentTaxonSolutionDescription;
-	private Description currentTaxonUnmatchedDescription;
+	private Description solutionDescription;
+	private Description unmatchedDescription;
 	private List<PossibleSolution> possibleSolutions;
 	private TaxonomyAutomatonOutput searchOutput;
 	private final Taxonomy taxonomy;
@@ -37,8 +37,8 @@ public class TaxonomySearchAutomaton {
    public TaxonomySearchAutomaton (Taxonomy searchIndex, SimilarityDegree minSimilarityDegree) {
         searchOutput = new TaxonomyAutomatonOutput();
         possibleSolutions = new ArrayList<PossibleSolution>();
-        currentTaxonSolutionDescription = new Description();
-        currentTaxonUnmatchedDescription = new Description();
+        solutionDescription = new Description();
+        unmatchedDescription = new Description();
         this.taxonomy = searchIndex;
         this.minSimilarityDegree = minSimilarityDegree;
         status = SearchStatus.FAIL;
@@ -95,8 +95,8 @@ public class TaxonomySearchAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public boolean addToCurrentTaxonSolutionDescription(Descriptor aDescriptor){
-    	return currentTaxonSolutionDescription.addToConcreteDescription(aDescriptor);
+    public boolean addToSolutionDescription(Descriptor aDescriptor){
+    	return solutionDescription.addToConcreteDescription(aDescriptor);
     }
 
 	/**
@@ -104,8 +104,8 @@ public class TaxonomySearchAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public boolean addToCurrentTaxonUnmatchedDescription(Descriptor aDescriptor){
-    	return currentTaxonUnmatchedDescription.addToConcreteDescription(aDescriptor);
+    public boolean addToUnmatchedDescription(Descriptor aDescriptor){
+    	return unmatchedDescription.addToConcreteDescription(aDescriptor);
     }
 
 /**
@@ -122,12 +122,12 @@ public class TaxonomySearchAutomaton {
         return status;
     }
     
-    public Description getCurrentTaxonSolutionDescription(){
-        return currentTaxonSolutionDescription;
+    public Description getSolutionDescription(){
+        return solutionDescription;
     }
     
-    public Description  getCurrentTaxonUnmatchedDescription(){
-        return currentTaxonUnmatchedDescription;
+    public Description  getUnmatchedDescription(){
+        return unmatchedDescription;
     }
 
 /**
@@ -145,7 +145,7 @@ public class TaxonomySearchAutomaton {
         for (Taxon tx : aTaxonList){
             PossibleSolution ps = new PossibleSolution();
             ps.setSolution(tx);
-            ps.getSolutionDescription().addAllToConcreteDescription(currentTaxonSolutionDescription);
+            ps.getSolutionDescription().addAllToConcreteDescription(solutionDescription);
             psList.add(ps);
         }
         return psList;
@@ -178,7 +178,7 @@ public class TaxonomySearchAutomaton {
     	/*if (searchOutput.getJustification() != null) return;*/
     	
         searchOutput.setJustification(justification);
-        searchOutput.setUnmatchedDescription(currentTaxonUnmatchedDescription);
+        searchOutput.setUnmatchedDescription(unmatchedDescription);
         status = SearchStatus.FAIL;
     }
 
@@ -194,7 +194,7 @@ public class TaxonomySearchAutomaton {
         searchOutput.setPossibleSolutions(possibleSolutions);
         
         searchOutput.setJustification(justification);
-        searchOutput.setUnmatchedDescription(currentTaxonUnmatchedDescription);
+        searchOutput.setUnmatchedDescription(unmatchedDescription);
         status = SearchStatus.SUCCESS;
     }
     
@@ -265,7 +265,7 @@ public class TaxonomySearchAutomaton {
 			}
 			
 			if (matchedDescriptors.isEmpty())
-				addToCurrentTaxonUnmatchedDescription(d);
+				addToUnmatchedDescription(d);
     		
     		for (Descriptor d3: matchedDescriptors) {
             	
@@ -274,9 +274,9 @@ public class TaxonomySearchAutomaton {
                     //Value desscriptor is a range. Associate all taxa to possible solutions, place them in the taxon list
 
         			//Extract the taxa included in each of the retrieved value descriptors
-                    addToCurrentTaxonSolutionDescription(d);
+                    addToSolutionDescription(d);
                     List<PossibleSolution> ps = associateTaxaToPossibleSolutions(taxa);
-                    getCurrentTaxonSolutionDescription().clear();
+                    getSolutionDescription().clear();
                     
                     while(ps.isEmpty() != true)
                         addToPossibleSolutions(ps.remove(0));
@@ -299,9 +299,9 @@ public class TaxonomySearchAutomaton {
         		}
         			
     			//Extract the taxa included in each of the retrieved value descriptors
-                addToCurrentTaxonSolutionDescription(d);
+                addToSolutionDescription(d);
                 List<PossibleSolution> ps = associateTaxaToPossibleSolutions(taxaTempList);
-                getCurrentTaxonSolutionDescription().clear();
+                getSolutionDescription().clear();
                 
                 while(ps.isEmpty() != true)
                     addToPossibleSolutions(ps.remove(0));
@@ -385,7 +385,7 @@ public class TaxonomySearchAutomaton {
      * @return nil : if there is no similarity; aTaxon : if there was an acceptable degree of similarity.
      */
     public Taxon determineSimilarity(Descriptor aDescriptor, Taxon aTaxon){
-        Map<Object, Double> weightedValues = aTaxon.retriveValuesUsing(aDescriptor.getStructure(),
+        Map<Object, Double> weightedValues = aTaxon.retriveWeightedValues(aDescriptor.getStructure(),
         		aDescriptor.getAttribute());
         
         SimilarityDegree similarity = SimilarityAssessor.similarityRangeOf(aDescriptor.getValue(),

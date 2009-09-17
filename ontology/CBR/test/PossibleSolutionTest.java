@@ -1,11 +1,12 @@
 /**
  * 
  */
-package system.test;
+package ontology.CBR.test;
 
 import static org.junit.Assert.*;
 
 import ontology.CBR.Case;
+import ontology.CBR.PossibleSolution;
 import ontology.common.Descriptor;
 import ontology.common.SSCharacterDescriptor;
 import ontology.common.SVCharacterDescriptor;
@@ -19,7 +20,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import system.PossibleSolution;
 
 
 /**
@@ -71,7 +71,7 @@ public class PossibleSolutionTest {
 	}
 
 	/**
-	 * Test method for {@link system.PossibleSolution#addToConfirmedDescription(ontology.common.Descriptor)}.
+	 * Test method for {@link ontology.CBR.PossibleSolution#addToConfirmedDescription(ontology.common.Descriptor)}.
 	 */
 	@Test
 	public void testAddConfirmedDescription() {
@@ -98,7 +98,7 @@ public class PossibleSolutionTest {
 	}
 
 	/**
-	 * Test method for {@link system.PossibleSolution#addContradictions(ontology.common.Descriptor)}.
+	 * Test method for {@link ontology.CBR.PossibleSolution#addContradictions(ontology.common.Descriptor)}.
 	 */
 	@Test
 	public void testAddContradictions() {
@@ -125,7 +125,7 @@ public class PossibleSolutionTest {
 	}
 
 	/**
-	 * Test method for {@link system.PossibleSolution#addToDoubtfulDescription(ontology.common.Descriptor)}.
+	 * Test method for {@link ontology.CBR.PossibleSolution#addToDoubtfulDescription(ontology.common.Descriptor)}.
 	 */
 	@Test
 	public void testAddDoubtfulDescription() {
@@ -153,7 +153,7 @@ public class PossibleSolutionTest {
 	}
 
 	/**
-	 * Test method for {@link system.PossibleSolution#setSolution(java.lang.Object)}.
+	 * Test method for {@link ontology.CBR.PossibleSolution#setSolution(java.lang.Object)}.
 	 */
 	@Test
 	public void testSetSolution() {
@@ -171,7 +171,7 @@ public class PossibleSolutionTest {
 	}
 
 	/**
-	 * Test method for {@link system.PossibleSolution#addToSolutionDescription(ontology.common.Descriptor)}.
+	 * Test method for {@link ontology.CBR.PossibleSolution#addToSolutionDescription(ontology.common.Descriptor)}.
 	 */
 	@Test
 	public void testAddSolutionDescription() {
@@ -198,7 +198,7 @@ public class PossibleSolutionTest {
 	}
 
 	/**
-	 * Test method for {@link system.PossibleSolution#addToUnconfirmedDescription(ontology.common.Descriptor)}.
+	 * Test method for {@link ontology.CBR.PossibleSolution#addToUnconfirmedDescription(ontology.common.Descriptor)}.
 	 */
 	@Test
 	public void testAddUnconfirmedDescription() {
@@ -225,7 +225,7 @@ public class PossibleSolutionTest {
 	}
 
 	/**
-	 * Test method for {@link system.PossibleSolution#getLevel()}.
+	 * Test method for {@link ontology.CBR.PossibleSolution#getLevel()}.
 	 */
 	@Test
 	public void testGetLevel() {
@@ -234,7 +234,7 @@ public class PossibleSolutionTest {
 	}
 
 	/**
-	 * Test method for {@link system.PossibleSolution#getStatus()}.
+	 * Test method for {@link ontology.CBR.PossibleSolution#getStatus()}.
 	 */
 	@Test
 	public void testGetStatus() {
@@ -243,7 +243,7 @@ public class PossibleSolutionTest {
 	}
 
 	/**
-	 * Test method for {@link system.PossibleSolution#getName()}.
+	 * Test method for {@link ontology.CBR.PossibleSolution#getName()}.
 	 */
 	@Test
 	public void testGetName() {
@@ -252,7 +252,7 @@ public class PossibleSolutionTest {
 	}
 
 	/**
-	 * Test method for {@link system.PossibleSolution#compareTo(system.PossibleSolution)}.
+	 * Test method for {@link ontology.CBR.PossibleSolution#compareTo(ontology.CBR.PossibleSolution)}.
 	 */
 	@Test
 	public void testCompareTo() {

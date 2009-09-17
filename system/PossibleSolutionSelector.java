@@ -8,6 +8,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Collections;
 
+import ontology.CBR.Hypothesis;
+import ontology.CBR.PossibleSolution;
+import ontology.CBR.ProposedSolution;
 import ontology.taxonomy.TaxonomicRank;
 
 
@@ -266,9 +269,9 @@ public class PossibleSolutionSelector {
 			ps.setStatus(this.isStatus());
 			ps.setSolution(aSortedPossibleSolutionsList.remove(0));
 
-			if (ps.getSolution().getPoints() < 0.0) ps.setDegreeOfCertainty(CertaintyDegree.UNCERTAIN);
-			if (ps.getSolution().getPoints() == 0.0) ps.setDegreeOfCertainty(CertaintyDegree.DOUBTFUL);
-			if (ps.getSolution().getPoints() > 0.0) ps.setDegreeOfCertainty(CertaintyDegree.CERTAIN);
+			if (ps.getSolution().getPoints() < 0.0) ps.setCertaintyDegree(CertaintyDegree.UNCERTAIN);
+			if (ps.getSolution().getPoints() == 0.0) ps.setCertaintyDegree(CertaintyDegree.DOUBTFUL);
+			if (ps.getSolution().getPoints() > 0.0) ps.setCertaintyDegree(CertaintyDegree.CERTAIN);
 			
 			psLevel = TaxonomicRank.getIndex(ps.getSolution().getLevel());
 

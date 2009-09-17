@@ -1,9 +1,8 @@
 /**
  * @see "Categor&iacute;a Sukia Reasoner en SUKIA SmallTalk"
  */
-package system;
+package ontology.CBR;
 
-import ontology.CBR.Case;
 import ontology.common.Description;
 import ontology.common.Descriptor;
 import ontology.taxonomy.Taxon;

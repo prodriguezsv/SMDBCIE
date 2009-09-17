@@ -6,9 +6,6 @@ package system;
 import ontology.taxonomy.Taxonomy;
 import redundantDiscriminationNet.RDMultiNet;
 import searchHintsBase.HintsBase;
-import system.scopes.AttributeScopes;
-import system.scopes.GroupingHeuristicScopes;
-import system.scopes.StructureScopes;
 
 /**
  * @see "Clase Sukia en SUKIA SmallTalk"
@@ -26,10 +23,6 @@ public class System {
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
 	public System() {
-		// Initialize scope classes
-		StructureScopes.initialize();
-		AttributeScopes.initialize();
-		GroupingHeuristicScopes.initialize();
 
 		setHintsBase(new HintsBase());
 		if (this.loadHintsBase() == null) return;

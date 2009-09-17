@@ -25,11 +25,4 @@ public abstract class QuantitativeCharacterDescriptor extends CharacterDescripto
 	public QuantitativeCharacterDescriptor(String aStructure, String anAttribute) {
 		super(aStructure, anAttribute);
 	}
-	
-	/**
-	 * Constructor alternativo
-	 */
-	public QuantitativeCharacterDescriptor(Object associatedObject, String aStructure, String anAttribute) {
-		super(associatedObject, aStructure, anAttribute);
-	}
 }

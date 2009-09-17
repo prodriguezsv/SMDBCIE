@@ -11,7 +11,6 @@ import java.util.Map;
 
 import ontology.common.Description;
 import ontology.common.Descriptor;
-import ontology.common.Modifier;
 import ontology.values.RangeValue;
 
 
@@ -24,8 +23,7 @@ public class Taxon implements Comparable<Taxon>{
 	private String name;
 	private Taxon predecessor;
 	private List<Taxon> successors;
-	private Description description;
-	private Map<Descriptor, Modifier> modifiedDescription;
+	private WeightedDescription weightedDescription;
 
 	/**
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
@@ -33,10 +31,9 @@ public class Taxon implements Comparable<Taxon>{
 	public Taxon(TaxonomicRank level, String name) {
 		setLevel(level);
 		setName(name);
-		//setPredecessor(null);
+		predecessor = null;
 		setSuccessors(new ArrayList<Taxon>());
-		setDescription(new Description());
-		setModifiedDescription(new HashMap<Descriptor, Modifier>());
+		setWeightedDescription(new WeightedDescription());
 	}
 
 	/**
@@ -151,16 +148,16 @@ public class Taxon implements Comparable<Taxon>{
 	 * Método de instancia agregado
 	 * @param sAVDescription
 	 */
-	private void setModifiedDescription(Map<Descriptor, Modifier> aDescription) {
-		this.modifiedDescription = aDescription;
+	private void setWeightedDescription(WeightedDescription aDescription) {
+		this.weightedDescription = aDescription;
 	}
 
 	/**
 	 * @see "Método SAVdescription del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public Map<Descriptor, Modifier> getModifiedDescription() {
-		return modifiedDescription;
+	public WeightedDescription getWeightedDescription() {
+		return weightedDescription;
 	}	
 	
 	/**
@@ -168,60 +165,8 @@ public class Taxon implements Comparable<Taxon>{
 	 * @return
 	 */
 	public Description getDescription() {
-		return this.description;
+		return this.getWeightedDescription().getDescription();
 	}
-	
-	public void setDescription(Description description) {
-		this.description = description;
-	}
-        
-   public Map<Descriptor, Modifier> searchByStructure(String structureName){
-        Map<Descriptor, Modifier> result = new HashMap<Descriptor, Modifier>();
-        
-        for (Descriptor d:modifiedDescription.keySet()) {
-        	if (d.getStructure().equals(structureName)){
-                result.put(d, modifiedDescription.get(d));
-            }
-        }
-
-        return result;
-   }
-
-   /**
-    * 
-    * @param attributeName
-    * @return
-    */
-   //Ojo verificar pertinencia
-   public Map<Descriptor, Modifier> searchByAttribute(String attributeName){
-        Map<Descriptor, Modifier> result = new HashMap<Descriptor, Modifier>();
-        
-        for (Descriptor d:modifiedDescription.keySet()) {
-        	if (d.getAttribute().equals(attributeName)){
-                result.put(d, modifiedDescription.get(d));
-            }
-        }
-        
-        return result;
-   }
-   
-   /**
-    * 
-    * @param value
-    * @return
-    */
- //Ojo verificar pertinencia
-   public Map<Descriptor, Modifier> searchByValue(Object value){
-        Map<Descriptor, Modifier> result = new HashMap<Descriptor, Modifier>();
-        
-        for (Descriptor d:modifiedDescription.keySet()) {
-        	if (d.getValue().equals(value)){
-                result.put(d, modifiedDescription.get(d));
-            }
-        }
-        
-        return result;
-   }
 
    /**
     * 
@@ -229,12 +174,13 @@ public class Taxon implements Comparable<Taxon>{
     * @param attributeName
     * @return
     */
-   public Map<Object, Double> retriveValuesUsing(String structureName, String attributeName){
+   public Map<Object, Double> retriveWeightedValues(String structureName, String attributeName){
         Map<Object, Double> result = new HashMap<Object, Double>();
         
-        for (Descriptor d:modifiedDescription.keySet()) {
-        	if (d.getStructure().equals(structureName) && d.getAttribute().equals(attributeName)){
-                result.put(d.getValue(), modifiedDescription.get(d).getValueWeight());
+        for (WeightedDescriptor d:weightedDescription) {
+        	if (d.getDescriptor().getStructure().equals(structureName) &&
+        			d.getDescriptor().getAttribute().equals(attributeName)){
+                result.put(d.getDescriptor().getValue(), d.getModifier().getValueWeight());
             }
         }
         
@@ -262,15 +208,6 @@ public class Taxon implements Comparable<Taxon>{
 	}
 	
 	/**
-	 * @see "Método linkTo: del protocolo linking en SUKIA SmallTalk"
-	 * @param aTaxon
-	 */
-	/*public void linkTo(Taxon aTaxon) {
-		predecessor = aTaxon;
-		aTaxon.addSucessor(this);
-	}*/
-	
-	/**
 	 * @see "Método unlinkFromTheHierarchy del protocolo linking en SUKIA SmallTalk"
 	 */
 	public void unlinkFromTheHierarchy() {
@@ -278,7 +215,7 @@ public class Taxon implements Comparable<Taxon>{
 		
 		p = predecessor;
 		for (int i = 1; i <= p.getSuccessors().size(); i++) {
-			if (p.getSuccessors().get(i-1) == this) {
+			if (p.getSuccessors().get(i-1).equals(this)) {
 				 p.getSuccessors().remove(i-1);
 				 predecessor = null; 
 			}
@@ -293,29 +230,11 @@ public class Taxon implements Comparable<Taxon>{
 	 * @return Valor de verdad false indicando que la adici&oacute;n no se llev&oacute; a cabo
 	 */
 	public boolean addToDescription(Descriptor aDescriptor) {
-		if (aDescriptor == null) return false;
-		
-		boolean value = this.getDescription().addToAbstractDescription(aDescriptor);
-		
-		if (value) {
-			aDescriptor.setAssociatedObject(this);
-			this.getModifiedDescription().put(aDescriptor, new Modifier());
-		}
-		
-		return value;
+		return this.getWeightedDescription().addToAbstractDescription(aDescriptor);
 	}
 	
 	public boolean addToDescription(Descriptor aDescriptor, Modifier aModifier) {
-		if (aDescriptor == null) return false;
-		
-		boolean value = this.getDescription().addToAbstractDescription(aDescriptor);
-		
-		if (value) {
-			aDescriptor.setAssociatedObject(this);
-			this.getModifiedDescription().put(aDescriptor, aModifier);
-		}
-		
-		return value;
+		return this.getWeightedDescription().addToAbstractDescription(aDescriptor, aModifier);		
 	}
 		
 	/**
@@ -325,14 +244,7 @@ public class Taxon implements Comparable<Taxon>{
 	 * @return Valor de verdad false indicando que la remoci&oacute;n no se llev&oacute; a cabo
 	 */
 	public boolean removeFromDescription(Descriptor aDescriptor) {
-		if (aDescriptor == null) return false;
-		
-		if (this.getDescription().remove(aDescriptor)) {
-			this.getModifiedDescription().remove(aDescriptor);
-			return true;
-		}
-			
-		return false;
+		return this.getWeightedDescription().removeFromDescription(aDescriptor);
 	}
 	
 	/**

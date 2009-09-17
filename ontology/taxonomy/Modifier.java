@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ontology.common;
+package ontology.taxonomy;
 
 /**
  * @author Armando

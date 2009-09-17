@@ -29,15 +29,6 @@ public class MSCharacterDescriptor extends QualitativeCharacterDescriptor {
 		super(aStructure, anAttribute);
 		this.setValue(aValue);
 	}
-	
-	/**
-	 * Constructor alternativo
-	 */
-	public MSCharacterDescriptor(Object associatedObject, String aStructure, String anAttribute,
-			List<String> aValue) {
-		super(associatedObject, aStructure, anAttribute);
-		this.setValue(aValue);
-	}
 
 	@SuppressWarnings("unchecked")
 	protected void setValue(Object value) {

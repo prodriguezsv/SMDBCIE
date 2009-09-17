@@ -6,6 +6,9 @@ package system;
 import java.util.ArrayList;
 import java.util.List;
 
+import ontology.CBR.Hypothesis;
+import ontology.CBR.PossibleSolution;
+import ontology.CBR.ProposedSolution;
 import ontology.CBR.SimilarityDegree;
 import ontology.common.Description;
 import ontology.common.Descriptor;

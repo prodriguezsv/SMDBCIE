@@ -17,6 +17,8 @@ import java.util.Map;
 import javax.swing.JOptionPane;
 
 import ontology.CBR.Case;
+import ontology.CBR.Hypothesis;
+import ontology.CBR.PossibleSolution;
 import ontology.CBR.SimilarityDegree;
 import ontology.common.CharacterDescriptor;
 import ontology.common.Descriptor;
@@ -29,8 +31,6 @@ import ontology.taxonomy.Taxonomy;
 import ontology.values.RangeValue;
 import ontology.values.SingleValue;
 
-import system.Hypothesis;
-import system.PossibleSolution;
 import system.similarityAssessment.SimilarityAssessor;
 
 /**
@@ -556,7 +556,7 @@ public class GoalApproachingDialog {
     protected boolean determineSimilarityFor(Descriptor aSAVDescriptor,Taxon aTaxon){
     	Map<Object, Double> weightedValues;
         
-        weightedValues = aTaxon.retriveValuesUsing(aSAVDescriptor.getStructure(),
+        weightedValues = aTaxon.retriveWeightedValues(aSAVDescriptor.getStructure(),
         		aSAVDescriptor.getAttribute());
         
         SimilarityDegree similarity = SimilarityAssessor.similarityRangeOf(aSAVDescriptor.getValue(), weightedValues);

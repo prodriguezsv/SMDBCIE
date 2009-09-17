@@ -3,8 +3,10 @@
  * and open the template in the editor.
  */
 
-package system.test;
+package ontology.CBR.test;
 
+import ontology.CBR.Hypothesis;
+import ontology.CBR.PossibleSolution;
 import ontology.common.Description;
 import ontology.common.SSCharacterDescriptor;
 import ontology.taxonomy.Taxon;
@@ -15,8 +17,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import system.Hypothesis;
-import system.PossibleSolution;
 import static org.junit.Assert.*;
 
 /**

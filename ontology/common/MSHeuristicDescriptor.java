@@ -30,15 +30,6 @@ public class MSHeuristicDescriptor extends QualitativeHeuristicDescriptor {
 		this.setValue(aValue);
 	}
 	
-	/**
-	 * Constructor alternativo
-	 */
-	public MSHeuristicDescriptor(Object associatedObject, String aStructure, String anAttribute,
-			List<String> aValue) {
-		super(associatedObject, aStructure, anAttribute);
-		this.setValue(aValue);
-	}
-	
 	@SuppressWarnings("unchecked")
 	protected void setValue(Object value) {
 		this.value = (List<String>)value;

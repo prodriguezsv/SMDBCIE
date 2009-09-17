@@ -7,11 +7,11 @@ package ontology.taxonomy.test;
 
 import java.util.ArrayList;
 import java.util.List;
-import ontology.common.Modifier;
 import ontology.common.RVCharacterDescriptor;
 import ontology.common.RVHeuristicDescriptor;
 import ontology.common.SSCharacterDescriptor;
 import ontology.common.SSHeuristicDescriptor;
+import ontology.taxonomy.Modifier;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
 import ontology.values.MeasuringUnit;

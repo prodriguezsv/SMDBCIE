@@ -30,15 +30,6 @@ public class RVCharacterDescriptor extends QualitativeCharacterDescriptor {
 		this.setValue(aValue);
 	}
 	
-	/**
-	 * Constructor alternativo
-	 */
-	public RVCharacterDescriptor(Object associatedObject, String aStructure, String anAttribute,
-			RangeValue aValue) {
-		super(associatedObject, aStructure, anAttribute);
-		this.setValue(aValue);
-	}
-	
 	protected void setValue(Object value) {
 		this.value = (RangeValue)value;
 	}

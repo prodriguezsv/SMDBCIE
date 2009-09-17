@@ -9,8 +9,8 @@ package system.searchAutomata.output;
 import java.util.ArrayList;
 import java.util.List;
 
+import ontology.CBR.PossibleSolution;
 import ontology.common.Description;
-import system.PossibleSolution;
 
 
 /**

@@ -8,15 +8,17 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import ontology.CBR.Hypothesis;
+import ontology.CBR.PossibleSolution;
 import ontology.CBR.SimilarityDegree;
 import ontology.common.Description;
 import ontology.common.Descriptor;
-import ontology.common.Modifier;
 import ontology.common.RVCharacterDescriptor;
 import ontology.common.RVHeuristicDescriptor;
 import ontology.common.SSCharacterDescriptor;
 import ontology.common.SSHeuristicDescriptor;
 import ontology.common.SVCharacterDescriptor;
+import ontology.taxonomy.Modifier;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
 import ontology.taxonomy.Taxonomy;
@@ -30,8 +32,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import system.Hypothesis;
-import system.PossibleSolution;
 import system.searchAutomata.GoalApproachingDialog;
 import system.searchAutomata.SearchStatus;
 

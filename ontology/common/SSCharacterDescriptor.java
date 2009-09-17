@@ -28,14 +28,6 @@ public class SSCharacterDescriptor extends QualitativeCharacterDescriptor {
 		this.setValue(aValue);
 	}
 	
-	/**
-	 * Constructor alternativo
-	 */
-	public SSCharacterDescriptor(Object associatedObject, String aStructure, String anAttribute, String aValue) {
-		super(associatedObject, aStructure, anAttribute);
-		this.setValue(aValue);
-	}
-	
 	protected void setValue(Object value) {
 		this.value = (String)value;
 	}

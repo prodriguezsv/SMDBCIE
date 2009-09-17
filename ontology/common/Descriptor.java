@@ -3,9 +3,6 @@
  */
 package ontology.common;
 
-import ontology.CBR.Case;
-import ontology.taxonomy.Taxon;
-
 /**
  * Descriptor es un elemento descriptivo de la descripción de un caso: el par attribute-value.
  * Generaliza conceptos en normas.
@@ -14,7 +11,6 @@ import ontology.taxonomy.Taxon;
  * 
 */
 public abstract class Descriptor implements Comparable<Descriptor> {
-	private Object associatedObject;
 	private String structure;
 	private String attribute;
 	
@@ -37,15 +33,6 @@ public abstract class Descriptor implements Comparable<Descriptor> {
 	}
 	
 	/**
-	 * Constructor alternativo
-	 */
-	public Descriptor(Object associatedObject, String aStructure, String anAttribute) {
-		this.setAssociatedObject(associatedObject);
-		this.setStructure(aStructure);
-		this.setAttribute(anAttribute);
-	}
-
-	/**
 	 * @see "M&eacute;todo addStructure:Attribute:Value: del protocolo adding en SUKIA SmallTalk"
 	 * @param aStructure
 	 * @param anAttribute
@@ -56,39 +43,7 @@ public abstract class Descriptor implements Comparable<Descriptor> {
 		this.setAttribute(anAttribute);
 		this.setValue(aValue);
 	}
-
-	/**
-	 * @see "M&eacute;todo addStructure:Attribute:Value: del protocolo adding en SUKIA SmallTalk"
-	 * @param aStructure
-	 * @param anAttribute
-	 * @param aValue
-	 */
-	public <T> void set(Object associatedObject, String aStructure, String anAttribute, T aValue) {
-		this.setAssociatedObject(associatedObject);
-		this.setStructure(aStructure);
-		this.setAttribute(anAttribute);
-		this.setValue(aValue);
-	}
-	
-	/**
-	 * 
-	 * @param associatedObject
-	 */
-	public void setAssociatedObject(Object associatedObject) {
-		if ((associatedObject instanceof Case) || (associatedObject instanceof Taxon))
-			return;
 		
-		this.associatedObject = associatedObject;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public Object getAssociatedObject() {
-		return associatedObject;
-	}
-	
 	/**
 	 * @see "M&eacute;todo addStructure: del protocolo adding-private en SUKIA SmallTalk"
 	 * @param structure

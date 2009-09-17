@@ -9,11 +9,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import ontology.CBR.PossibleSolution;
 import ontology.CBR.SimilarityDegree;
 import ontology.common.Descriptor;
-import ontology.common.Modifier;
 import ontology.common.RVCharacterDescriptor;
 import ontology.common.SSCharacterDescriptor;
+import ontology.taxonomy.Modifier;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
 import ontology.taxonomy.Taxonomy;
@@ -24,7 +26,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import system.PossibleSolution;
 import system.searchAutomata.SearchStatus;
 import system.searchAutomata.TaxonomySearchAutomaton;
 
@@ -145,17 +146,17 @@ public class TaxonomySearchAutomatonTest {
         Descriptor aDescriptor3 = new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro");
         Descriptor aDescriptor4 = new SSCharacterDescriptor("cuerpo","conformacion","tiene_cerata");
 
-        assertTrue(instance.addToCurrentTaxonSolutionDescription(aDescriptor1));
-        assertSame(1,instance.getCurrentTaxonSolutionDescription().size());
-        assertFalse(instance.addToCurrentTaxonSolutionDescription(aDescriptor1));
-        assertSame(1,instance.getCurrentTaxonSolutionDescription().size());
+        assertTrue(instance.addToSolutionDescription(aDescriptor1));
+        assertSame(1,instance.getSolutionDescription().size());
+        assertFalse(instance.addToSolutionDescription(aDescriptor1));
+        assertSame(1,instance.getSolutionDescription().size());
 
-        assertTrue(instance.addToCurrentTaxonSolutionDescription(aDescriptor2));
-        assertTrue(instance.addToCurrentTaxonSolutionDescription(aDescriptor3));
-        assertFalse(instance.addToCurrentTaxonSolutionDescription(aDescriptor3));
-        assertFalse(instance.addToCurrentTaxonSolutionDescription(aDescriptor3));
-        assertTrue(instance.addToCurrentTaxonSolutionDescription(aDescriptor4));
-        assertSame(4,instance.getCurrentTaxonSolutionDescription().size());
+        assertTrue(instance.addToSolutionDescription(aDescriptor2));
+        assertTrue(instance.addToSolutionDescription(aDescriptor3));
+        assertFalse(instance.addToSolutionDescription(aDescriptor3));
+        assertFalse(instance.addToSolutionDescription(aDescriptor3));
+        assertTrue(instance.addToSolutionDescription(aDescriptor4));
+        assertSame(4,instance.getSolutionDescription().size());
     }
 
     /**
@@ -174,17 +175,17 @@ public class TaxonomySearchAutomatonTest {
         Descriptor aDescriptor3 = new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro");
         Descriptor aDescriptor4 = new SSCharacterDescriptor("cuerpo","conformacion","tiene_cerata");
 
-        assertTrue(instance.addToCurrentTaxonUnmatchedDescription(aDescriptor1));
-        assertSame(1,instance.getCurrentTaxonUnmatchedDescription().size());
-        assertFalse(instance.addToCurrentTaxonUnmatchedDescription(aDescriptor1));
-        assertSame(1,instance.getCurrentTaxonUnmatchedDescription().size());
+        assertTrue(instance.addToUnmatchedDescription(aDescriptor1));
+        assertSame(1,instance.getUnmatchedDescription().size());
+        assertFalse(instance.addToUnmatchedDescription(aDescriptor1));
+        assertSame(1,instance.getUnmatchedDescription().size());
 
-        assertTrue(instance.addToCurrentTaxonUnmatchedDescription(aDescriptor2));
-        assertTrue(instance.addToCurrentTaxonUnmatchedDescription(aDescriptor3));
-        assertFalse(instance.addToCurrentTaxonUnmatchedDescription(aDescriptor3));
-        assertFalse(instance.addToCurrentTaxonUnmatchedDescription(aDescriptor3));
-        assertTrue(instance.addToCurrentTaxonUnmatchedDescription(aDescriptor4));
-        assertSame(4,instance.getCurrentTaxonUnmatchedDescription().size());
+        assertTrue(instance.addToUnmatchedDescription(aDescriptor2));
+        assertTrue(instance.addToUnmatchedDescription(aDescriptor3));
+        assertFalse(instance.addToUnmatchedDescription(aDescriptor3));
+        assertFalse(instance.addToUnmatchedDescription(aDescriptor3));
+        assertTrue(instance.addToUnmatchedDescription(aDescriptor4));
+        assertSame(4,instance.getUnmatchedDescription().size());
     }
 
     /**

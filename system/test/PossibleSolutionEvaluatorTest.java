@@ -7,18 +7,20 @@ package system.test;
 
 import java.util.ArrayList;
 import java.util.List;
-import ontology.common.Modifier;
+
+import ontology.CBR.Hypothesis;
+import ontology.CBR.PossibleSolution;
 import ontology.common.SSCharacterDescriptor;
+import ontology.taxonomy.Modifier;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
 import ontology.taxonomy.Taxonomy;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import system.Hypothesis;
-import system.PossibleSolution;
 import system.PossibleSolutionEvaluator;
 import static org.junit.Assert.*;
 

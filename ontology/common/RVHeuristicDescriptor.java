@@ -30,15 +30,6 @@ public class RVHeuristicDescriptor extends QualitativeHeuristicDescriptor {
 		this.setValue(aValue);
 	}
 	
-	/**
-	 * Constructor alternativo
-	 */
-	public RVHeuristicDescriptor(Object associatedObject, String aStructure, String anAttribute,
-			RangeValue aValue) {
-		super(associatedObject, aStructure, anAttribute);
-		this.setValue(aValue);
-	}
-	
 	protected void setValue(Object value) {
 		this.value = (RangeValue)value;
 	}

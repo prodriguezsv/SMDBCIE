@@ -27,11 +27,4 @@ public abstract class CharacterDescriptor extends Descriptor {
 	public CharacterDescriptor(String aStructure, String anAttribute) {
 		super(aStructure, anAttribute);
 	}
-	
-	/**
-	 * Método agregado
-	 */
-	public CharacterDescriptor(Object associatedObject, String aStructure, String anAttribute) {
-		super(associatedObject, aStructure, anAttribute);
-	}
 }

@@ -20,9 +20,9 @@ public class Problem {
 	 */
 	private String goalRank;
 	/**
-	 * Especifica la espectativa de desempe&ntilde;o m&iacutenima
+	 * Especifica la espectativa de desempe&ntilde;o m&iacute;nima
 	 */
-	private SimilarityDegree leastDegreeOfCertainty;
+	private SimilarityDegree leastSimilarityDegree;
 
 	/**
 	 * Constructor por defecto
@@ -30,7 +30,7 @@ public class Problem {
 	public Problem() {
 		description = new Description();
 		goalRank = null;
-		leastDegreeOfCertainty = null;
+		leastSimilarityDegree = null;
 	}
 	
 	/**
@@ -39,7 +39,7 @@ public class Problem {
 	public Problem(Description description) {
 		this.description = description;
 		goalRank = null;
-		leastDegreeOfCertainty = null;
+		leastSimilarityDegree = null;
 	}
 
 	/**
@@ -78,15 +78,15 @@ public class Problem {
 	 * M&eacute;todo accesor de escritura
 	 * @param leastDegreeOfCertainty
 	 */
-	public void setLeastDegreeOfCertainty(SimilarityDegree leastDegreeOfCertainty) {
-		this.leastDegreeOfCertainty = leastDegreeOfCertainty;
+	public void setLeastSimilarityDegree(SimilarityDegree leastDegreeOfCertainty) {
+		this.leastSimilarityDegree = leastDegreeOfCertainty;
 	}
 
 	/**
 	 * M&eacute;todo accesor de lectura
 	 * @return
 	 */
-	public SimilarityDegree getLeastDegreeOfCertainty() {
-		return leastDegreeOfCertainty;
+	public SimilarityDegree getLeastSimilarityDegree() {
+		return leastSimilarityDegree;
 	}
 }

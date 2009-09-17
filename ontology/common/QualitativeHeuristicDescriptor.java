@@ -25,11 +25,4 @@ public abstract class QualitativeHeuristicDescriptor extends HeuristicDescriptor
 	public QualitativeHeuristicDescriptor(String aStructure, String aAttribute) {
 		super(aStructure, aAttribute);
 	}
-	
-	/**
-	 * Constructor alternativo
-	 */
-	public QualitativeHeuristicDescriptor(Object associatedObject, String aStructure, String aAttribute) {
-		super(associatedObject, aStructure, aAttribute);
-	}
 }

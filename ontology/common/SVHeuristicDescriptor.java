@@ -30,14 +30,6 @@ public class SVHeuristicDescriptor extends QuantitativeHeuristicDescriptor {
 		this.setValue(aValue);
 	}
 	
-	/**
-	 * Constructor alternativo
-	 */
-	public SVHeuristicDescriptor(Object associatedObject, String aStructure, String anAttribute, SingleValue aValue) {
-		super(associatedObject, aStructure, anAttribute);
-		this.setValue(aValue);
-	}
-	
 	protected void setValue(Object value) {
 		this.value = (SingleValue)value;
 	}

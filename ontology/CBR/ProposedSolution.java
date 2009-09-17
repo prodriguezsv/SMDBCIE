@@ -1,7 +1,9 @@
 /**
  * @see "Categoría Sukia Reasoner en SUKIA SmallTalk"
  */
-package system;
+package ontology.CBR;
+
+import system.CertaintyDegree;
 
 
 
@@ -10,7 +12,7 @@ package system;
  *
  */
 public class ProposedSolution implements Comparable<ProposedSolution> {
-	private CertaintyDegree degreeOfCertainty;
+	private CertaintyDegree certaintyDegree;
 	private PossibleSolution solution;
 	private boolean status;
 
@@ -20,24 +22,24 @@ public class ProposedSolution implements Comparable<ProposedSolution> {
 	public ProposedSolution() {
 		this.setSolution(null);
 		this.setStatus(true);
-		this.setDegreeOfCertainty(CertaintyDegree.UNKNOWN);
+		this.setCertaintyDegree(CertaintyDegree.UNKNOWN);
 	}
 
 	/**
 	 * The only possible values for this variable are:
 	 * #unknown or #uncertain or #doubfult or #certain
-	 * @param degreeOfCertainty
+	 * @param certaintyDegree
 	 */
-	public void setDegreeOfCertainty(CertaintyDegree aDegreeOfCertainty) {
-		this.degreeOfCertainty = aDegreeOfCertainty;
+	public void setCertaintyDegree(CertaintyDegree aCertaintyDegree) {
+		this.certaintyDegree = aCertaintyDegree;
 	}
 
 	/**
 	 * @see "Método degreeOfCertainty del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public CertaintyDegree getDegreeOfCertainty() {
-		return degreeOfCertainty;
+	public CertaintyDegree getCertaintyDegree() {
+		return certaintyDegree;
 	}
 
 	/**
@@ -78,6 +80,6 @@ public class ProposedSolution implements Comparable<ProposedSolution> {
 	 * Método de instancia agregado
 	 */
 	public int compareTo(ProposedSolution aProposedSolution) {
-		return (aProposedSolution.getDegreeOfCertainty().compareTo(this.getDegreeOfCertainty()));
+		return (aProposedSolution.getCertaintyDegree().compareTo(this.getCertaintyDegree()));
 	}
 }

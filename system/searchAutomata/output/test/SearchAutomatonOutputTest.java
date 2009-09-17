@@ -10,6 +10,7 @@ package system.searchAutomata.output.test;
 import java.util.ArrayList;
 import java.util.List;
 import ontology.CBR.Case;
+import ontology.CBR.PossibleSolution;
 import ontology.common.Description;
 import ontology.common.SSCharacterDescriptor;
 import ontology.common.SVCharacterDescriptor;
@@ -23,7 +24,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import system.PossibleSolution;
 import system.searchAutomata.output.SearchAutomatonOutput;
 
 /**

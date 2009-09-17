@@ -27,11 +27,4 @@ public abstract class HeuristicDescriptor extends Descriptor {
 	public HeuristicDescriptor(String aStructure, String anAttribute) {
 		super(aStructure, anAttribute);
 	}
-	
-	/**
-	 * Método agregado
-	 */
-	public HeuristicDescriptor(Object associatedObject, String aStructure, String anAttribute) {
-		super(associatedObject, aStructure, anAttribute);
-	}
 }

@@ -114,8 +114,6 @@ public class Case {
 		if (aDescriptor == null) return false; //Ojo analizar comportamiento alternativo
 		
 		boolean value = this.getProblem().getDescription().addToConcreteDescription(aDescriptor);
-		if (value)
-			aDescriptor.setAssociatedObject(this);
 		
 		return value;
 	}
@@ -143,8 +141,6 @@ public class Case {
 		if (aDescriptor == null) return false; //Ojo analizar comportamiento alternativo
 		
 		boolean value = this.getSolution().getJustification().addToConcreteDescription(aDescriptor);
-		if (value)
-			aDescriptor.setAssociatedObject(this);
 		
 		return value;
 	}

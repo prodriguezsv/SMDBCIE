@@ -11,13 +11,13 @@ import java.util.List;
 
 import ontology.CBR.Case;
 import ontology.common.Descriptor;
-import ontology.common.Modifier;
 import ontology.common.RVCharacterDescriptor;
 import ontology.common.RVHeuristicDescriptor;
 import ontology.common.SSCharacterDescriptor;
 import ontology.common.SSHeuristicDescriptor;
 import ontology.common.SVCharacterDescriptor;
 import ontology.common.SVHeuristicDescriptor;
+import ontology.taxonomy.Modifier;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
 import ontology.values.MeasuringUnit;
@@ -71,7 +71,7 @@ public class ReasonerTest {
   		        new Modifier(0.8,1.0,0.2));
   		//-----------------------Structure No. 3---------------------
   		taxon1.addToDescription(new SSCharacterDescriptor("Branquia","Posición durante desplazamiento",
-  				"Hacia atras"), new Modifier(0.8,1.0,0.8));
+  				"Hacia atrás"), new Modifier(0.8,1.0,0.8));
   		taxon1.addToDescription(new SSCharacterDescriptor("Branquia","Posición del ano con respecto a la " +
   				"branquia","En el centro"), new Modifier(0.8,1.0,0.8));
   		taxon1.addToDescription(new RVCharacterDescriptor("Branquia","Número hojas branquiales",
@@ -104,21 +104,21 @@ public class ReasonerTest {
   		//-----------------------Structure No. 7---------------------
   		taxon1.addToDescription(new SSCharacterDescriptor("Tentáculos orales","Contextura","Macizo"),
   		        new Modifier(1.0,1.0,0.7));
-  		taxon1.addToDescription(new SSCharacterDescriptor("Tentaculos orales","Contextura","Surcado"),
+  		taxon1.addToDescription(new SSCharacterDescriptor("Tentáculos orales","Contextura","Surcado"),
   		        new Modifier(1.0,1.0,0.2));
   		//-----------------------Grouping Heuristic No. 1---------------------
-  		taxon1.addToDescription(new SSHeuristicDescriptor("Alimentación", "Alimentación","Esponjas"),
+  		taxon1.addToDescription(new SSHeuristicDescriptor("Factor biótico", "Alimentación","Esponjas"),
   		        new Modifier(1.0,1.0,1.0));
   		//-----------------------Grouping Heuristic No. 2---------------------
-  		taxon1.addToDescription(new RVHeuristicDescriptor("Profundidad donde se encuentra",
+  		taxon1.addToDescription(new RVHeuristicDescriptor("Factor abiótico",
   				"Profundidad donde se encuentra", new RangeValue(0.0, 20.0, MeasuringUnit.M)),
   				new Modifier(1.0,1.0,1.0));
   		//-----------------------Grouping Heuristic No. 3---------------------
-  		taxon1.addToDescription(new SSHeuristicDescriptor("Medio de preservacion tenido",
+  		taxon1.addToDescription(new SSHeuristicDescriptor("Factor abiótico",
   				"Medio de preservacion tenido","Azul marino"), new Modifier(1.0,1.0,1.0));
-  		taxon1.addToDescription(new SSHeuristicDescriptor("Medio de preservacion tenido",
+  		taxon1.addToDescription(new SSHeuristicDescriptor("Factor abiótico",
   				"Medio de preservacion tenido","Celeste"), new Modifier(1.0,1.0,0.8));
-  		taxon1.addToDescription(new SSHeuristicDescriptor("Medio de preservacion tenido",
+  		taxon1.addToDescription(new SSHeuristicDescriptor("Factor abiótico",
   				"Medio de preservacion tenido","Amarillento"), new Modifier(1.0,1.0,0.2));
 //-----------------------Taxon No. 2---------------------
 	    taxon2 = new Taxon(TaxonomicRank.GENUS, "Chromodoris");
@@ -334,7 +334,7 @@ public class ReasonerTest {
   		        new Modifier(0.0,1.0,1.0));
 	    taxon4.addToDescription(new SSCharacterDescriptor("Cuerpo","Coloración","Celeste claro"),
   		        new Modifier(0.0,1.0,0.9));
-	    taxon4.addToDescription(new SSCharacterDescriptor("Cuerpo","Coloracion de numerosas manchas","Blanco y amarillo"),
+	    taxon4.addToDescription(new SSCharacterDescriptor("Cuerpo","Coloración de numerosas manchas","Blanco y amarillo"),
   		        new Modifier(0.0,1.0,1.0));
 	    taxon4.addToDescription(new RVCharacterDescriptor("Cuerpo","Longitud", new RangeValue(0.3, 0.38,
   				MeasuringUnit.CM)), new Modifier(0.0,1.0,1.0));
@@ -424,11 +424,11 @@ public class ReasonerTest {
 	//-----------------------Structure No. 4---------------------
 	    taxon6.addToDescription(new SSCharacterDescriptor("Branquia","Forma hojas branquiales","Unipinnada"),
 	            new Modifier(0.0,1.0,1.0));
-	    taxon6.addToDescription(new SSCharacterDescriptor("Branquia","Disposicion hojas branquiales","Forman un rco alrededor del ano"),
+	    taxon6.addToDescription(new SSCharacterDescriptor("Branquia","Disposicion hojas branquiales","Forman un arco alrededor del ano"),
 	            new Modifier(0.0,1.0,1.0));
 	    taxon6.addToDescription(new SSCharacterDescriptor("Branquia","Movimiento Hojas branquiales durante desplazamiento","Ritmico"),
 	            new Modifier(0.0,1.0,1.0));
-	    taxon6.addToDescription(new SSCharacterDescriptor("Branquia","Tamano Hojas branquiales posteriores con respecto a las anteriores","Mas pequeñas"),
+	    taxon6.addToDescription(new SSCharacterDescriptor("Branquia","Tamaño Hojas branquiales posteriores con respecto a las anteriores","Más pequeñas"),
 	            new Modifier(0.0,1.0,1.0));
 	    taxon6.addToDescription(new SSCharacterDescriptor("Branquia","Coloración hojas branquiales","Blanco"),
 	            new Modifier(0.0,1.0,1.0));
@@ -505,7 +505,7 @@ public class ReasonerTest {
         taxon8.addToDescription(new SSCharacterDescriptor("Glándulas del manto","Disposición","Lateralmente unas pocas y pequeñas"),
         		new Modifier(0.0,1.0,1.0));
     //-----------------------Structure No. 2---------------------
-        taxon8.addToDescription(new SSCharacterDescriptor("Aparato Genital","Forma de la Glandula Vestibular","Ramificada"),
+        taxon8.addToDescription(new SSCharacterDescriptor("Aparato genital","Forma de la Glandula Vestibular","Ramificada"),
         		new Modifier(0.0,1.0,1.0));
     //-----------------------Structure No. 3---------------------
         taxon8.addToDescription(new SSCharacterDescriptor("Radula","Forma de los dientes","Bicuspidos y denticulados"),
@@ -641,7 +641,7 @@ public class ReasonerTest {
     //-----------------------Structure No. 5---------------------
         taxon4.addToDescription(new SSCharacterDescriptor("Pie","Forma","Relativamente ancho"),
         		new Modifier(0.0,1.0,1.0));
-        taxon4.addToDescription(new SSCharacterDescriptor("Pie","Prolongacion","Forma una cola corta"),
+        taxon4.addToDescription(new SSCharacterDescriptor("Pie","Prolongación","Forma una cola corta"),
         		new Modifier(0.0,1.0,1.0));
 //-----------------------Taxon No. 18---------------------
 	    taxon5 = new Taxon(TaxonomicRank.GENUS, "Petalifera");
@@ -729,7 +729,7 @@ public class ReasonerTest {
 	    taxon1.addToDescription(new SSCharacterDescriptor("Concha interna","Tamaño","Reducido"),
   		        new Modifier(0.0,1.0,1.0));
 	//-----------------------Grouping Heuristic No. 1---------------------
-  		taxon1.addToDescription(new SSHeuristicDescriptor("Lugar donde se encuentra", "Lugar donde se encuentra","Generalmente en las pozas de marea"),
+  		taxon1.addToDescription(new SSHeuristicDescriptor("Factor abiótico", "Lugar donde se encuentra","Generalmente en las pozas de marea"),
   		        new Modifier(1.0,1.0,1.0));
 //-----------------------Taxon No. 22---------------------
 	    taxon2 = new Taxon(TaxonomicRank.SPECIES, "Petalifera ramosa");

@@ -1,7 +1,7 @@
 /**
  * @see "Categoría Sukia Reasoner en SUKIA SmallTalk"
  */
-package system;
+package ontology.CBR;
 
 import java.util.ArrayList;
 import java.util.Collections;
