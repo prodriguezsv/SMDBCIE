@@ -3,6 +3,9 @@
  */
 package system;
 
+import javax.swing.JFrame;
+
+import oracleIDGui.OracleIDGui;
 import ontology.taxonomy.Taxonomy;
 import redundantDiscriminationNet.RDMultiNet;
 import searchHintsBase.HintsBase;
@@ -12,7 +15,7 @@ import searchHintsBase.HintsBase;
  * @author Armando
  *
  */
-public class System {
+public class OracleIDApplication {
 	private RDMultiNet caseMemory;
 	private HintsBase hintsBase;
 	private Object learner;
@@ -22,7 +25,7 @@ public class System {
 	/**
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public System() {
+	public OracleIDApplication() {
 
 		setHintsBase(new HintsBase());
 		if (this.loadHintsBase() == null) return;
@@ -152,5 +155,18 @@ public class System {
 		this.setReasoner(new Reasoner(this));
 		
 		return this;
+	}
+	
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		OracleIDApplication oracleIDApplication;
+		
+		oracleIDApplication = new OracleIDApplication();
+		
+		OracleIDGui thisClass = new OracleIDGui(oracleIDApplication);
+		thisClass.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		thisClass.setVisible(true);
 	}
 }

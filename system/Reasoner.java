@@ -39,7 +39,7 @@ public class Reasoner {
 	private List<Hypothesis> noResultsSet;
 	private List<ProposedSolution> proposedSolutions;
 	private TaxonomicRank identGoal;
-	private System identSystem;
+	private OracleIDApplication identSystem;
 	private int maxNumberSolutions;
 	private SimilarityDegree minSimilarityDegree;
 	private boolean presentFailedSolutions;
@@ -49,7 +49,7 @@ public class Reasoner {
 	 * gained main data structures: the memory case, the taxonomic hierarchy, and the hints base
 	 * @see "Método initialize: del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public Reasoner(System anIdentificationSystem) {
+	public Reasoner(OracleIDApplication anIdentificationSystem) {
 		setIdentSystem(anIdentificationSystem);
 
 		this.initialize();
@@ -196,7 +196,7 @@ public class Reasoner {
 	 * Método de instancia agregado
 	 * @param identSystem
 	 */
-	public void setIdentSystem(System identSystem) {
+	public void setIdentSystem(OracleIDApplication identSystem) {
 		this.identSystem = identSystem;
 	}
 
@@ -204,7 +204,7 @@ public class Reasoner {
 	 * @see "Método identSystem del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public System getIdentSystem() {
+	public OracleIDApplication getIdentSystem() {
 		return identSystem;
 	}
 

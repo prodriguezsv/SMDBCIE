@@ -37,7 +37,7 @@ import system.Reasoner;
  *
  */
 public class ReasonerTest {
-	private static system.System oracleIDSystem;
+	private static system.OracleIDApplication oracleIDSystem;
 
 	/**
 	 * @throws java.lang.Exception
@@ -47,7 +47,7 @@ public class ReasonerTest {
 		System.out.println("Iniciando pruebas para la clase " + Reasoner.class.getName());
 		Taxon taxon1, taxon2, taxon3, taxon4, taxon5, taxon6, taxon7, taxon8;
 
-		oracleIDSystem = new system.System();
+		oracleIDSystem = new system.OracleIDApplication();
         
 		//-----------------------Taxon No. 1---------------------
         taxon1 = new Taxon(TaxonomicRank.FAMILY, "Chromodorididae");

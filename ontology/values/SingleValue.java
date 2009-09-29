@@ -69,4 +69,11 @@ public class SingleValue extends Value{
 	public int hashCode(){
 		return Double.valueOf(this.getValue()).hashCode() + this.getMeasuringUnit().hashCode();
 	}
+    
+    /**
+	 * 
+	 */
+	public String toString() {
+		return  Double.toString(this.getValue())+ " " + this.getMeasuringUnit();
+	}
 }

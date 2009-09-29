@@ -117,4 +117,11 @@ public abstract class Descriptor implements Comparable<Descriptor> {
 	public int hashCode(){
 		return this.getStructure().hashCode() + this.getAttribute().hashCode() + this.getValue().hashCode();
 	}
+	
+	/**
+	 * 
+	 */
+	public String toString() {
+		return  "(" + this.getStructure()+ "; " + this.getAttribute() + "; " + this.getValue().toString() + ")";
+	}
 }

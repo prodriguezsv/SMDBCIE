@@ -127,4 +127,12 @@ public class RangeValue extends Value {
 			+ Double.valueOf(this.getUpperBound()).hashCode()
 			+ this.getMeasuringUnit().hashCode();
 	}
+	
+	/**
+	 * 
+	 */
+	public String toString() {
+		return  Double.toString(this.getLowerBound())+ "-" + this.getUpperBound() 
+			+ " " + this.getMeasuringUnit();
+	}
 }
