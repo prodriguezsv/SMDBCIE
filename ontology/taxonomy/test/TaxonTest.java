@@ -5,17 +5,18 @@ package ontology.taxonomy.test;
  * and open the template in the editor.
  */
 
-import java.util.ArrayList;
-import java.util.List;
+
+import jade.util.leap.ArrayList;
+import jade.util.leap.List;
+import ontology.common.MeasuringUnit;
 import ontology.common.RVCharacterDescriptor;
 import ontology.common.RVHeuristicDescriptor;
+import ontology.common.RangeValue;
 import ontology.common.SSCharacterDescriptor;
 import ontology.common.SSHeuristicDescriptor;
 import ontology.taxonomy.Modifier;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
-import ontology.values.MeasuringUnit;
-import ontology.values.RangeValue;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -167,7 +168,7 @@ public class TaxonTest {
     @Test
     public void testSetSuccessors() {
         System.out.println("setSuccessors");
-        List<Taxon> sucessors = new ArrayList<Taxon>();
+        List sucessors = new ArrayList();
         sucessors.add(taxon1);
 
         taxon2.setSuccessors(sucessors);

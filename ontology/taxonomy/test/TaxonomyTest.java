@@ -10,16 +10,16 @@ package ontology.taxonomy.test;
 import java.util.List;
 import java.util.Map;
 import ontology.common.Descriptor;
+import ontology.common.MeasuringUnit;
 import ontology.common.RVCharacterDescriptor;
 import ontology.common.RVHeuristicDescriptor;
+import ontology.common.RangeValue;
 import ontology.common.SSCharacterDescriptor;
 import ontology.common.SSHeuristicDescriptor;
 import ontology.taxonomy.Modifier;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
 import ontology.taxonomy.Taxonomy;
-import ontology.values.MeasuringUnit;
-import ontology.values.RangeValue;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -50,7 +50,7 @@ public class TaxonomyTest {
 
 	@Before
     public void setUp() {
-        taxonomy = new Taxonomy("Mollusca");
+        taxonomy = new Taxonomy();
         rootTaxon = new Taxon(TaxonomicRank.ROOT, null);
 //-----------------------Taxon No. 1---------------------
         taxon1 = new Taxon(TaxonomicRank.FAMILY, "Chromodorididae");
@@ -126,7 +126,7 @@ public class TaxonomyTest {
 
         taxonomy.addTaxon(taxon1, rootTaxon);
 
-        taxonomyEmpty = new Taxonomy("Mollusca");
+        taxonomyEmpty = new Taxonomy();
     }
 
     @After
@@ -185,7 +185,8 @@ public class TaxonomyTest {
         taxonomyEmpty.addTaxon(this.taxon1, rootTaxon);
         assertEquals(this.taxon1,taxonomyEmpty.getTaxonFromLevelIndex(this.taxon1.getName()));
 
-		taxonomy = new Taxonomy("Mollusca");
+		taxonomy = new Taxonomy();
+		taxonomy.setRootTaxon(rootTaxon);
 
 //-----------------------Taxon No. 1---------------------
         taxon1 = new Taxon(TaxonomicRank.FAMILY, "Chromodorididae");

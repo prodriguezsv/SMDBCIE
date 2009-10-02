@@ -3,6 +3,8 @@
  */
 package ontology.taxonomy;
 
+import jade.util.leap.Iterator;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,18 +20,19 @@ import ontology.common.Descriptor;
  */
 public class Taxonomy {
 	private Taxon rootTaxon;
+
 	private Map<Descriptor, List<Taxon>> descriptorsIndex;
 	private List<List<Taxon>> levelIndex;
 
 	/**
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public Taxonomy(String aCommonName) {
+	public Taxonomy() {
 		List<Taxon> level;
 
 		setDescriptorsIndex(new HashMap<Descriptor, List<Taxon>>());
 		
-		rootTaxon = new Taxon(TaxonomicRank.ROOT, aCommonName);
+		rootTaxon = null;
 		
 		setLevelIndex(new ArrayList<List<Taxon>>());
 			
@@ -38,6 +41,11 @@ public class Taxonomy {
 			levelIndex.add(level);
 		}
 	}
+	
+	public void setRootTaxon(Taxon rootTaxon) {
+		this.rootTaxon = rootTaxon;
+	}
+
 	
 	/**
 	 * Método de instancia agregado
@@ -53,7 +61,10 @@ public class Taxonomy {
 	 * @param aNewTaxon
 	 */
 	private void addToDescriptorsIndex(Taxon aNewTaxon) {
-		for (Descriptor d:aNewTaxon.getDescription()) {
+		Iterator i = aNewTaxon.getDescription().getAllDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = (Descriptor) i.next();
 			// Find a structure, in the Structure Index, with a name that matches the new taxon's structure name
 			if (!this.getDescriptorsIndex().containsKey(d)) {
 				this.getDescriptorsIndex().put(d, new ArrayList<Taxon>());
@@ -103,7 +114,7 @@ public class Taxonomy {
             if (d.getStructure().equals(aStructure)&&
                     (d.getAttribute().equals(anAttribute)))
 
-                aDescription.add(d);
+                aDescription.addDescriptors(d);
         }
         
         return aDescription;
@@ -155,10 +166,10 @@ public class Taxonomy {
 	 * @return
 	 */
 	public Taxon getTaxonFromLevelIndex(String aTaxonName, TaxonomicRank aLevel) {
-            for (Taxon aTaxon: getTaxonListFromLevelIndex(aLevel)){
-                if (aTaxon.getName().equals(aTaxonName)) return aTaxon;
-            }
-            return null;
+        for (Taxon aTaxon: getTaxonListFromLevelIndex(aLevel)){
+            if (aTaxon.getName().equals(aTaxonName)) return aTaxon;
+        }
+        return null;
 	}
 	
 	/**
@@ -167,12 +178,12 @@ public class Taxonomy {
 	 * @return
 	 */
 	public Taxon getTaxonFromLevelIndex(String aTaxonName) {
-                for (List<Taxon> aListTaxon: levelIndex){
-                    for (Taxon aTaxon: aListTaxon){
-                        if (aTaxon.getName().equals(aTaxonName)) return aTaxon;
-                    }
-                }
-                return null;
+        for (List<Taxon> aListTaxon: levelIndex){
+            for (Taxon aTaxon: aListTaxon){
+                if (aTaxon.getName().equals(aTaxonName)) return aTaxon;
+            }
+        }
+        return null;
 	}
 	
 	/**
@@ -196,6 +207,27 @@ public class Taxonomy {
 	}
 	
 	/**
+	 * @see "Método add:linkTo: del protocolo adding en SUKIA SmallTalk"
+	 * @param aNewTaxon
+	 * @param aParentTaxon
+	 */
+	public boolean addTaxon(Taxon aNewTaxon) {
+		//Step 2: Reference the new taxon in levelIndex (i.e., alphabetically by taxon name, by taxonomic level)
+		if (aNewTaxon.getLevel() != TaxonomicRank.ROOT) {
+			if (!(this.addTaxonToLevelIndex(aNewTaxon))) {
+				aNewTaxon.unlinkFromTheHierarchy();
+				return false;
+			}
+			// Step 3: Reference the new taxon in structureIndex
+			this.addToDescriptorsIndex(aNewTaxon);
+		} else {
+			this.setRootTaxon(aNewTaxon);
+		}
+
+		return true;
+	}
+
+	/**
 	 * @see "Método processTaxonomicDependenciesBetween:and: del protocolo taxonomic dependencies en SUKIA SmallTalk"
 	 * @param aParentTaxon
 	 * @param aSuccessorTaxon
@@ -203,7 +235,7 @@ public class Taxonomy {
 	 */
 	public boolean areTaxonomicDependenciesOK(Taxon aParentTaxon, Taxon aSuccessorTaxon) {
 		//Step 1: Make sure that (at least) the SAV description of the successor taxon is not empty
-		if (aSuccessorTaxon.getDescription().isEmpty())
+		if (aSuccessorTaxon.getDescription().getDescriptors().isEmpty())
 			return false;		
 		
 		//Step 3: Make sure that the successor taxon can indeed be linked to the parent taxon

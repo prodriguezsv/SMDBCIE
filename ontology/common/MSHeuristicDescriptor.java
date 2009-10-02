@@ -3,7 +3,9 @@
  */
 package ontology.common;
 
-import java.util.List;
+import jade.util.leap.ArrayList;
+import jade.util.leap.Iterator;
+import jade.util.leap.List;
 
 /**
  * Descriptor es un elemento descriptivo de la descripción de un caso: el par attribute-value.
@@ -13,10 +15,17 @@ import java.util.List;
  * 
 */
 public class MSHeuristicDescriptor extends QualitativeHeuristicDescriptor {
-	private List<String> value;
+	private List value;
 	
 	public MSHeuristicDescriptor() {
+		value = new ArrayList();
+	}
 	
+	private static final long serialVersionUID = -3087841394215437493L;
+	
+	public MSHeuristicDescriptor(String instance_name) {
+		super(instance_name);
+		value = new ArrayList();
 	}
 	
 	/**
@@ -25,17 +34,28 @@ public class MSHeuristicDescriptor extends QualitativeHeuristicDescriptor {
 	 * Extreme care should be taken when using this method, as it assumes an empty self."
 	 * @see "M&eacute;todo initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public MSHeuristicDescriptor(String aStructure, String anAttribute, List<String> aValue) {
+	public MSHeuristicDescriptor(String aStructure, String anAttribute, List aValue) {
 		super(aStructure, anAttribute);
 		this.setValue(aValue);
 	}
-	
-	@SuppressWarnings("unchecked")
-	protected void setValue(Object value) {
-		this.value = (List<String>)value;
-	}
 
-	public List<String> getValue() {
-		return (List<String>)value;
+	public void addScore(String elem) { 
+		value.add(elem);
+	}
+	public boolean removeScore(Object elem) {
+		boolean result = value.remove(elem);
+		return result;
+	}
+	public void clearAllScore() {
+		value.clear();
+	}
+	public Iterator getAllScore() {return value.iterator(); }
+   
+	public void setValue(Object value) {
+	   this.value = (List) value;
+	}
+	
+	public List getValue() {
+	   return (List)value;
 	}
 }

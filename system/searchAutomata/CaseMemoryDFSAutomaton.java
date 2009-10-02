@@ -7,6 +7,8 @@
 package system.searchAutomata;
 
 import redundantDiscriminationNet.RootNorm;
+import jade.util.leap.Iterator;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,10 +18,13 @@ import java.util.Map;
 
 import javax.swing.JOptionPane;
 
+import oracleIDGui.OracleIDGui;
+import oracleIDGui.SingleDSuggestionDialog;
+
 import ontology.CBR.PossibleSolution;
 import ontology.common.Description;
 import ontology.common.Descriptor;
-import ontology.values.SingleValue;
+import ontology.common.SingleValue;
 
 
 import redundantDiscriminationNet.Index;
@@ -51,14 +56,16 @@ public class CaseMemoryDFSAutomaton {
     private int stopLevel;
     private SearchStatus status;
     private CaseMemoryDFSAutomatonOutput searchOutput;
+	private OracleIDGui frame;
 
     /**
 	 * @see Define method name.
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public CaseMemoryDFSAutomaton(RootNorm aSAVRoot){
+    public CaseMemoryDFSAutomaton(OracleIDGui frame, RootNorm aSAVRoot){
         netRoot = aSAVRoot;
+    	this.frame = frame;
         this.initialize();
     }
     
@@ -382,10 +389,13 @@ public class CaseMemoryDFSAutomaton {
         
         if (currentLevel <= stopLevel) return false;
         
-        for (Descriptor tcd : getConfirmedDescription()) {
-            if (tcd.equals(descritor)) {
-                addToUnconfirmedDescription(getConfirmedDescription()
-                		.remove(getConfirmedDescription().indexOf(tcd)));
+        Iterator i = this.getConfirmedDescription().getAllDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = (Descriptor) i.next(); 
+            if (d.equals(descritor)) {
+                addToUnconfirmedDescription((Descriptor)getConfirmedDescription().getDescriptors()
+                		.remove(getConfirmedDescription().getDescriptors().indexOf(d)));
                 return true;
             }
 
@@ -418,8 +428,8 @@ public class CaseMemoryDFSAutomaton {
 	                // against the doubtful description. If this time the SAVDescriptior is NOT a member of
 	                // the doubtful description, return self, indicating that there is at least one
 	                // index-value to show to the user
-	                if (!this.getUnconfirmedDescription().contains(((Norm)idxSucc).getDescriptor())) {
-	                    if (!this.getDoubtfulDescription().contains(((Norm)idxSucc).getDescriptor()))
+	                if (!this.getUnconfirmedDescription().getDescriptors().contains(((Norm)idxSucc).getDescriptor())) {
+	                    if (!this.getDoubtfulDescription().getDescriptors().contains(((Norm)idxSucc).getDescriptor()))
 	                        return true;
 	                }
 	            }
@@ -448,10 +458,10 @@ public class CaseMemoryDFSAutomaton {
 	 * @return self : if the process ran OK; cancel : is the user cancels; -1 : error value, if the
 	 * precondition is not met.
  	 */
-    public void searchPossibleSolutionsUnderCurrNorm(List<Descriptor> aProblemDescription){
+    public void searchPossibleSolutionsUnderCurrNorm(Description aProblemDescription){
 
         //Check precondition
-        if (aProblemDescription.isEmpty() || (currentNorm == netRoot) || 
+        if (aProblemDescription.getDescriptors().isEmpty() || (currentNorm == netRoot) || 
         		!this.getPossibleSolutions().isEmpty()) {
         	this.setStatus(SearchStatus.ERROR);
         	return;
@@ -462,9 +472,9 @@ public class CaseMemoryDFSAutomaton {
         List<SheetCase> aCaseList = new ArrayList<SheetCase>();
         //Scan the the Descriptor list of the problem description. Look for indices that strictly point to cases
 
-        while (aProblemDescription.isEmpty() != true){
+        while (aProblemDescription.getDescriptors().isEmpty() != true){
             //Remove the next Descriptor<Object>
-            Descriptor d = aProblemDescription.remove(0);
+            Descriptor d = (Descriptor) aProblemDescription.getDescriptors().remove(0);
             //Look for a matching index
 
             Index idx = currentNorm.getSuccessorIndex(d);
@@ -500,14 +510,14 @@ public class CaseMemoryDFSAutomaton {
                     List<PossibleSolution> pSolutionList = associateCasesToPossibleSolutions(aCaseList);
                     this.addToPossibleSolutions(pSolutionList.remove(0));
                     
-                    this.getSolutionDescription().remove(getSolutionDescription().size()-1);
+                    this.getSolutionDescription().getDescriptors().remove(getSolutionDescription().getDescriptors().size()-1);
                 }
             }
         }
         
         //Put the descriptors that didn't match indices back in the problem description list
         while (tempList.isEmpty() != true)
-            aProblemDescription.add(tempList.remove(0));
+            aProblemDescription.addDescriptors(tempList.remove(0));
     }
 
     /**
@@ -522,15 +532,15 @@ public class CaseMemoryDFSAutomaton {
 	 * @return true : if the process ran OK; cancel : is the user cancels; false : error value, if the
 	 * precondition is not met.    
 	 */
-    public void searchPossibleSolutionsUnderRoot(List<Descriptor> aProblemDescription){
+    public void searchPossibleSolutionsUnderRoot(Description aProblemDescription){
         //Check precondition
-        if (aProblemDescription.isEmpty()) {
+        if (aProblemDescription.getDescriptors().isEmpty()) {
         	this.setStatus(SearchStatus.ERROR);
         	return;
         }
 
         if ((currentNorm == netRoot) && (this.getPossibleSolutions().isEmpty()) 
-        		&& (!this.getSolutionDescription().isEmpty())) {
+        		&& (!this.getSolutionDescription().getDescriptors().isEmpty())) {
         	this.setStatus(SearchStatus.ERROR);
         	return;
         }
@@ -540,9 +550,9 @@ public class CaseMemoryDFSAutomaton {
         List<SheetCase> aCaseList = new ArrayList<SheetCase>();
 
         //Scan the the Descriptor list of the problem description. Look for indices that strictly point to cases
-        while (aProblemDescription.isEmpty() != true){
+        while (aProblemDescription.getDescriptors().isEmpty() != true){
             //Remove the next Descriptor<Object>
-            Descriptor d = aProblemDescription.remove(0);
+            Descriptor d = (Descriptor) aProblemDescription.getDescriptors().remove(0);
             //Look for a matching index
             Index idx = currentNorm.getSuccessorIndex(d);
 
@@ -575,7 +585,7 @@ public class CaseMemoryDFSAutomaton {
                     List<PossibleSolution> pSolutionList = associateCasesToPossibleSolutions(aCaseList);
                     this.addToPossibleSolutions(pSolutionList.remove(0));
                     
-                    getSolutionDescription().remove(getSolutionDescription().size()-1);
+                    getSolutionDescription().getDescriptors().remove(getSolutionDescription().getDescriptors().size()-1);
 
                 }
             }
@@ -584,7 +594,7 @@ public class CaseMemoryDFSAutomaton {
         
         //Put the descriptors that match Norms back in the problem description list
         while (tempList.isEmpty() != true)
-            aProblemDescription.add(tempList.remove(0));
+            aProblemDescription.addDescriptors(tempList.remove(0));
     }
 
     /**
@@ -592,9 +602,9 @@ public class CaseMemoryDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public void searchPossibleSolutionsUsingIndices(List<Descriptor> aProblemDescription) {
+    public void searchPossibleSolutionsUsingIndices(Description aProblemDescription) {
         //If the argument search-list is empty, something wrong happened. Return error value
-        if (aProblemDescription.isEmpty()) {
+        if (aProblemDescription.getDescriptors().isEmpty()) {
         	status = SearchStatus.ERROR;
         	return;
         }
@@ -627,7 +637,7 @@ public class CaseMemoryDFSAutomaton {
         // If at the end of the scanning process, the problem description is empty, the possible solutions list MUST have at least
         // one item. Else, something weird happened.  In that situation, return the error value. However, if the case list is not empty,
         // return self
-        if (aProblemDescription.isEmpty())
+        if (aProblemDescription.getDescriptors().isEmpty())
             return;
         
         // At this point, the problem description is not empty. Move control to the root and search for
@@ -644,12 +654,12 @@ public class CaseMemoryDFSAutomaton {
         //list is that, depending on the output from the root-search, it may be necessary to put all descriptors
         //back in the solution description, in order to try the next search strategy
 
-        List<Descriptor> tempMovedSolution = moveDescriptors(getSolutionDescription(),getUnmatchedDescription());
+        Description tempMovedSolution = moveDescriptors(getSolutionDescription(),getUnmatchedDescription());
 
         // Same sitution as with the solution description.  In this case, place the confirmed description items in the
         // unconfirmed description, and also copy them to another temporary list
 
-        List<Descriptor> tempMovedConfirmed = moveDescriptors(getConfirmedDescription(),getUnconfirmedDescription());
+        Description tempMovedConfirmed = moveDescriptors(getConfirmedDescription(),getUnconfirmedDescription());
         
         // Call the search-cases-under-root method with a clean &amp; empty possible solutions list (its part of the precondition)
         //List<PossibleSolution> pSolutions = new ArrayList<PossibleSolution>(); OJO
@@ -674,9 +684,11 @@ public class CaseMemoryDFSAutomaton {
         // and confirmed descriptions MUST be set back to their original state (i.e., before doing the root-search). So, remove
         // all the matching items in the temporary lists from the unmatched and unconfirmed descriptions and place them back
         // in the corresponding solution and confirmed ones
-        getSolutionDescription().addAll(tempMovedSolution);
+        while (tempMovedSolution.getDescriptors().isEmpty())
+        	getSolutionDescription().addDescriptors((Descriptor) tempMovedSolution.getDescriptors().remove(0));
         deleteDescriptors(tempMovedSolution, getUnmatchedDescription());
-        getConfirmedDescription().addAll(tempMovedConfirmed);
+        while (tempMovedConfirmed.getDescriptors().isEmpty())
+        	getSolutionDescription().addDescriptors((Descriptor) tempMovedConfirmed.getDescriptors().remove(0));
         deleteDescriptors(tempMovedConfirmed,getUnconfirmedDescription());
 
         //Upon return from the root search, the following situations may occur:
@@ -688,7 +700,7 @@ public class CaseMemoryDFSAutomaton {
 
         if (possibleSolutions.isEmpty()) {
             //Precondition for method retrieveCasesUnderCurrNorm : isEmpty(aProblemDescription)
-            if (aProblemDescription.isEmpty())
+            if (aProblemDescription.getDescriptors().isEmpty())
                 retrieveCasesUnderCurrentNorm();
         }
     }
@@ -725,14 +737,14 @@ public class CaseMemoryDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    private void deleteDescriptors(List<Descriptor> aTempDeleteList,List<Descriptor> aList) {
-        for (int i=0;(i<aTempDeleteList.size());i++) {
-            Descriptor d = aTempDeleteList.get(i);
+    private void deleteDescriptors(Description aTempDeleteList, Description aList) {
+        for (int i=0;(i<aTempDeleteList.getDescriptors().size());i++) {
+            Descriptor d = (Descriptor) aTempDeleteList.getDescriptors().get(i);
             int j = 0;
-            while (j<= aList.size()){
-                if ((aList.get(j).equals(d))){
-                    aList.remove(0);
-                    j = aList.size() + 1;
+            while (j<= aList.getDescriptors().size()){
+                if ((aList.getDescriptors().get(j).equals(d))){
+                    aList.getDescriptors().remove(0);
+                    j = aList.getDescriptors().size() + 1;
                 }else{
                     j += 1;
                 }
@@ -766,8 +778,8 @@ public class CaseMemoryDFSAutomaton {
                     List<Node> idxSuccessors = idx.getSuccessors();
                     for (int j = 0; (j<idxSuccessors.size());j++) {
                         //Make sure that the descriptor is NOT already included in neither the unconfirmed and doubtful descriptions
-                        if (!getUnconfirmedDescription().contains(idxSuccessors.get(j).getDescriptor()) &&
-                        		!getDoubtfulDescription().contains(idxSuccessors.get(j).getDescriptor())) {
+                        if (!getUnconfirmedDescription().getDescriptors().contains(idxSuccessors.get(j).getDescriptor()) &&
+                        		!getDoubtfulDescription().getDescriptors().contains(idxSuccessors.get(j).getDescriptor())) {
                             newList.add((Norm)normAlternative);
                         }
                     }
@@ -794,8 +806,8 @@ public class CaseMemoryDFSAutomaton {
             //Parse the list of IndexValues associated to the index
             for (Node idxSuccessor:idx.getSuccessors()) {
                 //Make sure that the descriptor is NOT already included in neither the unconfirmed and doubtful descriptions
-                if (!getUnconfirmedDescription().contains(idxSuccessor.getDescriptor())
-                		&& !getDoubtfulDescription().contains(idxSuccessor.getDescriptor()))
+                if (!getUnconfirmedDescription().getDescriptors().contains(idxSuccessor.getDescriptor())
+                		&& !getDoubtfulDescription().getDescriptors().contains(idxSuccessor.getDescriptor()))
                 	return false;
             }
         }
@@ -807,15 +819,15 @@ public class CaseMemoryDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    private List<Descriptor> moveDescriptors(List<Descriptor> aList, List<Descriptor> anotherList) {
-    	List<Descriptor> aCopyList;
+    private Description moveDescriptors(Description aList, Description anotherList) {
+    	Description aCopyList;
     	
-    	aCopyList = new ArrayList<Descriptor>();
+    	aCopyList = new Description();
     	
-        while (aList.isEmpty() != true){
-            Descriptor d  = aList.remove(0);
-            anotherList.add(d);
-            aCopyList.add(d);
+        while (aList.getDescriptors().isEmpty() != true){
+            Descriptor d  = (Descriptor) aList.getDescriptors().remove(0);
+            anotherList.addDescriptors(d);
+            aCopyList.addDescriptors(d);
         }
         
         return aCopyList;
@@ -826,7 +838,7 @@ public class CaseMemoryDFSAutomaton {
  * @param my parameters list
  * @return my return values
  */
-    public void beginNewSearch(List<Descriptor> anOldProblemDescription){
+    public void beginNewSearch(Description anOldProblemDescription){
     	/*If the automaton returns a non-empty problem description list, then the REASONER MUST call it
     	again with that remaining description, using this method. Before doing so, all lists, except the
     	doubtful and unconfirmed ones, MUST be flushed. Make sure the new search begins at root level, and
@@ -873,14 +885,14 @@ public class CaseMemoryDFSAutomaton {
             //Parse the list of IndexValues associated to the index            
             for (Node idxSuccessor:idx.getSuccessors()){
                 //Make sure that the descriptor is NOT already included in neither the unconfirmed and doubtful descriptions
-                if (!getUnconfirmedDescription().contains(idxSuccessor.getDescriptor())
-                		&& !getDoubtfulDescription().contains(idxSuccessor.getDescriptor()))
+                if (!getUnconfirmedDescription().getDescriptors().contains(idxSuccessor.getDescriptor())
+                		&& !getDoubtfulDescription().getDescriptors().contains(idxSuccessor.getDescriptor()))
                     alternativeCases.add(idxSuccessor);                
             }
         }
         //Present the list of alternatives (associated to one index) to the user, preferably the cases
         if (alternativeCases.isEmpty() != true) {
-            presentChoices(alternativeCases);
+            presentChoicesDialog(alternativeCases);
             
             return;
         }
@@ -895,7 +907,7 @@ public class CaseMemoryDFSAutomaton {
             }
             
             if (newList.isEmpty() != true){
-            	presentChoices(newList);
+            	presentChoicesDialog(newList);
             	
             	return;
             }
@@ -928,36 +940,35 @@ public class CaseMemoryDFSAutomaton {
 	 * retrieveCasesUnderNorm fails; cancel - if the user cancels the dialog; fail - if all alternatives
 	 * were rejected (either because they did not match or the user was in doubt)
 	 */
-	public void presentChoices(List<Node> alternativeList){
-    	String value = null, message;
-    	String answer;
-    	String responses[] = {"confirm", "doubtful", "reject"};
+	public void presentChoicesDialog(List<Node> alternativeList){
+    	String message;
+    	SingleDSuggestionDialog.Response answer;
+    	String value[];
     	
     	for (Node n:alternativeList) {
     		if (!this.isUseless(n)) {
+    			value = new String[1];
+    			
     			if (n.getDescriptor().getValue() instanceof String)
-    				value = (String)n.getDescriptor().getValue();
+    				value[0] = (String)n.getDescriptor().getValue();
     			else if (n.getDescriptor().getValue() instanceof SingleValue)
-    				value = "" + ((SingleValue)n.getDescriptor().getValue()).getValue();
+    				value[0] = "" + ((SingleValue)n.getDescriptor().getValue()).getValue();    			    		
     			    			
         		// Prepare the inquiry to be presented to the user
-        		message = "¿Presenta la estructura" + n.getDescriptor().getStructure() + 
-        					" la característica " + n.getDescriptor().getAttribute() +
-        					" con el siguiente valor: " + value + "?" +
-        					"\n\nSi no es posible proveer la respuesta, escriba \"reject\"." +
-        					"\nSi tiene dudas de la respuesta, escriba \"doubtful\"." +
-        					"\nSi quiere abortar la interacción, haga click en cancelar.\n";
+        		message = "¿\nPresenta la característica \"" + n.getDescriptor().getAttribute() 
+        			+ "\" de la estructura \"" + n.getDescriptor().getStructure() +         					
+        					"\" el siguiente valor?";
         		
-        		answer = null;
-        		answer = (String) JOptionPane.showInputDialog(null, message, "OracleID", JOptionPane.QUESTION_MESSAGE, 
-        				null, responses, "confirm");
+        		SingleDSuggestionDialog dialog = new SingleDSuggestionDialog(frame, message, value);
         		
-        		if (answer == null) {
+        		answer = dialog.getResponse();
+        		
+        		if (answer == SingleDSuggestionDialog.Response.CANCEL) {
         			this.setStatus(SearchStatus.CANCEL);
         			return;
         		}
         		
-        		if (answer.equals("confirm")) {
+        		if (answer == SingleDSuggestionDialog.Response.ACEPT) {
         			// The solution is a norm
         			if (n instanceof Norm) {
         				processNextNorm((Norm)n);
@@ -978,10 +989,10 @@ public class CaseMemoryDFSAutomaton {
         			}
         		}
         		
-        		if (answer.equals("reject"))
+        		if (answer == SingleDSuggestionDialog.Response.REJECT)
         			addToUnconfirmedDescription(n.getDescriptor());
         		
-        		if (answer.equals("doubtful"))
+        		if (answer == SingleDSuggestionDialog.Response.DOUBT)
         			addToDoubtfulDescription(n.getDescriptor());
     		}
         	
@@ -1031,11 +1042,11 @@ public class CaseMemoryDFSAutomaton {
             if ((n instanceof Norm) != true){
                 //Since this descriptor corresponds to a partial match, make sure that it is NOT already
                 //included in neither the unconfirmed, doubtful, unmatched, solution, or confirmed descriptions
-                if (!this.getUnconfirmedDescription().contains(n.getDescriptor()) &&
-                		!this.getDoubtfulDescription().contains(n.getDescriptor()) &&
-                		!this.getUnmatchedDescription().contains(n.getDescriptor()) &&
-                		!this.getSolutionDescription().contains(n.getDescriptor()) &&
-                		!this.getConfirmedDescription().contains(n.getDescriptor())) {
+                if (!this.getUnconfirmedDescription().getDescriptors().contains(n.getDescriptor()) &&
+                		!this.getDoubtfulDescription().getDescriptors().contains(n.getDescriptor()) &&
+                		!this.getUnmatchedDescription().getDescriptors().contains(n.getDescriptor()) &&
+                		!this.getSolutionDescription().getDescriptors().contains(n.getDescriptor()) &&
+                		!this.getConfirmedDescription().getDescriptors().contains(n.getDescriptor())) {
                     //FUTURE IMPROVEMENT (documented by HB on 10-Sep-1999):
                     //1. Retrieve the taxon corresponding to the successor case.
                     //2. Retrieve the structure-atribute, from the taxon's description, that matches (d structure) and (d attribbute).
@@ -1119,7 +1130,7 @@ public class CaseMemoryDFSAutomaton {
         List<PossibleSolution> pSolutionList = associateCasesToPossibleSolutions(aCaseList);
         this.addToPossibleSolutions(pSolutionList.remove(0));
         
-        this.getSolutionDescription().remove(getSolutionDescription().size()-1);
+        this.getSolutionDescription().getDescriptors().remove(getSolutionDescription().getDescriptors().size()-1);
         
         return (status = SearchStatus.SUCCESS);
     }
@@ -1133,13 +1144,14 @@ public class CaseMemoryDFSAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public boolean checkPrecondition(List<Descriptor>  aProblemDescription){
-        if (aProblemDescription.isEmpty()) return false;
+    public boolean checkPrecondition(Description  aProblemDescription){
+        if (aProblemDescription.getDescriptors().isEmpty()) return false;
 
-        String sName = aProblemDescription.get(0).getStructure();
-        if (aProblemDescription.size() > 0) {
-            for (int i = 1; i < aProblemDescription.size(); i++)                
-                if (sName.equals(aProblemDescription.get(i).getStructure()) != true) return false;
+        String sName = ((Descriptor)aProblemDescription.getDescriptors().get(0)).getStructure();
+        if (aProblemDescription.getDescriptors().size() > 0) {
+            for (int i = 1; i < aProblemDescription.getDescriptors().size(); i++)                
+                if (sName.equals(((Descriptor)aProblemDescription.getDescriptors().get(i)).getStructure()) 
+                		!= true) return false;
         }
         
         return true;
@@ -1194,7 +1206,7 @@ public class CaseMemoryDFSAutomaton {
 	 * @param my parameters list
 	 * @return null - if the argument is an empty list, or object returned by searchForNormWith:
 	 */
-    public SearchStatus beginSearch(List<Descriptor> aProblemDescription){
+    public SearchStatus beginSearch(Description aProblemDescription){
     	
         //Check part 1. of the precondition
     	if (checkPrecondition(aProblemDescription) == false) {
@@ -1232,10 +1244,10 @@ public class CaseMemoryDFSAutomaton {
 	 * @return self, or object returned by retrieveCasesUnderCurrNorm, or object returned by
 	 * searchForCasesUsing:
 	 */
-    public void searchPossibleSolutions(List<Descriptor> aProblemDescription){
+    public void searchPossibleSolutions(Description aProblemDescription){
         //If the problem description is empty, all its descriptors matched norms. Make the current norm
         //the stop-level norm, and start the search for cases under it
-        if (aProblemDescription.isEmpty()){
+        if (aProblemDescription.getDescriptors().isEmpty()){
             setStopLevel(currentLevel);
             retrieveCasesUnderCurrentNorm();
             return;
@@ -1245,16 +1257,16 @@ public class CaseMemoryDFSAutomaton {
         int i = 0;
         Descriptor d = null;
         Norm nextNorm = null;
-        while (i < aProblemDescription.size()){
+        while (i < aProblemDescription.getDescriptors().size()){
             //Search for a norm whose descriptor matches the scanned descriptor. If found,
             //remove the descriptor from the problem case and stop the loop
-            nextNorm = currentNorm.getNearestSuccessorNorm(aProblemDescription.get(i));
+            nextNorm = currentNorm.getNearestSuccessorNorm((Descriptor)aProblemDescription.getDescriptors().get(i));
 
             if (nextNorm == null){
                 i += 1;
             }else{
-                d = aProblemDescription.remove(i);
-                i = aProblemDescription.size() + 1;
+                d = (Descriptor) aProblemDescription.getDescriptors().remove(i);
+                i = aProblemDescription.getDescriptors().size() + 1;
             }
         }
         //if no descriptor available, the entire list was scanned and no norm was found.  Start the search

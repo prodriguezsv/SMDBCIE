@@ -19,7 +19,7 @@ import redundantDiscriminationNet.RDMultiNet;
 import redundantDiscriminationNet.RDNet;
 import redundantDiscriminationNet.RootNorm;
 import searchHintsBase.HintsBase;
-import system.searchAutomata.GoalApproachingDialog;
+import system.searchAutomata.GoalApproachingHandler;
 import system.searchAutomata.CaseMemoryDFSAutomaton;
 import system.searchAutomata.SearchStatus;
 import system.searchAutomata.TaxonomySearchAutomaton;
@@ -117,7 +117,7 @@ public class Reasoner {
 	 * @param aJustificationItem
 	 */
 	public void addToCaseMemoryJustification(Descriptor aJustificationItem) {
-		this.getCaseMemoryJustification().add(aJustificationItem);
+		this.getCaseMemoryJustification().addDescriptors(aJustificationItem);
 	}
 
 	/**
@@ -561,7 +561,7 @@ public class Reasoner {
 			Hypothesis hypothesis1, Hypothesis hypothesis2) {
 		Hypothesis currHypothesis;
 		PossibleSolution ps;
-		GoalApproachingDialog dialog;
+		GoalApproachingHandler dialog;
 		int index;
 		SearchStatus status;
 	
@@ -599,7 +599,8 @@ public class Reasoner {
 		if (hypothesis1.getPossibleSolutions().get(0).getStatus() == true) {
 			if (TaxonomicRank.getIndex(hypothesis1.getPossibleSolutions().get(0).getLevel()) <
 					 TaxonomicRank.getIndex(this.getIdentGoal())) {
-				dialog = new GoalApproachingDialog(this.getIdentGoal(), hypothesis1, this.getTaxonomy(), this.getMinSimilarityDegree());
+				dialog = new GoalApproachingHandler(this.getIdentSystem().getOracleIDGui(), this.getIdentGoal()
+						,hypothesis1, this.getTaxonomy(), this.getMinSimilarityDegree());
 				dialog.chat();
 				status = dialog.getStatus();
 				if (status == SearchStatus.ERROR || status == SearchStatus.CANCEL)
@@ -614,7 +615,8 @@ public class Reasoner {
 			if (!(hypothesis2.getPossibleSolutions().isEmpty())) {
 				if (TaxonomicRank.getIndex(hypothesis2.getPossibleSolutions().get(0).getLevel()) <
 						 TaxonomicRank.getIndex(this.getIdentGoal())) {
-					dialog = new GoalApproachingDialog(this.getIdentGoal(), hypothesis2, this.getTaxonomy(), this.getMinSimilarityDegree());
+					dialog = new GoalApproachingHandler(this.getIdentSystem().getOracleIDGui(), this.getIdentGoal()
+							,hypothesis2, this.getTaxonomy(), this.getMinSimilarityDegree());
 					dialog.chat();
 					status = dialog.getStatus();
 					if (status == SearchStatus.ERROR || status == SearchStatus.CANCEL)
@@ -654,7 +656,7 @@ public class Reasoner {
 	public boolean searchHypothesisInCaseMemory() {
 		String s;
 		Hypothesis hypothesis1, hypothesis2;
-		List<Descriptor> problemDescription;
+		Description problemDescription;
 		RDNet net;
 		RootNorm caseNetRoot = null;
 		CaseMemoryDFSAutomaton searchAutomaton;
@@ -688,7 +690,7 @@ public class Reasoner {
 					
 			if (!(caseNetRoot == null)) {
 				// Create a new instance of case net search automaton
-				searchAutomaton = new CaseMemoryDFSAutomaton(caseNetRoot);
+				searchAutomaton = new CaseMemoryDFSAutomaton(this.getIdentSystem().getOracleIDGui(), caseNetRoot);
 	
 				// Begin the search with the given problem description
 				searchAutomaton.beginSearch(problemDescription);
@@ -706,7 +708,7 @@ public class Reasoner {
 				outputCopy = searchAutomaton.getSearchOutput();
 				outputCopy.setTaxonomy(this.getTaxonomy());
 				
-				while (!(problemDescription.isEmpty())) {
+				while (!(problemDescription.getDescriptors().isEmpty())) {
 					searchAutomaton.beginNewSearch(problemDescription);
 					status = searchAutomaton.getStatus();
 
@@ -760,7 +762,8 @@ public class Reasoner {
 		
 		hb = this.getHintsBase();
 
-		if (!(hb.getWeightedPatternsbyStructureList().sortByMeanWeightCriteria(this.getDescription()).isEmpty()))
+		if (!(hb.getWeightedPatternsbyStructureList().sortByMeanWeightCriteria(this.getDescription())
+				.getDescriptors().isEmpty()))
 			if (hb.getWeightedPatternsbyStructureList().getPercentageItemsProcessed() > 0.0) return true;
 		
 		if (!(hb.getPatternsbyStructureList().sortBySuccessFrecuencyCriteria(this.getDescription()).isEmpty()))
@@ -806,10 +809,10 @@ public class Reasoner {
 	}
 	
 	protected boolean searchInTaxonomyByStructure(String s, Hypothesis hypothesis) {
-		List<Descriptor> problemDescription;
+		Description problemDescription;
 		SearchStatus status;
 		TaxonomySearchAutomaton searchAutomaton;
-		GoalApproachingDialog dialog;
+		GoalApproachingHandler dialog;
 		
 		// Get the SAV problem description from the structure
 		problemDescription = this.getDescription(s);
@@ -840,7 +843,8 @@ public class Reasoner {
 			if (hypothesis.getPossibleSolutions().get(0).getStatus() == true) {
 				if (TaxonomicRank.getIndex(hypothesis.getPossibleSolutions().get(0).getLevel()) <
 						 TaxonomicRank.getIndex(this.getIdentGoal())) {
-					dialog = new GoalApproachingDialog(this.getIdentGoal(), hypothesis, this.getTaxonomy(), this.getMinSimilarityDegree());
+					dialog = new GoalApproachingHandler(this.getIdentSystem().getOracleIDGui(), this.getIdentGoal()
+							,hypothesis, this.getTaxonomy(), this.getMinSimilarityDegree());
 					dialog.chat();
 					status = dialog.getStatus();
 					if (status == SearchStatus.ERROR || status == SearchStatus.CANCEL)

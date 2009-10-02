@@ -10,6 +10,7 @@ import java.util.List;
 
 import ontology.CBR.Hypothesis;
 import ontology.CBR.PossibleSolution;
+import ontology.common.Descriptor;
 import ontology.common.SSCharacterDescriptor;
 import ontology.taxonomy.Modifier;
 import ontology.taxonomy.Taxon;
@@ -75,7 +76,8 @@ public class PossibleSolutionEvaluatorTest {
                                     new Modifier(1.0,1.0,1.0));
 
 
-        taxonomy = new Taxonomy("Mollusca");
+        taxonomy = new Taxonomy();
+        taxonomy.setRootTaxon(new Taxon(TaxonomicRank.ROOT, null));
 
         //taxon1.setPredecessor(rootTaxon);
         assertTrue(taxonomy.addTaxon(taxon1, taxonomy.getRootTaxon()));
@@ -400,22 +402,26 @@ public class PossibleSolutionEvaluatorTest {
         anOldPossibleSolution.addToUnconfirmedDescription(new SSCharacterDescriptor("unconfirmed","forma","ovalado"));
         anOldPossibleSolution.addToDoubtfulDescription(new SSCharacterDescriptor("doubts","forma","ovalado"));
 
-        assertEquals(0,aNewPossibleSolution.getSolutionDescription().size());
-        assertEquals(0,aNewPossibleSolution.getConfirmedDescription().size());
-        assertEquals(0,aNewPossibleSolution.getUnconfirmedDescription().size());
-        assertEquals(0,aNewPossibleSolution.getDoubtfulDescription().size());
+        assertEquals(0,aNewPossibleSolution.getSolutionDescription().getDescriptors().size());
+        assertEquals(0,aNewPossibleSolution.getConfirmedDescription().getDescriptors().size());
+        assertEquals(0,aNewPossibleSolution.getUnconfirmedDescription().getDescriptors().size());
+        assertEquals(0,aNewPossibleSolution.getDoubtfulDescription().getDescriptors().size());
 
         instance.inheritPossibleSolutionDescriptionsFrom(anOldPossibleSolution, aNewPossibleSolution);
 
-        assertEquals(1,aNewPossibleSolution.getSolutionDescription().size());
-        assertEquals(1,aNewPossibleSolution.getConfirmedDescription().size());
-        assertEquals(1,aNewPossibleSolution.getUnconfirmedDescription().size());
-        assertEquals(1,aNewPossibleSolution.getDoubtfulDescription().size());
+        assertEquals(1,aNewPossibleSolution.getSolutionDescription().getDescriptors().size());
+        assertEquals(1,aNewPossibleSolution.getConfirmedDescription().getDescriptors().size());
+        assertEquals(1,aNewPossibleSolution.getUnconfirmedDescription().getDescriptors().size());
+        assertEquals(1,aNewPossibleSolution.getDoubtfulDescription().getDescriptors().size());
 
-        assertEquals("solutions",aNewPossibleSolution.getSolutionDescription().get(0).getStructure());
-        assertEquals("confirmed",aNewPossibleSolution.getConfirmedDescription().get(0).getStructure());
-        assertEquals("unconfirmed",aNewPossibleSolution.getUnconfirmedDescription().get(0).getStructure());
-        assertEquals("doubts",aNewPossibleSolution.getDoubtfulDescription().get(0).getStructure());
+        assertEquals("solutions", ((Descriptor)aNewPossibleSolution.getSolutionDescription().getDescriptors()
+        		.get(0)).getStructure());
+        assertEquals("confirmed", ((Descriptor)aNewPossibleSolution.getConfirmedDescription().getDescriptors()
+        		.get(0)).getStructure());
+        assertEquals("unconfirmed", ((Descriptor)aNewPossibleSolution.getUnconfirmedDescription().getDescriptors()
+        		.get(0)).getStructure());
+        assertEquals("doubts", ((Descriptor)aNewPossibleSolution.getDoubtfulDescription().getDescriptors()
+        		.get(0)).getStructure());
     }
 
 }

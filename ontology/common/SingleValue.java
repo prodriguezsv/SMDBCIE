@@ -1,7 +1,10 @@
 /**
  * @see "Categoría Sukia Values de SUKIA Smalltalk"
  */
-package ontology.values;
+package ontology.common;
+
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
 /**
  * @author Armando
@@ -9,6 +12,34 @@ package ontology.values;
  */
 public class SingleValue extends Value{
 	private double value;
+	
+   // bean stuff
+	protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+
+   	public void addPropertyChangeListener(PropertyChangeListener pcl) {
+	   pcs.addPropertyChangeListener(pcl);
+   	}
+
+   	public void removePropertyChangeListener(PropertyChangeListener pcl) {
+	   pcs.removePropertyChangeListener(pcl);
+   	}
+
+
+   	private static final long serialVersionUID = -3087841394215437493L;
+
+  	private String _internalInstanceName = null;
+
+  	public String get_internalInstanceName() {
+		return _internalInstanceName;
+	}
+
+	public SingleValue() {
+	  this._internalInstanceName = "";
+  	}
+
+  	public SingleValue(String instance_name) {
+	  this._internalInstanceName = instance_name;
+  	}	
 	
 	/**
 	 * Constructor altenativo

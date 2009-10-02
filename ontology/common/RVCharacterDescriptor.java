@@ -3,7 +3,6 @@
  */
 package ontology.common;
 
-import ontology.values.RangeValue;
 
 /**
  * Descriptor es un elemento descriptivo de la descripción de un caso: el par attribute-value.
@@ -19,6 +18,12 @@ public class RVCharacterDescriptor extends QualitativeCharacterDescriptor {
 	
 	}
 	
+	private static final long serialVersionUID = -3087841394215437493L;
+
+	public RVCharacterDescriptor(String instance_name) {
+		super(instance_name);
+	}
+	
 	/**
 	 * Class instance invariant: self MUST always have exactly two values. The first
 	 * element corresponds to the descriptor's attribute, and the second one to the value.
@@ -30,7 +35,7 @@ public class RVCharacterDescriptor extends QualitativeCharacterDescriptor {
 		this.setValue(aValue);
 	}
 	
-	protected void setValue(Object value) {
+	public void setValue(Object value) {
 		this.value = (RangeValue)value;
 	}
 

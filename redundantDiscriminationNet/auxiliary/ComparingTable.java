@@ -4,9 +4,11 @@
  */
 package redundantDiscriminationNet.auxiliary;
 
-import java.util.ArrayList;
-import java.util.List;
+import jade.util.leap.Iterator;
 
+import java.util.ArrayList;
+
+import ontology.common.Description;
 import ontology.common.Descriptor;
 
 /**
@@ -30,11 +32,14 @@ public class ComparingTable extends ArrayList<ComparingTableTuple<Object>> {
 	 * @param desc1 La decripción del caso1
 	 * @param desc2 La decripción del caso2
 	 */
-	public void fill(List<Descriptor> desc1, List<Descriptor> desc2) {
+	public void fill(Description desc1, Description desc2) {
 		Descriptor d2;
 		ComparingTableTuple<Object> tuple;
 		
-		for (Descriptor d: desc1) {			
+		Iterator i = desc1.getAllDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = (Descriptor) i.next(); 			
 			d2 = this.getDescriptor(desc2, d.getAttribute());
 			
 			tuple = new ComparingTableTuple<Object>(d.getAttribute(), d.getValue(), ((d2 == null)? null:d2.getValue()));
@@ -42,7 +47,10 @@ public class ComparingTable extends ArrayList<ComparingTableTuple<Object>> {
 			this.add(tuple);
 		}
 		
-		for (Descriptor d: desc2) {			
+		Iterator j = desc2.getAllDescriptors();
+		
+		while (j.hasNext()) {
+			Descriptor d = (Descriptor) j.next(); 				
 			d2 = this.getDescriptor(desc1, d.getAttribute());
 			
 			if (d2 == null) {
@@ -70,12 +78,12 @@ public class ComparingTable extends ArrayList<ComparingTableTuple<Object>> {
 	 * @param anAttribute El atributo a buscar
 	 * @return El descriptor de aDescription que posee el atributo anAttribute o null si no existe
 	 */
-	private Descriptor getDescriptor(List<Descriptor> aDescription, String anAttribute) {
-		if (aDescription.isEmpty()) return null;
+	private Descriptor getDescriptor(Description aDescription, String anAttribute) {
+		if (aDescription.getDescriptors().isEmpty()) return null;
 
-		for (int i = 1; i <= aDescription.size(); i++) {
-			if (aDescription.get(i-1).getAttribute().equals(anAttribute))
-				return aDescription.get(i-1);
+		for (int i = 1; i <= aDescription.getDescriptors().size(); i++) {
+			if (((Descriptor)aDescription.getDescriptors().get(i-1)).getAttribute().equals(anAttribute))
+				return (Descriptor)aDescription.getDescriptors().get(i-1);
 		}
 		
 		return null;

@@ -3,26 +3,28 @@
  */
 package ontology.taxonomy;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import jade.util.leap.ArrayList;
+import jade.util.leap.Iterator;
+import jade.util.leap.List;
+
+import java.io.Serializable;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import ontology.common.Description;
 import ontology.common.Descriptor;
-import ontology.values.RangeValue;
+import ontology.common.RangeValue;
 
 
 /**
  * @author Armando
  *
  */
-public class Taxon implements Comparable<Taxon>{
+public class Taxon implements jade.content.Concept, Serializable, Comparable<Taxon>{
 	private TaxonomicRank level;
 	private String name;
 	private Taxon predecessor;
-	private List<Taxon> successors;
+	private List successors;
 	private WeightedDescription weightedDescription;
 
 	/**
@@ -32,15 +34,32 @@ public class Taxon implements Comparable<Taxon>{
 		setLevel(level);
 		setName(name);
 		predecessor = null;
-		setSuccessors(new ArrayList<Taxon>());
+		setSuccessors(new ArrayList());
 		setWeightedDescription(new WeightedDescription());
 	}
+	
+	private static final long serialVersionUID = -8627856865395943317L;
+
+	private String _internalInstanceName = null;
+
+  	public Taxon() {
+	  this._internalInstanceName = "";
+  	}
+
+  	public Taxon(String instance_name) {
+	  this._internalInstanceName = instance_name;
+	  setSuccessors(new ArrayList());
+  	}
+
+  	public String toString() {
+	  return _internalInstanceName;
+  	}
 
 	/**
 	 * @see "Método level: del protocolo adding en SUKIA SmallTalk"
 	 * @param level
 	 */
-	private void setLevel(TaxonomicRank level) {
+	public void setLevel(TaxonomicRank level) {
 		this.level = level;
 	}
 
@@ -76,7 +95,7 @@ public class Taxon implements Comparable<Taxon>{
 	 * @see "Método name: del protocolo adding en SUKIA SmallTalk"
 	 * @param name
 	 */
-	private void setName(String name) {
+	public void setName(String name) {
 		this.name = name;
 	}
 
@@ -113,16 +132,16 @@ public class Taxon implements Comparable<Taxon>{
 	 * Método de instancia agregado
 	 * @param sucessor
 	 */
-	public void setSuccessors(List<Taxon> sucessors) {
+	public void setSuccessors(List sucessors) {
 		this.successors = sucessors;
-		Collections.sort(this.successors);
+		//Collections.sort(this.successors); //OJO
 	}
 
 	/**
 	 * @see "Método successors del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Taxon> getSuccessors() {
+	public List getSuccessors() {
 		return successors;
 	}
 	
@@ -136,19 +155,25 @@ public class Taxon implements Comparable<Taxon>{
        
 		if (!this.getSuccessors().contains(successor)) {
 			this.successors.add(successor);
-			Collections.sort(this.successors);
+			//Collections.sort(this.successors); //OJO
 			successor.setPredecessor(this);
 			return true;
 		}
 		
 		return false;
 	}
+	
+	public void clearAllSuccessors() {
+		successors.clear();
+	}
+	
+	public Iterator getAllSuccessors() {return successors.iterator(); }
 
 	/***
 	 * Método de instancia agregado
 	 * @param sAVDescription
 	 */
-	private void setWeightedDescription(WeightedDescription aDescription) {
+	public void setWeightedDescription(WeightedDescription aDescription) {
 		this.weightedDescription = aDescription;
 	}
 
@@ -177,7 +202,11 @@ public class Taxon implements Comparable<Taxon>{
    public Map<Object, Double> retriveWeightedValues(String structureName, String attributeName){
         Map<Object, Double> result = new HashMap<Object, Double>();
         
-        for (WeightedDescriptor d:weightedDescription) {
+        Iterator i = weightedDescription.getAllWeightedDescriptors();
+		
+		while (i.hasNext()) {
+			WeightedDescriptor d = (WeightedDescriptor) i.next();
+        
         	if (d.getDescriptor().getStructure().equals(structureName) &&
         			d.getDescriptor().getAttribute().equals(attributeName)){
                 result.put(d.getDescriptor().getValue(), d.getModifier().getValueWeight());
@@ -287,26 +316,33 @@ public class Taxon implements Comparable<Taxon>{
 			return true;
 		
 		// Parse the receiver's SAV (structure) description
-		for (Descriptor d:this.getDescription()) {
+		Iterator i = this.getDescription().getAllDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = (Descriptor) i.next(); 
 			if (d.getValue() instanceof RangeValue) {
 				/*The attribute's value descriptor is a range value.  Get the receiver's predecessor and loop while the 
 				 predecessor's level is not ROOT*/
 				pt = aParentTaxon;
 				while(!(pt.getLevel().equals(TaxonomicRank.ROOT))) {
-
-					for (Descriptor d2:pt.getDescription()) {
-                                           if (!(d2.getValue() instanceof RangeValue)) 
-                                             continue;
-
-                                             if (d.getStructure().equals(d2.getStructure()) && d.getAttribute().equals(d2.getAttribute())){
-                                                if (!((RangeValue) d2.getValue()).getMeasuringUnit().equals(((RangeValue) d.getValue()).getMeasuringUnit())){
-                                                        return false;
-                                                }
-                                                return (((RangeValue) d2.getValue()).isWithinthisBounds(((RangeValue) d.getValue()).getLowerBound(), ((RangeValue) d.getValue()).getUpperBound()));
-                                             }
+					Iterator j = pt.getDescription().getAllDescriptors();
+					
+					while (j.hasNext()) {
+						Descriptor d2 = (Descriptor) j.next();
+						
+	                     if (!(d2.getValue() instanceof RangeValue)) 
+	                         continue;
+	
+                         if (d.getStructure().equals(d2.getStructure()) && d.getAttribute().equals(d2.getAttribute())){
+                            if (!((RangeValue) d2.getValue()).getMeasuringUnit().equals(((RangeValue) d.getValue()).getMeasuringUnit())){
+                                    return false;
+                            }
+                            return (((RangeValue) d2.getValue()).isWithinthisBounds(((RangeValue) d.getValue()).getLowerBound(), ((RangeValue) d.getValue()).getUpperBound()));
+                         }
                                             
 					}//end for (Descriptor d2:pt.getDescription())
-                                        pt = pt.getPredecessor();
+					
+                    pt = pt.getPredecessor();
 				}//end while
 			}
 		}
@@ -320,7 +356,7 @@ public class Taxon implements Comparable<Taxon>{
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de descriptores relacionados a aStructureName
 	 */
-	public final List<Descriptor> getDescription(String aStructureName) {
+	public final Description getDescription(String aStructureName) {
 		return this.getDescription().getDescription(aStructureName);
 	}
 	
@@ -328,7 +364,7 @@ public class Taxon implements Comparable<Taxon>{
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
-	public final List<String> getCharacterStructuresList() {
+	public final java.util.List<String> getCharacterStructuresList() {
 		return this.getDescription().getCharacterStructuresList();
 	}
 	
@@ -336,7 +372,7 @@ public class Taxon implements Comparable<Taxon>{
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
-	public final List<String> getHeuristicStructuresList() {
+	public final java.util.List<String> getHeuristicStructuresList() {
 		return this.getDescription().getHeuristicStructuresList();
 	}
 	
@@ -344,7 +380,7 @@ public class Taxon implements Comparable<Taxon>{
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
-	public final List<String> getAttributeList(String structureName) {
+	public final java.util.List<String> getAttributeList(String structureName) {
 		return this.getDescription().getAttributeList(structureName);
 	}
 	
@@ -352,7 +388,7 @@ public class Taxon implements Comparable<Taxon>{
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de descriptores relacionados a aStructureName y aAttributeName
 	 */
-	public final List<Descriptor> getDescription(String aStructureName, String anAttributeName) {
+	public final Description getDescription(String aStructureName, String anAttributeName) {
 		return this.getDescription().getDescription(aStructureName, anAttributeName);
 	}
 	

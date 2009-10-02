@@ -84,10 +84,10 @@ public class PatternsbyStructure implements Comparable<PatternsbyStructure> {
 		if (pattern == null)
 			return false;
 		
-		if (pattern.getPattern().isEmpty())
+		if (pattern.getPattern().getDescriptors().isEmpty())
 			return false;
 		
-		if (!this.getStructureName().equals(pattern.getPattern().get(0).getStructure()))
+		if (!this.getStructureName().equals(((Descriptor)pattern.getPattern().getDescriptors().get(0)).getStructure()))
 			return false;
 		
 		if ((dp = this.getPattern(pattern.getPattern())) != null)
@@ -120,7 +120,7 @@ public class PatternsbyStructure implements Comparable<PatternsbyStructure> {
 		
 		// If aPattern's size is greater than the largest pattern in this list, then aPattern is not included
 		// in this list
-		if (aPattern.size() > this.getPatterns().get(0).getPattern().size())
+		if (aPattern.getDescriptors().size() > this.getPatterns().get(0).getPattern().getDescriptors().size())
 			return null;
 		
 		// Scan the entire pattern in this list
@@ -139,7 +139,7 @@ public class PatternsbyStructure implements Comparable<PatternsbyStructure> {
 	 * @param aPattern
 	 * @return
 	 */
-	public boolean hasAPatternSimilarTo(List<Descriptor> aPattern) {
+	public boolean hasAPatternSimilarTo(Description aPattern) {
 		DescriptorsPattern p;
 		
 		p = this.whatPatternIsMostSimilarTo(aPattern);
@@ -158,7 +158,7 @@ public class PatternsbyStructure implements Comparable<PatternsbyStructure> {
 	 * @return nil - if aPattern is NOT similar to any of the patterns contained in self; an instance of
 	 * DescriptorsPattern - if a similar or equal pattern is found in this list.
 	 */
-	public DescriptorsPattern whatPatternIsMostSimilarTo(List<Descriptor> aPattern) {
+	public DescriptorsPattern whatPatternIsMostSimilarTo(Description aPattern) {
 		int min, max;
 		double simThreshold, simRate, maxSimRate = 0;
 		DescriptorsPattern dpret = null;
@@ -171,12 +171,12 @@ public class PatternsbyStructure implements Comparable<PatternsbyStructure> {
 		// Scan the entire pattern list in this list
 		for (DescriptorsPattern dp: this.getPatterns()) {
 			// Get the max and min pattern lengths (number of Descriptors) between the current pattern and the argument
-			if (dp.getPattern().size() >= aPattern.size()) {
-				max = dp.getPattern().size();
-				min = aPattern.size();
+			if (dp.getPattern().getDescriptors().size() >= aPattern.getDescriptors().size()) {
+				max = dp.getPattern().getDescriptors().size();
+				min = aPattern.getDescriptors().size();
 			} else {
-				max = aPattern.size();
-				min = dp.getPattern().size();
+				max = aPattern.getDescriptors().size();
+				min = dp.getPattern().getDescriptors().size();
 			}
 
 			// Get the minimal accepted similarity rate, according to the longest pattern

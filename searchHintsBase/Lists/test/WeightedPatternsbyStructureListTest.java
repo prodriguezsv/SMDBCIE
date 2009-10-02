@@ -5,13 +5,10 @@ package searchHintsBase.Lists.test;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import ontology.common.Descriptor;
+import ontology.common.Description;
 import ontology.common.SSCharacterDescriptor;
 import ontology.common.SVCharacterDescriptor;
-import ontology.values.SingleValue;
+import ontology.common.SingleValue;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -94,7 +91,7 @@ public class WeightedPatternsbyStructureListTest {
 	 */
 	@Test
 	public void testSortByMeanWeightCriteria() {
-		List<Descriptor> d1, d2;
+		Description d1, d2;
 		WeightedPatternsbyStructure spbs;
 		
 		System.out.println("Iniciando pruebas para el método SortBySuccessCriteria()");
@@ -128,33 +125,33 @@ public class WeightedPatternsbyStructureListTest {
 				"Forma del borde", "Ondulado"), 1, 10));
 		assertTrue(patterns.add(spbs));
 		
-		d1 = new ArrayList<Descriptor>();
-		d1.add(new SVCharacterDescriptor("Branquias", "Número de hojas branquiales", new SingleValue(6)));
+		d1 = new Description();
+		d1.addToConcreteDescription(new SVCharacterDescriptor("Branquias", "Número de hojas branquiales", new SingleValue(6)));
 		
 		assertEquals(d1, patterns.sortByMeanWeightCriteria(d1));
-		d2 = new ArrayList<Descriptor>();
-		assertEquals(d2, patterns.sortByMeanWeightCriteria(d2));
+		d2 = new Description();
+		assertEquals(d2.getDescriptors(), patterns.sortByMeanWeightCriteria(d2).getDescriptors());
 		
-		d2.add(new SVCharacterDescriptor("Branquias", "Número de hojas branquiales", new SingleValue(6)));
-		assertEquals(d2, patterns.sortByMeanWeightCriteria(d1));
+		d2.addToConcreteDescription(new SVCharacterDescriptor("Branquias", "Número de hojas branquiales", new SingleValue(6)));
+		assertEquals(d2.getDescriptors(), patterns.sortByMeanWeightCriteria(d1).getDescriptors());
 		
-		d1.add(new SSCharacterDescriptor("Branquias", "Posición durante desplazamiento", "Hacia atras"));
-		d1.add(new SSCharacterDescriptor("Branquias", "Posición del ano con respecto a la branquia",
+		d1.addToConcreteDescription(new SSCharacterDescriptor("Branquias", "Posición durante desplazamiento", "Hacia atras"));
+		d1.addToConcreteDescription(new SSCharacterDescriptor("Branquias", "Posición del ano con respecto a la branquia",
 				"En el centro"));
 		
-		d2.add(new SSCharacterDescriptor("Branquias", "Posición del ano con respecto a la branquia",
+		d2.addToConcreteDescription(new SSCharacterDescriptor("Branquias", "Posición del ano con respecto a la branquia",
 		"En el centro"));
-		d2.add(new SSCharacterDescriptor("Branquias", "Posición durante desplazamiento", "Hacia atras"));
-		assertEquals(d2, patterns.sortByMeanWeightCriteria(d1));
+		d2.addToConcreteDescription(new SSCharacterDescriptor("Branquias", "Posición durante desplazamiento", "Hacia atras"));
+		assertEquals(d2.getDescriptors(), patterns.sortByMeanWeightCriteria(d1).getDescriptors());
 		
-		d1 = new ArrayList<Descriptor>();
-		d1.add(new SSCharacterDescriptor("Manto", "Textura del borde", "Lisa"));
-		d1.add(new SSCharacterDescriptor("Manto", "Forma del borde", "Ondulado"));
+		d1 = new Description();
+		d1.addToConcreteDescription(new SSCharacterDescriptor("Manto", "Textura del borde", "Lisa"));
+		d1.addToConcreteDescription(new SSCharacterDescriptor("Manto", "Forma del borde", "Ondulado"));
 		
-		d2 = new ArrayList<Descriptor>();
-		d2.add(new SSCharacterDescriptor("Manto", "Forma del borde", "Ondulado"));
-		d2.add(new SSCharacterDescriptor("Manto", "Textura del borde", "Lisa"));
-		assertEquals(d2, patterns.sortByMeanWeightCriteria(d1));
+		d2 = new Description();
+		d2.addToConcreteDescription(new SSCharacterDescriptor("Manto", "Forma del borde", "Ondulado"));
+		d2.addToConcreteDescription(new SSCharacterDescriptor("Manto", "Textura del borde", "Lisa"));
+		assertEquals(d2.getDescriptors(), patterns.sortByMeanWeightCriteria(d1).getDescriptors());
 	}
 
 	/**

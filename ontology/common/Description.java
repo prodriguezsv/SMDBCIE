@@ -3,26 +3,78 @@
  */
 package ontology.common;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import jade.util.leap.ArrayList;
+import jade.util.leap.Iterator;
+import jade.util.leap.List;
+
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
 /**
  * @author Armando
  *
  */
-@SuppressWarnings("serial")
-public class Description extends ArrayList<Descriptor> {
+public class Description {
+   // bean stuff
+   protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+
+   public void addPropertyChangeListener(PropertyChangeListener pcl) {
+     pcs.addPropertyChangeListener(pcl);
+   }
+
+   public void removePropertyChangeListener(PropertyChangeListener pcl) {
+     pcs.removePropertyChangeListener(pcl);
+   }
+
+
+  private static final long serialVersionUID = -3087841394215437493L;
+
+  private String _internalInstanceName = null;
+
+  public Description() {
+    this._internalInstanceName = "";
+  }
+
+  public Description(String instance_name) {
+    this._internalInstanceName = instance_name;
+  }
+
+  public String toString() {
+    return _internalInstanceName;
+  }
+
+   /**
+   * Protege name: descriptors
+   */
+   private List descriptors = new ArrayList();
+   public void addDescriptors(Descriptor elem) { 
+     descriptors.add(elem);
+     //pcs.firePropertyChange("descriptors", oldList, this.descriptors);
+   }
+   public boolean removeDescriptors(Descriptor elem) {
+     boolean result = descriptors.remove(elem);
+     //pcs.firePropertyChange("descriptors", oldList, this.descriptors);
+     return result;
+   }
+   public void clearAllDescriptors() {
+     descriptors.clear();
+     //pcs.firePropertyChange("descriptors", oldList, this.descriptors);
+   }
+   public Iterator getAllDescriptors() {return descriptors.iterator(); }
+   public List getDescriptors() {return descriptors; }
+   public void setDescriptors(List l) {descriptors = l; }
 	/**
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
-	public List<String> getCharacterStructuresList() {
-		List<String> structuresList;
+	public java.util.List<String> getCharacterStructuresList() {
+		java.util.List<String> structuresList;
 		
-		structuresList = new ArrayList<String>();
+		structuresList = new java.util.ArrayList<String>();
+		Iterator i = this.getAllDescriptors();
 		
-		for(Descriptor d: this) {
+		while (i.hasNext()) {
+			Descriptor d = (Descriptor) i.next(); 
 			if (d instanceof CharacterDescriptor) { 
 				// Determine if the structure name in Deescriptor has already been included in structureList
 				if (!(structuresList.contains(d.getStructure()))) {
@@ -39,12 +91,15 @@ public class Description extends ArrayList<Descriptor> {
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de cadenas representando el nombre de las heur&iacute;sticas
 	 */
-	public final List<String> getHeuristicStructuresList() {
-		List<String> structuresList;
+	public final java.util.List<String> getHeuristicStructuresList() {
+		java.util.List<String> structuresList;
 		
-		structuresList = new ArrayList<String>();
+		structuresList = new java.util.ArrayList<String>();
 		
-		for(Descriptor d: this) {
+		Iterator i = this.getAllDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = (Descriptor) i.next(); 
 			if (d instanceof HeuristicDescriptor) { 
 				// Determine if the structure name in Deescriptor has already been included in structureList
 				if (!(structuresList.contains(d.getStructure()))) {
@@ -61,12 +116,15 @@ public class Description extends ArrayList<Descriptor> {
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de cadenas representando el nombre de las heur&iacute;sticas
 	 */
-	public final List<String> getStructuresList() {
-		List<String> structuresList;
+	public final java.util.List<String> getStructuresList() {
+		java.util.List<String> structuresList;
 		
-		structuresList = new ArrayList<String>();
+		structuresList = new java.util.ArrayList<String>();
 		
-		for(Descriptor d: this) {			 
+		Iterator i = this.getAllDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = (Descriptor) i.next(); 			 
 			// Determine if the structure name in Deescriptor has already been included in structureList
 			if (!(structuresList.contains(d.getStructure()))) {
 				// The structure name was not found in structureList. Append it to structureList
@@ -86,10 +144,13 @@ public class Description extends ArrayList<Descriptor> {
 		
 		description = new Description();
 		
-		for(Descriptor d: this) {
+		Iterator i = this.getAllDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = (Descriptor) i.next(); 
 			// Determine if the structure name in Deescriptor has already been included in structureList
 			if (d.getStructure().equals(aStructureName)) {
-				description.add(d);
+				description.addDescriptors(d);
 			} else continue;
 		}
 		
@@ -106,7 +167,10 @@ public class Description extends ArrayList<Descriptor> {
 	public boolean areThereContradictions(Descriptor aDescriptor) {
 		
 		// Para cada par (atributo, valor) de aCase.
-		for(Descriptor d: this) {
+		Iterator i = this.getAllDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = (Descriptor) i.next(); 
 			if (d.getStructure().equals(aDescriptor.getStructure()) &&
 					d.getAttribute().equals(aDescriptor.getAttribute())	) {
 					return true; // Hay contradiccion
@@ -130,12 +194,12 @@ public class Description extends ArrayList<Descriptor> {
 				|| aDescriptor instanceof RVHeuristicDescriptor)
 			return false;
 		
-		if (this.contains(aDescriptor) ||
+		if (this.getDescriptors().contains(aDescriptor) ||
 				this.areThereContradictions(aDescriptor))
 			return false;
 		
-		this.add(aDescriptor);
-		Collections.sort(this);
+		this.addDescriptors(aDescriptor);
+		//Collections.sort(this.getDescriptors());
 		
 		return true;
 	}
@@ -148,9 +212,12 @@ public class Description extends ArrayList<Descriptor> {
 	public boolean addAllToConcreteDescription(Description aDescription) {
 		if (aDescription == null) return false;
 		
-        for (Descriptor d:aDescription){
+		Iterator i = aDescription.getAllDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = (Descriptor) i.next(); 
             this.addToConcreteDescription(d);
-            Collections.sort(this);
+            //Collections.sort(this);
         }
         
 		return true;
@@ -164,9 +231,12 @@ public class Description extends ArrayList<Descriptor> {
 	public boolean addAllToAbstractDescription(Description aDescription) {
 		if (aDescription == null) return false;
 		
-        for (Descriptor d:aDescription){
+		Iterator i = aDescription.getAllDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = (Descriptor) i.next(); 
             this.addToAbstractDescription(d);
-            Collections.sort(this);
+            //Collections.sort(this);
         }
         
 		return true;
@@ -182,11 +252,11 @@ public class Description extends ArrayList<Descriptor> {
 	public boolean addToAbstractDescription(Descriptor aDescriptor) {
 		if (aDescriptor == null) return false;
 		
-		if (this.contains(aDescriptor))
+		if (this.getDescriptors().contains(aDescriptor))
 			return false;
 		
-		this.add(aDescriptor);
-		Collections.sort(this);
+		this.addDescriptors(aDescriptor);
+		//Collections.sort(this);
 		
 		return true;
 	}
@@ -200,10 +270,13 @@ public class Description extends ArrayList<Descriptor> {
 		
 		description = new Description();
 		
-		for(Descriptor d: this) {
+		Iterator i = this.getAllDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = (Descriptor) i.next(); 
 			// Determine if the structure name in Deescriptor has already been included in structureList
 			if (d.getStructure().equals(aStructureName) && d.getAttribute().equals(anAttributeName)) {
-				description.add(d);
+				description.addDescriptors(d);
 			} else continue;
 		}
 		
@@ -214,12 +287,15 @@ public class Description extends ArrayList<Descriptor> {
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
-	public final List<String> getAttributeList(String structureName) {
-		List<String> attributesList;
+	public final java.util.List<String> getAttributeList(String structureName) {
+		java.util.List<String> attributesList;
 		
-		attributesList = new ArrayList<String>();
+		attributesList = new java.util.ArrayList<String>();
 		
-		for(Descriptor d: this) {
+		Iterator i = this.getAllDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = (Descriptor) i.next(); 
 			if (d.getStructure().equals(structureName)) {
 				// Determine if the structure name in Deescriptor has already been included in structureList
 				if (!(attributesList.contains(d.getAttribute()))) {
@@ -241,12 +317,15 @@ public class Description extends ArrayList<Descriptor> {
 		
 		characterList = new Description();
 		
-		for(Descriptor d: this) {
+		Iterator i = this.getAllDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = (Descriptor) i.next(); 
 			if (d instanceof CharacterDescriptor) { 
 				// Determine if the structure name in Deescriptor has already been included in structureList
-				if (!(characterList.contains(d.getStructure()))) {
+				if (!(characterList.getDescriptors().contains(d.getStructure()))) {
 					// The structure name was not found in structureList. Append it to structureList
-					characterList.add(d);
+					characterList.addDescriptors(d);
 				} else continue;
 			}
 		}
@@ -263,12 +342,15 @@ public class Description extends ArrayList<Descriptor> {
 		
 		heuristicList = new Description();
 		
-		for(Descriptor d: this) {
+		Iterator i = this.getAllDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = (Descriptor) i.next(); 
 			if (d instanceof HeuristicDescriptor) { 
 				// Determine if the structure name in Deescriptor has already been included in structureList
-				if (!(heuristicList.contains(d.getStructure()))) {
+				if (!(heuristicList.getDescriptors().contains(d.getStructure()))) {
 					// The structure name was not found in structureList. Append it to structureList
-					heuristicList.add(d);
+					heuristicList.addDescriptors(d);
 				} else continue;
 			}
 		}

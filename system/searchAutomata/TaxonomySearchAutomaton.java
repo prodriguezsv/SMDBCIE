@@ -1,6 +1,8 @@
 
 package system.searchAutomata;
 
+import jade.util.leap.Iterator;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -11,10 +13,10 @@ import ontology.CBR.PossibleSolution;
 import ontology.CBR.SimilarityDegree;
 import ontology.common.Description;
 import ontology.common.Descriptor;
+import ontology.common.RangeValue;
+import ontology.common.SingleValue;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.Taxonomy;
-import ontology.values.RangeValue;
-import ontology.values.SingleValue;
 
 import system.searchAutomata.output.TaxonomyAutomatonOutput;
 import system.similarityAssessment.SimilarityAssessor;
@@ -156,13 +158,14 @@ public class TaxonomySearchAutomaton {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public boolean checkPrecondition(List<Descriptor>  aProblemDescription){
-        if (aProblemDescription.isEmpty()) return false;
+    public boolean checkPrecondition(Description  aProblemDescription){
+        if (aProblemDescription.getDescriptors().isEmpty()) return false;
 
-        String sName = aProblemDescription.get(0).getStructure();
-        if (aProblemDescription.size() > 0) {
-            for (int i = 1; i < aProblemDescription.size(); i++)                
-                if (sName.equals(aProblemDescription.get(i).getStructure()) != true) return false;
+        String sName = ((Descriptor)aProblemDescription.getDescriptors().get(0)).getStructure();
+        if (aProblemDescription.getDescriptors().size() > 0) {
+            for (int i = 1; i < aProblemDescription.getDescriptors().size(); i++)                
+                if (sName.equals(((Descriptor)aProblemDescription.getDescriptors().get(i)).getStructure())
+                		!= true) return false;
         }
         
         return true;
@@ -210,7 +213,7 @@ public class TaxonomySearchAutomaton {
      * @return nil - if the precondition was not met, or an error occurred, or the process failed to find
      * possible solutions. value returned by prepareSuccessfulOutputWith:
      */
-    public SearchStatus beginSearch(List<Descriptor> aProblemDescription){
+    public SearchStatus beginSearch(Description aProblemDescription){
     	//Check general description precondition
         if (checkPrecondition(aProblemDescription) == false) {
         	setStatus(SearchStatus.ERROR);
@@ -239,19 +242,25 @@ public class TaxonomySearchAutomaton {
      * @return -1 : if a processing error occurred; nil : if no value descriptors were found; self : if at
      * least one descriptor was found.
      */
-    public void searchPossibleSolutions(List<Descriptor> descriptionProblem) {
+    public void searchPossibleSolutions(Description descriptionProblem) {
     	List<Descriptor> tempList, matchedDescriptors;
     	Description descriptors;
     	
     	tempList = new ArrayList<Descriptor>();
     	matchedDescriptors = new ArrayList<Descriptor>();
     	
-        for (Descriptor d: descriptionProblem) {
+    	Iterator i = descriptionProblem.getAllDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = (Descriptor) i.next(); 
         	descriptors = this.getTaxonomy().searchBySA(d.getStructure(), d.getAttribute());
         	
     		matchedDescriptors.clear();
     		
-			for (Descriptor d2: descriptors) {
+    		Iterator j = descriptors.getAllDescriptors();
+    		
+    		while (j.hasNext()) {
+    			Descriptor d2 = (Descriptor) j.next(); 
 				if (d.getValue() instanceof SingleValue) {
     				if (d2.getValue() instanceof RangeValue) {
     					if (((RangeValue)d2.getValue()).containsNumber(((SingleValue)d.getValue()).getValue()))
@@ -276,7 +285,7 @@ public class TaxonomySearchAutomaton {
         			//Extract the taxa included in each of the retrieved value descriptors
                     addToSolutionDescription(d);
                     List<PossibleSolution> ps = associateTaxaToPossibleSolutions(taxa);
-                    getSolutionDescription().clear();
+                    getSolutionDescription().clearAllDescriptors();
                     
                     while(ps.isEmpty() != true)
                         addToPossibleSolutions(ps.remove(0));
@@ -301,7 +310,7 @@ public class TaxonomySearchAutomaton {
     			//Extract the taxa included in each of the retrieved value descriptors
                 addToSolutionDescription(d);
                 List<PossibleSolution> ps = associateTaxaToPossibleSolutions(taxaTempList);
-                getSolutionDescription().clear();
+                getSolutionDescription().clearAllDescriptors();
                 
                 while(ps.isEmpty() != true)
                     addToPossibleSolutions(ps.remove(0));
@@ -340,22 +349,25 @@ public class TaxonomySearchAutomaton {
                 PossibleSolution compSolution = getPossibleSolutions().get(i);
 
                 //Determine if the current possible solution's attribute is different from the compare possible solution's attribute
-                if (ps.getSolutionDescription().get(0).getAttribute()
-                		.equals(compSolution.getSolutionDescription().get(0).getAttribute())){
+                if (((Descriptor)ps.getSolutionDescription().getDescriptors().get(0)).getAttribute()
+                		.equals(((Descriptor)compSolution.getSolutionDescription().getDescriptors().get(0)).getAttribute())){
                     i += 1;
                 } else {
                     //Check if the proposed solutions are the same object
                     if (ps.getSolution().equals(compSolution.getSolution())) {
                         //Inherit the compare solutions solutionDescription and remove it from the taxonList
-                        while (compSolution.getSolutionDescription().isEmpty() != true)
-                            inheritedDescription.add(compSolution.getSolutionDescription().remove(0));
+                        while (compSolution.getSolutionDescription().getDescriptors().isEmpty() != true)
+                            inheritedDescription.add(((Descriptor)compSolution.getSolutionDescription().getDescriptors().remove(0)));
 
                         getPossibleSolutions().remove(i);
                     } else {//At this point, ps and compSolution are different taxa
                         //Check if ps is a successor of compSolution
                         if (((Taxon)ps.getSolution()).isSuccessorOf((Taxon)compSolution.getSolution())){
                             //ps inherits compSolution's description
-                            for (Descriptor d: compSolution.getSolutionDescription()){
+                        	Iterator j = compSolution.getSolutionDescription().getAllDescriptors();
+                    		
+                    		while (j.hasNext()) {
+                    			Descriptor d = (Descriptor) j.next(); 
                                 inheritedDescription.add(d);
                             }
                         }

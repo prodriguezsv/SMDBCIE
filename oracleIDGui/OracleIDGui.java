@@ -27,7 +27,6 @@ import edu.stanford.smi.protege.model.*;
 
 import java.awt.Font;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -36,12 +35,17 @@ import java.util.Map;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import ontology.CBR.Case;
 import ontology.CBR.Problem;
 import ontology.common.Descriptor;
+import ontology.common.MeasuringUnit;
 import ontology.common.SSCharacterDescriptor;
+import ontology.common.SSHeuristicDescriptor;
 import ontology.common.SVCharacterDescriptor;
-import ontology.values.MeasuringUnit;
-import ontology.values.SingleValue;
+import ontology.common.SVHeuristicDescriptor;
+import ontology.common.SingleValue;
+import ontology.taxonomy.Taxon;
+
 import java.awt.BorderLayout;
 import javax.swing.BoxLayout;
 import java.awt.GridLayout;
@@ -52,7 +56,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JRadioButton;
 
 import system.OracleIDApplication;
-import javax.swing.JSlider;
 
 /**
  * @author Armando
@@ -83,18 +86,10 @@ public class OracleIDGui extends JFrame {
 	private JMenuItem jmiExit = null;
 	private JScrollPane jspStructures = null;
 	private JScrollPane jspAttributes = null;
-	private JScrollPane jspDescription = null;
-	private KnowledgeBase kb = null;
-	private Map<String, String> structuresScope = null;  //  @jve:decl-index=0:
-	private Map<String, String> attributesScope = null;
-	private Map<String, String> valuesScope = null;  //  @jve:decl-index=0:
-	final private String PROJECT_FILE_NAME = "c:\\eclipse\\Projects\\Tests\\OracleID\\rsc\\ProtegeOntologies\\" +
-		"commonOntology.pprj";  //  @jve:decl-index=0:
+	private JScrollPane jspDescription = null;	
 	private JScrollPane jspValues = null;
 	private JList jlValues = null;
 	private JTextField jtfValue = null;
-	private List<String> measuringUnit = null;  //  @jve:decl-index=0:
-	private Problem problem = null;
 	private JPanel jpProblemNorthernSide = null;
 	private JPanel jpProblemSouthernSide = null;
 	private JPanel jpStructure = null;
@@ -126,8 +121,15 @@ public class OracleIDGui extends JFrame {
 	private JButton jbSeeSolution = null;
 	private JButton jbNext = null;
 	private JButton jbAccept = null;
+	
 	private OracleIDApplication oracleIDApplication;
-	private JSlider jsNumberProposal = null;
+	private KnowledgeBase kb = null;
+	private Map<String, String> structuresScope = null;  //  @jve:decl-index=0:
+	private Map<String, String> attributesScope = null;
+	private Map<String, String> valuesScope = null;  //  @jve:decl-index=0:
+	private List<String> measuringUnit = null;  //  @jve:decl-index=0:
+	private Problem problem = null;
+	private int proposedSolution = 0;
 	
 	/**
 	 * @throws HeadlessException
@@ -145,6 +147,7 @@ public class OracleIDGui extends JFrame {
 		// TODO Auto-generated constructor stub
 		super();
 		this.oracleIDApplication = oracleIDApplication;
+		this.kb = this.oracleIDApplication.getCommonKb();
 		initialize();
 	}
 
@@ -430,44 +433,73 @@ public class OracleIDGui extends JFrame {
 					if (problem == null)
 						problem = new Problem();
 					
+					Instance instValue;
+					
 					if (jlStructures.getSelectedValue() != null &&
 							jlAttributes.getSelectedValue() != null &&
 							(jlValues.getSelectedValue() != null) ||
 							!jtfValue.getText().equals("")) {
-						if (valuesScope.isEmpty())
-							descriptor = new SVCharacterDescriptor((String)jlStructures.getSelectedValue(), 
-									(String)jlAttributes.getSelectedValue(),
-									new SingleValue(Double.parseDouble(jtfValue.getText()),
-									MeasuringUnit.valueOf((((String)jcbMeasuringUnit.getSelectedItem()).toUpperCase()))));
-						else {
-							Instance instValue;
+						if (valuesScope.isEmpty()) {
+							instValue = kb.getInstance(structuresScope.get((String)jlStructures.getSelectedValue()));
 							
-							if (jlValues.getSelectedValue() != null) {
-								instValue = kb.getInstance(valuesScope.get((String)jlValues.getSelectedValue()));								
-							} else {
-								instValue = kb.getInstance(valuesScope.values().iterator().next());
-							}
-							
-							if (instValue.hasType(kb.getCls("State")))
-								descriptor = new SSCharacterDescriptor((String)jlStructures.getSelectedValue(), 
-										(String)jlAttributes.getSelectedValue(),
-										(String)jlValues.getSelectedValue());
-							else
+							if (instValue.hasType(kb.getCls("Structure"))) {
 								descriptor = new SVCharacterDescriptor((String)jlStructures.getSelectedValue(), 
 										(String)jlAttributes.getSelectedValue(),
-										new SingleValue(Double.parseDouble((String)jlValues.getSelectedValue()),
-										MeasuringUnit.valueOf(((String)jcbMeasuringUnit.getSelectedItem()))));
+										new SingleValue(Double.parseDouble(jtfValue.getText()),
+										MeasuringUnit.valueOf((((String)jcbMeasuringUnit.getSelectedItem()).toUpperCase()))));
+							} else {
+								descriptor = new SVHeuristicDescriptor((String)jlStructures.getSelectedValue(), 
+										(String)jlAttributes.getSelectedValue(),
+										new SingleValue(Double.parseDouble(jtfValue.getText()),
+										MeasuringUnit.valueOf((((String)jcbMeasuringUnit.getSelectedItem()).toUpperCase()))));
+							}
+						} else {
+							
+							instValue = kb.getInstance(structuresScope.get((String)jlStructures.getSelectedValue()));
+							
+							if (instValue.hasType(kb.getCls("Structure"))) {
+								if (jlValues.getSelectedValue() != null) {
+									instValue = kb.getInstance(valuesScope.get((String)jlValues.getSelectedValue()));								
+								} else {
+									instValue = kb.getInstance(valuesScope.values().iterator().next());
+								}
+								
+								if (instValue.hasType(kb.getCls("State")))
+									descriptor = new SSCharacterDescriptor((String)jlStructures.getSelectedValue(), 
+											(String)jlAttributes.getSelectedValue(),
+											(String)jlValues.getSelectedValue());
+								else
+									descriptor = new SVCharacterDescriptor((String)jlStructures.getSelectedValue(), 
+											(String)jlAttributes.getSelectedValue(),
+											new SingleValue(Double.parseDouble((String)jlValues.getSelectedValue()),
+											MeasuringUnit.valueOf(((String)jcbMeasuringUnit.getSelectedItem()))));
+							} else {
+								if (jlValues.getSelectedValue() != null) {
+									instValue = kb.getInstance(valuesScope.get((String)jlValues.getSelectedValue()));								
+								} else {
+									instValue = kb.getInstance(valuesScope.values().iterator().next());
+								}
+								
+								if (instValue.hasType(kb.getCls("State")))
+									descriptor = new SSHeuristicDescriptor((String)jlStructures.getSelectedValue(), 
+											(String)jlAttributes.getSelectedValue(),
+											(String)jlValues.getSelectedValue());
+								else
+									descriptor = new SVHeuristicDescriptor((String)jlStructures.getSelectedValue(), 
+											(String)jlAttributes.getSelectedValue(),
+											new SingleValue(Double.parseDouble((String)jlValues.getSelectedValue()),
+											MeasuringUnit.valueOf(((String)jcbMeasuringUnit.getSelectedItem()))));
+							}
 							
 						}
 						
 						problem.getDescription().addToConcreteDescription(descriptor);
 						
-						jlDescription.setListData(problem.getDescription().toArray());
+						jlDescription.setListData(problem.getDescription().getDescriptors().toArray());
 					} else {
 						JOptionPane.showMessageDialog(null, "Proporcione un valor para la estructura y atributo seleccionado",
 								"OracleId", JOptionPane.INFORMATION_MESSAGE);
-					}				
-					
+					}									
 				}
 			});
 		}
@@ -487,8 +519,8 @@ public class OracleIDGui extends JFrame {
 			jbRemove.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					if (jlDescription.getSelectedValue() != null) {
-						problem.getDescription().remove(jlDescription.getSelectedIndex());
-						jlDescription.setListData(problem.getDescription().toArray());
+						problem.getDescription().getDescriptors().remove(jlDescription.getSelectedIndex());
+						jlDescription.setListData(problem.getDescription().getDescriptors().toArray());
 					}									
 				}
 			});
@@ -520,6 +552,60 @@ public class OracleIDGui extends JFrame {
 			jbIdentify = new JButton();
 			jbIdentify.setText("Identificar espécimen");
 			jbIdentify.setName("jbIdentify");
+			jbIdentify.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {										
+					if ( problem!= null ) {
+						oracleIDApplication.getReasoner().initialize();
+						jade.util.leap.Iterator i = problem.getDescription().getAllDescriptors();
+						
+						while (i.hasNext()) {
+							Descriptor d = (Descriptor) i.next();
+							
+							oracleIDApplication.getReasoner().addToDescription(d);
+						}										
+						
+						oracleIDApplication.getReasoner().identify();
+						if (oracleIDApplication.getReasoner().getProposedSolutions().size()>0) {
+							proposedSolution = 0;
+							
+							jLabelProposals.setText("Propuesta " + (proposedSolution +1) +
+									" de " + oracleIDApplication.getReasoner().getProposedSolutions().size());
+							
+							jcbState.setSelected(oracleIDApplication.getReasoner().getProposedSolutions()
+									.get(proposedSolution).isStatus());
+							jtfCertaintyDegree.setText(oracleIDApplication.getReasoner().getProposedSolutions()
+									.get(proposedSolution).getCertaintyDegree().getDegree());
+							Object solution = oracleIDApplication.getReasoner().getProposedSolutions()
+									.get(proposedSolution).getSolution().getSolution();
+							
+							if (solution instanceof Taxon) {
+								jtfName.setText(((Taxon)solution).getName());
+								jtfRank.setText(((Taxon)solution).getLevel().getRank());
+								jbSeeSolution.setText("Ver taxón");								
+							} else {
+								jtfName.setText(((Case)solution).getSolution().getTaxonName());
+								jtfRank.setText(((Case)solution).getSolution().getTaxonLevel().getRank());
+								jbSeeSolution.setText("Ver caso");
+							}
+							
+							jlDescriptions.setListData(oracleIDApplication.getReasoner().getProposedSolutions()
+									.get(proposedSolution).getSolution().getSolutionDescription().getDescriptors().toArray());
+							jrbSolution.setSelected(true);
+							jrbConfirmed.setSelected(false);
+							jrbDoubtful.setSelected(false);
+							jrbUnconfirmed.setSelected(false);
+							jrbContradictions.setSelected(false);
+						} else {
+							jLabelProposals.setText("Propuesta " + (proposedSolution +1) +
+									" de " + oracleIDApplication.getReasoner().getProposedSolutions().size());
+						}
+						
+					} else {
+						JOptionPane.showMessageDialog(null, "Proporcione una descripción del espécimen.",
+								"OracleID", JOptionPane.INFORMATION_MESSAGE);
+					}
+				}
+			});
 		}
 		return jbIdentify;
 	}
@@ -538,6 +624,7 @@ public class OracleIDGui extends JFrame {
 			jLabelProposals.setText("Propuesta 0 de 0");
 			jLabelProposals.setHorizontalAlignment(SwingConstants.CENTER);
 			jpSolution = new JPanel();
+			jpSolution.setVisible(true);
 			jpSolution.setLayout(borderLayout2);
 			jpSolution.add(getJpNorthernSolution(), BorderLayout.NORTH);
 			jpSolution.add(getJpSouthernSolution(), BorderLayout.CENTER);
@@ -655,6 +742,33 @@ public class OracleIDGui extends JFrame {
 					jlValues.clearSelection();
 				}
 			});
+			jtfValue.addFocusListener(new java.awt.event.FocusAdapter() {
+				public void focusLost(java.awt.event.FocusEvent e) {
+					if (!jtfValue.getText().equals("")) {
+						if (valuesScope.isEmpty()) {
+							try {
+								Double.parseDouble(jtfValue.getText());
+							} catch (Exception exception) {
+								JOptionPane.showMessageDialog(null, "Introduzca un número para la estructura y atributo seleccionado.",
+										"OracleID", JOptionPane.INFORMATION_MESSAGE);
+								jtfValue.setText("");
+							}
+						} else {
+							Instance instValue = kb.getInstance(valuesScope.values().iterator().next());
+							
+							if (instValue.hasType(kb.getCls("SingleValue"))) {
+								try {
+									Double.parseDouble(jtfValue.getText());
+								} catch (Exception exception) {
+									JOptionPane.showMessageDialog(null, "Introduzca un número para la estructura y atributo seleccionado.",
+											"OracleID", JOptionPane.INFORMATION_MESSAGE);
+									jtfValue.setText("");
+								}
+							}
+						}
+					}
+				}
+			});
 		}
 		return jtfValue;
 	}
@@ -665,19 +779,6 @@ public class OracleIDGui extends JFrame {
 	 * @return void
 	 */
 	private void initialize() {
-		Collection<String> errors = new ArrayList<String>();
-    	
-		Project project  = new Project(PROJECT_FILE_NAME, errors);
-        
-    	kb = project.getKnowledgeBase();
-        
-        if (errors.size() != 0) {
-        	Iterator<String> i = errors.iterator();
-            while (i.hasNext()) {
-            	System.out.println("Error: " + i.next());
-            }
-        }
-        
 		this.setSize(800, 600);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setBounds(new Rectangle(0, 0, 649, 487));
@@ -851,6 +952,7 @@ public class OracleIDGui extends JFrame {
 		if (jtfName == null) {
 			jtfName = new JTextField();
 			jtfName.setColumns(0);
+			jtfName.setEditable(false);
 		}
 		return jtfName;
 	}
@@ -863,6 +965,7 @@ public class OracleIDGui extends JFrame {
 	private JTextField getJtfRank() {
 		if (jtfRank == null) {
 			jtfRank = new JTextField();
+			jtfRank.setEditable(false);
 		}
 		return jtfRank;
 	}
@@ -875,6 +978,7 @@ public class OracleIDGui extends JFrame {
 	private JTextField getJtfCertaintyDegree() {
 		if (jtfCertaintyDegree == null) {
 			jtfCertaintyDegree = new JTextField();
+			jtfCertaintyDegree.setEditable(false);
 		}
 		return jtfCertaintyDegree;
 	}
@@ -918,8 +1022,8 @@ public class OracleIDGui extends JFrame {
 	private JPanel getJpSouthernSolution() {
 		if (jpSouthernSolution == null) {
 			BorderLayout borderLayout3 = new BorderLayout();
-			borderLayout3.setHgap(10);
-			borderLayout3.setVgap(10);
+			borderLayout3.setHgap(5);
+			borderLayout3.setVgap(5);
 			jpSouthernSolution = new JPanel();
 			jpSouthernSolution.setLayout(borderLayout3);
 			jpSouthernSolution.add(getJpSelectDescription(), BorderLayout.NORTH);
@@ -974,6 +1078,22 @@ public class OracleIDGui extends JFrame {
 		if (jrbSolution == null) {
 			jrbSolution = new JRadioButton();
 			jrbSolution.setText("De solución");
+			jrbSolution.addChangeListener(new javax.swing.event.ChangeListener() {
+				public void stateChanged(javax.swing.event.ChangeEvent e) {
+					if (jrbSolution.isSelected()) {
+						jrbConfirmed.setSelected(false);
+						jrbDoubtful.setSelected(false);
+						jrbUnconfirmed.setSelected(false);
+						jrbContradictions.setSelected(false);
+						
+						if (oracleIDApplication.getReasoner().getProposedSolutions().size()>0) {
+							
+							jlDescriptions.setListData(oracleIDApplication.getReasoner().getProposedSolutions()
+									.get(proposedSolution).getSolution().getSolutionDescription().getDescriptors().toArray());
+						}
+					}
+				}
+			});
 		}
 		return jrbSolution;
 	}
@@ -987,6 +1107,22 @@ public class OracleIDGui extends JFrame {
 		if (jrbConfirmed == null) {
 			jrbConfirmed = new JRadioButton();
 			jrbConfirmed.setText("Confirmada");
+			jrbConfirmed.addChangeListener(new javax.swing.event.ChangeListener() {
+				public void stateChanged(javax.swing.event.ChangeEvent e) {
+					if (jrbConfirmed.isSelected()) {
+						jrbSolution.setSelected(false);
+						jrbDoubtful.setSelected(false);
+						jrbUnconfirmed.setSelected(false);
+						jrbContradictions.setSelected(false);
+						
+						if (oracleIDApplication.getReasoner().getProposedSolutions().size()>0) {
+							
+							jlDescriptions.setListData(oracleIDApplication.getReasoner().getProposedSolutions()
+									.get(proposedSolution).getSolution().getConfirmedDescription().getDescriptors().toArray());
+						}
+					}
+				}
+			});
 		}
 		return jrbConfirmed;
 	}
@@ -1000,6 +1136,22 @@ public class OracleIDGui extends JFrame {
 		if (jrbDoubtful == null) {
 			jrbDoubtful = new JRadioButton();
 			jrbDoubtful.setText("Dudosa");
+			jrbDoubtful.addChangeListener(new javax.swing.event.ChangeListener() {
+				public void stateChanged(javax.swing.event.ChangeEvent e) {
+					if (jrbDoubtful.isSelected()) {
+						jrbSolution.setSelected(false);
+						jrbConfirmed.setSelected(false);
+						jrbUnconfirmed.setSelected(false);
+						jrbContradictions.setSelected(false);
+						
+						if (oracleIDApplication.getReasoner().getProposedSolutions().size()>0) {
+							
+							jlDescriptions.setListData(oracleIDApplication.getReasoner().getProposedSolutions()
+									.get(proposedSolution).getSolution().getDoubtfulDescription().getDescriptors().toArray());
+						}
+					}
+				}
+			});
 		}
 		return jrbDoubtful;
 	}
@@ -1013,6 +1165,22 @@ public class OracleIDGui extends JFrame {
 		if (jrbUnconfirmed == null) {
 			jrbUnconfirmed = new JRadioButton();
 			jrbUnconfirmed.setText("No confirmada");
+			jrbUnconfirmed.addChangeListener(new javax.swing.event.ChangeListener() {
+				public void stateChanged(javax.swing.event.ChangeEvent e) {
+					if (jrbUnconfirmed.isSelected()) {
+						jrbSolution.setSelected(false);
+						jrbConfirmed.setSelected(false);
+						jrbDoubtful.setSelected(false);
+						jrbContradictions.setSelected(false);
+						
+						if (oracleIDApplication.getReasoner().getProposedSolutions().size()>0) {
+							
+							jlDescriptions.setListData(oracleIDApplication.getReasoner().getProposedSolutions()
+									.get(proposedSolution).getSolution().getUnconfirmedDescription().getDescriptors().toArray());
+						}
+					}
+				}
+			});
 		}
 		return jrbUnconfirmed;
 	}
@@ -1026,6 +1194,22 @@ public class OracleIDGui extends JFrame {
 		if (jrbContradictions == null) {
 			jrbContradictions = new JRadioButton();
 			jrbContradictions.setText("Contradicciones");
+			jrbContradictions.addChangeListener(new javax.swing.event.ChangeListener() {
+				public void stateChanged(javax.swing.event.ChangeEvent e) {
+					if (jrbContradictions.isSelected()) {
+						jrbSolution.setSelected(false);
+						jrbConfirmed.setSelected(false);
+						jrbDoubtful.setSelected(false);
+						jrbUnconfirmed.setSelected(false);
+						
+						if (oracleIDApplication.getReasoner().getProposedSolutions().size()>0) {
+							
+							jlDescriptions.setListData(oracleIDApplication.getReasoner().getProposedSolutions()
+									.get(proposedSolution).getSolution().getContradictions().getDescriptors().toArray());
+						}
+					}
+				}
+			});
 		}
 		return jrbContradictions;
 	}
@@ -1098,6 +1282,45 @@ public class OracleIDGui extends JFrame {
 		if (jbNext == null) {
 			jbNext = new JButton();
 			jbNext.setText("Siguiente propuesta");
+			jbNext.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					if (oracleIDApplication.getReasoner().getProposedSolutions().size()>0) {
+						proposedSolution = (proposedSolution +1) % oracleIDApplication.getReasoner()
+								.getProposedSolutions().size();
+						
+						jLabelProposals.setText("Propuesta " + (proposedSolution +1) +
+								" de " + oracleIDApplication.getReasoner().getProposedSolutions().size());
+						
+						jcbState.setSelected(oracleIDApplication.getReasoner().getProposedSolutions()
+								.get(proposedSolution).isStatus());
+						jtfCertaintyDegree.setText(oracleIDApplication.getReasoner().getProposedSolutions()
+								.get(proposedSolution).getCertaintyDegree().getDegree());
+						Object solution = oracleIDApplication.getReasoner().getProposedSolutions()
+								.get(proposedSolution).getSolution().getSolution();
+						
+						if (solution instanceof Taxon) {
+							jtfName.setText(((Taxon)solution).getName());
+							jtfRank.setText(((Taxon)solution).getLevel().getRank());
+							jbSeeSolution.setText("Ver taxón");
+						} else {
+							jtfName.setText(((Case)solution).getSolution().getTaxonName());
+							jtfRank.setText(((Case)solution).getSolution().getTaxonLevel().getRank());
+							jbSeeSolution.setText("Ver caso");
+						}
+						
+						jlDescriptions.setListData(oracleIDApplication.getReasoner().getProposedSolutions()
+								.get(proposedSolution).getSolution().getSolutionDescription().getDescriptors().toArray());
+						jrbSolution.setSelected(true);
+						jrbConfirmed.setSelected(false);
+						jrbDoubtful.setSelected(false);
+						jrbUnconfirmed.setSelected(false);
+						jrbContradictions.setSelected(false);
+					} else {
+						jLabelProposals.setText("Propuesta " + (proposedSolution +1) +
+								" de " + oracleIDApplication.getReasoner().getProposedSolutions().size());
+					}
+				}
+			});
 		}
 		return jbNext;
 	}
@@ -1113,18 +1336,6 @@ public class OracleIDGui extends JFrame {
 			jbAccept.setText("Aceptar propuesta");
 		}
 		return jbAccept;
-	}
-
-	/**
-	 * This method initializes jsNumberProposal	
-	 * 	
-	 * @return javax.swing.JSlider	
-	 */
-	private JSlider getJsNumberProposal() {
-		if (jsNumberProposal == null) {
-			jsNumberProposal = new JSlider();
-		}
-		return jsNumberProposal;
 	}
 
 }  //  @jve:decl-index=0:visual-constraint="23,43"

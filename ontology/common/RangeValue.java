@@ -1,7 +1,10 @@
 /**
  * @see "Categoría Sukia Values de SUKIA Smalltalk"
  */
-package ontology.values;
+package ontology.common;
+
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
 
 /**
@@ -11,6 +14,30 @@ package ontology.values;
 public class RangeValue extends Value {
 	private double lowerBound;
 	private double upperBound;
+	
+	// bean stuff
+	protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+
+   	public void addPropertyChangeListener(PropertyChangeListener pcl) {
+   		pcs.addPropertyChangeListener(pcl);
+   	}
+
+   	public void removePropertyChangeListener(PropertyChangeListener pcl) {
+	   pcs.removePropertyChangeListener(pcl);
+   	}
+
+
+   	private static final long serialVersionUID = -3087841394215437493L;
+
+  	private String _internalInstanceName = null;
+  
+	public String get_internalInstanceName() {
+		return _internalInstanceName;
+	}
+
+	public RangeValue(String instance_name) {
+		this._internalInstanceName = instance_name;
+	}
 
 	/**
 	 * 
@@ -19,6 +46,7 @@ public class RangeValue extends Value {
 		// this is set up for weighted values as default
 		super();
 		setMeasuringUnit(MeasuringUnit.COUNT);
+		this._internalInstanceName = "";
 	}
 	
 	/**
@@ -54,7 +82,7 @@ public class RangeValue extends Value {
 	 * @see "Método lowerBound del protocolo adding-range values en SUKIA SmallTalk"
 	 * @return
 	 */
-	private void setLowerBound(double lowerBound) {
+	public void setLowerBound(double lowerBound) {
 		this.lowerBound = lowerBound;
 	}
 
@@ -70,7 +98,7 @@ public class RangeValue extends Value {
 	 * @see "Método upperBound del protocolo adding-range values en SUKIA SmallTalk"
 	 * @return
 	 */
-	private void setUpperBound(double upperBound) {
+	public void setUpperBound(double upperBound) {
 		this.upperBound = upperBound;
 	}
 

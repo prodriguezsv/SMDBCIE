@@ -5,7 +5,6 @@ package system.searchAutomata.test;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ontology.CBR.Hypothesis;
@@ -13,18 +12,18 @@ import ontology.CBR.PossibleSolution;
 import ontology.CBR.SimilarityDegree;
 import ontology.common.Description;
 import ontology.common.Descriptor;
+import ontology.common.MeasuringUnit;
 import ontology.common.RVCharacterDescriptor;
 import ontology.common.RVHeuristicDescriptor;
+import ontology.common.RangeValue;
 import ontology.common.SSCharacterDescriptor;
 import ontology.common.SSHeuristicDescriptor;
 import ontology.common.SVCharacterDescriptor;
+import ontology.common.SingleValue;
 import ontology.taxonomy.Modifier;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
 import ontology.taxonomy.Taxonomy;
-import ontology.values.MeasuringUnit;
-import ontology.values.RangeValue;
-import ontology.values.SingleValue;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -32,19 +31,19 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import system.searchAutomata.GoalApproachingDialog;
+import system.searchAutomata.GoalApproachingHandler;
 import system.searchAutomata.SearchStatus;
 
 /**
  * @author Armando
  *
  */
-public class GoalApproachingDialogTest extends GoalApproachingDialog {
+public class GoalApproachingDialogTest extends GoalApproachingHandler {
 	static Taxonomy taxonomy;
     static Taxon rootTaxon, taxon;
 	
 	public GoalApproachingDialogTest() {
-		super(TaxonomicRank.FAMILY, new Hypothesis(), null, SimilarityDegree.MEDIANAMENTESIMILAR);
+		super(null, TaxonomicRank.FAMILY, new Hypothesis(), null, SimilarityDegree.MEDIANAMENTESIMILAR);
 	}
 
 	/**
@@ -52,9 +51,9 @@ public class GoalApproachingDialogTest extends GoalApproachingDialog {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		System.out.println("Iniciando pruebas para la clase " + GoalApproachingDialog.class.getName());
+		System.out.println("Iniciando pruebas para la clase " + GoalApproachingHandler.class.getName());
 		
-		taxonomy = new Taxonomy("Mollusca");
+		taxonomy = new Taxonomy();
         rootTaxon = new Taxon(TaxonomicRank.ROOT, null);
 //-----------------------Taxon No. 1---------------------
         taxon = new Taxon(TaxonomicRank.GENUS, "Chromodorididae"); //Ojo la información es de prueba
@@ -135,7 +134,7 @@ public class GoalApproachingDialogTest extends GoalApproachingDialog {
 	 */
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-		System.out.println("Terminando pruebas para la clase " + GoalApproachingDialog.class.getName());
+		System.out.println("Terminando pruebas para la clase " + GoalApproachingHandler.class.getName());
 	}
 
 	/**
@@ -155,7 +154,7 @@ public class GoalApproachingDialogTest extends GoalApproachingDialog {
 	}
 
 	/**
-	 * Test method for {@link system.searchAutomata.GoalApproachingDialog#doDialog()}.
+	 * Test method for {@link system.searchAutomata.GoalApproachingHandler#doDialog()}.
 	 */
 	@Test
 	public void testDoDialog() {
@@ -181,7 +180,7 @@ public class GoalApproachingDialogTest extends GoalApproachingDialog {
 	}
 
 	/**
-	 * Test method for {@link system.searchAutomata.GoalApproachingDialog#selectPossibleSolutionsNearestToGoal()}.
+	 * Test method for {@link system.searchAutomata.GoalApproachingHandler#selectPossibleSolutionsNearestToGoal()}.
 	 */
 	@Test
 	public void testSelectPossibleSolutionsNearestToGoal() {
@@ -212,7 +211,7 @@ public class GoalApproachingDialogTest extends GoalApproachingDialog {
 	}
 
 	/**
-	 * Test method for {@link system.searchAutomata.GoalApproachingDialog#rangeValueDescriptorDialog(PossibleSolution, Taxon, Descriptor)}.
+	 * Test method for {@link system.searchAutomata.GoalApproachingHandler#rangeValueDescriptorDialog(PossibleSolution, Taxon, Descriptor)}.
 	 */
 	@Test
 	public void testRangeValueDescriptorDialog() {
@@ -226,29 +225,29 @@ public class GoalApproachingDialogTest extends GoalApproachingDialog {
 	}
 
 	/**
-	 * Test method for {@link system.searchAutomata.GoalApproachingDialog#valueDescriptorDialog(List)}.
+	 * Test method for {@link system.searchAutomata.GoalApproachingHandler#valueDescriptorDialog(List)}.
 	 */
 	@Test
 	public void testValueDescriptorDialog() {
-		List<Descriptor> description;
+		Description description;
 		
 		System.out.println("Iniciando pruebas para el método ValueDescriptorDialog()");
 		
 		System.out.println("Verificar que se obtienen distintos resultados válidos");
-		description = new ArrayList<Descriptor>();
+		description = new Description();
 		
 		assertNull(this.valueDescriptorDialog(description, new PossibleSolution()));
 
-		description.clear();
-		description.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
-		description.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(1.0)));
-		description.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(3.0)));
+		description.clearAllDescriptors();
+		description.addDescriptors(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
+		description.addDescriptors(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(1.0)));
+		description.addDescriptors(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(3.0)));
 
 		//assertNotNull(this.valueDescriptorDialog(description));		
 	}
 
 	/**
-	 * Test method for {@link system.searchAutomata.GoalApproachingDialog#determineSimilarityFor(Descriptor, Taxon)}.
+	 * Test method for {@link system.searchAutomata.GoalApproachingHandler#determineSimilarityFor(Descriptor, Taxon)}.
 	 */
 	@Test
 	public void testDetermineSimilarityFor() {
@@ -274,7 +273,7 @@ public class GoalApproachingDialogTest extends GoalApproachingDialog {
 	}
 
 	/**
-	 * Test method for {@link system.searchAutomata.GoalApproachingDialog#areThereContradictions(Descriptor)}.
+	 * Test method for {@link system.searchAutomata.GoalApproachingHandler#areThereContradictions(Descriptor)}.
 	 */
 	@Test
 	public void testAreThereContradictions() {
@@ -283,8 +282,8 @@ public class GoalApproachingDialogTest extends GoalApproachingDialog {
 		System.out.println("Iniciando pruebas para el método AreThereContradictions()");
 		
 		System.out.println("Verificar que hay contradicciones en la descripción o duplicados");
-		ps.getSolutionDescription().add(new SSCharacterDescriptor("Manto","Forma","Ovalado"));
-		ps.getConfirmedDescription().add(new SVCharacterDescriptor("Cuerpo","Longitud", new SingleValue(0.3,
+		ps.getSolutionDescription().addDescriptors(new SSCharacterDescriptor("Manto","Forma","Ovalado"));
+		ps.getConfirmedDescription().addDescriptors(new SVCharacterDescriptor("Cuerpo","Longitud", new SingleValue(0.3,
         		MeasuringUnit.CM)));
 		this.getHypothesis().getPossibleSolutions().add(ps);
 		
@@ -300,13 +299,13 @@ public class GoalApproachingDialogTest extends GoalApproachingDialog {
 		assertFalse(this.areThereContradictions(new SVCharacterDescriptor("Branquias", 
 				"Número de hojas branquiales", new SingleValue(3))));
 		
-		ps.getSolutionDescription().clear();
-		ps.getConfirmedDescription().clear();
+		ps.getSolutionDescription().clearAllDescriptors();
+		ps.getConfirmedDescription().clearAllDescriptors();
 		this.getHypothesis().getPossibleSolutions().remove(ps);
 	}
 
 	/**
-	 * Test method for {@link system.searchAutomata.GoalApproachingDialog#isDescriptorAlreadyProcessed(Descriptor)}.
+	 * Test method for {@link system.searchAutomata.GoalApproachingHandler#isDescriptorAlreadyProcessed(Descriptor)}.
 	 */
 	@Test
 	public void testIsDescriptorAlreadyProcessed() {
@@ -315,8 +314,8 @@ public class GoalApproachingDialogTest extends GoalApproachingDialog {
 		System.out.println("Iniciando pruebas para el método AreThereContradictions()");
 		
 		System.out.println("Verificar que hay duplicados en la descripción procesada");
-		ps.getDoubtfulDescription().add(new SSCharacterDescriptor("Manto","Forma","Ovalado"));
-		ps.getUnconfirmedDescription().add(new SVCharacterDescriptor("Cuerpo","Longitud", new SingleValue(0.3,
+		ps.getDoubtfulDescription().addDescriptors(new SSCharacterDescriptor("Manto","Forma","Ovalado"));
+		ps.getUnconfirmedDescription().addDescriptors(new SVCharacterDescriptor("Cuerpo","Longitud", new SingleValue(0.3,
         		MeasuringUnit.CM)));
 		this.getHypothesis().getPossibleSolutions().add(ps);
 		
@@ -329,8 +328,8 @@ public class GoalApproachingDialogTest extends GoalApproachingDialog {
 		assertFalse(this.isDescriptorAlreadyProcessed(new SVCharacterDescriptor("Branquias", 
 				"Número de hojas branquiales", new SingleValue(3))));
 		
-		ps.getDoubtfulDescription().clear();
-		ps.getUnconfirmedDescription().clear();
+		ps.getDoubtfulDescription().clearAllDescriptors();
+		ps.getUnconfirmedDescription().clearAllDescriptors();
 		this.getHypothesis().getPossibleSolutions().remove(ps);
 	}
 

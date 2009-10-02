@@ -5,6 +5,8 @@
  */
 package redundantDiscriminationNet;
 
+import jade.util.leap.Iterator;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -13,12 +15,13 @@ import javax.swing.JOptionPane;
 
 import ontology.CBR.Case;
 import ontology.common.CharacterDescriptor;
+import ontology.common.Description;
 import ontology.common.Descriptor;
 import ontology.common.SSCharacterDescriptor;
 import ontology.common.SSHeuristicDescriptor;
 import ontology.common.SVCharacterDescriptor;
 import ontology.common.SVHeuristicDescriptor;
-import ontology.values.SingleValue;
+import ontology.common.SingleValue;
 
 import redundantDiscriminationNet.auxiliary.ComparingTable;
 import redundantDiscriminationNet.auxiliary.ComparingTableTuple;
@@ -51,7 +54,7 @@ public class RDNet {
 	/**
 	 * 	Case-To-Insert description, used to traverse the net, and create new Norms and indices.
 	 */
-	private List<Descriptor> ciDescription;
+	private Description ciDescription;
 	/**
 	 * Pointer to the current Norm during net traversal.
 	 */
@@ -69,7 +72,7 @@ public class RDNet {
 		setRoute(new Stack<String>());
 		setCaseToInsert(null);
 		setCasesToCompare(new Stack<Case>());
-		setCiDescription(new ArrayList<Descriptor>());
+		setCiDescription(new Description());
 		setCurrentNorm(null);
 		setProblemSolutions(new ProblemSolutions());
 	}
@@ -163,7 +166,7 @@ public class RDNet {
 	 * M&eacute;todo accesor de escritura
 	 * @param ciDesc
 	 */
-	public void setCiDescription(List<Descriptor> ciDesc) {
+	public void setCiDescription(Description ciDesc) {
 		this.ciDescription = ciDesc;
 	}
 
@@ -172,7 +175,7 @@ public class RDNet {
 	 * @see "M&eacute;todo caseToInsertDesc del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Descriptor> getCiDescription() {
+	public Description getCiDescription() {
 		return ciDescription;
 	}
 	
@@ -181,7 +184,7 @@ public class RDNet {
 	 * @param aCase
 	 */
 	public void setCiDescription(Case aCase) {
-		List<Descriptor> desc;
+		Description desc;
 		
 		desc = aCase.getDescription(this.getRoot().getStructure());
 		
@@ -252,13 +255,13 @@ public class RDNet {
 		Node n;
 		
 		// Discard from the case's description all descriptors whose attribute is already in the route
-		if (this.removeMatchingElementsInTheRoute(this.getCiDescription()).isEmpty())
+		if (this.removeMatchingElementsInTheRoute(this.getCiDescription()).getDescriptors().isEmpty())
 			return;
 
 		// Si la descripción está vacía ya no hay nuevas rutas a considerar
-		while (!(this.getCiDescription().isEmpty())) {
+		while (!(this.getCiDescription().getDescriptors().isEmpty())) {
 			// Remove the first descriptor in the case-to-insert description
-			d = this.getCiDescription().remove(0);
+			d = (Descriptor)this.getCiDescription().getDescriptors().remove(0);
 
 			// Search for an index with the label's value equal to d's attribute"
 			ix = this.getCurrentNorm().getSuccessorIndex(d.getAttribute());
@@ -289,7 +292,7 @@ public class RDNet {
 						// Si n es un caso, agrupar el caso a insertar y n en la última norma que representa
 						// la ruta que contiene los descriptores comunes a ambos e insertar cada caso en un
 						// indice para aquellos descriptores únicos considerando todas las rutas posibles
-						if (this.getCiDescription().isEmpty())
+						if (this.getCiDescription().getDescriptors().isEmpty())
 							// En este nivel de la red ya no hay nuevas rutas a considerar
 							this.processCICCWithCIDescEmpty(d, ix, (SheetCase)n);
 						else
@@ -307,7 +310,7 @@ public class RDNet {
 	 * @param aNumber
 	 */
 	private void moveToNorm(Descriptor aDescriptor, int aNumber) {
-		List<Descriptor> tmpDesc;
+		Description tmpDesc;
 		
 		this.setCurrentNorm(this.getCurrentNorm().getNearestSuccessorNorm(aDescriptor));
 		this.getCurrentNorm().incrementNumCasesBy(aNumber);
@@ -327,7 +330,7 @@ public class RDNet {
 		
 		// Save current state of ciDescription, since a totally new checking process (with ciDescription)
 		// will take place, considering all description elements
-		tmpDesc = new ArrayList<Descriptor>();
+		tmpDesc = new Description();
 		this.moveDescElements(this.getCiDescription(), tmpDesc);
 		this.setCiDescription(this.getCaseToInsert());
 
@@ -610,17 +613,21 @@ public class RDNet {
 	 * @return
 	 */
 	protected boolean isCaseDescriptionUsedUp(Case c) {
-		List<Descriptor> description, descriptionCopy;
+		Description description;
+		int elems = 0;
 		
 		description = c.getDescription(this.getRoot().getStructure());
-		descriptionCopy = new ArrayList<Descriptor>(description);
-		for (Descriptor d:description) {
+		
+		Iterator i = description.getAllDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = (Descriptor) i.next(); 
 			if (this.getRoute().contains(d.getAttribute())) {
-				descriptionCopy.remove(d);
+				elems++;
 			}
 		}
 		
-		if (!(descriptionCopy.isEmpty())) return false;
+		if (elems != description.getDescriptors().size()) return false;
 		
 		return true;
 	}
@@ -632,7 +639,7 @@ public class RDNet {
 		this.getRoute().clear();
 		this.setCaseToInsert(null);
 		this.getCasesToCompare().clear();
-		this.getCiDescription().clear();
+		this.getCiDescription().getDescriptors().clear();
 		this.setCurrentNorm(null);
 		this.getProblemSolutions().setToDefault();
 	}
@@ -643,11 +650,12 @@ public class RDNet {
 	 * @param anotherDescList
 	 * @return
 	 */
-	protected boolean moveDescElements(List<Descriptor> oneDescList, List<Descriptor> anotherDescList) {
-		if (oneDescList.isEmpty() || !anotherDescList.isEmpty()) return false;
+	protected boolean moveDescElements(Description oneDescList, Description anotherDescList) {
+		if (oneDescList.getDescriptors().isEmpty() || !anotherDescList.getDescriptors().isEmpty())
+			return false;
 		
-		while (!oneDescList.isEmpty()) {
-			anotherDescList.add(oneDescList.remove(0));
+		while (!oneDescList.getDescriptors().isEmpty()) {
+			anotherDescList.addDescriptors((Descriptor)oneDescList.getDescriptors().remove(0));
 		}
 		
 		return true;
@@ -680,14 +688,18 @@ public class RDNet {
 	 * @see "M&eacute;todo removeMatchingElementsInTheRouteFrom: del protocolo removing en SUKIA SmallTalk"
 	 * @param aDescriptionList
 	 */
-	protected List<Descriptor> removeMatchingElementsInTheRoute(List<Descriptor> aDescriptionList) {
-		List<Descriptor> aDescriptionListCopy;
+	protected Description removeMatchingElementsInTheRoute(Description aDescriptionList) {
+		Description aDescriptionListCopy;
 		
-		aDescriptionListCopy = new ArrayList<Descriptor>(aDescriptionList);
+		aDescriptionListCopy = new Description();
+		aDescriptionListCopy.setDescriptors(aDescriptionListCopy.getDescriptors());
 		
-		for (Descriptor d: aDescriptionListCopy) {
+		Iterator i = aDescriptionListCopy.getAllDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = (Descriptor) i.next(); 
 			if (this.getRoute().contains(d.getAttribute()))
-				aDescriptionList.remove(d);
+				aDescriptionList.removeDescriptors(d);
 		}
 
 		return aDescriptionList;
@@ -729,7 +741,7 @@ public class RDNet {
 	 */
 	// Ojo Casos de prueba pendientes
 	private void computeWeights() {
-		List<Descriptor> description;
+		Description description;
 		Index actIndex;
 		Node successor;
 		
@@ -737,23 +749,26 @@ public class RDNet {
 			.getDescription(this.getRoot().getStructure()); // Ojo hay que verificar está parte
 		
 		// Para cada descriptor del caso problema
-		for(Descriptor d: description) {
+		Iterator i = description.getAllDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = (Descriptor) i.next(); 
 			if (!(this.getRoute().contains(d.getAttribute()))) { 
 				// Indice correspondiente a descriptor del caso problema. 
       		 	actIndex =  this.getCurrentNorm().getSuccessorIndex(d);
 				// Si el indice para el atributo del caso problema no existe
 	  			if (actIndex == null) {
-	  				this.getProblemSolutions().setWeight(description.indexOf(d), -1); 
+	  				this.getProblemSolutions().setWeight(description.getDescriptors().indexOf(d), -1); 
 	  			} else {
 					// OJO: HAY QUE ARREGLAR ESTA PARTE
 					successor = actIndex.getSuccessor(d);
 					if (successor == null) {
-						this.getProblemSolutions().setWeight(description.indexOf(d), -1);
+						this.getProblemSolutions().setWeight(description.getDescriptors().indexOf(d), -1);
 					} else {
 						if (!(successor instanceof Norm)) 
-							this.getProblemSolutions().setWeight(description.indexOf(d), 1);
+							this.getProblemSolutions().setWeight(description.getDescriptors().indexOf(d), 1);
 						else
-							this.getProblemSolutions().setWeight(description.indexOf(d), ((Norm)successor).getNumCases());
+							this.getProblemSolutions().setWeight(description.getDescriptors().indexOf(d), ((Norm)successor).getNumCases());
 					}
 				}	  					
 	  		}
@@ -805,9 +820,11 @@ public class RDNet {
 		posicion = 0;
 		min = this.getRoot().getNumCases();
 
-		for( int i = 1; i <= this.getProblemSolutions().getProblemCase().getProblem().getDescription().size(); i++) {
+		for( int i = 1; i <= this.getProblemSolutions().getProblemCase().getProblem()
+				.getDescription().getDescriptors().size(); i++) {
 			valor = this.getProblemSolutions().getWeight(i-1);
-			if (!(this.getRoute().contains(this.getProblemSolutions().getProblemCase().getProblem().getDescription().get(i-1).getAttribute())) && 
+			if (!(this.getRoute().contains(((Descriptor)this.getProblemSolutions().getProblemCase().getProblem()
+					.getDescription().getDescriptors().get(i-1)).getAttribute())) && 
 					( valor <= min)    &&	!( valor == -1 )) {
 				min = valor;
 				posicion = i;
@@ -834,8 +851,8 @@ public class RDNet {
 		mostPredictivePos =  this.lowestWeight();
 
 		if (!(mostPredictivePos == -1 )) {
-			mostPredictiveDescriptor = this.getProblemSolutions().getProblemCase()
-				.getProblem().getDescription().get(mostPredictivePos-1);
+			mostPredictiveDescriptor = (Descriptor)this.getProblemSolutions().getProblemCase()
+				.getProblem().getDescription().getDescriptors().get(mostPredictivePos-1);
 			
 			// Indice correspondiente al descriptor mas predictivo del caso problema. 
   		 	predictiveIndex = this.getCurrentNorm().getSuccessorIndex(mostPredictiveDescriptor);

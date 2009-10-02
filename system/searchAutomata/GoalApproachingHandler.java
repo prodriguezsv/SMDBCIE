@@ -6,30 +6,34 @@
 
 package system.searchAutomata;
 
+import jade.util.leap.Iterator;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.JOptionPane;
+import oracleIDGui.OracleIDGui;
+import oracleIDGui.RangeDSuggestionDialog;
+import oracleIDGui.SingleDSuggestionDialog;
 
 import ontology.CBR.Case;
 import ontology.CBR.Hypothesis;
 import ontology.CBR.PossibleSolution;
 import ontology.CBR.SimilarityDegree;
 import ontology.common.CharacterDescriptor;
+import ontology.common.Description;
 import ontology.common.Descriptor;
 import ontology.common.HeuristicDescriptor;
+import ontology.common.RangeValue;
 import ontology.common.SVCharacterDescriptor;
 import ontology.common.SVHeuristicDescriptor;
+import ontology.common.SingleValue;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
 import ontology.taxonomy.Taxonomy;
-import ontology.values.RangeValue;
-import ontology.values.SingleValue;
 
 import system.similarityAssessment.SimilarityAssessor;
 
@@ -45,7 +49,7 @@ import system.similarityAssessment.SimilarityAssessor;
  * @author pabloq
  */
 
-public class GoalApproachingDialog {
+public class GoalApproachingHandler {
     private Hypothesis hypothesis;
     private TaxonomicRank goal;
     private Taxonomy taxonomy;
@@ -53,6 +57,7 @@ public class GoalApproachingDialog {
     private List<PossibleSolution> OKList;
     private SearchStatus status;
     private SimilarityDegree minSimilarityDegree;
+	private OracleIDGui frame;
 
 	 /**
 	 * Category instance creation
@@ -60,12 +65,13 @@ public class GoalApproachingDialog {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public GoalApproachingDialog(){
+    public GoalApproachingHandler(){
     	
     }
     
-    public GoalApproachingDialog(TaxonomicRank aGoal, Hypothesis aHypothesis, Taxonomy aTaxonomy,
+    public GoalApproachingHandler(OracleIDGui frame, TaxonomicRank aGoal, Hypothesis aHypothesis, Taxonomy aTaxonomy,
     	SimilarityDegree minSimilarityDegree){
+    	this.frame = frame;
         //if ((aHypothesis.getDescription() instanceof Structure) == true)
         this.initializeGoal(aGoal, aHypothesis, aTaxonomy, minSimilarityDegree);
     }
@@ -277,7 +283,7 @@ public class GoalApproachingDialog {
 	 * @return my return values
 	 */
 	protected SearchStatus doDialog(){
-    	List<Descriptor> description, OKSAVDescriptorList;
+    	Description description, OKSAVDescriptorList;
     	List<String> attributesList;
     	Descriptor descriptor;
 
@@ -289,16 +295,22 @@ public class GoalApproachingDialog {
             Taxon taxon = (Taxon)ps.getSolution();
 
             //Scan the taxon's successor list
-            for (Taxon t:taxon.getSuccessors()){
+            Iterator i = taxon.getAllSuccessors();
+    		
+    		while (i.hasNext()) {
+    			Taxon t = (Taxon) i.next(); 
                 //get the related structure from the successor taxon's SAV description
                 
-                attributesList = t.getAttributeList(hypothesis.getDescription().get(0).getStructure());
+                attributesList = t.getAttributeList(((Descriptor)hypothesis.getDescription().getDescriptors().get(0)).getStructure());
                 for (String a:attributesList) {
-                	description = t.getDescription(hypothesis.getDescription().get(0).getStructure(), a);
+                	description = t.getDescription(((Descriptor)hypothesis.getDescription().getDescriptors().get(0)).getStructure(), a);
                 	
-                	if (!description.isEmpty()){
-                		OKSAVDescriptorList = new ArrayList<Descriptor>();
-                    	for (Descriptor d:description) {
+                	if (!description.getDescriptors().isEmpty()){
+                		OKSAVDescriptorList = new Description();
+                		Iterator j = description.getAllDescriptors();
+                		
+                		while (j.hasNext()) {
+                			Descriptor d = (Descriptor) j.next(); 
                             // Make sure this attribute is not already processed (i.e., included in the solution
                     		// or confirmed descriptions of ANY item in the processList)
                             if (!this.areThereContradictions(d)) {
@@ -330,7 +342,7 @@ public class GoalApproachingDialog {
                                         //the attribute's typical value) is acceptable. If it isn't, ignore it"
                                         if (this.determineSimilarityFor(d, t) != false){
                                             //Place the descriptor is a separate descriptor list. Process the next value
-                                            OKSAVDescriptorList.add(d);
+                                            OKSAVDescriptorList.addDescriptors(d);
                                         }
                                     }
                                 }
@@ -339,7 +351,7 @@ public class GoalApproachingDialog {
                     	// Once all of the attribute's values have been processed, the number of items in
                         // the display array MUST be equal to the number of descriptors in the descriptor
                         // list. If such number is greater than zero, display the dialog
-                        if (OKSAVDescriptorList.isEmpty() != true){
+                        if (OKSAVDescriptorList.getDescriptors().isEmpty() != true){
                            descriptor = valueDescriptorDialog(OKSAVDescriptorList, ps);
    
                            if (descriptor == null && status.equals(SearchStatus.CANCEL))
@@ -411,30 +423,28 @@ public class GoalApproachingDialog {
 	 */
     protected Descriptor rangeValueDescriptorDialog(Descriptor descriptor, PossibleSolution ps){
     	double suggestedValue;
-    	String response;
+    	RangeDSuggestionDialog.Response response;
     	
     	if (!(descriptor.getValue() instanceof RangeValue))
     		return null;
 
-		String msg =	"\nPor favor digite un valor en unidades de \"" + ((RangeValue)descriptor.getValue())
-				.getMeasuringUnit().getMeasuringUnit() + "\"" +
-				"\npara el atributo \"" + descriptor.getAttribute() + "\" de la estructura \"" 
-				+ descriptor.getStructure() + "\" o acepte el valor sugerido." +
-				"\n\nSi no es posible proveer la respuesta, escriba \"reject\"." +
-				"\nSi tiene dudas de la respuesta, escriba \"doubtful\"." +
-				"\nSi quiere abortar la interacción, haga click en cancelar.\n";
+		String msg =	"\nDigite un valor (" + ((RangeValue)descriptor.getValue())
+				.getMeasuringUnit().getMeasuringUnit() + ") para el atributo \"" + descriptor.getAttribute() 
+				+ "\" de la estructura \"" + descriptor.getStructure() + "\" o acepte el valor sugerido.\n";
 	
 		suggestedValue = (((RangeValue)descriptor.getValue()).getLowerBound()  + 
 						((RangeValue)descriptor.getValue()).getUpperBound()) / (double)2;
-	
-		response =  JOptionPane.showInputDialog(msg, Double.toString(suggestedValue));
 		
-		if (response == null) {
+		RangeDSuggestionDialog dialog = new RangeDSuggestionDialog(frame, msg, Double.toString(suggestedValue));
+		
+		response = dialog.getResponse();
+		
+		if (response == RangeDSuggestionDialog.Response.CANCEL) {
 			status = SearchStatus.CANCEL;
 			return null;
 		}
 		
-		if (response.equals("reject")) {
+		if (response == RangeDSuggestionDialog.Response.REJECT) {
 			if (descriptor instanceof CharacterDescriptor)
 				ps.addToUnconfirmedDescription(new SVCharacterDescriptor(descriptor.getStructure(),
 					descriptor.getAttribute(), new SingleValue(suggestedValue)));
@@ -445,7 +455,7 @@ public class GoalApproachingDialog {
 		}
 		
 		//OJO: está opción se agregó
-		if (response.equals("doubtful")) {
+		if (response == RangeDSuggestionDialog.Response.DOUBT) {
 			if (descriptor instanceof CharacterDescriptor)
 				ps.addToDoubtfulDescription(new SVCharacterDescriptor(descriptor.getStructure(),
 					descriptor.getAttribute(), new SingleValue(suggestedValue)));
@@ -455,7 +465,7 @@ public class GoalApproachingDialog {
 			return null;
 		}
 		
-		suggestedValue = Double.parseDouble(response);
+		suggestedValue = Double.parseDouble(dialog.getValue());
 			
 		if (suggestedValue >= ((RangeValue)descriptor.getValue()).getLowerBound() 
 				&& suggestedValue <= ((RangeValue)descriptor.getValue()).getUpperBound()) {
@@ -487,18 +497,21 @@ public class GoalApproachingDialog {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-	protected Descriptor valueDescriptorDialog(List<Descriptor> OKSAVDescriptorList, PossibleSolution ps){
+	protected Descriptor valueDescriptorDialog(Description OKSAVDescriptorList, PossibleSolution ps){
 		Map<String, Descriptor> descriptorsIndex;
     	List<String> values;
-    	String response;
+    	SingleDSuggestionDialog.Response response;
     	
-    	if (OKSAVDescriptorList.isEmpty())
+    	if (OKSAVDescriptorList.getDescriptors().isEmpty())
     		return null;
     	
     	descriptorsIndex = new HashMap<String, Descriptor>();
-        values = new ArrayList<String>(Arrays.asList("reject", "doubtful"));
+        values = new ArrayList<String>();
         
-    	for (Descriptor d:OKSAVDescriptorList) {
+        Iterator i = OKSAVDescriptorList.getAllDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = (Descriptor) i.next(); 
     		if (d.getValue() instanceof String) {
     			values.add((String)d.getValue());
     			descriptorsIndex.put((String)d.getValue(), d);
@@ -506,44 +519,42 @@ public class GoalApproachingDialog {
     			values.add(Double.toString(((SingleValue)d.getValue()).getValue()));
     			descriptorsIndex.put(Double.toString(((SingleValue)d.getValue()).getValue()), d);
     		}    		
-    	}
-
-		String msg =	"¿Cuál de los siguientes valores presenta el atributo \"" + 
-				OKSAVDescriptorList.get(0).getAttribute() + "\"\nde la estructura \"" + 
-				OKSAVDescriptorList.get(0).getStructure() + "\"?" +
-				"\n\nSi no es posible proveer la respuesta, escriba \"reject\"." +
-				"\nSi tiene dudas de la respuesta, escriba \"doubtful\"." +
-				"\nSi quiere abortar la interacción, haga click en cancelar.\n";
-
-		response = (String) JOptionPane.showInputDialog(null, msg, "OracleID", JOptionPane.QUESTION_MESSAGE,
-    			null, values.toArray(), "reject");
+    	}		
+		
+		String msg =	"\n¿Cuál de los siguientes valores presenta el atributo \"" + 
+				((Descriptor)OKSAVDescriptorList.getDescriptors().get(0)).getAttribute() + "\" de la estructura \"" + 
+				((Descriptor)OKSAVDescriptorList.getDescriptors().get(0)).getStructure() + "\"?\n";
+		
+		SingleDSuggestionDialog dialog = new SingleDSuggestionDialog(frame, msg, values.toArray());
+		
+		response = dialog.getResponse();
 		
 		 //User rejects. Flush the descriptor list by placing all SAVDescriptors in the unconfirmed
         //description. Continue processing the next attribute
 
-        if (response.equals("reject")){
-            while (OKSAVDescriptorList.isEmpty() != true)
-                ps.addToUnconfirmedDescription(OKSAVDescriptorList.remove(0));
+        if (response == SingleDSuggestionDialog.Response.REJECT){
+            while (OKSAVDescriptorList.getDescriptors().isEmpty() != true)
+                ps.addToUnconfirmedDescription((Descriptor)OKSAVDescriptorList.getDescriptors().remove(0));
             
             return null;
         }
 
         //User is in doubt. Flush the descriptor list by placing all SAVDescriptors in the doubtful
         //description. Continue processing the next attribute
-        if (response.equals("doubtful")){
-            while (OKSAVDescriptorList.isEmpty() != true)
-                ps.addToDoubtfulDescription(OKSAVDescriptorList.remove(0));
+        if (response == SingleDSuggestionDialog.Response.DOUBT){
+            while (OKSAVDescriptorList.getDescriptors().isEmpty() != true)
+                ps.addToDoubtfulDescription((Descriptor)OKSAVDescriptorList.getDescriptors().remove(0));
             
             return null;
         }
         
         //User cancels. Cancel the process and exit.
-        if (response == null) {
+        if (response == SingleDSuggestionDialog.Response.CANCEL) {
         	status = SearchStatus.CANCEL;
         	return null;
         }
         
-        return descriptorsIndex.get(response);
+        return descriptorsIndex.get(dialog.getValue());
     }
 
 	/**
@@ -578,7 +589,10 @@ public class GoalApproachingDialog {
 	protected boolean areThereContradictions(Descriptor aDescriptor) {
 	    for (PossibleSolution ps: hypothesis.getPossibleSolutions()){
 	    	// Para cada par (atributo, valor)
-			for(Descriptor d: ps.getSolutionDescription()) {
+	    	Iterator i = ps.getSolutionDescription().getAllDescriptors();
+			
+			while (i.hasNext()) {
+				Descriptor d = (Descriptor) i.next(); 
 				if (d.getStructure().equals(aDescriptor.getStructure()) &&
 						d.getAttribute().equals(aDescriptor.getAttribute())	) {
 						return true; // Hay contradiccion
@@ -586,7 +600,10 @@ public class GoalApproachingDialog {
 			}
 			
 			// Para cada par (atributo, valor)
-			for(Descriptor d: ps.getConfirmedDescription()) {
+			Iterator j = ps.getConfirmedDescription().getAllDescriptors();
+			
+			while (j.hasNext()) {
+				Descriptor d = (Descriptor) j.next();
 				if (d.getStructure().equals(aDescriptor.getStructure()) &&
 						d.getAttribute().equals(aDescriptor.getAttribute())	) {
 						return true; // Hay contradiccion
@@ -603,11 +620,11 @@ public class GoalApproachingDialog {
  * @return my return values
  */
     protected boolean isDescriptorAlreadyProcessed(Descriptor aSAVDescriptor){
-        if (hypothesis.getUnmatchedDescription().contains(aSAVDescriptor)) return true;
+        if (hypothesis.getUnmatchedDescription().getDescriptors().contains(aSAVDescriptor)) return true;
 
         for (PossibleSolution ps:hypothesis.getPossibleSolutions()){
-            if (ps.getUnconfirmedDescription().contains(aSAVDescriptor)) return true;
-            if (ps.getDoubtfulDescription().contains(aSAVDescriptor)) return true;
+            if (ps.getUnconfirmedDescription().getDescriptors().contains(aSAVDescriptor)) return true;
+            if (ps.getDoubtfulDescription().getDescriptors().contains(aSAVDescriptor)) return true;
         }
         
         return false;

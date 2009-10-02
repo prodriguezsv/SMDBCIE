@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 import ontology.common.Description;
 import ontology.common.SSCharacterDescriptor;
 import ontology.common.SVCharacterDescriptor;
-import ontology.values.SingleValue;
+import ontology.common.SingleValue;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -158,7 +158,7 @@ public class PatternsbyStructureTest {
 		dl.addToConcreteDescription(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
 		assertNull(patternsbyStructure.getPattern(dl));
 		
-		dl.clear();
+		dl.clearAllDescriptors();
 		assertNull(patternsbyStructure.getPattern(dl));
 	}
 
@@ -207,7 +207,7 @@ public class PatternsbyStructureTest {
 		
 		assertFalse(patternsbyStructure.hasAPatternSimilarTo(d1));
 		assertFalse(patternsbyStructure.hasAPatternSimilarTo(null));
-		d1.clear();
+		d1.clearAllDescriptors();
 		assertFalse(patternsbyStructure.hasAPatternSimilarTo(d1));
 	}
 
@@ -257,7 +257,7 @@ public class PatternsbyStructureTest {
 		
 		assertNull(patternsbyStructure.whatPatternIsMostSimilarTo(d1));
 		assertNull(patternsbyStructure.whatPatternIsMostSimilarTo(null));
-		d1.clear();
+		d1.clearAllDescriptors();
 		assertNull(patternsbyStructure.whatPatternIsMostSimilarTo(d1));
 	}
 }

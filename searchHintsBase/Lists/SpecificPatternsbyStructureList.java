@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import ontology.common.Description;
 import ontology.common.Descriptor;
 
 import searchHintsBase.Elements.SpecificDescriptorPattern;
@@ -59,7 +60,7 @@ public class SpecificPatternsbyStructureList extends HintsList<SpecificPatternsb
 	 * @see "M&eacute;todo sortBySuccessCriteria: del protocolo sorting en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Descriptor> sortBySuccessCriteria(List<Descriptor> description) {
+	public Description sortBySuccessCriteria(Description description) {
 		return this.getSortedSpecificDescriptorsList(description, 
 				new Comparator<SpecificDescriptorPattern>() {
 					public int compare(SpecificDescriptorPattern elem1, SpecificDescriptorPattern elem2) {
@@ -134,8 +135,8 @@ public class SpecificPatternsbyStructureList extends HintsList<SpecificPatternsb
 	 * the structure, possibly sorted by frequency.
 	 */
 	@SuppressWarnings("unchecked")
-	private List<Descriptor> getSortedSpecificDescriptorsList(List<Descriptor>  description, Comparator c) {
-		List<Descriptor> tempList, leftOvers, outList;
+	private Description getSortedSpecificDescriptorsList(Description  description, Comparator c) {
+		Description tempList, leftOvers, outList;
 		List<SpecificDescriptorPattern> sortedList;
 		SpecificPatternsbyStructure spbs;
 		Descriptor descriptor;
@@ -145,51 +146,52 @@ public class SpecificPatternsbyStructureList extends HintsList<SpecificPatternsb
 		// First thing is to set the number of processed items to 0
 		this.resetPercentageItemsProcessed();
 
-		tempList = new ArrayList<Descriptor>();
+		tempList = new Description();
 		/* Output list: all sorted attributes are stored in this list, as well as in the structure's attribute list.  However, outList
 		 is the list to be returned as result from this process because the structure's attribute list is sorted by name (default).*/
-		outList = new ArrayList<Descriptor>(description);
+		outList = new Description();
+		outList.setDescriptors(description.getDescriptors());
 
 		// Check precondition
-		if (this.isEmpty() || outList.isEmpty())
+		if (this.isEmpty() || outList.getDescriptors().isEmpty())
 			return tempList;
 
-		numElements = outList.size();
-		spbs = this.getPatterns(outList.get(0).getStructure());
+		numElements = outList.getDescriptors().size();
+		spbs = this.getPatterns(((Descriptor)outList.getDescriptors().get(0)).getStructure());
 		if (spbs == null) return tempList;
 		sortedList = new ArrayList<SpecificDescriptorPattern>();
 		
-		leftOvers = new ArrayList<Descriptor>();
+		leftOvers = new Description();
 
-		while (!(outList.isEmpty())) {
-			descriptor = outList.remove(0);
+		while (!(outList.getDescriptors().isEmpty())) {
+			descriptor = (Descriptor)outList.getDescriptors().remove(0);
 			if ((sdp = spbs.getPattern(descriptor)) == null)			
-				leftOvers.add(descriptor);
+				leftOvers.addDescriptors(descriptor);
 			else {
-				tempList.add(descriptor);
+				tempList.addDescriptors(descriptor);
 				sortedList.add(sdp);
 				Collections.sort(sortedList, c);
 			}
 		}
 				
 		// Get the number of elements to be processed
-		numProcessedElts = tempList.size();
+		numProcessedElts = tempList.getDescriptors().size();
 
 		while (!(sortedList.isEmpty())) {
 			sdp = sortedList.remove(0);
 			i = 1;
-			while (i <= tempList.size()) {
-				if (tempList.get(i-1).getAttribute().equals(sdp.getPattern().getAttribute())) {
-					descriptor = tempList.remove(i-1);
-					outList.add(descriptor);
-					i = tempList.size();
+			while (i <= tempList.getDescriptors().size()) {
+				if (((Descriptor)tempList.getDescriptors().get(i-1)).getAttribute().equals(sdp.getPattern().getAttribute())) {
+					descriptor = (Descriptor)tempList.getDescriptors().remove(i-1);
+					outList.addDescriptors(descriptor);
+					i = tempList.getDescriptors().size();
 				}
 				i = i + 1;
 			}
 		}
 		
-		if (!(leftOvers.isEmpty()))
-			outList.addAll(leftOvers); 
+		while (!(leftOvers.getDescriptors().isEmpty()))
+			outList.addDescriptors((Descriptor)leftOvers.getDescriptors().remove(0)); 
 
 		// Determine the percentage of processed elements and return the processed list
 		this.setPercentageItemsProcessed(numProcessedElts / numElements);

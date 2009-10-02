@@ -3,28 +3,42 @@
  */
 package ontology.taxonomy;
 
+import java.io.Serializable;
+
 /**
  * @author Armando
  *
  */
-public class Modifier {
+public class Modifier implements jade.content.Concept, Serializable {
 	private double structureWeight;
-	private double atributeWeight;
+	private double attributeWeight;
 	private double valueWeight;
 
 	/**
 	 * 
 	 */
 	public Modifier() {
-		
+		this._internalInstanceName = "";
 	}
+	
+	private static final long serialVersionUID = -8627856865395943317L;
+
+	private String _internalInstanceName = null;
+
+  	public Modifier(String instance_name) {
+	  this._internalInstanceName = instance_name;
+  	}
+
+  	public String toString() {
+	  return _internalInstanceName;
+  	}
 
 	/**
 	 * 
 	 */
 	public Modifier(double structureWeight, double atributeWeight, double valueWeight) {
 		setStructureWeight(structureWeight);
-		setAtributeWeight(atributeWeight);
+		setAttributeWeight(atributeWeight);
 		setValueWeight(valueWeight);
 	}
 	
@@ -48,8 +62,8 @@ public class Modifier {
 	 * 
 	 * @param atributeWeight
 	 */
-	public void setAtributeWeight(double atributeWeight) {
-		this.atributeWeight = atributeWeight;
+	public void setAttributeWeight(double atributeWeight) {
+		this.attributeWeight = atributeWeight;
 	}
 
 	/**
@@ -57,7 +71,7 @@ public class Modifier {
 	 * @return
 	 */
 	public double getAtributeWeight() {
-		return atributeWeight;
+		return attributeWeight;
 	}
 
 	/**

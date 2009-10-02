@@ -16,6 +16,12 @@ public abstract class QualitativeHeuristicDescriptor extends HeuristicDescriptor
 		
 	}
 	
+	private static final long serialVersionUID = -3087841394215437493L;
+
+	public QualitativeHeuristicDescriptor(String instance_name) {
+		super(instance_name);
+	}
+	  
 	/**
 	 * Class instance invariant: self MUST always have exactly two values. The first
 	 * element corresponds to the descriptor's attribute, and the second one to the value.

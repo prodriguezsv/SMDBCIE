@@ -11,18 +11,18 @@ import java.util.List;
 
 import ontology.CBR.Case;
 import ontology.common.Descriptor;
+import ontology.common.MeasuringUnit;
 import ontology.common.RVCharacterDescriptor;
 import ontology.common.RVHeuristicDescriptor;
+import ontology.common.RangeValue;
 import ontology.common.SSCharacterDescriptor;
 import ontology.common.SSHeuristicDescriptor;
 import ontology.common.SVCharacterDescriptor;
 import ontology.common.SVHeuristicDescriptor;
+import ontology.common.SingleValue;
 import ontology.taxonomy.Modifier;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
-import ontology.values.MeasuringUnit;
-import ontology.values.RangeValue;
-import ontology.values.SingleValue;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -48,6 +48,10 @@ public class ReasonerTest {
 		Taxon taxon1, taxon2, taxon3, taxon4, taxon5, taxon6, taxon7, taxon8;
 
 		oracleIDSystem = new system.OracleIDApplication();
+		
+		Taxon rootTaxon = new Taxon(TaxonomicRank.ROOT, null);
+		
+		oracleIDSystem.getTaxonomy().setRootTaxon(rootTaxon);
         
 		//-----------------------Taxon No. 1---------------------
         taxon1 = new Taxon(TaxonomicRank.FAMILY, "Chromodorididae");
@@ -1382,7 +1386,7 @@ public class ReasonerTest {
 		
 		System.out.println("Iniciando pruebas para el método GetCharacterList()");
 		
-		oracleIDSystem.getReasoner().getDescription().clear();
+		oracleIDSystem.getReasoner().getDescription().getDescriptors().clear();
 		System.out.println("Verificar que se obtenga una lista de descriptores de caracter");
 		
 		assertTrue(oracleIDSystem.getReasoner().addToDescription(new SVCharacterDescriptor("Cuerpo", "Longitud",
@@ -1396,7 +1400,7 @@ public class ReasonerTest {
 		
 		assertEquals(sl, oracleIDSystem.getReasoner().getCharacterList());
 		
-		oracleIDSystem.getReasoner().getDescription().clear();
+		oracleIDSystem.getReasoner().getDescription().getDescriptors().clear();
 	}
 
 	/**
@@ -1422,7 +1426,7 @@ public class ReasonerTest {
 		
 		assertEquals(sl, oracleIDSystem.getReasoner().getHeuristicList());
 		
-		oracleIDSystem.getReasoner().getDescription().clear();
+		oracleIDSystem.getReasoner().getDescription().getDescriptors().clear();
 	}
 
 	/**
@@ -1446,7 +1450,7 @@ public class ReasonerTest {
 		
 		assertEquals(sl, oracleIDSystem.getReasoner().getCharacterStructuresList());
 		
-		oracleIDSystem.getReasoner().getDescription().clear();
+		oracleIDSystem.getReasoner().getDescription().getDescriptors().clear();
 	}
 
 	/**
@@ -1470,7 +1474,7 @@ public class ReasonerTest {
 		
 		assertEquals(sl, oracleIDSystem.getReasoner().getHeuristicStructuresList());
 		
-		oracleIDSystem.getReasoner().getDescription().clear();
+		oracleIDSystem.getReasoner().getDescription().getDescriptors().clear();
 	}
 
 	/**
@@ -1489,7 +1493,7 @@ public class ReasonerTest {
 		dl.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
 		assertEquals(dl, oracleIDSystem.getReasoner().getDescription("Cuerpo"));
 		
-		oracleIDSystem.getReasoner().getDescription().clear();
+		oracleIDSystem.getReasoner().getDescription().getDescriptors().clear();
 	}
 
 }

@@ -5,13 +5,10 @@ package redundantDiscriminationNet.auxiliary.test;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import ontology.common.Descriptor;
+import ontology.common.Description;
 import ontology.common.SSCharacterDescriptor;
 import ontology.common.SVCharacterDescriptor;
-import ontology.values.SingleValue;
+import ontology.common.SingleValue;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -67,21 +64,21 @@ public class ComparingTableTest {
 	 */
 	@Test
 	public void testFill() {
-		List<Descriptor> d1 = new ArrayList<Descriptor>();
-		List<Descriptor> d2 = new ArrayList<Descriptor>();
+		Description d1 = new Description();
+		Description d2 = new Description();
 		ComparingTable ct = new ComparingTable();
 		ComparingTableTuple<Object> tuple;
 		
 		System.out.println("Iniciando pruebas para el método fill()");
 		
 		System.out.println("Verificar que ComparingTable se llene correctamente");
-		d1.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
-		d1.add(new SSCharacterDescriptor("Pie", "Disposición", "Sobresale al manto"));
-		d1.add(new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata"));
-		d1.add(new SVCharacterDescriptor("Branquias", "Número de hojas branquiales", new SingleValue(6)));
+		d1.addDescriptors(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
+		d1.addDescriptors(new SSCharacterDescriptor("Pie", "Disposición", "Sobresale al manto"));
+		d1.addDescriptors(new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata"));
+		d1.addDescriptors(new SVCharacterDescriptor("Branquias", "Número de hojas branquiales", new SingleValue(6)));
 		
-		d2.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(1)));
-		d2.add(new SSCharacterDescriptor("Cuerpo", "Forma", "Alargado"));
+		d2.addDescriptors(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(1)));
+		d2.addDescriptors(new SSCharacterDescriptor("Cuerpo", "Forma", "Alargado"));
 	
 		act.fill(d1, d2);
 		
@@ -104,8 +101,8 @@ public class ComparingTableTest {
 	 */
 	@Test
 	public void testExtractTuple() {
-		List<Descriptor> d1 = new ArrayList<Descriptor>();
-		List<Descriptor> d2 = new ArrayList<Descriptor>();
+		Description d1 = new Description();
+		Description d2 = new Description();
 		
 		System.out.println("Iniciando pruebas para el método ExtractTuple()");
 		
@@ -113,10 +110,10 @@ public class ComparingTableTest {
 		assertNull(act.extractTuple());
 		
 		System.out.println("Verificar que devuelve el primer elemento de ComparingTable");
-		d1.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
+		d1.addDescriptors(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
 		
-		d2.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(1)));
-		d2.add(new SSCharacterDescriptor("Cuerpo", "Forma", "Alargado"));
+		d2.addDescriptors(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(1)));
+		d2.addDescriptors(new SSCharacterDescriptor("Cuerpo", "Forma", "Alargado"));
 	
 		act.fill(d1, d2);
 		

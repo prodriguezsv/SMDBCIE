@@ -10,9 +10,9 @@ import ontology.CBR.PossibleSolution;
 import ontology.common.Descriptor;
 import ontology.common.SSCharacterDescriptor;
 import ontology.common.SVCharacterDescriptor;
+import ontology.common.SingleValue;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
-import ontology.values.SingleValue;
 
 import org.junit.After;
 import org.junit.AfterClass;

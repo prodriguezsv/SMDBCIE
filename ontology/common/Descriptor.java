@@ -10,7 +10,7 @@ package ontology.common;
  * ya que ning&uacute;n par attribute-value particular generaliza todos los casos bajo ellos.
  * 
 */
-public abstract class Descriptor implements Comparable<Descriptor> {
+public abstract class Descriptor implements jade.content.Concept, Comparable<Descriptor> {
 	private String structure;
 	private String attribute;
 	
@@ -21,9 +21,21 @@ public abstract class Descriptor implements Comparable<Descriptor> {
 	 * @see "M&eacute;todo initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
 	public Descriptor() {
-		
+		this._internalInstanceName = "";
 	}
 	
+	private static final long serialVersionUID = -3087841394215437493L;
+
+	private String _internalInstanceName = null;
+
+	public Descriptor(String instance_name) {
+		this._internalInstanceName = instance_name;
+	}
+	
+	public String get_internalInstanceName() {
+		return _internalInstanceName;
+	}
+
 	/**
 	 * Constructor alternativo
 	 */
@@ -48,7 +60,7 @@ public abstract class Descriptor implements Comparable<Descriptor> {
 	 * @see "M&eacute;todo addStructure: del protocolo adding-private en SUKIA SmallTalk"
 	 * @param structure
 	 */
-	private void setStructure(String structure) {
+	public void setStructure(String structure) {
 		this.structure = structure;
 	}
 	
@@ -64,7 +76,7 @@ public abstract class Descriptor implements Comparable<Descriptor> {
 	 * @see "M&eacute;todo addAttribute: del protocolo adding-private en SUKIA SmallTalk"
 	 * @param attribute
 	 */
-    private void setAttribute(String attribute) {
+    public void setAttribute(String attribute) {
     	this.attribute = attribute;
     }
     
@@ -86,7 +98,7 @@ public abstract class Descriptor implements Comparable<Descriptor> {
 	 * @see "M&eacute;todo addValue: del protocolo adding-private en SUKIA SmallTalk"
 	 * @param value
 	 */
-	protected abstract void setValue(Object value);
+	public abstract void setValue(Object value);
 	
 	/**
 	 * Compara dos instancias de Descriptor combinando el nombre de la estructura y su atributo

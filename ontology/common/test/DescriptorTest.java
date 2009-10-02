@@ -3,13 +3,13 @@ package ontology.common.test;
 import static org.junit.Assert.*;
 
 import ontology.common.Descriptor;
+import ontology.common.MeasuringUnit;
 import ontology.common.RVCharacterDescriptor;
+import ontology.common.RangeValue;
 import ontology.common.SSCharacterDescriptor;
 import ontology.common.SVCharacterDescriptor;
+import ontology.common.SingleValue;
 
-import ontology.values.MeasuringUnit;
-import ontology.values.RangeValue;
-import ontology.values.SingleValue;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

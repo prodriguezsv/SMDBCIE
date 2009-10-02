@@ -10,7 +10,7 @@ import ontology.common.Descriptor;
 import ontology.common.SSCharacterDescriptor;
 import ontology.common.SSHeuristicDescriptor;
 import ontology.common.SVCharacterDescriptor;
-import ontology.values.SingleValue;
+import ontology.common.SingleValue;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -57,7 +57,7 @@ public class DescriptorsPatternTest {
 	 */
 	@After
 	public void tearDown() throws Exception {
-		descriptorsPattern.getPattern().clear();
+		descriptorsPattern.getPattern().clearAllDescriptors();
 	}
 
 	/**
@@ -98,12 +98,12 @@ public class DescriptorsPatternTest {
 		assertEquals(1, descriptorsPattern.howSimilarTo(dl));
 		
 		System.out.println("Verificar que el patrón es completamente distinto a una lista de descriptores");
-		dl.clear();
+		dl.clearAllDescriptors();
 		dl.addToConcreteDescription(new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata"));
 		assertEquals(0, descriptorsPattern.howSimilarTo(dl));
 		
 		System.out.println("Verificar que el patrón es medianamente distinto a una lista de descriptores");
-		dl.clear();
+		dl.clearAllDescriptors();
 		dl.addToConcreteDescription(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
 		dl.addToConcreteDescription(new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata"));
 		assertEquals(0.5, descriptorsPattern.howSimilarTo(dl));
@@ -128,7 +128,7 @@ public class DescriptorsPatternTest {
 		
 		System.out.println("Verificar que el patrón de descriptores es distinto con otro patrón de descriptores" +
 				"según el criterio de comparación");
-		dl.clear();
+		dl.clearAllDescriptors();
 		assertTrue(descriptorsPattern.compareTo(dp) < 0);
 	
 		dl.addToConcreteDescription(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));

@@ -176,10 +176,10 @@ public class PossibleSolutionEvaluator {
                         // Check if the possible solutions are the same object
                         if (evalPossibleSolutionTaxon.equals(compPossibleSolutionTaxon)) {
                         	//OJO: verificar este discernimiento
-                        	if (evalHypothesis.getDescription().get(0) instanceof HeuristicDescriptor) {
+                        	if (evalHypothesis.getDescription().getDescriptors().get(0) instanceof HeuristicDescriptor) {
                         		aPointAccumulatingScheme = PossibleSolutionEvaluator.losePoints();
                         	} else {
-                        		if (compHypothesis.getDescription().get(0) instanceof HeuristicDescriptor)
+                        		if (compHypothesis.getDescription().getDescriptors().get(0) instanceof HeuristicDescriptor)
                         			aPointAccumulatingScheme = PossibleSolutionEvaluator.winPoints();
                         		else aPointAccumulatingScheme = PossibleSolutionEvaluator.losePoints();
                         	}
@@ -199,10 +199,10 @@ public class PossibleSolutionEvaluator {
                             // Determine if the possibleSolution-to-evaluate is a successor taxon of the possibleSolution-to-compare
                             if (evalPossibleSolutionTaxon.isSuccessorOf(compPossibleSolutionTaxon)) {
                             	//OJO: verificar este discernimiento
-                            	if (evalHypothesis.getDescription().get(0) instanceof HeuristicDescriptor) {
+                            	if (evalHypothesis.getDescription().getDescriptors().get(0) instanceof HeuristicDescriptor) {
                             		aPointAccumulatingScheme = PossibleSolutionEvaluator.losePoints();
                             	} else {
-                            		if (compHypothesis.getDescription().get(0) instanceof HeuristicDescriptor)
+                            		if (compHypothesis.getDescription().getDescriptors().get(0) instanceof HeuristicDescriptor)
                             			aPointAccumulatingScheme = PossibleSolutionEvaluator.winPoints();
                             		else aPointAccumulatingScheme = PossibleSolutionEvaluator.losePoints();
                             	}

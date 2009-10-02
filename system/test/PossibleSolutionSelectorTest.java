@@ -76,7 +76,8 @@ public class PossibleSolutionSelectorTest {
                                     new Modifier(1.0,1.0,1.0));
 
 
-        taxonomy = new Taxonomy("Mollusca");
+        taxonomy = new Taxonomy();
+        taxonomy.setRootTaxon(new Taxon(TaxonomicRank.ROOT, null));
 
         //taxon1.setPredecessor(rootTaxon);
         assertTrue(taxonomy.addTaxon(taxon1, taxonomy.getRootTaxon()));

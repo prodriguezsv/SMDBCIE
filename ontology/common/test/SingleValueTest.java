@@ -1,7 +1,8 @@
-package ontology.values.test;
+package ontology.common.test;
 
-import ontology.values.RangeValue;
-import ontology.values.SingleValue;
+import ontology.common.RangeValue;
+import ontology.common.SingleValue;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

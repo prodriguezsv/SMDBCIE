@@ -1,7 +1,7 @@
 /**
  * @see "Categoría Sukia Domain Theory de SUKIA Smalltalk"
  */
-package ontology.values;
+package ontology.common;
 
 /**
  * The first level MUST always be ROOT. All other level names MUST be added

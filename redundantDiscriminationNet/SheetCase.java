@@ -5,6 +5,8 @@
  */
 package redundantDiscriminationNet;
 
+import jade.util.leap.Iterator;
+
 import java.util.ArrayList;
 
 import ontology.CBR.Case;
@@ -77,7 +79,10 @@ public class SheetCase extends Node {
 	 * @param aCase
 	 */
 	public boolean setCase(Case aCase) {
-		for (Descriptor d: aCase.getProblem().getDescription()) {
+		Iterator i = aCase.getProblem().getDescription().getAllDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = (Descriptor) i.next(); 
 			if (d.equals(this.descriptor)) {
 				this.aCase = aCase;
 				return true;

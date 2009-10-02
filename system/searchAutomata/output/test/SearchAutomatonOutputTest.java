@@ -14,9 +14,9 @@ import ontology.CBR.PossibleSolution;
 import ontology.common.Description;
 import ontology.common.SSCharacterDescriptor;
 import ontology.common.SVCharacterDescriptor;
+import ontology.common.SingleValue;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
-import ontology.values.SingleValue;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -67,10 +67,10 @@ public class SearchAutomatonOutputTest {
         aPossibleSolutionList.add(aPossibleSolution2);
 
         aDescription = new Description();
-        aDescription.add(new SSCharacterDescriptor("pie","disposicion","sobresale_al_manto"));
-        aDescription.add(new SSCharacterDescriptor("pie","coloracion","blanquecino"));
-        aDescription.add(new SSCharacterDescriptor("pie","coloracion","crema"));
-        aDescription.add(new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro"));
+        aDescription.addDescriptors(new SSCharacterDescriptor("pie","disposicion","sobresale_al_manto"));
+        aDescription.addDescriptors(new SSCharacterDescriptor("pie","coloracion","blanquecino"));
+        aDescription.addDescriptors(new SSCharacterDescriptor("pie","coloracion","crema"));
+        aDescription.addDescriptors(new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro"));
 
 
     }
@@ -137,7 +137,7 @@ public class SearchAutomatonOutputTest {
         
         instance.addAllToUnmatchedDescription(anUnmatchedDescription);
         
-        assertSame(2,instance.getUnmatchedDescription().size());
+        assertSame(2,instance.getUnmatchedDescription().getDescriptors().size());
 
         /*
          * Must add just new ones.
@@ -146,13 +146,13 @@ public class SearchAutomatonOutputTest {
         anUnmatchedDescription.addToConcreteDescription(new SSCharacterDescriptor("pie","disposicion","other new"));
 
         instance.addAllToUnmatchedDescription(anUnmatchedDescription);
-        assertSame(2,instance.getUnmatchedDescription().size());
+        assertSame(2,instance.getUnmatchedDescription().getDescriptors().size());
         /*
          * Must keep the sames, descriptor already exists.
          */
         anUnmatchedDescription.addToConcreteDescription(new SSCharacterDescriptor("pie","coloracion","blanquecino"));
         instance.addAllToUnmatchedDescription(anUnmatchedDescription);
-        assertSame(2,instance.getUnmatchedDescription().size());
+        assertSame(2,instance.getUnmatchedDescription().getDescriptors().size());
         
     }
 }

@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import ontology.common.Description;
 import ontology.common.Descriptor;
 
 import searchHintsBase.Elements.WeightedDescriptorPattern;
@@ -54,7 +55,7 @@ public class WeightedPatternsbyStructureList extends HintsList<WeightedPatternsb
 	 * @see "M&eacute;todo sortByFailureCriteria: del protocolo sorting en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Descriptor> sortByMeanWeightCriteria(List<Descriptor> descriptors) {
+	public Description sortByMeanWeightCriteria(Description descriptors) {
 		return this.getSortedDescriptorsList(descriptors, 
 				new Comparator<WeightedDescriptorPattern>() {
 					public int compare(WeightedDescriptorPattern elem1, WeightedDescriptorPattern elem2) {
@@ -126,8 +127,8 @@ public class WeightedPatternsbyStructureList extends HintsList<WeightedPatternsb
 	 * sorted by mean weight.
 	 */
 	@SuppressWarnings("unchecked")
-	private List<Descriptor> getSortedDescriptorsList(List<Descriptor> description, Comparator c) {
-		List<Descriptor> tempList, leftOvers;
+	private Description getSortedDescriptorsList(Description description, Comparator c) {
+		Description tempList, leftOvers;
 		List<WeightedDescriptorPattern> sortedList;
 		WeightedPatternsbyStructure wpbs;
 		Descriptor descriptor;
@@ -137,49 +138,49 @@ public class WeightedPatternsbyStructureList extends HintsList<WeightedPatternsb
 		// First thing is to set the number of processed items to 0
 		this.resetPercentageItemsProcessed();
 
-		tempList = new ArrayList<Descriptor>();
+		tempList = new Description();
 
 		// Check precondition
-		if (this.isEmpty() || description.isEmpty())
+		if (this.isEmpty() || description.getDescriptors().isEmpty())
 			return tempList;
 		
-		numElements = description.size();
-		wpbs = this.getPatterns(description.get(0).getStructure());
+		numElements = description.getDescriptors().size();
+		wpbs = this.getPatterns(((Descriptor)description.getDescriptors().get(0)).getStructure());
 		if (wpbs == null) return tempList;
 		sortedList = new ArrayList<WeightedDescriptorPattern>();
 		
-		leftOvers = new ArrayList<Descriptor>();
+		leftOvers = new Description();
 		
-		while (!(description.isEmpty())) {
-			descriptor = description.remove(0);
+		while (!(description.getDescriptors().isEmpty())) {
+			descriptor = (Descriptor)description.getDescriptors().remove(0);
 			if ((wdp = wpbs.getPattern(descriptor)) == null)
-				leftOvers.add(descriptor);
+				leftOvers.addDescriptors(descriptor);
 			else {
-				tempList.add(descriptor);
+				tempList.addDescriptors(descriptor);
 				sortedList.add(wdp);
 				Collections.sort(sortedList, c);
 			}
 		}
 
 		// Get the number of elements to be processed
-		numProcessedElts = tempList.size();
+		numProcessedElts = tempList.getDescriptors().size();
 
 		while (!(sortedList.isEmpty())) {		
 			wdp = sortedList.remove(0);
 			i = 1;
-			while (i <= tempList.size()) {
-				if (tempList.get(i-1).getAttribute().equals(wdp.getPattern().getAttribute())) {
-					descriptor = tempList.remove(i-1);
-					description.add(descriptor);
-					i = tempList.size();
+			while (i <= tempList.getDescriptors().size()) {
+				if (((Descriptor)tempList.getDescriptors().get(i-1)).getAttribute().equals(wdp.getPattern().getAttribute())) {
+					descriptor = (Descriptor)tempList.getDescriptors().remove(i-1);
+					description.addDescriptors(descriptor);
+					i = tempList.getDescriptors().size();
 				}
 				i = i + 1;
 			}
 			
 		}
 				
-		if (!(leftOvers.isEmpty()))
-			description.addAll(leftOvers);
+		while (!(leftOvers.getDescriptors().isEmpty()))
+			description.addDescriptors((Descriptor)leftOvers.getDescriptors().remove(0)); 
 
 		// Determine the percentage of processed elements and return the processed list
 		this.setPercentageItemsProcessed(numProcessedElts / numElements);

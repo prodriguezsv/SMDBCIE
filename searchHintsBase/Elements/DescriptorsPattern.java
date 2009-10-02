@@ -5,7 +5,7 @@
  */
 package searchHintsBase.Elements;
 
-import java.util.List;
+import jade.util.leap.Iterator;
 
 import ontology.common.Description;
 import ontology.common.Descriptor;
@@ -141,8 +141,8 @@ public class DescriptorsPattern implements Comparable<DescriptorsPattern> {
 	public boolean addDescriptor(Descriptor aDescriptor) {
 		if (aDescriptor == null) return false;
 		
-		if (!this.getPattern().isEmpty())
-			if (!this.getPattern().get(0).getStructure().equals(aDescriptor.getStructure()))
+		if (!this.getPattern().getDescriptors().isEmpty())
+			if (!((Descriptor)this.getPattern().getDescriptors().get(0)).getStructure().equals(aDescriptor.getStructure()))
 				return false;
 				
 		return this.getPattern().addToConcreteDescription(aDescriptor);
@@ -155,23 +155,27 @@ public class DescriptorsPattern implements Comparable<DescriptorsPattern> {
 	 * @param aPattern
 	 * @return v = 0 if they are different; 0 < v < 1 if they are similar in v%; v = 1 if they are equal.
 	 */
-	public double howSimilarTo(List<Descriptor> aPattern) {
+	public double howSimilarTo(Description aPattern) {
 		int c;
 		
 		c = 0;
-		for (Descriptor d:aPattern)
-			if (this.getPattern().contains(d))
+		Iterator i = aPattern.getAllDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = (Descriptor) i.next(); 
+			if (this.getPattern().getDescriptors().contains(d))
 				c = c + 1;
+		}
 
-		if (aPattern.size() >= this.getPattern().size())
-			return (c / (double)aPattern.size());
-		else return (c / (double)this.getPattern().size());
+		if (aPattern.getDescriptors().size() >= this.getPattern().getDescriptors().size())
+			return (c / (double)aPattern.getDescriptors().size());
+		else return (c / (double)this.getPattern().getDescriptors().size());
 	}
 	
 	/**
 	 * Comparador por defecto
 	 */
 	public int compareTo(DescriptorsPattern aPattern) {
-		return (aPattern.getPattern().size() - this.getPattern().size());
+		return (aPattern.getPattern().getDescriptors().size() - this.getPattern().getDescriptors().size());
 	}
 }

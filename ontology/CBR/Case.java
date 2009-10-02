@@ -4,8 +4,6 @@
  */
 package ontology.CBR;
 
-import java.util.List;
-
 import ontology.common.Description;
 import ontology.common.Descriptor;
 
@@ -127,7 +125,7 @@ public class Case {
 	public boolean removeFromDescription(Descriptor aDescriptor) {
 		if (aDescriptor == null) return false;
 		
-		return this.getProblem().getDescription().remove(aDescriptor);
+		return this.getProblem().getDescription().getDescriptors().remove(aDescriptor);
 	}
 	
 	/**
@@ -154,7 +152,7 @@ public class Case {
 	public boolean removeFromJustification(Descriptor aDescriptor) {
 		if (aDescriptor == null) return false;
 		
-		return this.getSolution().getJustification().remove(aDescriptor);
+		return this.getSolution().getJustification().getDescriptors().remove(aDescriptor);
 	}
 	
 	/**
@@ -162,8 +160,8 @@ public class Case {
 	 * @see "M&eacute;todo flush del protocolo resetting en SUKIA SmallTalk"
 	 */
 	public void setToDefault() {
-		this.getProblem().getDescription().clear();
-		this.getSolution().getJustification().clear();
+		this.getProblem().getDescription().clearAllDescriptors();
+		this.getSolution().getJustification().clearAllDescriptors();
 		this.setState(false);
 	}
 	
@@ -171,7 +169,7 @@ public class Case {
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
-	public final List<String> getCharacterStructuresList() {
+	public final java.util.List<String> getCharacterStructuresList() {
 		return this.getProblem().getDescription().getCharacterStructuresList();
 	}
 	
@@ -179,7 +177,7 @@ public class Case {
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
-	public final List<String> getHeuristicStructuresList() {
+	public final java.util.List<String> getHeuristicStructuresList() {
 		return this.getProblem().getDescription().getHeuristicStructuresList();
 	}
 	
@@ -187,7 +185,7 @@ public class Case {
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de descriptores relacionados a aStructureName
 	 */
-	public final List<Descriptor> getDescription(String aStructureName) {
+	public final Description getDescription(String aStructureName) {
 		return this.getProblem().getDescription().getDescription(aStructureName);
 	}
 }

@@ -5,14 +5,11 @@ package redundantDiscriminationNet.test;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ontology.CBR.Case;
-import ontology.common.Descriptor;
+import ontology.common.Description;
 import ontology.common.SSCharacterDescriptor;
 import ontology.common.SVCharacterDescriptor;
-import ontology.values.SingleValue;
+import ontology.common.SingleValue;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -149,22 +146,23 @@ public class RDNetTest extends RDNet {
 	 */
 	@Test
 	public void testMoveDescElements() {
-		List<Descriptor> d1, d2, d3;
+		Description d1, d2, d3;
 		
 		System.out.println("Iniciando pruebas para el método moveDescElements()");
 		
 		System.out.println("Verificar que no mueve los elementos si no se cumplen las precondiciones");
-		d1 = new ArrayList<Descriptor>();
-		d2 = new ArrayList<Descriptor>();
+		d1 = new Description();
+		d2 = new Description();
 		assertFalse(this.moveDescElements(d1, d2));
-		d2.add(new SSCharacterDescriptor("Cuerpo", "Forma", "Alargado"));
+		d2.addDescriptors(new SSCharacterDescriptor("Cuerpo", "Forma", "Alargado"));
 		assertFalse(this.moveDescElements(d1, d2));
 		
 		System.out.println("Verificar que mueve los elementos si se cumplen las precondiciones");
-		d1.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
-		d1.add(new SSCharacterDescriptor("Cuerpo", "Forma", "Alargado"));
-		d2.clear();
-		d3 = new ArrayList<Descriptor>(d1);
+		d1.addDescriptors(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
+		d1.addDescriptors(new SSCharacterDescriptor("Cuerpo", "Forma", "Alargado"));
+		d2.clearAllDescriptors();
+		d3 = new Description();
+		d3.setDescriptors(d1.getDescriptors());
 		assertTrue(this.moveDescElements(d1, d2));
 		
 		System.out.println("Verificar que en efecto movió los elementos");
@@ -198,20 +196,20 @@ public class RDNetTest extends RDNet {
 	 */
 	@Test
 	public void testRemoveMatchingElementsInTheRouteListOfDescriptorOfObject() {
-		List<Descriptor> d1, d2;
+		Description d1, d2;
 		
 		System.out.println("Iniciando pruebas para el método RemoveMatchingElementsInTheRoute(List)");
 		
 		System.out.println("Verificar que devuelve el mismo objeto cuando no existe una ruta");
-		d1 = new ArrayList<Descriptor>();
-		d1.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
-		d1.add(new SSCharacterDescriptor("Cuerpo", "Forma", "Alargado"));
+		d1 = new Description();
+		d1.addDescriptors(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
+		d1.addDescriptors(new SSCharacterDescriptor("Cuerpo", "Forma", "Alargado"));
 		assertEquals(d1, removeMatchingElementsInTheRoute(d1));
 		
 		System.out.println("Verificar que remueve los descriptores apropiados si existe una ruta");
 		this.getRoute().push("Longitud");
-		d2 = new ArrayList<Descriptor>();
-		d2.add(new SSCharacterDescriptor("Cuerpo", "Forma", "Alargado"));
+		d2 = new Description();
+		d2.addDescriptors(new SSCharacterDescriptor("Cuerpo", "Forma", "Alargado"));
 		assertEquals(d2, removeMatchingElementsInTheRoute(d1));
 	}
 

@@ -1,112 +1,107 @@
-/**
- * @see "Categoría Sukia Domain Theory de SUKIA Smalltalk"
- */
 package ontology.common;
 
-import java.util.List;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
-import ontology.taxonomy.Taxon;
-import ontology.taxonomy.TaxonomicRank;
-import ontology.values.RangeValue;
-import ontology.values.SingleValue;
-import ontology.values.Values;
-import ontology.values.Value;
-
-
+import jade.util.leap.*;
 
 /**
- * @author Armando
- *
- */
-public class Attribute implements Comparable<Attribute>{
-	private String name;
-	private Values values;
+* It's a subclass of a defined term
+* Protege name: Attribute
+* @author ontology bean generator
+* @version 2009/09/29, 11:00:34
+*/
+public class Attribute extends DefinedTerm {
+	// bean stuff
+   protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
-	/**
-	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
-	 * @see "Método newWithOneLevel del protocolo instance creation en SUKIA SmallTalk"
-	 */
-	public Attribute() {
-		setName(null);
-		setValues(new Values());
-	}
-	
-	/**
-	 * @see "Método oneLevel del protocolo de clase one level en SUKIA SmallTalk"
-	 * @return
-	 */
-	public static int oneLevel() {
-		return 0;
-	}
-	
-	/**
-	 * @see "Método name: del protocolo adding en SUKIA SmallTalk"
-	 * @param name
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	/**
-	 * @see "Método name del protocolo accessing en SUKIA SmallTalk"
-	 * @return
-	 */
-	public String getName() {
-		return name;
-	}
+   public void addPropertyChangeListener(PropertyChangeListener pcl) {
+     pcs.addPropertyChangeListener(pcl);
+   }
 
-	/**
-	 * Metodo de instancia agregado
-	 * @param values
-	 */
-	public void setValues(Values values) {
-		this.values = values;
-	}
+   public void removePropertyChangeListener(PropertyChangeListener pcl) {
+     pcs.removePropertyChangeListener(pcl);
+   }
 
-	/**
-	 * @see "Método values del protocolo accessing en SUKIA SmallTalk"
-	 * @return
-	 */
-	public Values getValues() {
-		return values;
-	}
+  private static final long serialVersionUID = -3087841394215437493L;
 
-	/**
-	 * @see "Método copyFrom:referencing: del protocolo copying en SUKIA SmallTalk"
-	 * @param attribute
-	 * @param taxon
-	 */
-	public <T> boolean addValues(Attribute attribute, Taxon taxon) {
-		Value nvd;
+  private String _internalInstanceName = null;
 
-		// Si this.value es de un unico nivel no se puede agregar valores
-		if (this.getValues().size() < attribute.getValues().size())
-			return false;
+  public Attribute() {
+    this._internalInstanceName = "";
+  }
 
-		name = attribute.getName();
-		
-		for(List<Value> l: attribute.getValues()) {
-			for(Value ovd: l) {
-				if (ovd instanceof SingleValue)
-					nvd = new SingleValue((SingleValue)ovd);
-				else {
-					nvd = new RangeValue((RangeValue)ovd);
-				}
-				
-				if (this.getValues().size() == attribute.getValues().size())
-					this.getValues().addValueDescriptor(nvd, TaxonomicRank.values()[l.indexOf(ovd)+1]);
-				else
-					this.getValues().addValueDescriptor(nvd, taxon.getLevel());
-			}
-		}
-				
-		return true;
-	}
-	
-	/**
-	 * Método de instancia agregado
-	 */
-	public int compareTo(Attribute aAttribute) {
-		return this.getName().compareTo(aAttribute.getName());
-	}
+  public Attribute(String instance_name) {
+    this._internalInstanceName = instance_name;
+  }
+
+  public String toString() {
+    return _internalInstanceName;
+  }
+
+   /**
+   * Protege name: definition
+   */
+   private String definition;
+   public void setDefinition(String value) { 
+     pcs.firePropertyChange("definition", (this.definition==null?new String():this.definition), value);
+    this.definition=value;
+   }
+   public String getDefinition() {
+     return this.definition;
+   }
+
+   /**
+   * Protege name: describedBy
+   */
+   private List describedBy = new ArrayList();
+   public void addDescribedBy(Object elem) { 
+     describedBy.add(elem);
+     //pcs.firePropertyChange("describedBy", oldList, this.describedBy);
+   }
+   public boolean removeDescribedBy(Object elem) {
+     boolean result = describedBy.remove(elem);
+     //pcs.firePropertyChange("describedBy", oldList, this.describedBy);
+     return result;
+   }
+   public void clearAllDescribedBy() {
+     describedBy.clear();
+     //pcs.firePropertyChange("describedBy", oldList, this.describedBy);
+   }
+   public Iterator getAllDescribedBy() {return describedBy.iterator(); }
+   public List getDescribedBy() {return describedBy; }
+   public void setDescribedBy(List l) {describedBy = l; }
+
+   /**
+   * Protege name: term
+   */
+   private String term;
+   public void setTerm(String value) { 
+     pcs.firePropertyChange("term", (this.term==null?new String():this.term), value);
+    this.term=value;
+   }
+   public String getTerm() {
+     return this.term;
+   }
+
+   /**
+   * Protege name: apliesTo
+   */
+   private List apliesTo = new ArrayList();
+   public void addApliesTo(Object elem) { 
+     apliesTo.add(elem);
+     //pcs.firePropertyChange("apliesTo", oldList, this.apliesTo);
+   }
+   public boolean removeApliesTo(Object elem) {
+     boolean result = apliesTo.remove(elem);
+     //pcs.firePropertyChange("apliesTo", oldList, this.apliesTo);
+     return result;
+   }
+   public void clearAllApliesTo() {
+     apliesTo.clear();
+     //pcs.firePropertyChange("apliesTo", oldList, this.apliesTo);
+   }
+   public Iterator getAllApliesTo() {return apliesTo.iterator(); }
+   public List getApliesTo() {return apliesTo; }
+   public void setApliesTo(List l) {apliesTo = l; }
 }

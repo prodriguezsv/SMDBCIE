@@ -13,7 +13,7 @@ import ontology.CBR.Case;
 import ontology.common.Descriptor;
 import ontology.common.SSCharacterDescriptor;
 import ontology.common.SVCharacterDescriptor;
-import ontology.values.SingleValue;
+import ontology.common.SingleValue;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -65,7 +65,7 @@ public class CaseTest {
 	 */
 	@After
 	public void tearDown() throws Exception {
-		aCase.getProblem().getDescription().clear();
+		aCase.getProblem().getDescription().clearAllDescriptors();
 	}
 
 	/**
@@ -137,12 +137,12 @@ public class CaseTest {
 	 */
 	@Test
 	public final void testGetDescription() {
-		List<Descriptor> dl = new ArrayList<Descriptor>();
+		jade.util.leap.List dl = new jade.util.leap.ArrayList();
 		
 		System.out.println("Iniciando pruebas para el método GetDescription()");
 		
 		System.out.println("Verificar que se obtenga una descripción asociada a una estructura");
 		dl.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
-		assertEquals(dl, aCase.getDescription("Cuerpo"));
+		assertEquals(dl, aCase.getDescription("Cuerpo").getDescriptors());
 	}
 }

@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 import ontology.CBR.Case;
 import ontology.common.SSCharacterDescriptor;
 import ontology.common.SVCharacterDescriptor;
-import ontology.values.SingleValue;
+import ontology.common.SingleValue;
 
 import org.junit.After;
 import org.junit.AfterClass;

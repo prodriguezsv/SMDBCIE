@@ -3,9 +3,10 @@
  * and open the template in the editor.
  */
 
-package ontology.values.test;
+package ontology.common.test;
 
-import ontology.values.RangeValue;
+import ontology.common.RangeValue;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

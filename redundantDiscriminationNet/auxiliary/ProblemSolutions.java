@@ -5,6 +5,8 @@
 package redundantDiscriminationNet.auxiliary;
 
 
+import jade.util.leap.Iterator;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -123,7 +125,10 @@ public class ProblemSolutions {
 	 * @return El valor de anAttribute o null si el atributo no existe
 	 */ 
 	public Object getValue(String anAttribute) {
-		for(Descriptor d: this.getProblemCase().getProblem().getDescription()) {
+		Iterator i = this.getProblemCase().getProblem().getDescription().getAllDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = (Descriptor) i.next(); 
 			if (d.getAttribute().equals(anAttribute))
 				return d.getValue();
 		}
@@ -187,7 +192,10 @@ public class ProblemSolutions {
 		Object valor;
 		
 		// Para cada par (atributo, valor) de aCase.
-		for(Descriptor d: aCase.getProblem().getDescription()) {
+		Iterator i = aCase.getProblem().getDescription().getAllDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = (Descriptor) i.next(); 
 			valor = this.getValue(d.getAttribute());
 
 			if (!(valor == null)) {

@@ -3,8 +3,13 @@
  */
 package ontology.taxonomy;
 
-import java.util.ArrayList;
-import java.util.List;
+import jade.util.leap.ArrayList;
+import jade.util.leap.Iterator;
+import jade.util.leap.List;
+
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.io.Serializable;
 
 import ontology.common.CharacterDescriptor;
 import ontology.common.Description;
@@ -17,24 +22,74 @@ import ontology.common.RVHeuristicDescriptor;
  * @author Armando
  *
  */
-@SuppressWarnings("serial")
-public class WeightedDescription extends ArrayList<WeightedDescriptor> {
+public class WeightedDescription implements jade.content.Concept, Serializable {
+	// bean stuff
+   protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
+   public void addPropertyChangeListener(PropertyChangeListener pcl) {
+     pcs.addPropertyChangeListener(pcl);
+   }
+
+   public void removePropertyChangeListener(PropertyChangeListener pcl) {
+     pcs.removePropertyChangeListener(pcl);
+   }
+
+
+  private static final long serialVersionUID = -8627856865395943317L;
+
+  private String _internalInstanceName = null;
+
+  public WeightedDescription() {
+    this._internalInstanceName = "";
+  }
+
+  public WeightedDescription(String instance_name) {
+    this._internalInstanceName = instance_name;
+  }
+
+  public String toString() {
+    return _internalInstanceName;
+  }
+
+   /**
+   * Protege name: weightedDescriptors
+   */
+   private List weightedDescriptors = new ArrayList();
+   public void addWeightedDescriptors(WeightedDescriptor elem) { 
+     weightedDescriptors.add(elem);
+     //pcs.firePropertyChange("weightedDescriptors", oldList, this.weightedDescriptors);
+   }
+   public boolean removeWeightedDescriptors(WeightedDescriptor elem) {
+     boolean result = weightedDescriptors.remove(elem);
+     //pcs.firePropertyChange("weightedDescriptors", oldList, this.weightedDescriptors);
+     return result;
+   }
+   public void clearAllWeightedDescriptors() {
+     weightedDescriptors.clear();
+     //pcs.firePropertyChange("weightedDescriptors", oldList, this.weightedDescriptors);
+   }
+   public Iterator getAllWeightedDescriptors() {return weightedDescriptors.iterator(); }
+   public List getWeightedDescriptors() {return weightedDescriptors; }
+   public void setWeightedDescriptors(List l) {weightedDescriptors = l; }
+	   
 	/**
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
-	public List<String> getCharacterStructuresList() {
-		List<String> structuresList;
+	public java.util.List<String> getCharacterStructuresList() {
+		java.util.List<String> structuresList;
 		
-		structuresList = new ArrayList<String>();
+		structuresList = new java.util.ArrayList<String>();
 		
-		for(WeightedDescriptor d: this) {
-			if (d.getDescriptor() instanceof CharacterDescriptor) { 
+		Iterator i = this.getAllWeightedDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = ((WeightedDescriptor) i.next()).getDescriptor();
+			if (d instanceof CharacterDescriptor) { 
 				// Determine if the structure name in Deescriptor has already been included in structureList
-				if (!(structuresList.contains(d.getDescriptor().getStructure()))) {
+				if (!(structuresList.contains(d.getStructure()))) {
 					// The structure name was not found in structureList. Append it to structureList
-					structuresList.add(d.getDescriptor().getStructure());
+					structuresList.add(d.getStructure());
 				} else continue;
 			}
 		}
@@ -46,17 +101,20 @@ public class WeightedDescription extends ArrayList<WeightedDescriptor> {
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de cadenas representando el nombre de las heur&iacute;sticas
 	 */
-	public final List<String> getHeuristicStructuresList() {
-		List<String> structuresList;
+	public final java.util.List<String> getHeuristicStructuresList() {
+		java.util.List<String> structuresList;
 		
-		structuresList = new ArrayList<String>();
+		structuresList = new java.util.ArrayList<String>();
+
+		Iterator i = this.getAllWeightedDescriptors();
 		
-		for(WeightedDescriptor d: this) {
-			if (d.getDescriptor() instanceof HeuristicDescriptor) { 
+		while (i.hasNext()) {
+			Descriptor d = ((WeightedDescriptor) i.next()).getDescriptor();
+			if (d instanceof HeuristicDescriptor) { 
 				// Determine if the structure name in Deescriptor has already been included in structureList
-				if (!(structuresList.contains(d.getDescriptor().getStructure()))) {
+				if (!(structuresList.contains(d.getStructure()))) {
 					// The structure name was not found in structureList. Append it to structureList
-					structuresList.add(d.getDescriptor().getStructure());
+					structuresList.add(d.getStructure());
 				} else continue;
 			}
 		}
@@ -68,16 +126,19 @@ public class WeightedDescription extends ArrayList<WeightedDescriptor> {
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de cadenas representando el nombre de las heur&iacute;sticas
 	 */
-	public final List<String> getStructuresList() {
-		List<String> structuresList;
+	public final java.util.List<String> getStructuresList() {
+		java.util.List<String> structuresList;
 		
-		structuresList = new ArrayList<String>();
+		structuresList = new java.util.ArrayList<String>();
 		
-		for(WeightedDescriptor d: this) {			 
+		Iterator i = this.getAllWeightedDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = ((WeightedDescriptor) i.next()).getDescriptor();
 			// Determine if the structure name in Deescriptor has already been included in structureList
-			if (!(structuresList.contains(d.getDescriptor().getStructure()))) {
+			if (!(structuresList.contains(d.getStructure()))) {
 				// The structure name was not found in structureList. Append it to structureList
-				structuresList.add(d.getDescriptor().getStructure());
+				structuresList.add(d.getStructure());
 			} else continue;
 		}
 		
@@ -93,10 +154,13 @@ public class WeightedDescription extends ArrayList<WeightedDescriptor> {
 		
 		description = new Description();
 		
-		for(WeightedDescriptor d: this) {
+		Iterator i = this.getAllWeightedDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = ((WeightedDescriptor) i.next()).getDescriptor();
 			// Determine if the structure name in Deescriptor has already been included in structureList
-			if (d.getDescriptor().getStructure().equals(aStructureName)) {
-				description.add(d.getDescriptor());
+			if (d.getStructure().equals(aStructureName)) {
+				description.addDescriptors(d);
 			} else continue;
 		}
 		
@@ -112,8 +176,11 @@ public class WeightedDescription extends ArrayList<WeightedDescriptor> {
 		
 		description = new Description();
 		
-		for(WeightedDescriptor d: this) {
-			description.add(d.getDescriptor());
+		Iterator i = this.getAllWeightedDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = ((WeightedDescriptor) i.next()).getDescriptor();
+			description.addDescriptors(d);
 		}
 		
 		return description;
@@ -129,9 +196,12 @@ public class WeightedDescription extends ArrayList<WeightedDescriptor> {
 	public boolean areThereContradictions(Descriptor aDescriptor) {
 		
 		// Para cada par (atributo, valor) de aCase.
-		for(WeightedDescriptor d: this) {
-			if (d.getDescriptor().getStructure().equals(aDescriptor.getStructure()) &&
-					d.getDescriptor().getAttribute().equals(aDescriptor.getAttribute())	) {
+		Iterator i = this.getAllWeightedDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = ((WeightedDescriptor) i.next()).getDescriptor();
+			if (d.getStructure().equals(aDescriptor.getStructure()) &&
+					d.getAttribute().equals(aDescriptor.getAttribute())	) {
 					return true; // Hay contradiccion
 			}
 		}
@@ -153,12 +223,12 @@ public class WeightedDescription extends ArrayList<WeightedDescriptor> {
 				|| aDescriptor instanceof RVHeuristicDescriptor)
 			return false;
 		
-		if (this.getDescription().contains(aDescriptor) ||
+		if (this.getDescription().getDescriptors().contains(aDescriptor) ||
 				this.areThereContradictions(aDescriptor))
 			return false;
 		
-		this.add(new WeightedDescriptor(aDescriptor, new Modifier(1.0, 1.0, 1.0)));
-		//Collections.sort(this);
+		this.getWeightedDescriptors().add(new WeightedDescriptor(aDescriptor, new Modifier(1.0, 1.0, 1.0)));
+		//Collections.sort(this); //OJO
 		
 		return true;
 	}
@@ -177,12 +247,12 @@ public class WeightedDescription extends ArrayList<WeightedDescriptor> {
 				|| aDescriptor instanceof RVHeuristicDescriptor)
 			return false;
 		
-		if (this.getDescription().contains(aDescriptor) ||
+		if (this.getDescription().getDescriptors().contains(aDescriptor) ||
 				this.areThereContradictions(aDescriptor))
 			return false;
 		
-		this.add(new WeightedDescriptor(aDescriptor, modifier));
-		//Collections.sort(this);
+		this.getWeightedDescriptors().add(new WeightedDescriptor(aDescriptor, modifier));
+		//Collections.sort(this); //OJO
 		
 		return true;
 	}
@@ -195,9 +265,12 @@ public class WeightedDescription extends ArrayList<WeightedDescriptor> {
 	public boolean addAllToConcreteDescription(Description aDescription) {
 		if (aDescription == null) return false;
 		
-        for (Descriptor d:aDescription){
+		Iterator i = aDescription.getAllDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = (Descriptor) i.next(); 
             this.addToConcreteDescription(d);
-            //Collections.sort(this);
+            //Collections.sort(this); //OJO
         }
         
 		return true;
@@ -211,9 +284,12 @@ public class WeightedDescription extends ArrayList<WeightedDescriptor> {
 	public boolean addAllToAbstractDescription(Description aDescription) {
 		if (aDescription == null) return false;
 		
-        for (Descriptor d:aDescription){
+		Iterator i = aDescription.getAllDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = (Descriptor) i.next();
             this.addToAbstractDescription(d);
-            //Collections.sort(this);
+            //Collections.sort(this); //OJO
         }
         
 		return true;
@@ -229,10 +305,10 @@ public class WeightedDescription extends ArrayList<WeightedDescriptor> {
 	public boolean addToAbstractDescription(Descriptor aDescriptor) {
 		if (aDescriptor == null) return false;
 		
-		if (this.contains(aDescriptor))
+		if (this.getWeightedDescriptors().contains(aDescriptor))
 			return false;
 		
-		this.add(new WeightedDescriptor(aDescriptor, new Modifier(1.0, 1.0, 1.0)));
+		this.getWeightedDescriptors().add(new WeightedDescriptor(aDescriptor, new Modifier(1.0, 1.0, 1.0)));
 		//Collections.sort(this);
 		
 		return true;
@@ -248,10 +324,10 @@ public class WeightedDescription extends ArrayList<WeightedDescriptor> {
 	public boolean addToAbstractDescription(Descriptor aDescriptor, Modifier modifier) {
 		if (aDescriptor == null) return false;
 		
-		if (this.getDescription().contains(aDescriptor))
+		if (this.getDescription().getDescriptors().contains(aDescriptor))
 			return false;
 		
-		this.add(new WeightedDescriptor(aDescriptor, modifier));
+		this.getWeightedDescriptors().add(new WeightedDescriptor(aDescriptor, modifier));
 		//Collections.sort(this);
 		
 		return true;
@@ -266,11 +342,14 @@ public class WeightedDescription extends ArrayList<WeightedDescriptor> {
 		
 		description = new Description();
 		
-		for(WeightedDescriptor d: this) {
+		Iterator i = this.getAllWeightedDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = ((WeightedDescriptor) i.next()).getDescriptor();
 			// Determine if the structure name in Deescriptor has already been included in structureList
-			if (d.getDescriptor().getStructure().equals(aStructureName) &&
-					d.getDescriptor().getAttribute().equals(anAttributeName)) {
-				description.add(d.getDescriptor());
+			if (d.getStructure().equals(aStructureName) &&
+					d.getAttribute().equals(anAttributeName)) {
+				description.addDescriptors(d);
 			} else continue;
 		}
 		
@@ -281,17 +360,20 @@ public class WeightedDescription extends ArrayList<WeightedDescriptor> {
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
-	public final List<String> getAttributeList(String structureName) {
-		List<String> attributesList;
+	public final java.util.List<String> getAttributeList(String structureName) {
+		java.util.List<String> attributesList;
 		
-		attributesList = new ArrayList<String>();
+		attributesList = new java.util.ArrayList<String>();
 		
-		for(WeightedDescriptor d: this) {
-			if (d.getDescriptor().getStructure().equals(structureName)) {
+		Iterator i = this.getAllWeightedDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = ((WeightedDescriptor) i.next()).getDescriptor();
+			if (d.getStructure().equals(structureName)) {
 				// Determine if the structure name in Deescriptor has already been included in structureList
-				if (!(attributesList.contains(d.getDescriptor().getAttribute()))) {
+				if (!(attributesList.contains(d.getAttribute()))) {
 					// The structure name was not found in structureList. Append it to structureList
-					attributesList.add(d.getDescriptor().getAttribute());
+					attributesList.add(d.getAttribute());
 				} else continue;
 			}
 		}
@@ -308,12 +390,15 @@ public class WeightedDescription extends ArrayList<WeightedDescriptor> {
 		
 		characterList = new Description();
 		
-		for(WeightedDescriptor d: this) {
-			if (d.getDescriptor() instanceof CharacterDescriptor) { 
+		Iterator i = this.getAllWeightedDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = ((WeightedDescriptor) i.next()).getDescriptor();
+			if (d instanceof CharacterDescriptor) { 
 				// Determine if the structure name in Deescriptor has already been included in structureList
-				if (!(characterList.contains(d.getDescriptor().getStructure()))) {
+				if (!(characterList.getDescriptors().contains(d.getStructure()))) {
 					// The structure name was not found in structureList. Append it to structureList
-					characterList.add(d.getDescriptor());
+					characterList.addDescriptors(d);
 				} else continue;
 			}
 		}
@@ -330,12 +415,15 @@ public class WeightedDescription extends ArrayList<WeightedDescriptor> {
 		
 		heuristicList = new Description();
 		
-		for(WeightedDescriptor d: this) {
-			if (d.getDescriptor() instanceof HeuristicDescriptor) { 
+		Iterator i = this.getAllWeightedDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = ((WeightedDescriptor) i.next()).getDescriptor();
+			if (d instanceof HeuristicDescriptor) { 
 				// Determine if the structure name in Deescriptor has already been included in structureList
-				if (!(heuristicList.contains(d.getDescriptor().getStructure()))) {
+				if (!(heuristicList.getDescriptors().contains(d.getStructure()))) {
 					// The structure name was not found in structureList. Append it to structureList
-					heuristicList.add(d.getDescriptor());
+					heuristicList.addDescriptors(d);
 				} else continue;
 			}
 		}
@@ -352,9 +440,12 @@ public class WeightedDescription extends ArrayList<WeightedDescriptor> {
 	public boolean removeFromDescription(Descriptor aDescriptor) {
 		if (aDescriptor == null) return false;
 		
-		for(WeightedDescriptor d: this) {
-			if (d.getDescriptor().equals(aDescriptor)) {
-				this.remove(d);
+		Iterator i = this.getAllWeightedDescriptors();
+		
+		while (i.hasNext()) {
+			Descriptor d = ((WeightedDescriptor) i.next()).getDescriptor();
+			if (d.equals(aDescriptor)) {
+				this.getWeightedDescriptors().remove(i);
 				return true;
 			}
 		}
