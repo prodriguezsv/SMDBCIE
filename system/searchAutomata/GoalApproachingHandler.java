@@ -319,7 +319,7 @@ public class GoalApproachingHandler {
                                 
                                 //If the value decriptor is a range, do a range-driven dialog
                                 if ((d.getValue() instanceof RangeValue)) {
-                                	//Suponiendo que el usuario introduce valores válidos
+                                	
                                     descriptor = this.rangeValueDescriptorDialog(d, ps);
                                     
                                     if (descriptor == null && status.equals(SearchStatus.CANCEL))

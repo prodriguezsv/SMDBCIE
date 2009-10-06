@@ -6,6 +6,8 @@ package ontology.taxonomy;
 import jade.util.leap.ArrayList;
 import jade.util.leap.Iterator;
 import jade.util.leap.List;
+import jade.util.leap.Set;
+import jade.util.leap.SortedSetImpl;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -134,7 +136,7 @@ public class Taxon implements jade.content.Concept, Serializable, Comparable<Tax
 	 */
 	public void setSuccessors(List sucessors) {
 		this.successors = sucessors;
-		//Collections.sort(this.successors); //OJO
+		sortTaxon(this.successors);
 	}
 
 	/**
@@ -155,7 +157,7 @@ public class Taxon implements jade.content.Concept, Serializable, Comparable<Tax
        
 		if (!this.getSuccessors().contains(successor)) {
 			this.successors.add(successor);
-			//Collections.sort(this.successors); //OJO
+			sortTaxon(this.successors);
 			successor.setPredecessor(this);
 			return true;
 		}
@@ -405,5 +407,23 @@ public class Taxon implements jade.content.Concept, Serializable, Comparable<Tax
 				this.getName().equals(((Taxon)aTaxon).getName()))
 			return true;
 		else return false;
+	}
+	
+	private void sortTaxon(List taxonList) {
+		Set taxonSet = new SortedSetImpl();
+		
+		Iterator i = taxonList.iterator();
+		
+		while (i.hasNext()) {
+			taxonSet.add(i.next());
+		}
+		
+		taxonList.clear();
+		
+		Iterator j = taxonSet.iterator();
+		
+		while (j.hasNext()) {
+			taxonList.add(j.next());
+		}
 	}
 }

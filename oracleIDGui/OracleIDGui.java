@@ -493,7 +493,7 @@ public class OracleIDGui extends JFrame {
 							
 						}
 						
-						problem.getDescription().addToConcreteDescription(descriptor);
+						problem.getDescription().addToConcreteDescription(descriptor);										
 						
 						jlDescription.setListData(problem.getDescription().getDescriptors().toArray());
 					} else {

@@ -54,6 +54,8 @@ public class SimilarityAssessor {
 	}
 	
 	/**
+	 * Calcula la probabilidad de que el valor pertenezca al taxón tomando en cuenta los pesos de los valores
+	 * asociados al atributo de la estructura correspondiente
 	 * @see "M&eacute;todo similarityRangeOf:in: del protocolo de clase class calculating en SUKIA SmallTalk"
 	 * @param aValue
 	 * @param aValueWeightList

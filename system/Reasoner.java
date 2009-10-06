@@ -787,7 +787,7 @@ public class Reasoner {
 	 * self - OK
 	 */
 	private boolean searchHypothesisInTaxonomy() {
-		String s;
+		String structureName;
 		Hypothesis hypothesis;
 		List<String> structureList;
 		
@@ -795,27 +795,27 @@ public class Reasoner {
 		
 		while (!(structureList.isEmpty())) {
 			// Remove the next structure from the description
-			s = structureList.remove(0);
+			structureName = structureList.remove(0);
 			
 			// Create a first instance of Hypothesis and assign the grouping heuristic as descriptive element
 			hypothesis = new Hypothesis();
-			hypothesis.setDescription(this.getDescription(s));
+			hypothesis.setDescription(this.getDescription(structureName));
 
-			if (searchInTaxonomyByStructure(s, hypothesis) == false)
+			if (searchInTaxonomyByStructure(structureName, hypothesis) == false)
 				return false;
 		}
 			
 		return true;
 	}
 	
-	protected boolean searchInTaxonomyByStructure(String s, Hypothesis hypothesis) {
+	protected boolean searchInTaxonomyByStructure(String structureName, Hypothesis hypothesis) {
 		Description problemDescription;
 		SearchStatus status;
 		TaxonomySearchAutomaton searchAutomaton;
 		GoalApproachingHandler dialog;
 		
 		// Get the SAV problem description from the structure
-		problemDescription = this.getDescription(s);
+		problemDescription = this.getDescription(structureName);
 		if (problemDescription == null) return false;
 		
 		// Perform a taxonomic search

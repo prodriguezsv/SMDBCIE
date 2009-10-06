@@ -104,6 +104,7 @@ public abstract class Descriptor implements jade.content.Concept, Comparable<Des
 	 * Compara dos instancias de Descriptor combinando el nombre de la estructura y su atributo
 	 */
 	public int compareTo(Descriptor aDescriptor) {
+		//Descriptor aDescriptor = (Descriptor) d;
 		return this.getStructure().concat(this.getAttribute()).compareTo(aDescriptor.getStructure().concat(aDescriptor.getAttribute()));
 	}
 	

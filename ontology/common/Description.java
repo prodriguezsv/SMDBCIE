@@ -6,15 +6,18 @@ package ontology.common;
 import jade.util.leap.ArrayList;
 import jade.util.leap.Iterator;
 import jade.util.leap.List;
+import jade.util.leap.Set;
+import jade.util.leap.SortedSetImpl;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.Serializable;
 
 /**
  * @author Armando
  *
  */
-public class Description {
+public class Description implements jade.content.Concept, Serializable {
    // bean stuff
    protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
@@ -199,7 +202,7 @@ public class Description {
 			return false;
 		
 		this.addDescriptors(aDescriptor);
-		//Collections.sort(this.getDescriptors());
+		this.sortDescription();
 		
 		return true;
 	}
@@ -217,7 +220,7 @@ public class Description {
 		while (i.hasNext()) {
 			Descriptor d = (Descriptor) i.next(); 
             this.addToConcreteDescription(d);
-            //Collections.sort(this);
+            this.sortDescription();
         }
         
 		return true;
@@ -236,7 +239,7 @@ public class Description {
 		while (i.hasNext()) {
 			Descriptor d = (Descriptor) i.next(); 
             this.addToAbstractDescription(d);
-            //Collections.sort(this);
+            this.sortDescription();
         }
         
 		return true;
@@ -256,7 +259,7 @@ public class Description {
 			return false;
 		
 		this.addDescriptors(aDescriptor);
-		//Collections.sort(this);
+		this.sortDescription();
 		
 		return true;
 	}
@@ -356,5 +359,23 @@ public class Description {
 		}
 		
 		return heuristicList;
+	}
+	
+	private void sortDescription() {
+		Set descriptionSet = new SortedSetImpl();
+		
+		Iterator i = this.getAllDescriptors();
+		
+		while (i.hasNext()) {
+			descriptionSet.add(i.next());
+		}
+		
+		this.clearAllDescriptors();
+		
+		Iterator j = descriptionSet.iterator();
+		
+		while (j.hasNext()) {
+			this.getDescriptors().add(j.next());
+		}
 	}
 }

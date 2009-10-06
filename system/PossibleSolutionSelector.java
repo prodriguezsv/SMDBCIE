@@ -228,19 +228,22 @@ public class PossibleSolutionSelector {
 	}
 	
 	/**
-	 * This method takes as argument a list of possible solutions, sorted by their point score. Each possible solution
-	 * has a taxonomic level, which can be represented numerically. This level is compared against the [numeric representation
-	 * of the] level stated in the identification goal. If the possible solution's level is less than the stated identification goal, then
-	 * that possible solution is added to the general-solutions list. If the level is equal to the stated identification goal, the possible
-	 * solution is added to the goal-solutions list. Finally, if the level is greater than the stated identification goal, the possible solution
-	 * is added to the specific-solutions list.
-	 * NOTE: Since the argument is a sorted list, then the first elements to be added to any of the solutions lists are those
-	 * with the highest scores.
+	 * This method takes as argument a list of possible solutions, sorted by their point score. Each possible
+	 * solution has a taxonomic level, which can be represented numerically. This level is compared against
+	 * the [numeric representation of the] level stated in the identification goal. If the possible solution's
+	 * level is less than the stated identification goal, then that possible solution is added to the general
+	 * -solutions list. If the level is equal to the stated identification goal, the possible solution is
+	 * added to the goal-solutions list. Finally, if the level is greater than the stated identification goal,
+	 * the possible solution is added to the specific-solutions list.
+	 * NOTE: Since the argument is a sorted list, then the first elements to be added to any of the solutions
+	 * lists are those with the highest scores.
 	 * The process will stop when either of these conditions hold:
-	 * 1) The number of elements in the goal-solutions list is equal to the maximum number of solutions expected by the user.
-	 * 2) The number of elements in the specific-solutions list is equal to the maximum number of solutions expected by the user.
-	 * 3) The sum of the elements belonging to the goal-solutions and specific-solutions lists is greater than or equal to the
-	 * maximum number of solutions expected by the user.
+	 * 1) The number of elements in the goal-solutions list is equal to the maximum number of solutions
+	 * expected by the user.
+	 * 2) The number of elements in the specific-solutions list is equal to the maximum number of solutions
+	 * expected by the user.
+	 * 3) The sum of the elements belonging to the goal-solutions and specific-solutions lists is greater than
+	 * or equal to the maximum number of solutions expected by the user.
 	 * 4) The argument aSortedPossibleSolutionsList is empty.
 	 * PRECONDITION: aSortedPossibleSolutionsList is NOT empty.
 	 * @see "Método distribute: del protocolo selecting solutions en SUKIA SmallTalk"
