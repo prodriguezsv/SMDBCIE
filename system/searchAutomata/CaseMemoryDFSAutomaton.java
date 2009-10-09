@@ -17,7 +17,6 @@ import java.util.Map;
 
 import javax.swing.JOptionPane;
 
-import oracleIDGui.OracleIDGui;
 import oracleIDGui.SingleDSuggestionDialog;
 
 import ontology.CBR.PossibleSolution;
@@ -30,6 +29,7 @@ import redundantDiscriminationNet.Index;
 import redundantDiscriminationNet.Node;
 import redundantDiscriminationNet.Norm;
 import redundantDiscriminationNet.SheetCase;
+import system.OracleIDSystem;
 import system.searchAutomata.output.CaseMemoryDFSAutomatonOutput;
 
 /**
@@ -55,16 +55,14 @@ public class CaseMemoryDFSAutomaton {
     private int stopLevel;
     private SearchStatus status;
     private CaseMemoryDFSAutomatonOutput searchOutput;
-	private OracleIDGui frame;
 
     /**
 	 * @see Define method name.
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public CaseMemoryDFSAutomaton(OracleIDGui frame, RootNorm aSAVRoot){
+    public CaseMemoryDFSAutomaton(RootNorm aSAVRoot){
         netRoot = aSAVRoot;
-    	this.frame = frame;
         this.initialize();
     }
     
@@ -922,7 +920,7 @@ public class CaseMemoryDFSAutomaton {
         //At this point, all alternatives for this norm failed because they were either unconfirmed or
         // rejected due to doubt. Present to the user the possibility to BACKTRACK
 
-        int answer = JOptionPane.showConfirmDialog(frame, "Hasta ahora las alternativas presentadas no han " +
+        int answer = JOptionPane.showConfirmDialog(OracleIDSystem.getInstance().getSystemGui(), "Hasta ahora las alternativas presentadas no han " +
         		"ayudado a resolver el problema. \n ¿Desea continuar evaluando otras alternativas?", "OracleID",
         		JOptionPane.YES_NO_OPTION);
 
@@ -964,7 +962,7 @@ public class CaseMemoryDFSAutomaton {
         			+ "\" de la estructura \"" + n.getDescriptor().getStructure() +         					
         					"\" el siguiente valor?";
         		
-        		SingleDSuggestionDialog dialog = new SingleDSuggestionDialog(frame, message, value);
+        		SingleDSuggestionDialog dialog = new SingleDSuggestionDialog(OracleIDSystem.getInstance().getSystemGui(), message, value);
         		
         		answer = dialog.getResponse();
         		
@@ -1100,7 +1098,7 @@ public class CaseMemoryDFSAutomaton {
     		}
     	}
     	
-        SingleDSuggestionDialog dialog = new SingleDSuggestionDialog(frame, message, values.toArray());
+        SingleDSuggestionDialog dialog = new SingleDSuggestionDialog(OracleIDSystem.getInstance().getSystemGui(), message, values.toArray());
 		
 		response = dialog.getResponse();
     	    	

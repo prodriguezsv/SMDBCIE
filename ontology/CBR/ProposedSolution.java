@@ -13,9 +13,9 @@ import java.io.Serializable;
  *
  */
 public class ProposedSolution implements jade.content.Concept, Serializable, Comparable<ProposedSolution> {
-	private CertaintyDegree certaintyDegree;
+	private String certaintyDegree;
 	private PossibleSolution solution;
-	private boolean status;
+	private boolean state;
 
 	/**
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
@@ -23,8 +23,8 @@ public class ProposedSolution implements jade.content.Concept, Serializable, Com
 	public ProposedSolution() {
 		this._internalInstanceName = "";
 		this.setSolution(null);
-		this.setStatus(true);
-		this.setCertaintyDegree(CertaintyDegree.UNKNOWN);
+		this.setState(true);
+		this.setCertaintyDegree(CertaintyDegree.UNKNOWN.getDegree());
 	}
 	
 	private static final long serialVersionUID = 4206237779038972396L;
@@ -44,7 +44,7 @@ public class ProposedSolution implements jade.content.Concept, Serializable, Com
 	 * #unknown or #uncertain or #doubfult or #certain
 	 * @param certaintyDegree
 	 */
-	public void setCertaintyDegree(CertaintyDegree aCertaintyDegree) {
+	public void setCertaintyDegree(String aCertaintyDegree) {
 		this.certaintyDegree = aCertaintyDegree;
 	}
 
@@ -52,7 +52,7 @@ public class ProposedSolution implements jade.content.Concept, Serializable, Com
 	 * @see "Método degreeOfCertainty del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public CertaintyDegree getCertaintyDegree() {
+	public String getCertaintyDegree() {
 		return certaintyDegree;
 	}
 
@@ -78,16 +78,16 @@ public class ProposedSolution implements jade.content.Concept, Serializable, Com
 	 * #- (a negative PossibleSolution)"
 	 * @param status
 	 */
-	public void setStatus(boolean status) {
-		this.status = status;
+	public void setState(boolean status) {
+		this.state = status;
 	}
 
 	/**
 	 * @see "Método status del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public boolean isStatus() {
-		return status;
+	public boolean getState() {
+		return state;
 	}
 
 	/**

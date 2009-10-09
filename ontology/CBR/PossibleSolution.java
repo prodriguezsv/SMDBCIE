@@ -3,6 +3,8 @@
  */
 package ontology.CBR;
 
+import jade.content.Concept;
+
 import java.io.Serializable;
 
 import ontology.common.Description;
@@ -22,7 +24,7 @@ public class PossibleSolution implements jade.content.Concept, Serializable, Com
 	private Description doubtfulDescription;
 	private Description solutionDescription;
 	private Hypothesis hypothesis;
-	private Object solution;
+	private Concept solution;
 	private boolean evaluated;
 	private double points;
 
@@ -206,14 +208,12 @@ public class PossibleSolution implements jade.content.Concept, Serializable, Com
 	 * @see "Método solution: del protocolo adding en SUKIA SmallTalk"
 	 * @param solution
 	 */
-	public boolean setSolution(Object solution) {
+	public void setSolution(Concept solution) {
 		// Make sure class of the PossibleSolution is OK
 		if (!(solution instanceof Case || solution instanceof Taxon))
-			return false;
+			return;
 
 		this.solution = solution;
-		
-		return true;
 	}
 
 	/**
@@ -221,7 +221,7 @@ public class PossibleSolution implements jade.content.Concept, Serializable, Com
 	 * @see "Método solution del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public Object getSolution() {
+	public Concept getSolution() {
 		return solution;
 	}
 
@@ -317,7 +317,7 @@ public class PossibleSolution implements jade.content.Concept, Serializable, Com
 		this.getContradictions().addAllToConcreteDescription(aDescription);
 	}
 	
-	public TaxonomicRank getLevel() {
+	public String getLevel() {
 		if (this.getSolution() == null) return null;
 		
 		if (this.getSolution() instanceof Case)
@@ -361,7 +361,7 @@ public class PossibleSolution implements jade.content.Concept, Serializable, Com
 	 * Método de instancia agregado
 	 */
 	public int compareTo(PossibleSolution aPossibleSolution) {
-		return (TaxonomicRank.getIndex(aPossibleSolution.getLevel()) - 
-				TaxonomicRank.getIndex(this.getLevel()));
+		return (TaxonomicRank.getIndex(TaxonomicRank.valueOf(aPossibleSolution.getLevel().toUpperCase())) - 
+				TaxonomicRank.getIndex(TaxonomicRank.valueOf(getLevel().toUpperCase())));
 	}
 }

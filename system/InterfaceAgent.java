@@ -68,13 +68,15 @@ public class InterfaceAgent extends Agent {
     
     // Crea y muestra el GUI
     myGui = new OracleIDGui(this);
+    
+    OracleIDSystem.getInstance().setSystemGui(myGui);
   }
 
   // Operaciones de limpieza del agente
     @Override
   protected void takeDown() {
   	// Cierra la GUI
-  	myGui.dispose();
+  	//myGui.dispose();
     // Imprimir un mensaje de despedida
     System.out.println("¡Que tenga buen día! Sistema de identificación "+getAID().getName()+" abortado.");
   }
@@ -159,7 +161,7 @@ public class InterfaceAgent extends Agent {
 		    		if (ce instanceof AreSimilarTo) {
 		    			AreSimilarTo areSimilarTo = (AreSimilarTo) ce;
 	            	  
-				        System.out.println(getAID().getName()+"se han recibido las hipótesis de soluciones posibles...");
+				        System.out.println(getAID().getName()+" ha recibido las hipótesis de soluciones posibles...");
 				          
 				        if (!areSimilarTo.getSuccessfulConflictSet().isEmpty() 
 				        		|| !areSimilarTo.getFailureConflictSet().isEmpty()) {
@@ -176,9 +178,13 @@ public class InterfaceAgent extends Agent {
 					        adapt.setFailureConflictSet(areSimilarTo.getFailureConflictSet());
 					        adapt.setSuccessfulConflictSet(areSimilarTo.getSuccessfulConflictSet());
 					        adapt.setTo(getCurrentProblem());
+					        
+					        Action action = new Action();
+					        action.setAction(adapt);
+					        action.setActor(OracleIDSystem.getInstance().getReasonerAID());
 					          
 					        // Convertir objetos Java a cadena
-					        getContentManager().fillContent(msg, adapt);
+					        getContentManager().fillContent(msg, action);
 					        send(msg);
 					        System.out.println(getAID().getName()+" solicitando la adaptación de las hipotesis al problema...");
 					        step = 2;
@@ -223,7 +229,7 @@ public class InterfaceAgent extends Agent {
 				        System.out.println(getAID().getName()+"ha recibido las soluciones propuestas...");
 				          
 				        if (!areReasonableSolutionsTo.getProposedSolutions().isEmpty()) {					        
-					        System.out.println(getAID().getName()+" presentado las soluciones propuestas...");
+					        System.out.println(getAID().getName()+" presentando las soluciones propuestas...");
 					        
 					        myGui.setProposedSolutions(areReasonableSolutionsTo.getProposedSolutions());
 					        
@@ -234,7 +240,10 @@ public class InterfaceAgent extends Agent {
 					        };
 					        
 					        SwingUtilities.invokeLater(addIt);
-				        } 
+				        } else {
+				        	JOptionPane.showMessageDialog(null, "No se han encontrado propuestas de soluciones posibles...\n\n" +
+				        			"Intente especificar más su descripción", "OracleID", JOptionPane.INFORMATION_MESSAGE);
+				        }
 				        
 				        step = 3;
 		    		}

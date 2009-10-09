@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import oracleIDGui.OracleIDGui;
+
 import edu.stanford.smi.protege.model.Cls;
 import edu.stanford.smi.protege.model.Instance;
 import edu.stanford.smi.protege.model.KnowledgeBase;
@@ -47,9 +49,9 @@ public class OracleIDSystem {
 	/**
 	 * Espectativas o parámetros del sistema: meta de identificación
 	 */
-	private TaxonomicRank identGoal;
+	private String identGoal;
 	private int maxNumberSolutions;
-	private SimilarityDegree minSimilarityDegree;
+	private String minSimilarityDegree;
 	private boolean presentFailedSolutions;
 	/**
 	 * Controladores de agentes locales
@@ -62,6 +64,7 @@ public class OracleIDSystem {
 	 * Contenedor principal de la plataforma jade
 	 */
 	private ContainerController mainContainer;
+	private OracleIDGui systemGui;
 	/**
 	 * Ruta de archivos de ontologías
 	 */
@@ -142,7 +145,7 @@ public class OracleIDSystem {
 		if (!this.loadTaxonomy()) System.exit(0);
 		
 		// The identification goal. Default value: species
-		setIdentGoal(TaxonomicRank.getMostSpecificLevel());
+		setIdentGoal(TaxonomicRank.getMostSpecificLevel().getRank());
 
 		// USER EXPECTATION: Maximum number of solutions to present. Default value: 3
 		setMaxNumberSolutions(3);
@@ -153,7 +156,7 @@ public class OracleIDSystem {
 
 		/* USER EXPECTATION: Minimal similarity degree used in comparisons. 
 		 Default: moderately similar to equal*/
-		this.setMinSimilarityDegree(SimilarityDegree.MEDIANAMENTESIMILAR);
+		this.setMinSimilarityDegree(SimilarityDegree.MEDIANAMENTESIMILAR.getSimilarityDegree());
 
 		interfaceAgentController = null;
 		reasonerAgentController = null;
@@ -165,7 +168,7 @@ public class OracleIDSystem {
 	 * @see "Método identGoal: del protocolo adding en SUKIA SmallTalk"
 	 * @param identGoal
 	 */
-	public void setIdentGoal(TaxonomicRank aTaxonomicLevelsValue) {
+	public void setIdentGoal(String aTaxonomicLevelsValue) {
 		identGoal = aTaxonomicLevelsValue;
 	}
 
@@ -173,7 +176,7 @@ public class OracleIDSystem {
 	 * @see "Método identGoal del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public TaxonomicRank getIdentGoal() {
+	public String getIdentGoal() {
 		return identGoal;
 	}
 
@@ -197,7 +200,7 @@ public class OracleIDSystem {
 	 * @see "Método minSimilarityDegree: del protocolo adding en SUKIA SmallTalk"
 	 * @param aSimRangesValue
 	 */
-	public void setMinSimilarityDegree(SimilarityDegree aSimRangesValue) {
+	public void setMinSimilarityDegree(String aSimRangesValue) {
 		minSimilarityDegree = aSimRangesValue;
 	}
 
@@ -205,7 +208,7 @@ public class OracleIDSystem {
 	 * @see "Método minSimilarityDegree del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public SimilarityDegree getMinSimilarityDegree() {
+	public String getMinSimilarityDegree() {
 		return minSimilarityDegree;
 	}
 	
@@ -395,6 +398,14 @@ public class OracleIDSystem {
 		this.mainContainer = mainContainer;
 	}
 
+	public OracleIDGui getSystemGui() {
+		return systemGui;
+	}
+
+	public void setSystemGui(OracleIDGui systemGui) {
+		this.systemGui = systemGui;
+	}
+
 	/**
 	 * @param args
 	 */
@@ -441,6 +452,7 @@ public class OracleIDSystem {
 			OracleIDSystem.getInstance().getRetrieverAgentController().kill();
 			OracleIDSystem.getInstance().getLearnerAgentController().kill();	
 			OracleIDSystem.getInstance().getMainContainer().kill();
+			jade.core.Runtime.instance().shutDown();
 		}
 		catch (Exception e) {
 			e.printStackTrace();

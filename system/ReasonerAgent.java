@@ -30,13 +30,14 @@ import jade.lang.acl.MessageTemplate;
 import jade.util.leap.ArrayList;
 import jade.util.leap.List;
 import jade.content.onto.*;
+import jade.content.onto.basic.Action;
+import jade.content.abs.AbsPredicate;
 import jade.content.lang.*;
 import jade.content.ContentElement;
 import jade.content.lang.Codec.CodecException;
 import jade.content.lang.sl.*;
 
 import ontology.CBR.Adapt;
-import ontology.CBR.AreReasonableSolutionsTo;
 import ontology.CBR.CBRTerminologyOntology;
 import ontology.CBR.Problem;
 
@@ -91,26 +92,31 @@ public class ReasonerAgent extends Agent {
                     ContentElement ce = null;
                     // Convertir la cadena a objetos Java
                     ce = getContentManager().extractContent(msg);
-                    if (ce instanceof Adapt) {
-                    	Adapt adapt = (Adapt) ce;
+                    if (ce instanceof Action) {
+                    	Adapt adapt = (Adapt) ((Action)ce).getAction();
                     	
                     	getProposedSolutions().clear();
                     	
                     	setSuccessfulConflictSet(adapt.getSuccessfulConflictSet());
-                    	setFailureConflictSet(adapt.getSuccessfulConflictSet());
+                    	setFailureConflictSet(adapt.getFailureConflictSet());
                     	setProblem(adapt.getTo());
                     	
                     	adaptHypothesis();
                     	
-                    	AreReasonableSolutionsTo areReasonableSolutionsTo = new AreReasonableSolutionsTo();
+                    	/*AreReasonableSolutionsTo areReasonableSolutionsTo = new AreReasonableSolutionsTo();
                     	areReasonableSolutionsTo.setProposedSolutions(getProposedSolutions());
-                    	areReasonableSolutionsTo.setProblema(adapt.getTo());
-                    	
-                    	// Convertir objetos Java a cadena
-          	          	getContentManager().fillContent(msg, areReasonableSolutionsTo);
+                    	areReasonableSolutionsTo.setProblem(adapt.getTo());*/                                    
                     	
                         ACLMessage reply = msg.createReply();
                         reply.setPerformative(ACLMessage.INFORM);
+                        
+                        AbsPredicate ap = new AbsPredicate(CBRTerminologyOntology.AREREASONABLESOLUTIONSTO);
+                        
+                        ap.set(CBRTerminologyOntology.AREREASONABLESOLUTIONSTO_PROPOSEDSOLUTIONS, ontology.fromObject(getProposedSolutions()));
+                        ap.set(CBRTerminologyOntology.AREREASONABLESOLUTIONSTO_PROBLEM, ontology.fromObject(getProblem()));
+                        
+                        // Convertir objetos Java a cadena
+          	          	getContentManager().fillContent(reply, ap);
 
                         myAgent.send(reply);
 
@@ -155,7 +161,6 @@ public class ReasonerAgent extends Agent {
 		return proposedSolutions;
 	}
 	
-	@SuppressWarnings("unused")
 	private Problem getProblem() {
 		return problem;
 	}

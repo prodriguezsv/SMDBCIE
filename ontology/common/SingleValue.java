@@ -46,13 +46,13 @@ public class SingleValue extends Value{
 	 */
 	public SingleValue(double aValue) {
 		this.setValue(aValue);
-		this.setMeasuringUnit(MeasuringUnit.COUNT);
+		this.setMeasuringUnit(MeasuringUnit.COUNT.getMeasuringUnit());
 	}
 
 	/**
 	 * Constructor altenativo
 	 */
-	public SingleValue(double aValue, MeasuringUnit measuringUnit) {
+	public SingleValue(double aValue, String measuringUnit) {
 		this.setValue(aValue);
 		this.setMeasuringUnit(measuringUnit);
 	}

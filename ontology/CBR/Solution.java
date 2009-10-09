@@ -7,7 +7,6 @@ package ontology.CBR;
 import java.io.Serializable;
 
 import ontology.common.Description;
-import ontology.taxonomy.TaxonomicRank;
 
 /**
  * Representa la soluci&oacute;n de un problema particular y c&oacute;mo fue resuelto
@@ -23,7 +22,7 @@ public class Solution implements jade.content.Concept, Serializable {
 	/**
 	 * El rango del tax&oacute;n de la soluci&oacute;n
 	 */
-	private TaxonomicRank taxonLevel;
+	private String taxonLevel;
 	/**
 	 * El tax&oacute;n de la soluci&oacute;n
 	 */
@@ -56,7 +55,7 @@ public class Solution implements jade.content.Concept, Serializable {
 	 * Constructor alternativo
 	 * @see "M&eacute;todo initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public Solution(TaxonomicRank aTaxonLevel, String aTaxonName) {
+	public Solution(String aTaxonLevel, String aTaxonName) {
 		justification = new Description();
 		taxonLevel = aTaxonLevel;
 		taxonName = aTaxonName;
@@ -84,7 +83,7 @@ public class Solution implements jade.content.Concept, Serializable {
 	 * @see "M&eacute;todo taxonLevel del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public TaxonomicRank getTaxonLevel() {
+	public String getTaxonLevel() {
 		return taxonLevel;
 	}
 
@@ -93,7 +92,7 @@ public class Solution implements jade.content.Concept, Serializable {
 	 * @see "M&eacute;todo taxonLevel: del protocolo adding en SUKIA SmallTalk"
 	 * @param taxonLevel
 	 */
-	public void setTaxonLevel(TaxonomicRank taxonLevel) {
+	public void setTaxonLevel(String taxonLevel) {
 		this.taxonLevel = taxonLevel;
 	}
 

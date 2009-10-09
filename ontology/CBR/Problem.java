@@ -21,11 +21,11 @@ public class Problem implements jade.content.Concept, Serializable {
 	/**
 	 * Especifica la meta de identificaci&oacute;n
 	 */
-	private TaxonomicRank goalRank;
+	private String goalRank;
 	/**
 	 * Especifica la espectativa de desempe&ntilde;o m&iacute;nima
 	 */
-	private SimilarityDegree leastSimilarityDegree;
+	private String leastSimilarityDegree;
 
 	/**
 	 * Constructor por defecto
@@ -78,15 +78,24 @@ public class Problem implements jade.content.Concept, Serializable {
 	 * M&eacute;todo accesor de escritura
 	 * @param goalRank
 	 */
-	public void setGoalRank(TaxonomicRank goalRank) {
-		this.goalRank = goalRank;
+	public void setGoalRank(String goalRank) {
+		boolean iscontained = false;
+		
+		for (TaxonomicRank t:TaxonomicRank.values()) {
+			if (t.getRank().equals(goalRank)) {
+				iscontained = true;
+				break;
+			}
+		}
+		
+		if (iscontained) this.goalRank = goalRank;
 	}
 
 	/**
 	 * M&eacute;todo accesor de lectura
 	 * @return
 	 */
-	public TaxonomicRank getGoalRank() {
+	public String getGoalRank() {
 		return goalRank;
 	}
 
@@ -94,15 +103,24 @@ public class Problem implements jade.content.Concept, Serializable {
 	 * M&eacute;todo accesor de escritura
 	 * @param leastDegreeOfCertainty
 	 */
-	public void setLeastSimilarityDegree(SimilarityDegree leastDegreeOfCertainty) {
-		this.leastSimilarityDegree = leastDegreeOfCertainty;
+	public void setLeastSimilarityDegree(String leastDegreeOfCertainty) {
+		boolean iscontained = false;
+		
+		for (SimilarityDegree sd:SimilarityDegree.values()) {
+			if (sd.getSimilarityDegree().equals(leastDegreeOfCertainty)) {
+				iscontained = true;
+				break;
+			}
+		}
+		
+		if (iscontained) this.leastSimilarityDegree = leastDegreeOfCertainty;;
 	}
 	
 	/**
 	 * M&eacute;todo accesor de lectura
 	 * @return
 	 */
-	public SimilarityDegree getLeastSimilarityDegree() {
+	public String getLeastSimilarityDegree() {
 		return leastSimilarityDegree;
 	}
 	

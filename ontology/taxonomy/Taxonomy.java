@@ -136,7 +136,7 @@ public class Taxonomy {
 	private boolean addTaxonToLevelIndex(Taxon aTaxon) {
 		int levelNumber;
 
-		levelNumber = TaxonomicRank.getIndex(aTaxon.getLevel());
+		levelNumber = TaxonomicRank.getIndex(TaxonomicRank.valueOf(aTaxon.getLevel().toUpperCase()));
 		
 		if (levelNumber == -1 || levelNumber == 0) return false;
 
@@ -150,10 +150,10 @@ public class Taxonomy {
 	 * @param aLevel
 	 * @return
 	 */
-	public List<Taxon> getTaxonListFromLevelIndex(TaxonomicRank aLevel) {
+	public List<Taxon> getTaxonListFromLevelIndex(String aLevel) {
 		int levelNumber;
 
-		levelNumber = TaxonomicRank.getIndex(aLevel) -1;
+		levelNumber = TaxonomicRank.getIndex(TaxonomicRank.valueOf(aLevel.toUpperCase())) -1;
 		if (levelNumber == -1) return null;
 
 		return (levelIndex.get(levelNumber));
@@ -165,7 +165,7 @@ public class Taxonomy {
 	 * @param aLevel
 	 * @return
 	 */
-	public Taxon getTaxonFromLevelIndex(String aTaxonName, TaxonomicRank aLevel) {
+	public Taxon getTaxonFromLevelIndex(String aTaxonName, String aLevel) {
         for (Taxon aTaxon: getTaxonListFromLevelIndex(aLevel)){
             if (aTaxon.getName().equals(aTaxonName)) return aTaxon;
         }
@@ -213,7 +213,7 @@ public class Taxonomy {
 	 */
 	public boolean addTaxon(Taxon aNewTaxon) {
 		//Step 2: Reference the new taxon in levelIndex (i.e., alphabetically by taxon name, by taxonomic level)
-		if (aNewTaxon.getLevel() != TaxonomicRank.ROOT) {
+		if (!aNewTaxon.getLevel().equals(TaxonomicRank.ROOT.getRank())) {
 			if (!(this.addTaxonToLevelIndex(aNewTaxon))) {
 				aNewTaxon.unlinkFromTheHierarchy();
 				return false;

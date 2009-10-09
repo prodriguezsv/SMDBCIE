@@ -70,7 +70,7 @@ public class Modifier implements jade.content.Concept, Serializable {
 	 * 
 	 * @return
 	 */
-	public double getAtributeWeight() {
+	public double getAttributeWeight() {
 		return attributeWeight;
 	}
 

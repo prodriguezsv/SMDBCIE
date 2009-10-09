@@ -38,7 +38,7 @@ public class PossibleSolutionTest {
 		
 		System.out.println("Iniciando pruebas para la clase " + PossibleSolution.class.getName());
 		aPossibleSolution = new PossibleSolution();
-		taxon = new Taxon(TaxonomicRank.GENUS, "Glossodoris");
+		taxon = new Taxon(TaxonomicRank.GENUS.getRank(), "Glossodoris");
 		aPossibleSolution  = new PossibleSolution();
 		aPossibleSolution.setSolution(taxon);
 	}
@@ -160,12 +160,12 @@ public class PossibleSolutionTest {
 		Taxon taxon;
 		
 		System.out.println("Iniciando pruebas para el método SetSolution()");
-		assertTrue(aPossibleSolution.setSolution(new Case()));
-		assertTrue(aPossibleSolution.setSolution(new Taxon(TaxonomicRank.GENUS, "Glossodoris")));
+		aPossibleSolution.setSolution(new Case());
+		assertNotNull(aPossibleSolution.getSolution());
+		aPossibleSolution.setSolution(new Taxon(TaxonomicRank.GENUS.getRank(), "Glossodoris"));
+		assertTrue(aPossibleSolution.getSolution() instanceof Taxon);
 		
-		assertFalse(aPossibleSolution.setSolution(new Object()));
-		
-		taxon = new Taxon(TaxonomicRank.GENUS, "Glossodoris");
+		taxon = new Taxon(TaxonomicRank.GENUS.getRank(), "Glossodoris");
 		aPossibleSolution  = new PossibleSolution();
 		aPossibleSolution.setSolution(taxon);
 	}
@@ -230,7 +230,7 @@ public class PossibleSolutionTest {
 	@Test
 	public void testGetLevel() {
 		System.out.println("Iniciando pruebas para el método GetLevel()");
-		assertEquals(aPossibleSolution.getLevel(), TaxonomicRank.GENUS);
+		assertEquals(aPossibleSolution.getLevel(), TaxonomicRank.GENUS.getRank());
 	}
 
 	/**
@@ -260,7 +260,7 @@ public class PossibleSolutionTest {
 		Taxon taxon;
 		
 		System.out.println("Iniciando pruebas para el método CompareTo()");
-		taxon = new Taxon(TaxonomicRank.GENUS, "Chromodoris");
+		taxon = new Taxon(TaxonomicRank.GENUS.getRank(), "Chromodoris");
 		ps  = new PossibleSolution();
 		ps.setSolution(taxon);
 		
@@ -270,10 +270,10 @@ public class PossibleSolutionTest {
 		
 		System.out.println("Verificar que la posible solución es distinta con otra según el criterio" +
 				"de comparación");
-		taxon = new Taxon(TaxonomicRank.FAMILY, "Chromodorididae");;
+		taxon = new Taxon(TaxonomicRank.FAMILY.getRank(), "Chromodorididae");;
 		ps.setSolution(taxon);
 		assertTrue(aPossibleSolution.compareTo(ps) < 0);
-		taxon = new Taxon(TaxonomicRank.SPECIES, "Cadlina sparsa");;
+		taxon = new Taxon(TaxonomicRank.SPECIES.getRank(), "Cadlina sparsa");;
 		ps.setSolution(taxon);
 		assertTrue(aPossibleSolution.compareTo(ps) > 0);
 	}

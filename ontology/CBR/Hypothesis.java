@@ -56,10 +56,10 @@ public class Hypothesis implements jade.content.Concept, Serializable{
 	 * @see "Método descriptiveElement: del protocolo adding en SUKIA SmallTalk"
 	 * @param aDescElt
 	 */
-	public boolean setDescription(Description aDescElt) {
+	public void setDescription(Description aDescElt) {
 		this.description = aDescElt;
 		
-		return true;
+		//return true;
 	}
 
 	/**

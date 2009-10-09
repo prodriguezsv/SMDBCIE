@@ -44,17 +44,17 @@ public class TaxonTest {
 
 	@Before
     public void setUp() {
-        rootTaxon = new Taxon(TaxonomicRank.ROOT, null);
+        rootTaxon = new Taxon(TaxonomicRank.ROOT.getRank(), null);
         
 //-----------------------Taxon No. 1---------------------
-        taxon1 = new Taxon(TaxonomicRank.FAMILY, "Chromodorididae");
+        taxon1 = new Taxon(TaxonomicRank.FAMILY.getRank(), "Chromodorididae");
 //-----------------------Structure No. 1---------------------
         taxon1.addToDescription(new SSCharacterDescriptor("Cuerpo","Forma","Alargado"),
                 new Modifier(1.0,1.0,0.8));
 		taxon1.addToDescription(new SSCharacterDescriptor("Cuerpo","Forma","Ovalado"),
 		        new Modifier(1.0,1.0,0.1));
 		taxon1.addToDescription(new RVCharacterDescriptor("Cuerpo","Longitud", new RangeValue(0.3, 4.0,
-				MeasuringUnit.CM)), new Modifier(1.0,1.0,1.0));
+				MeasuringUnit.CM.getMeasuringUnit())), new Modifier(1.0,1.0,1.0));
 		taxon1.addToDescription(new SSCharacterDescriptor("Cuerpo","Conformación","Tiene cerata"),
 		        new Modifier(1.0,1.0,1.0));
 		//-----------------------Structure No. 2---------------------
@@ -108,7 +108,7 @@ public class TaxonTest {
 		        new Modifier(1.0,1.0,1.0));
 		//-----------------------Grouping Heuristic No. 2---------------------
 		taxon1.addToDescription(new RVHeuristicDescriptor("Profundidad donde se encuentra",
-				"Profundidad donde se encuentra", new RangeValue(0.0, 20.0, MeasuringUnit.CM)), 
+				"Profundidad donde se encuentra", new RangeValue(0.0, 20.0, MeasuringUnit.CM.getMeasuringUnit())), 
 				new Modifier(1.0,1.0,1.0));
 		//-----------------------Grouping Heuristic No. 3---------------------
 		taxon1.addToDescription(new SSHeuristicDescriptor("Medio de preservacion tenido",
@@ -118,7 +118,7 @@ public class TaxonTest {
 		taxon1.addToDescription(new SSHeuristicDescriptor("Medio de preservacion tenido",
 				"Medio de preservacion tenido","Amarillento"), new Modifier(1.0,1.0,0.2));
 //-----------------------Taxon No. 2---------------------
-        taxon2 = new Taxon(TaxonomicRank.GENUS, "Chromodoris");
+        taxon2 = new Taxon(TaxonomicRank.GENUS.getRank(), "Chromodoris");
 //-----------------------Structure No. 1---------------------
         taxon2.addToDescription(new SSCharacterDescriptor("Cuerpo","Posición de la banda dorsal continua", "Centro"),
                 new Modifier(1.0,1.0,1.0));
@@ -137,12 +137,12 @@ public class TaxonTest {
         taxon2.addToDescription(new SSCharacterDescriptor("Radula","Posición del diente más conspicuo","Centro"),
                 new Modifier(0.3,1.0,0.5));
 
-        taxon3 = new Taxon(TaxonomicRank.SPECIES, "Chromodoris sphoni");
-        taxon4 = new Taxon(TaxonomicRank.SPECIES, "Chromodoris clenchi");
-        taxon5 = new Taxon(TaxonomicRank.SPECIES, "Chromodoris kempfi");
-        taxon6 = new Taxon(TaxonomicRank.GENUS, "Cadlina");
-        taxon7 = new Taxon(TaxonomicRank.SPECIES, "Cadlina sparsa");
-        taxon8 = new Taxon(TaxonomicRank.GENUS, "Hypselodoris");
+        taxon3 = new Taxon(TaxonomicRank.SPECIES.getRank(), "Chromodoris sphoni");
+        taxon4 = new Taxon(TaxonomicRank.SPECIES.getRank(), "Chromodoris clenchi");
+        taxon5 = new Taxon(TaxonomicRank.SPECIES.getRank(), "Chromodoris kempfi");
+        taxon6 = new Taxon(TaxonomicRank.GENUS.getRank(), "Cadlina");
+        taxon7 = new Taxon(TaxonomicRank.SPECIES.getRank(), "Cadlina sparsa");
+        taxon8 = new Taxon(TaxonomicRank.GENUS.getRank(), "Hypselodoris");
     }
 
     @After

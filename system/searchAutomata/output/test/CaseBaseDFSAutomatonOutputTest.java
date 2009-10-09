@@ -52,9 +52,9 @@ public class CaseBaseDFSAutomatonOutputTest {
     public void setUp() {
         aTaxonomy = new Taxonomy();
 
-        rootTaxon = new Taxon(TaxonomicRank.ROOT, null);
+        rootTaxon = new Taxon(TaxonomicRank.ROOT.getRank(), null);
 //-----------------------Taxon No. 1---------------------
-        aTaxon = new Taxon(TaxonomicRank.FAMILY, "Chromodorididae");
+        aTaxon = new Taxon(TaxonomicRank.FAMILY.getRank(), "Chromodorididae");
 //-----------------------Structure No. 1---------------------
         aTaxon.addToDescription(new SSCharacterDescriptor("Cuerpo","Forma","Alargado"),
                                     new Modifier(1.0,1.0,0.8));
@@ -92,7 +92,7 @@ public class CaseBaseDFSAutomatonOutputTest {
 //        aCase.addToDescription(new SSCharacterDescriptor("pie","coloracion","crema"));
 //        aCase.addToDescription(new SSCharacterDescriptor("branquia","forma_hojas_branquiales","tripinnada"));
 //-----------------------Taxon No. 2---------------------
-        aTaxon2 = new Taxon(TaxonomicRank.GENUS, "Chromodoris");
+        aTaxon2 = new Taxon(TaxonomicRank.GENUS.getRank(), "Chromodoris");
 //-----------------------Structure No. 1---------------------
         aTaxon2.addToDescription(new SSCharacterDescriptor("Cuerpo","Posición de la banda dorsal continua","Centro"),
                                     new Modifier(1.0,1.0,1.0));

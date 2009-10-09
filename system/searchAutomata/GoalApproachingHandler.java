@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import oracleIDGui.OracleIDGui;
 import oracleIDGui.RangeDSuggestionDialog;
 import oracleIDGui.SingleDSuggestionDialog;
 
@@ -35,6 +34,7 @@ import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
 import ontology.taxonomy.Taxonomy;
 
+import system.OracleIDSystem;
 import system.similarityAssessment.SimilarityAssessor;
 
 /**
@@ -51,13 +51,12 @@ import system.similarityAssessment.SimilarityAssessor;
 
 public class GoalApproachingHandler {
     private Hypothesis hypothesis;
-    private TaxonomicRank goal;
+    private String goal;
     private Taxonomy taxonomy;
     private List<PossibleSolution> processList;
     private List<PossibleSolution> OKList;
     private SearchStatus status;
-    private SimilarityDegree minSimilarityDegree;
-	private OracleIDGui frame;
+    private String minSimilarityDegree;
 
 	 /**
 	 * Category instance creation
@@ -69,9 +68,8 @@ public class GoalApproachingHandler {
     	
     }
     
-    public GoalApproachingHandler(OracleIDGui frame, TaxonomicRank aGoal, Hypothesis aHypothesis, Taxonomy aTaxonomy,
-    	SimilarityDegree minSimilarityDegree){
-    	this.frame = frame;
+    public GoalApproachingHandler(String aGoal, Hypothesis aHypothesis, Taxonomy aTaxonomy,
+    	String minSimilarityDegree){
         //if ((aHypothesis.getDescription() instanceof Structure) == true)
         this.initializeGoal(aGoal, aHypothesis, aTaxonomy, minSimilarityDegree);
     }
@@ -85,8 +83,8 @@ public class GoalApproachingHandler {
      * @param my parameters list
      * @return my return values
      */
-    protected void initializeGoal(TaxonomicRank aGoal, Hypothesis aHypothesis, Taxonomy aTaxonomy,
-    		SimilarityDegree simRangesList){        
+    protected void initializeGoal(String aGoal, Hypothesis aHypothesis, Taxonomy aTaxonomy,
+    		String simRangesList){        
     	//The argument aGoal MUST be a value valid for TaxonomicLevels (e.g., #genus)
         goal = aGoal;
 
@@ -111,7 +109,7 @@ public class GoalApproachingHandler {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public TaxonomicRank getGoal(){
+    public String getGoal(){
         return goal;
     }
 
@@ -147,7 +145,7 @@ public class GoalApproachingHandler {
 	 * @param my parameters list
 	 * @return my return values
 	 */
-    public SimilarityDegree getSimilarityRanges(){
+    public String getSimilarityRanges(){
         return minSimilarityDegree;
     }
 
@@ -230,7 +228,7 @@ public class GoalApproachingHandler {
         if (hypothesis.getPossibleSolutions().isEmpty()) return SearchStatus.FAIL;
 
         //Transform the stated identification goal to a numeric value
-        int goalAsIndex = TaxonomicRank.getIndex(goal);
+        int goalAsIndex = TaxonomicRank.getIndex(TaxonomicRank.valueOf(goal.toUpperCase()));
 
         //Scan the associated hypothesis possible solutions list
         Iterator i = hypothesis.getPossibleSolutions().iterator();
@@ -239,7 +237,7 @@ public class GoalApproachingHandler {
 			PossibleSolution ps = (PossibleSolution) i.next(); 
 			
             //Transform the possible solution level to a numeric value
-            psLevelAsIndex = TaxonomicRank.getIndex(ps.getLevel());
+            psLevelAsIndex = TaxonomicRank.getIndex(TaxonomicRank.valueOf(ps.getLevel().toUpperCase()));
 
             //If the possible solution's level is equal to, or more specific than the goal, ignore it
             if (!(psLevelAsIndex >= goalAsIndex)){
@@ -404,7 +402,7 @@ public class GoalApproachingHandler {
         	return true;
 
         //get the level of the first element
-        TaxonomicRank level = processList.get(0).getLevel();
+        String level = processList.get(0).getLevel();
 
         //Starting with the second element, process the list
         int i = 1;
@@ -439,7 +437,7 @@ public class GoalApproachingHandler {
 		suggestedValue = (((RangeValue)descriptor.getValue()).getLowerBound()  + 
 						((RangeValue)descriptor.getValue()).getUpperBound()) / (double)2;
 		
-		RangeDSuggestionDialog dialog = new RangeDSuggestionDialog(frame, msg, Double.toString(suggestedValue));
+		RangeDSuggestionDialog dialog = new RangeDSuggestionDialog(OracleIDSystem.getInstance().getSystemGui(), msg, Double.toString(suggestedValue));
 		
 		response = dialog.getResponse();
 		
@@ -529,7 +527,7 @@ public class GoalApproachingHandler {
 				((Descriptor)OKSAVDescriptorList.getDescriptors().get(0)).getAttribute() + "\" de la estructura \"" + 
 				((Descriptor)OKSAVDescriptorList.getDescriptors().get(0)).getStructure() + "\"?\n";
 		
-		SingleDSuggestionDialog dialog = new SingleDSuggestionDialog(frame, msg, values.toArray());
+		SingleDSuggestionDialog dialog = new SingleDSuggestionDialog(OracleIDSystem.getInstance().getSystemGui(), msg, values.toArray());
 		
 		response = dialog.getResponse();
 		
@@ -576,7 +574,7 @@ public class GoalApproachingHandler {
         
         SimilarityDegree similarity = SimilarityAssessor.similarityRangeOf(aSAVDescriptor.getValue(), weightedValues);
         
-        if (EnumSet.range(minSimilarityDegree, SimilarityDegree.IGUAL).contains(similarity) != true)
+        if (EnumSet.range(SimilarityDegree.valueOf(minSimilarityDegree.toUpperCase()), SimilarityDegree.IGUAL).contains(similarity) != true)
         	return false;
         
         return true;

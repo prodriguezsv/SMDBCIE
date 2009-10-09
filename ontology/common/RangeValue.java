@@ -45,7 +45,7 @@ public class RangeValue extends Value {
 	public RangeValue() {
 		// this is set up for weighted values as default
 		super();
-		setMeasuringUnit(MeasuringUnit.COUNT);
+		setMeasuringUnit(MeasuringUnit.COUNT.getMeasuringUnit());
 		this._internalInstanceName = "";
 	}
 	
@@ -55,13 +55,13 @@ public class RangeValue extends Value {
 	public RangeValue(double lowerBound, double upperBound) {
 		this.setLowerBound(lowerBound);
 		this.setUpperBound(upperBound);
-		this.setMeasuringUnit(MeasuringUnit.COUNT);
+		this.setMeasuringUnit(MeasuringUnit.COUNT.getMeasuringUnit());
 	}
 	
 	/**
 	 * Constructor altenativo
 	 */
-	public RangeValue(double lowerBound, double upperBound, MeasuringUnit measurinUnit) {
+	public RangeValue(double lowerBound, double upperBound, String measurinUnit) {
 		this.setLowerBound(lowerBound);
 		this.setUpperBound(upperBound);
 		this.setMeasuringUnit(measurinUnit);

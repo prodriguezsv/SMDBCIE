@@ -51,16 +51,16 @@ public class TaxonomyTest {
 	@Before
     public void setUp() {
         taxonomy = new Taxonomy();
-        rootTaxon = new Taxon(TaxonomicRank.ROOT, null);
+        rootTaxon = new Taxon(TaxonomicRank.ROOT.getRank(), null);
 //-----------------------Taxon No. 1---------------------
-        taxon1 = new Taxon(TaxonomicRank.FAMILY, "Chromodorididae");
+        taxon1 = new Taxon(TaxonomicRank.FAMILY.getRank(), "Chromodorididae");
 //-----------------------Structure No. 1---------------------
         assertTrue(taxon1.addToDescription(new SSCharacterDescriptor("Cuerpo","Forma","Alargado"),
                 new Modifier(1.0,1.0,0.8)));
 		assertTrue(taxon1.addToDescription(new SSCharacterDescriptor("Cuerpo","Forma","Ovalado"),
 		        new Modifier(1.0,1.0,0.1)));
 		assertTrue(taxon1.addToDescription(new RVCharacterDescriptor("Cuerpo","Longitud", new RangeValue(0.3, 4.0,
-				MeasuringUnit.CM)), new Modifier(1.0,1.0,1.0)));
+				MeasuringUnit.CM.getMeasuringUnit())), new Modifier(1.0,1.0,1.0)));
 		assertTrue(taxon1.addToDescription(new SSCharacterDescriptor("Cuerpo","Conformación","Tiene cerata"),
 		        new Modifier(1.0,1.0,1.0)));
 		//-----------------------Structure No. 2---------------------
@@ -114,7 +114,7 @@ public class TaxonomyTest {
 		        new Modifier(1.0,1.0,1.0)));
 		//-----------------------Grouping Heuristic No. 2---------------------
 		assertTrue(taxon1.addToDescription(new RVHeuristicDescriptor("Profundidad donde se encuentra",
-				"Profundidad donde se encuentra", new RangeValue(0.0, 20.0, MeasuringUnit.CM)),
+				"Profundidad donde se encuentra", new RangeValue(0.0, 20.0, MeasuringUnit.CM.getMeasuringUnit())),
 				new Modifier(1.0,1.0,1.0)));
 		//-----------------------Grouping Heuristic No. 3---------------------
 		assertTrue(taxon1.addToDescription(new SSHeuristicDescriptor("Medio de preservacion tenido",
@@ -139,7 +139,7 @@ public class TaxonomyTest {
     @Test
     public void testGetTaxonListFromLevelIndex() {
         System.out.println("getTaxonListFromLevelIndex");
-        List<Taxon> aTaxonList = taxonomy.getTaxonListFromLevelIndex(TaxonomicRank.FAMILY);
+        List<Taxon> aTaxonList = taxonomy.getTaxonListFromLevelIndex(TaxonomicRank.FAMILY.getRank());
 
         assertEquals(1,aTaxonList.size());
 
@@ -155,11 +155,11 @@ public class TaxonomyTest {
     @Test
     public void testGetTaxonFromLevelIndex_String_TaxonomicRank() {
         System.out.println("getTaxonFromLevelIndex");
-        assertEquals(taxon1,taxonomy.getTaxonFromLevelIndex("Chromodorididae",TaxonomicRank.FAMILY));
-        assertNull(taxonomy.getTaxonFromLevelIndex("Chromodorididae",TaxonomicRank.GENUS));
-        assertNull(taxonomy.getTaxonFromLevelIndex("Chromodorididae",TaxonomicRank.SPECIES));
-        assertNull(taxonomy.getTaxonFromLevelIndex("unknow taxon",TaxonomicRank.FAMILY));
-        assertNull(taxonomy.getTaxonFromLevelIndex(null,TaxonomicRank.FAMILY));
+        assertEquals(taxon1,taxonomy.getTaxonFromLevelIndex("Chromodorididae",TaxonomicRank.FAMILY.getRank()));
+        assertNull(taxonomy.getTaxonFromLevelIndex("Chromodorididae",TaxonomicRank.GENUS.getRank()));
+        assertNull(taxonomy.getTaxonFromLevelIndex("Chromodorididae",TaxonomicRank.SPECIES.getRank()));
+        assertNull(taxonomy.getTaxonFromLevelIndex("unknow taxon",TaxonomicRank.FAMILY.getRank()));
+        assertNull(taxonomy.getTaxonFromLevelIndex(null,TaxonomicRank.FAMILY.getRank()));
     }
 
     /**
@@ -189,14 +189,14 @@ public class TaxonomyTest {
 		taxonomy.setRootTaxon(rootTaxon);
 
 //-----------------------Taxon No. 1---------------------
-        taxon1 = new Taxon(TaxonomicRank.FAMILY, "Chromodorididae");
+        taxon1 = new Taxon(TaxonomicRank.FAMILY.getRank(), "Chromodorididae");
         //-----------------------Structure No. 1---------------------
         assertTrue(taxon1.addToDescription(new SSCharacterDescriptor("Cuerpo","Forma","Alargado"),
                 new Modifier(1.0,1.0,0.8)));
   		assertTrue(taxon1.addToDescription(new SSCharacterDescriptor("Cuerpo","Forma","Ovalado"),
   		        new Modifier(1.0,1.0,0.1)));
   		assertTrue(taxon1.addToDescription(new RVCharacterDescriptor("Cuerpo","Longitud", new RangeValue(0.3, 4.0,
-  				MeasuringUnit.CM)), new Modifier(1.0,1.0,1.0)));
+  				MeasuringUnit.CM.getMeasuringUnit())), new Modifier(1.0,1.0,1.0)));
   		assertTrue(taxon1.addToDescription(new SSCharacterDescriptor("Cuerpo","Conformación","Tiene cerata"),
   		        new Modifier(1.0,1.0,1.0)));
   		//-----------------------Structure No. 2---------------------
@@ -250,7 +250,7 @@ public class TaxonomyTest {
   		        new Modifier(1.0,1.0,1.0)));
   		//-----------------------Grouping Heuristic No. 2---------------------
   		assertTrue(taxon1.addToDescription(new RVHeuristicDescriptor("Factor abiótico",
-  				"Profundidad donde se encuentra", new RangeValue(0.0, 20.0, MeasuringUnit.M)),
+  				"Profundidad donde se encuentra", new RangeValue(0.0, 20.0, MeasuringUnit.M.getMeasuringUnit())),
   				new Modifier(1.0,1.0,1.0)));
   		//-----------------------Grouping Heuristic No. 3---------------------
   		assertTrue(taxon1.addToDescription(new SSHeuristicDescriptor("Factor abiótico",
@@ -260,7 +260,7 @@ public class TaxonomyTest {
   		assertTrue(taxon1.addToDescription(new SSHeuristicDescriptor("Medio de preservacion tenido",
   				"Medio de preservacion tenido","Amarillento"), new Modifier(1.0,1.0,0.2)));
 //-----------------------Taxon No. 2---------------------
-	    taxon2 = new Taxon(TaxonomicRank.GENUS, "Chromodoris");
+	    taxon2 = new Taxon(TaxonomicRank.GENUS.getRank(), "Chromodoris");
 	    //-----------------------Structure No. 1---------------------
 	    assertTrue(taxon2.addToDescription(new SSCharacterDescriptor("Cuerpo","Posición de la banda dorsal " +
 	      		"continua", "Centro"), new Modifier(1.0,1.0,1.0)));
@@ -279,10 +279,10 @@ public class TaxonomyTest {
 	    assertTrue(taxon2.addToDescription(new SSCharacterDescriptor("Radula","Posición del diente más conspicuo",
 	    		  "Centro"), new Modifier(0.3,1.0,0.5)));
 //-----------------------Taxon No. 3---------------------
-	    taxon3 = new Taxon(TaxonomicRank.SPECIES, "Chromodoris sphoni");
+	    taxon3 = new Taxon(TaxonomicRank.SPECIES.getRank(), "Chromodoris sphoni");
 	    //-----------------------Structure No. 1---------------------
 	    assertTrue(taxon3.addToDescription(new RVCharacterDescriptor("Cuerpo","Longitud", new RangeValue(0.3, 0.35,
-  				MeasuringUnit.CM)), new Modifier(0.0,1.0,1.0)));
+  				MeasuringUnit.CM.getMeasuringUnit())), new Modifier(0.0,1.0,1.0)));
 	    assertTrue(taxon3.addToDescription(new SSCharacterDescriptor("Cuerpo","Forma","Ovalado"),
   		        new Modifier(0.0,1.0,1.0)));
 	    assertTrue(taxon3.addToDescription(new SSCharacterDescriptor("Cuerpo","Conformación","No tiene tuberculos ni espiculas"),
@@ -344,7 +344,7 @@ public class TaxonomyTest {
   		assertTrue(taxon3.addToDescription(new SSCharacterDescriptor("Aparato genital","Tamaño de la glándula vestibular",
   				"Pequeño"), new Modifier(0.0,1.0,1.0)));
 //-----------------------Taxon No. 4---------------------
-	    taxon4 = new Taxon(TaxonomicRank.SPECIES, "Chromodoris clenchi");
+	    taxon4 = new Taxon(TaxonomicRank.SPECIES.getRank(), "Chromodoris clenchi");
 	    //-----------------------Structure No. 1---------------------
 	    assertTrue(taxon4.addToDescription(new SSCharacterDescriptor("Cuerpo","Coloración","Rojo"),
   		        new Modifier(0.0,1.0,1.0)));
@@ -375,7 +375,7 @@ public class TaxonomyTest {
   		assertTrue(taxon4.addToDescription(new SSCharacterDescriptor("Rinoforos","Coloración de los apices","Blanco"),
   		        new Modifier(0.0,1.0,0.1)));
 //-----------------------Taxon No. 5---------------------
-	    taxon5 = new Taxon(TaxonomicRank.SPECIES, "Chromodoris kempfi");
+	    taxon5 = new Taxon(TaxonomicRank.SPECIES.getRank(), "Chromodoris kempfi");
 	    //-----------------------Structure No. 1---------------------
   		assertTrue(taxon5.addToDescription(new SSCharacterDescriptor("Manto","Coloración del borde","Amarillo brillante"),
   		        new Modifier(1.0,1.0,1.0)));
@@ -415,7 +415,7 @@ public class TaxonomyTest {
 	    assertTrue(taxonomy.addTaxon(taxon5, taxon2));
 
 //-----------------------Taxon No. 6---------------------
-	    taxon1 = new Taxon(TaxonomicRank.GENUS, "Cadlina");
+	    taxon1 = new Taxon(TaxonomicRank.GENUS.getRank(), "Cadlina");
 	    //-----------------------Structure No. 1---------------------
   		assertTrue(taxon1.addToDescription(new SSCharacterDescriptor("Manto","Consistencia","Firme"),
   		        new Modifier(0.0,1.0,1.0)));
@@ -430,14 +430,14 @@ public class TaxonomyTest {
 	    assertTrue(taxon1.addToDescription(new SSCharacterDescriptor("Radula","Forma del diente central","Denticulado"),
 	            new Modifier(0.0,1.0,1.0)));
 //-----------------------Taxon No. 7---------------------
-	    taxon2 = new Taxon(TaxonomicRank.SPECIES, "Cadlina sparsa");
+	    taxon2 = new Taxon(TaxonomicRank.SPECIES.getRank(), "Cadlina sparsa");
 	    //-----------------------Structure No. 1---------------------
 	    assertTrue(taxon2.addToDescription(new SSCharacterDescriptor("Cuerpo","Coloración del fondo","Salmón"),
   		        new Modifier(0.0,1.0,1.0)));
 	    assertTrue(taxon2.addToDescription(new SSCharacterDescriptor("Cuerpo","Coloración del fondo","Amarillento"),
   		        new Modifier(0.0,1.0,1.0)));
 	    assertTrue(taxon2.addToDescription(new RVCharacterDescriptor("Cuerpo","Longitud", new RangeValue(1.0, 3.6,
-  				MeasuringUnit.CM)), new Modifier(0.0,1.0,1.0)));
+  				MeasuringUnit.CM.getMeasuringUnit())), new Modifier(0.0,1.0,1.0)));
 	    //-----------------------Structure No. 2---------------------
 	    assertTrue(taxon2.addToDescription(new SSCharacterDescriptor("Manto","Coloración de pequeñas manchas laterales","Amarillo"),
   		        new Modifier(0.0,1.0,1.0)));
@@ -448,7 +448,7 @@ public class TaxonomyTest {
   		assertTrue(taxon2.addToDescription(new SSCharacterDescriptor("Rinoforos","Coloración","Blancuzco"),
   		        new Modifier(0.0,1.0,1.0)));
 //-----------------------Taxon No. 8---------------------
-	    taxon3 = new Taxon(TaxonomicRank.GENUS, "Hypselodoris");
+	    taxon3 = new Taxon(TaxonomicRank.GENUS.getRank(), "Hypselodoris");
 	    //-----------------------Structure No. 1---------------------
 	    assertTrue(taxon3.addToDescription(new SSCharacterDescriptor("Cuerpo","Forma","Abultado dorsalmente"),
   		        new Modifier(0.0,1.0,1.0)));
@@ -467,7 +467,7 @@ public class TaxonomyTest {
 	    assertTrue(taxon3.addToDescription(new SSCharacterDescriptor("Radula","Conformación","No tiene diente central"),
 	            new Modifier(0.0,1.0,1.0)));
 //-----------------------Taxon No. 9---------------------
-	    taxon4 = new Taxon(TaxonomicRank.SPECIES, "Hypselodoris agassizii");
+	    taxon4 = new Taxon(TaxonomicRank.SPECIES.getRank(), "Hypselodoris agassizii");
 	    //-----------------------Structure No. 1---------------------
 	    assertTrue(taxon4.addToDescription(new SSCharacterDescriptor("Cuerpo","Coloración","Azul negruzco"),
   		        new Modifier(0.0,1.0,1.0)));
@@ -476,7 +476,7 @@ public class TaxonomyTest {
 	    assertTrue(taxon4.addToDescription(new SSCharacterDescriptor("Cuerpo","Coloración de numerosas manchas","Blanco y amarillo"),
   		        new Modifier(0.0,1.0,1.0)));
 	    assertTrue(taxon4.addToDescription(new RVCharacterDescriptor("Cuerpo","Longitud", new RangeValue(0.3, 0.38,
-  				MeasuringUnit.CM)), new Modifier(0.0,1.0,1.0)));
+  				MeasuringUnit.CM.getMeasuringUnit())), new Modifier(0.0,1.0,1.0)));
 	    //-----------------------Structure No. 2---------------------
 	    assertTrue(taxon4.addToDescription(new SSCharacterDescriptor("Manto","Coloración de las marcas ovaladas","Blanco"),
   		        new Modifier(0.0,1.0,1.0)));
@@ -507,7 +507,7 @@ public class TaxonomyTest {
   		assertTrue(taxon4.addToDescription(new SSCharacterDescriptor("Rinoforos","Coloración del raquis","Blanco"),
   		        new Modifier(0.0,1.0,0.6)));
 //-----------------------Taxon No. 10---------------------
-	    taxon5 = new Taxon(TaxonomicRank.GENUS, "Glossodoris");
+	    taxon5 = new Taxon(TaxonomicRank.GENUS.getRank(), "Glossodoris");
 	    //-----------------------Structure No. 1---------------------
 	    assertTrue(taxon5.addToDescription(new SSCharacterDescriptor("Cuerpo","Alto","Considerable"),
   		        new Modifier(0.0,1.0,1.0)));
@@ -524,7 +524,7 @@ public class TaxonomyTest {
 	    assertTrue(taxon5.addToDescription(new SSCharacterDescriptor("Vagina","Forma","Angosta"),
 		        new Modifier(0.0,1.0,1.0)));
 //-----------------------Taxon No. 11---------------------
-	    taxon6 = new Taxon(TaxonomicRank.SPECIES, "Glossodoris dalli");
+	    taxon6 = new Taxon(TaxonomicRank.SPECIES.getRank(), "Glossodoris dalli");
 	//-----------------------Structure No. 1---------------------
 	    assertTrue(taxon6.addToDescription(new SSCharacterDescriptor("Cuerpo","Forma","Alargado"),
 	            new Modifier(0.0,1.0,1.0)));
@@ -579,7 +579,7 @@ public class TaxonomyTest {
 	    assertTrue(taxon6.addToDescription(new SSCharacterDescriptor("Aparato genital","Conformación","Tiene glándula vestibular"),
 	            new Modifier(0.0,1.0,1.0)));
 //-----------------------Taxon No. 12---------------------
-	    taxon7 = new Taxon(TaxonomicRank.SPECIES, "Glossodoris sedna");
+	    taxon7 = new Taxon(TaxonomicRank.SPECIES.getRank(), "Glossodoris sedna");
 	    //-----------------------Structure No. 1---------------------
 	    assertTrue(taxon7.addToDescription(new SSCharacterDescriptor("Cuerpo","Forma","Alargado"),
   		        new Modifier(0.0,1.0,1.0)));
@@ -637,7 +637,7 @@ public class TaxonomyTest {
   		assertTrue(taxon7.addToDescription(new SSCharacterDescriptor("Aparato genital","conformacion",
   				"Tiene glándula vestibular"), new Modifier(0.0,1.0,1.0)));
 //-----------------------Taxon No. 13---------------------
-	    taxon8 = new Taxon(TaxonomicRank.GENUS, "Mexichromis");
+	    taxon8 = new Taxon(TaxonomicRank.GENUS.getRank(), "Mexichromis");
 	//-----------------------Structure No. 1---------------------
         assertTrue(taxon8.addToDescription(new SSCharacterDescriptor("Glándulas del manto","Disposición","Posteriormente unas pocas y grandes"),
         		new Modifier(0.0,1.0,1.0)));
@@ -660,7 +660,7 @@ public class TaxonomyTest {
 	    assertTrue(taxonomy.addTaxon(taxon8, taxonomy.getTaxonFromLevelIndex("Chromodorididae")));
 
 //-----------------------Taxon No. 14---------------------
-	    taxon1 = new Taxon(TaxonomicRank.SPECIES, "Mexichromis antonii");
+	    taxon1 = new Taxon(TaxonomicRank.SPECIES.getRank(), "Mexichromis antonii");
 	    //-----------------------Structure No. 1---------------------
 	    assertTrue(taxon1.addToDescription(new SSCharacterDescriptor("Cuerpo","Forma","Alargado"),
   		        new Modifier(0.0,1.0,1.0)));
@@ -707,7 +707,7 @@ public class TaxonomyTest {
   		assertTrue(taxon1.addToDescription(new SSCharacterDescriptor("Cola","Coloración base de la mancha en forma de V","Naranja"),
   		        new Modifier(0.0,1.0,1.0)));
 //-----------------------Taxon No. 15---------------------
-	    taxon2 = new Taxon(TaxonomicRank.FAMILY, "Aplysiidae");
+	    taxon2 = new Taxon(TaxonomicRank.FAMILY.getRank(), "Aplysiidae");
 	//-----------------------Structure No. 1---------------------
 	    assertTrue(taxon2.addToDescription(new SSCharacterDescriptor("Cuerpo","Consistencia","Voluminoso"),
 	            new Modifier(0.0,1.0,1.0)));
@@ -720,7 +720,7 @@ public class TaxonomyTest {
 	    assertTrue(taxon2.addToDescription(new SSCharacterDescriptor("Cuerpo","Coloración","Grisaceo"),
 	            new Modifier(0.0,1.0,0.85)));
 	    assertTrue(taxon2.addToDescription(new RVCharacterDescriptor("Cuerpo","Longitud",new RangeValue(0.5, 25.0,
-	  			MeasuringUnit.CM)), new Modifier(0.0,1.0,1.0)));
+	  			MeasuringUnit.CM.getMeasuringUnit())), new Modifier(0.0,1.0,1.0)));
 	//-----------------------Structure No. 2---------------------
         assertTrue(taxon2.addToDescription(new SSCharacterDescriptor("Parapodio","Grado de desarrollo","Mucho"),
         		new Modifier(0.0,1.0,1.0)));
@@ -734,7 +734,7 @@ public class TaxonomyTest {
         assertTrue(taxon2.addToDescription(new SSCharacterDescriptor("Pene","Conformación","Tiene espinas"),
         		new Modifier(0.0,1.0,1.0)));
 //-----------------------Taxon No. 16---------------------
-	    taxon3 = new Taxon(TaxonomicRank.GENUS, "Dolabrifera");
+	    taxon3 = new Taxon(TaxonomicRank.GENUS.getRank(), "Dolabrifera");
 	    //-----------------------Structure No. 1---------------------
 	    assertTrue(taxon3.addToDescription(new SSCharacterDescriptor("Cuerpo","Forma","Aplanado dorsoventralmente"),
   		        new Modifier(0.0,1.0,1.0)));
@@ -756,7 +756,7 @@ public class TaxonomyTest {
   		assertTrue(taxon3.addToDescription(new SSCharacterDescriptor("Concha interna","Disposición","Más larga que ancha rodeada por el manto totalmente"),
   		        new Modifier(0.0,1.0,1.0)));
 //-----------------------Taxon No. 17---------------------
-	    taxon4 = new Taxon(TaxonomicRank.GENUS, "Aplysiia");
+	    taxon4 = new Taxon(TaxonomicRank.GENUS.getRank(), "Aplysiia");
 	//-----------------------Structure No. 1---------------------
         assertTrue(taxon4.addToDescription(new SSCharacterDescriptor("Cuerpo","Forma","Alto alargado y contractil"),
         		new Modifier(0.0,1.0,1.0)));
@@ -779,7 +779,7 @@ public class TaxonomyTest {
         assertTrue(taxon4.addToDescription(new SSCharacterDescriptor("Pie","Prolongación","Forma una cola corta"),
         		new Modifier(0.0,1.0,1.0)));
 //-----------------------Taxon No. 18---------------------
-	    taxon5 = new Taxon(TaxonomicRank.GENUS, "Petalifera");
+	    taxon5 = new Taxon(TaxonomicRank.GENUS.getRank(), "Petalifera");
 	//-----------------------Structure No. 1---------------------
 	    assertTrue(taxon5.addToDescription(new SSCharacterDescriptor("Cuerpo","Tamaño","Generalmente más pequeñas que las dolabriferas aplisias y notarchus"),
   		        new Modifier(0.0,1.0,1.0)));
@@ -790,7 +790,7 @@ public class TaxonomyTest {
   		assertTrue(taxon5.addToDescription(new SSCharacterDescriptor("Dorso","Contextura","Lisa con papilas más o menos ramificadas"),
   		        new Modifier(0.0,1.0,1.0)));
 //-----------------------Taxon No. 19---------------------
-	    taxon6 = new Taxon(TaxonomicRank.GENUS, "Notarchus");
+	    taxon6 = new Taxon(TaxonomicRank.GENUS.getRank(), "Notarchus");
 	//-----------------------Structure No. 1---------------------
         assertTrue(taxon6.addToDescription(new SSCharacterDescriptor("Cuerpo","Forma","Alto y globoso"),
         		new Modifier(0.0,1.0,1.0)));
@@ -805,7 +805,7 @@ public class TaxonomyTest {
         assertTrue(taxon6.addToDescription(new SSCharacterDescriptor("Parapodio","Disposición","Fusionados a lo largo de las margenes dejando pequeña abertura en la mitad anterior del cuerpo"),
         		new Modifier(0.0,1.0,1.0)));
 //-----------------------Taxon No. 20---------------------
-	    taxon7 = new Taxon(TaxonomicRank.GENUS, "Phyllaplysia");
+	    taxon7 = new Taxon(TaxonomicRank.GENUS.getRank(), "Phyllaplysia");
 	//-----------------------Structure No. 1---------------------
 	    assertTrue(taxon7.addToDescription(new SSCharacterDescriptor("Cuerpo","Forma","Aplanado dorsoventralmente"),
   		        new Modifier(0.0,1.0,1.0)));
@@ -829,7 +829,7 @@ public class TaxonomyTest {
 	    assertTrue(taxonomy.addTaxon(taxon7, taxonomy.getTaxonFromLevelIndex("Aplysiidae")));
 
 //-----------------------Taxon No. 21---------------------
-	    taxon1 = new Taxon(TaxonomicRank.SPECIES, "Dolabrifera dolabrifera");
+	    taxon1 = new Taxon(TaxonomicRank.SPECIES.getRank(), "Dolabrifera dolabrifera");
 	//-----------------------Structure No. 1---------------------
 	    assertTrue(taxon1.addToDescription(new SSCharacterDescriptor("Cuerpo","Tamaño","Más de 7 cm cuando vivos"),
   		        new Modifier(0.0,1.0,1.0)));
@@ -861,7 +861,7 @@ public class TaxonomyTest {
   		assertTrue(taxon1.addToDescription(new SSHeuristicDescriptor("Factor abiótico", "Lugar donde se encuentra","Generalmente en las pozas de marea"),
   		        new Modifier(1.0,1.0,1.0)));
 //-----------------------Taxon No. 22---------------------
-	    taxon2 = new Taxon(TaxonomicRank.SPECIES, "Petalifera ramosa");
+	    taxon2 = new Taxon(TaxonomicRank.SPECIES.getRank(), "Petalifera ramosa");
 	//-----------------------Structure No. 1---------------------
 	    assertTrue(taxon2.addToDescription(new SSCharacterDescriptor("Cuerpo","Coloración","Verde claro a intenso"),
   		        new Modifier(0.0,1.0,1.0)));
@@ -896,7 +896,7 @@ public class TaxonomyTest {
 	    assertTrue(taxon2.addToDescription(new SSCharacterDescriptor("Concha interna","Disposición","Semicubiera"),
   		        new Modifier(0.0,1.0,1.0)));
 //-----------------------Taxon No. 23---------------------
-	    taxon3 = new Taxon(TaxonomicRank.SPECIES, "Phyllaplysia engeli");
+	    taxon3 = new Taxon(TaxonomicRank.SPECIES.getRank(), "Phyllaplysia engeli");
 	//-----------------------Structure No. 1---------------------
 	    assertTrue(taxon3.addToDescription(new SSCharacterDescriptor("Cuerpo","Forma","Estrecho y aplanado"),
   		        new Modifier(0.0,1.0,1.0)));
@@ -918,7 +918,7 @@ public class TaxonomyTest {
   		assertTrue(taxon3.addToDescription(new SSCharacterDescriptor("Papilas","Distribución","En el dorso y también sobre los rinoforos"),
   		        new Modifier(1.0,1.0,1.0)));
 //-----------------------Taxon No. 24---------------------
-	    taxon4 = new Taxon(TaxonomicRank.SPECIES, "Aplysiia dactylomela");
+	    taxon4 = new Taxon(TaxonomicRank.SPECIES.getRank(), "Aplysiia dactylomela");
 	//-----------------------Structure No. 1---------------------
 	    assertTrue(taxon4.addToDescription(new SSCharacterDescriptor("Cuerpo","Forma","Alto y voluminoso"),
   		        new Modifier(0.0,1.0,1.0)));
@@ -928,7 +928,7 @@ public class TaxonomyTest {
   		assertTrue(taxon4.addToDescription(new SSCharacterDescriptor("Pie","Forma","Estrecho y prolongado en cola larga"),
   		        new Modifier(0.0,1.0,1.0)));
 //-----------------------Taxon No. 25---------------------
-	    taxon5 = new Taxon(TaxonomicRank.SPECIES, "Notarchus punctatus");
+	    taxon5 = new Taxon(TaxonomicRank.SPECIES.getRank(), "Notarchus punctatus");
 	//-----------------------Structure No. 1---------------------
 	    assertTrue(taxon5.addToDescription(new SSCharacterDescriptor("Cuerpo","Coloración del fondo","Marron claro a beige con pequenas manchas de pigmento oscuro"),
   		        new Modifier(0.0,1.0,1.0)));
@@ -956,7 +956,7 @@ public class TaxonomyTest {
     @Test
     public void testAreTaxonomicDependenciesOK() {
         System.out.println("areTaxonomicDependenciesOK");
-        Taxon rootTaxon2 = new Taxon(TaxonomicRank.ROOT, null);
+        Taxon rootTaxon2 = new Taxon(TaxonomicRank.ROOT.getRank(), null);
         assertTrue(taxonomyEmpty.areTaxonomicDependenciesOK(rootTaxon2, taxon1));
     }
 
@@ -975,28 +975,28 @@ public class TaxonomyTest {
     @Test
     public void testDescriptors() {
         System.out.println("Descriptor indexes");
-        Taxon aTaxon1 = new Taxon(TaxonomicRank.FAMILY, "A");
+        Taxon aTaxon1 = new Taxon(TaxonomicRank.FAMILY.getRank(), "A");
 
         assertTrue(aTaxon1.addToDescription(new SSCharacterDescriptor("S","A","V"),
 		        new Modifier(1.0,1.0,1.0)));
 
-        assertTrue(aTaxon1.addToDescription(new RVHeuristicDescriptor("S","A", new RangeValue(0.0, 20.0, MeasuringUnit.CM)),
-                        new Modifier(1.0,1.0,1.0)));
+        assertTrue(aTaxon1.addToDescription(new RVHeuristicDescriptor("S","A", new RangeValue(0.0, 20.0, 
+        		MeasuringUnit.CM.getMeasuringUnit())), new Modifier(1.0,1.0,1.0)));
 
-        Taxon aTaxon2 = new Taxon(TaxonomicRank.GENUS, "B");
+        Taxon aTaxon2 = new Taxon(TaxonomicRank.GENUS.getRank(), "B");
         assertTrue(aTaxon2.addToDescription(new SSCharacterDescriptor("S","A","V"),
 		        new Modifier(1.0,1.0,1.0)));
         assertTrue(aTaxon2.addToDescription(new SSCharacterDescriptor("S2","A","V"),
 		        new Modifier(1.0,1.0,1.0)));
-        assertTrue(aTaxon2.addToDescription(new RVHeuristicDescriptor("S","A", new RangeValue(0.0, 20.0, MeasuringUnit.CM)),
-                        new Modifier(1.0,1.0,1.0)));
-        Taxon aTaxon3 = new Taxon(TaxonomicRank.SPECIES, "C");
+        assertTrue(aTaxon2.addToDescription(new RVHeuristicDescriptor("S","A", new RangeValue(0.0, 20.0, 
+        		MeasuringUnit.CM.getMeasuringUnit())), new Modifier(1.0,1.0,1.0)));
+        Taxon aTaxon3 = new Taxon(TaxonomicRank.SPECIES.getRank(), "C");
         assertTrue(aTaxon3.addToDescription(new SSCharacterDescriptor("S","A","V"),
 		        new Modifier(1.0,1.0,1.0)));
         assertTrue(aTaxon3.addToDescription(new SSHeuristicDescriptor("EU","EU","V"), new Modifier(1.0,1.0,1.0)));
 
 
-        Taxon aTaxon4 = new Taxon(TaxonomicRank.SPECIES, "D");
+        Taxon aTaxon4 = new Taxon(TaxonomicRank.SPECIES.getRank(), "D");
         assertTrue(aTaxon4.addToDescription(new SSCharacterDescriptor("S","A","V"),
 		        new Modifier(1.0,1.0,1.0)));
         assertTrue(aTaxon4.addToDescription(new SSCharacterDescriptor("S2","A","V"),
@@ -1010,7 +1010,8 @@ public class TaxonomyTest {
         Map<Descriptor, List<Taxon>> indexes = taxonomyEmpty.getDescriptorsIndex();
 
         List<Taxon> taxons1 = indexes.get(new SSCharacterDescriptor("S","A","V"));
-        List<Taxon> taxons2 = indexes.get(new RVHeuristicDescriptor("S","A", new RangeValue(0.0, 20.0, MeasuringUnit.CM)));
+        List<Taxon> taxons2 = indexes.get(new RVHeuristicDescriptor("S","A", new RangeValue(0.0, 20.0, 
+        		MeasuringUnit.CM.getMeasuringUnit())));
         List<Taxon> taxons3 = indexes.get(new SSCharacterDescriptor("S2","A","V"));
         List<Taxon> taxons4 = indexes.get(new SSHeuristicDescriptor("EU","EU","V"));
 

@@ -43,13 +43,13 @@ public class AreReasonableSolutionsTo implements jade.content.Predicate, Seriali
    /**
    * Protege name: problema
    */
-   private Problem problema;
-   public void setProblema(Problem value) { 
-     pcs.firePropertyChange("problema", (this.problema==null?new Problem():this.problema), value);
-    this.problema=value;
+   private Problem problem;
+   public void setProblem(Problem value) { 
+     pcs.firePropertyChange("problem", (this.problem==null?new Problem():this.problem), value);
+    this.problem=value;
    }
-   public Problem getProblema() {
-     return this.problema;
+   public Problem getProblem() {
+     return this.problem;
    }
 
    /**

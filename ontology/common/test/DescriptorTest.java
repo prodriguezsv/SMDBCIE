@@ -52,8 +52,8 @@ public class DescriptorTest {
 	public final void testEquals() {
 		Descriptor d2,d3,d4;
 
-        SingleValue aSingleValue = new SingleValue(100, MeasuringUnit.CM);
-        RangeValue aRangeValue = new RangeValue(0.0, 100.0, MeasuringUnit.MM);
+        SingleValue aSingleValue = new SingleValue(100, MeasuringUnit.CM.getMeasuringUnit());
+        RangeValue aRangeValue = new RangeValue(0.0, 100.0, MeasuringUnit.MM.getMeasuringUnit());
 
                 
 		d2 = new SSCharacterDescriptor("Cuerpo", "Conformación", "Tiene cerata");

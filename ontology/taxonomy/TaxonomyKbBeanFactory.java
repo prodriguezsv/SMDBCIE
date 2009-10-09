@@ -179,7 +179,7 @@ public class TaxonomyKbBeanFactory {
 
     tempSymbolValue = getStringValue( protegeInst, kb.getSlot( "level" ) );
     if (tempSymbolValue != null) {
-      javaInst.setLevel(TaxonomicRank.valueOf(tempSymbolValue.toUpperCase()));
+      javaInst.setLevel(tempSymbolValue);
     }
     
     tempStringValue = getStringValue( protegeInst, kb.getSlot( "name" ) );
@@ -267,7 +267,7 @@ public class TaxonomyKbBeanFactory {
 
     tempSymbolValue = getStringValue( protegeInst, kb.getSlot( "measuringUnit" ) );
     if (tempSymbolValue != null) {
-      javaInst.setMeasuringUnit(MeasuringUnit.valueOf(tempSymbolValue));
+      javaInst.setMeasuringUnit(tempSymbolValue);
     }
 
     tempFloatValue = getFloatValue( protegeInst, kb.getSlot( "value" ) );
@@ -507,7 +507,7 @@ public class TaxonomyKbBeanFactory {
 
     tempSymbolValue = getStringValue( protegeInst, kb.getSlot( "measuringUnit" ) );
     if (tempSymbolValue != null) {
-      javaInst.setMeasuringUnit(MeasuringUnit.valueOf(tempSymbolValue.toUpperCase()));
+      javaInst.setMeasuringUnit(tempSymbolValue);
     }
 
     tempFloatValue = getFloatValue( protegeInst, kb.getSlot( "lowerBound" ) );

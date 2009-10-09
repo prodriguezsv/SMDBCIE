@@ -43,7 +43,7 @@ public class GoalApproachingDialogTest extends GoalApproachingHandler {
     static Taxon rootTaxon, taxon;
 	
 	public GoalApproachingDialogTest() {
-		super(null, TaxonomicRank.FAMILY, new Hypothesis(), null, SimilarityDegree.MEDIANAMENTESIMILAR);
+		super(TaxonomicRank.FAMILY.getRank(), new Hypothesis(), null, SimilarityDegree.MEDIANAMENTESIMILAR.getSimilarityDegree());
 	}
 
 	/**
@@ -54,16 +54,16 @@ public class GoalApproachingDialogTest extends GoalApproachingHandler {
 		System.out.println("Iniciando pruebas para la clase " + GoalApproachingHandler.class.getName());
 		
 		taxonomy = new Taxonomy();
-        rootTaxon = new Taxon(TaxonomicRank.ROOT, null);
+        rootTaxon = new Taxon(TaxonomicRank.ROOT.getRank(), null);
 //-----------------------Taxon No. 1---------------------
-        taxon = new Taxon(TaxonomicRank.GENUS, "Chromodorididae"); //Ojo la información es de prueba
+        taxon = new Taxon(TaxonomicRank.GENUS.getRank(), "Chromodorididae"); //Ojo la información es de prueba
 //-----------------------Structure No. 1---------------------
         taxon.addToDescription(new SSCharacterDescriptor("Cuerpo","Forma","Alargado"),
                                     new Modifier(1.0,1.0,0.8));
         taxon.addToDescription(new SSCharacterDescriptor("Cuerpo","Forma","Ovalado"),
                                     new Modifier(1.0,1.0,0.1));
         taxon.addToDescription(new RVCharacterDescriptor("Cuerpo","Longitud", new RangeValue(0.3, 4.0,
-        		MeasuringUnit.CM)), new Modifier(1.0,1.0,1.0));
+        		MeasuringUnit.CM.getMeasuringUnit())), new Modifier(1.0,1.0,1.0));
         taxon.addToDescription(new SSCharacterDescriptor("Cuerpo","Conformación","Tiene cerata"),
                                     new Modifier(1.0,1.0,1.0));
 //-----------------------Structure No. 2---------------------
@@ -117,7 +117,7 @@ public class GoalApproachingDialogTest extends GoalApproachingHandler {
                                     new Modifier(1.0,1.0,1.0));
 //-----------------------Grouping Heuristic No. 2---------------------
         taxon.addToDescription(new RVHeuristicDescriptor("Profundidad donde se encuentra",
-        		"Profundidad donde se encuentra", new RangeValue(0.0, 20.0, MeasuringUnit.CM)),
+        		"Profundidad donde se encuentra", new RangeValue(0.0, 20.0, MeasuringUnit.CM.getMeasuringUnit())),
         		new Modifier(1.0,1.0,1.0));
 //-----------------------Grouping Heuristic No. 3---------------------
         taxon.addToDescription(new SSHeuristicDescriptor("Medio de preservacion tenido",
@@ -165,7 +165,7 @@ public class GoalApproachingDialogTest extends GoalApproachingHandler {
 		System.out.println("Iniciando pruebas para el método DoDialog()");
 		
 		System.out.println("Verificar que se efectúa el dialogo con el usuario");
-		predecessorTaxon = new Taxon(TaxonomicRank.FAMILY, "Chromodorididae");
+		predecessorTaxon = new Taxon(TaxonomicRank.FAMILY.getRank(), "Chromodorididae");
 		predecessorTaxon.addSuccessor(taxon);
 		ps1  = new PossibleSolution();
 		ps1.setSolution(taxon);
@@ -174,7 +174,7 @@ public class GoalApproachingDialogTest extends GoalApproachingHandler {
 		description = new Description();
 		description.addToConcreteDescription(new SSCharacterDescriptor("Cuerpo","Forma","Alargado"));
 		description.addToConcreteDescription(new RVCharacterDescriptor("Cuerpo","Longitud", new RangeValue(0.3, 4.0,
-        		MeasuringUnit.CM)));
+        		MeasuringUnit.CM.getMeasuringUnit())));
 		this.getHypothesis().setDescription(description);
 		assertEquals(SearchStatus.SUCCESS, this.doDialog());
 	}
@@ -194,20 +194,20 @@ public class GoalApproachingDialogTest extends GoalApproachingHandler {
 		
 		System.out.println("Verificar que se obtienen las soluciones posibles más cercanas");
 		ps1 = new PossibleSolution();
-		taxon = new Taxon(TaxonomicRank.GENUS, "Glossodoris");
+		taxon = new Taxon(TaxonomicRank.GENUS.getRank(), "Glossodoris");
 		ps1.setSolution(taxon);
 		this.addProcessList(ps1);
 		
 		assertTrue(this.selectPossibleSolutionsNearestToGoal());
 		
 		ps1 = new PossibleSolution();
-		taxon = new Taxon(TaxonomicRank.SPECIES, "Chromodoris clenchi");
+		taxon = new Taxon(TaxonomicRank.SPECIES.getRank(), "Chromodoris clenchi");
 		ps1.setSolution(taxon);
 		this.addProcessList(ps1);
 		
 		assertTrue(this.selectPossibleSolutionsNearestToGoal());
 		assertTrue(this.getProcessList().size() ==1);
-		assertTrue(this.getProcessList().get(0).getLevel() == TaxonomicRank.SPECIES);
+		assertTrue(this.getProcessList().get(0).getLevel() == TaxonomicRank.SPECIES.getRank());
 	}
 
 	/**
@@ -254,7 +254,7 @@ public class GoalApproachingDialogTest extends GoalApproachingHandler {
 		System.out.println("Iniciando pruebas para el método DetermineSimilarityFor()");
 		
 		System.out.println("Verificar que existe similaridad entre un descriptor y los descriptores de un taxón");
-		Taxon taxon = new Taxon(TaxonomicRank.FAMILY, "Chromodorididae");
+		Taxon taxon = new Taxon(TaxonomicRank.FAMILY.getRank(), "Chromodorididae");
 
         taxon.addToDescription(new SSCharacterDescriptor("Cuerpo","Forma","Alargado"),
                                     new Modifier(1.0,1.0,0.8));
@@ -268,7 +268,7 @@ public class GoalApproachingDialogTest extends GoalApproachingHandler {
         System.out.println("Verificar que no existe similaridad entre un descriptor y los descriptores de un taxón");
         
         aDescriptor = new SVCharacterDescriptor("Cuerpo","Longitud", new SingleValue(0.3,
-        		MeasuringUnit.CM));
+        		MeasuringUnit.CM.getMeasuringUnit()));
         assertFalse(this.determineSimilarityFor(aDescriptor, taxon));
 	}
 
@@ -284,16 +284,16 @@ public class GoalApproachingDialogTest extends GoalApproachingHandler {
 		System.out.println("Verificar que hay contradicciones en la descripción o duplicados");
 		ps.getSolutionDescription().addDescriptors(new SSCharacterDescriptor("Manto","Forma","Ovalado"));
 		ps.getConfirmedDescription().addDescriptors(new SVCharacterDescriptor("Cuerpo","Longitud", new SingleValue(0.3,
-        		MeasuringUnit.CM)));
+        		MeasuringUnit.CM.getMeasuringUnit())));
 		this.getHypothesis().getPossibleSolutions().add(ps);
 		
 		assertTrue(this.areThereContradictions(new SSCharacterDescriptor("Manto","Forma","Ovalado")));
 		assertTrue(this.areThereContradictions(new SSCharacterDescriptor("Manto","Forma","Cuadrado")));
 		
 		assertTrue(this.areThereContradictions(new SVCharacterDescriptor("Cuerpo","Longitud", new SingleValue(0.3,
-        		MeasuringUnit.CM))));
+        		MeasuringUnit.CM.getMeasuringUnit()))));
 		assertTrue(this.areThereContradictions(new SVCharacterDescriptor("Cuerpo","Longitud", new SingleValue(3,
-        		MeasuringUnit.CM))));
+        		MeasuringUnit.CM.getMeasuringUnit()))));
 		
 		System.out.println("Verificar que no hay contradicciones o duplicados en la descripción");
 		assertFalse(this.areThereContradictions(new SVCharacterDescriptor("Branquias", 
@@ -316,13 +316,13 @@ public class GoalApproachingDialogTest extends GoalApproachingHandler {
 		System.out.println("Verificar que hay duplicados en la descripción procesada");
 		ps.getDoubtfulDescription().addDescriptors(new SSCharacterDescriptor("Manto","Forma","Ovalado"));
 		ps.getUnconfirmedDescription().addDescriptors(new SVCharacterDescriptor("Cuerpo","Longitud", new SingleValue(0.3,
-        		MeasuringUnit.CM)));
+        		MeasuringUnit.CM.getMeasuringUnit())));
 		this.getHypothesis().getPossibleSolutions().add(ps);
 		
 		assertTrue(this.isDescriptorAlreadyProcessed(new SSCharacterDescriptor("Manto","Forma","Ovalado")));
 		
 		assertTrue(this.isDescriptorAlreadyProcessed(new SVCharacterDescriptor("Cuerpo","Longitud", new SingleValue(0.3,
-        		MeasuringUnit.CM))));
+        		MeasuringUnit.CM.getMeasuringUnit()))));
 		
 		System.out.println("Verificar que no hay duplicados en la descripción procesada");
 		assertFalse(this.isDescriptorAlreadyProcessed(new SVCharacterDescriptor("Branquias", 

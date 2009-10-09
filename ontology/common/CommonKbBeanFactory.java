@@ -176,7 +176,7 @@ public class CommonKbBeanFactory {
 
     tempSymbolValue = getStringValue( protegeInst, kb.getSlot( "measuringUnit" ) );
     if (tempSymbolValue != null) {
-      javaInst.setMeasuringUnit(MeasuringUnit.valueOf(tempSymbolValue.toUpperCase()));
+      javaInst.setMeasuringUnit(tempSymbolValue);
     }
 
     tempFloatValue = getFloatValue( protegeInst, kb.getSlot( "value" ) );
@@ -416,7 +416,7 @@ public class CommonKbBeanFactory {
 
     tempSymbolValue = getStringValue( protegeInst, kb.getSlot( "measuringUnit" ) );
     if (tempSymbolValue != null) {
-      javaInst.setMeasuringUnit(MeasuringUnit.valueOf(tempSymbolValue.toUpperCase()));
+      javaInst.setMeasuringUnit(tempSymbolValue);
     }
 
     tempFloatValue = getFloatValue( protegeInst, kb.getSlot( "lowerBound" ) );

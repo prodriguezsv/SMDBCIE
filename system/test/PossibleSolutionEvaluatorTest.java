@@ -46,37 +46,37 @@ public class PossibleSolutionEvaluatorTest {
     public void setUp() {
 
         //rootTaxon = new Taxon(TaxonomicRank.ROOT, null);
-        taxon1 = new Taxon(TaxonomicRank.FAMILY, "Chromodorididae");
+        taxon1 = new Taxon(TaxonomicRank.FAMILY.getRank(), "Chromodorididae");
         taxon1.addToDescription(new SSCharacterDescriptor("cuerpo","forma","alargado"),
                                     new Modifier(1.0,1.0,0.8));
 
         taxon1.addToDescription(new SSCharacterDescriptor("cuerpo","forma","ovalado"),
                                     new Modifier(1.0,1.0,0.1));
 
-        taxon2 = new Taxon(TaxonomicRank.FAMILY, "Chromodorididae fake");
+        taxon2 = new Taxon(TaxonomicRank.FAMILY.getRank(), "Chromodorididae fake");
         taxon2.addToDescription(new SSCharacterDescriptor("cuerpo1","forma","ovalado"),
                                     new Modifier(1.0,1.0,1.0));
         taxon2.addToDescription(new SSCharacterDescriptor("cuerpo2","forma","ovalado"),
                                     new Modifier(1.0,1.0,1.0));
-        taxon3 = new Taxon(TaxonomicRank.GENUS, "Chromodoris");
+        taxon3 = new Taxon(TaxonomicRank.GENUS.getRank(), "Chromodoris");
         taxon3.addToDescription(new SSCharacterDescriptor("cuerpo3","forma","ovalado"),
                                     new Modifier(1.0,1.0,1.0));
-        taxon4 = new Taxon(TaxonomicRank.GENUS, "Chromodoris fake");
+        taxon4 = new Taxon(TaxonomicRank.GENUS.getRank(), "Chromodoris fake");
         taxon4.addToDescription(new SSCharacterDescriptor("cuerpo4","forma","ovalado"),
                                     new Modifier(1.0,1.0,1.0));
-        taxon5 = new Taxon(TaxonomicRank.SPECIES, "Chromodoris sphoni");
+        taxon5 = new Taxon(TaxonomicRank.SPECIES.getRank(), "Chromodoris sphoni");
         taxon5.addToDescription(new SSCharacterDescriptor("cuerpo5","forma","ovalado"),
                                     new Modifier(1.0,1.0,1.0));
-        taxon6 = new Taxon(TaxonomicRank.SPECIES, "Chromodoris clenchi");
+        taxon6 = new Taxon(TaxonomicRank.SPECIES.getRank(), "Chromodoris clenchi");
         taxon6.addToDescription(new SSCharacterDescriptor("cuerpo6","forma","ovalado"),
                                     new Modifier(1.0,1.0,1.0));
-        taxon7 = new Taxon(TaxonomicRank.SPECIES, "Chromodoris kempfi");
+        taxon7 = new Taxon(TaxonomicRank.SPECIES.getRank(), "Chromodoris kempfi");
         taxon7.addToDescription(new SSCharacterDescriptor("cuerpo7","forma","ovalado"),
                                     new Modifier(1.0,1.0,1.0));
 
 
         taxonomy = new Taxonomy();
-        taxonomy.setRootTaxon(new Taxon(TaxonomicRank.ROOT, null));
+        taxonomy.setRootTaxon(new Taxon(TaxonomicRank.ROOT.getRank(), null));
 
         //taxon1.setPredecessor(rootTaxon);
         assertTrue(taxonomy.addTaxon(taxon1, taxonomy.getRootTaxon()));
@@ -126,7 +126,8 @@ public class PossibleSolutionEvaluatorTest {
         aPossibleSolution1 = new PossibleSolution ();
         aPossibleSolution1.getSolutionDescription().addToConcreteDescription(
         		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
-        assertTrue(aPossibleSolution1.setSolution(taxon1));
+        aPossibleSolution1.setSolution(taxon1);
+        assertNotNull(aPossibleSolution1.getSolution());
         aHypothesis.addPossibleSolution(aPossibleSolution1);
         aConflictSet.add(aHypothesis);
 
@@ -136,7 +137,8 @@ public class PossibleSolutionEvaluatorTest {
         aPossibleSolution2 = new PossibleSolution ();
         aPossibleSolution2.getSolutionDescription().addToConcreteDescription(
         		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
-        assertTrue(aPossibleSolution2.setSolution(taxon3));
+        aPossibleSolution2.setSolution(taxon3);
+        assertNotNull(aPossibleSolution2.getSolution());
         aHypothesis.addPossibleSolution(aPossibleSolution2);
         aConflictSet.add(aHypothesis);
 
@@ -148,7 +150,8 @@ public class PossibleSolutionEvaluatorTest {
         aPossibleSolution3 = new PossibleSolution ();
         aPossibleSolution3.getSolutionDescription().addToConcreteDescription(
         		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
-        assertTrue(aPossibleSolution3.setSolution(taxon1));
+        aPossibleSolution3.setSolution(taxon1);
+        assertNotNull(aPossibleSolution3.getSolution());
         aHypothesis.addPossibleSolution(aPossibleSolution3);
         aCompConflictSet.add(aHypothesis);
 
@@ -158,7 +161,8 @@ public class PossibleSolutionEvaluatorTest {
         aPossibleSolution4 = new PossibleSolution ();
         aPossibleSolution4.getSolutionDescription().addToConcreteDescription(
         		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
-        assertTrue(aPossibleSolution4.setSolution(taxon4));
+        aPossibleSolution4.setSolution(taxon4);
+        assertNotNull(aPossibleSolution4.getSolution());
         aHypothesis.addPossibleSolution(aPossibleSolution4);
         aCompConflictSet.add(aHypothesis);
 
@@ -184,7 +188,8 @@ public class PossibleSolutionEvaluatorTest {
         aPossibleSolution1 = new PossibleSolution ();
         aPossibleSolution1.getSolutionDescription().addToConcreteDescription(
         		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
-        assertTrue(aPossibleSolution1.setSolution(taxon3));
+        aPossibleSolution1.setSolution(taxon3);
+        assertNotNull(aPossibleSolution1.getSolution());
         aHypothesis.addPossibleSolution(aPossibleSolution1);
         aConflictSet.add(aHypothesis);
 
@@ -194,7 +199,8 @@ public class PossibleSolutionEvaluatorTest {
         aPossibleSolution2 = new PossibleSolution ();
         aPossibleSolution2.getSolutionDescription().addToConcreteDescription(
         		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
-        assertTrue(aPossibleSolution2.setSolution(taxon4));
+        aPossibleSolution2.setSolution(taxon4);
+        assertNotNull(aPossibleSolution2.getSolution());
         aHypothesis.addPossibleSolution(aPossibleSolution2);
         aConflictSet.add(aHypothesis);
 
@@ -207,7 +213,8 @@ public class PossibleSolutionEvaluatorTest {
         aPossibleSolution3 = new PossibleSolution ();
         aPossibleSolution3.getSolutionDescription().addToConcreteDescription(
         		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
-        assertTrue(aPossibleSolution3.setSolution(taxon3));
+        aPossibleSolution3.setSolution(taxon3);
+        assertNotNull(aPossibleSolution3.getSolution());
         aHypothesis.addPossibleSolution(aPossibleSolution3);
         aCompConflictSet.add(aHypothesis);
 
@@ -217,7 +224,8 @@ public class PossibleSolutionEvaluatorTest {
         aPossibleSolution4 = new PossibleSolution ();
         aPossibleSolution4.getSolutionDescription().addToConcreteDescription(
         		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
-        assertTrue(aPossibleSolution4.setSolution(taxon1));
+        aPossibleSolution4.setSolution(taxon1);
+        assertNotNull(aPossibleSolution4.getSolution());
         aHypothesis.addPossibleSolution(aPossibleSolution4);
         aCompConflictSet.add(aHypothesis);
 
@@ -240,13 +248,15 @@ public class PossibleSolutionEvaluatorTest {
         aHypothesis.getDescription().addToConcreteDescription(
         		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
         aPossibleSolution1 = new PossibleSolution ();
-        assertTrue(aPossibleSolution1.setSolution(taxon3));
+        aPossibleSolution1.setSolution(taxon3);
+        assertNotNull(aPossibleSolution1.getSolution());
         aHypothesis.addPossibleSolution(aPossibleSolution1);
         aConflictSet.add(aHypothesis);
 
         aHypothesis = new Hypothesis();
         aPossibleSolution2 = new PossibleSolution ();
-        assertTrue(aPossibleSolution2.setSolution(taxon4));
+        aPossibleSolution2.setSolution(taxon4);
+        assertNotNull(aPossibleSolution2.getSolution());
         aHypothesis.addPossibleSolution(aPossibleSolution2);
         aConflictSet.add(aHypothesis);
 
@@ -257,7 +267,8 @@ public class PossibleSolutionEvaluatorTest {
         aHypothesis.getDescription().addToConcreteDescription(
         		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
         aPossibleSolution3 = new PossibleSolution ();
-        assertTrue(aPossibleSolution3.setSolution(taxon3));
+        aPossibleSolution3.setSolution(taxon3);
+        assertNotNull(aPossibleSolution3.getSolution());
         aHypothesis.addPossibleSolution(aPossibleSolution3);
         aCompConflictSet.add(aHypothesis);
 
@@ -265,7 +276,8 @@ public class PossibleSolutionEvaluatorTest {
         aHypothesis.getDescription().addToConcreteDescription(
         		new SSCharacterDescriptor("Parapodio","Grado de desarrollo", "Poco"));
         aPossibleSolution4 = new PossibleSolution ();
-        assertTrue(aPossibleSolution4.setSolution(taxon1));
+        aPossibleSolution4.setSolution(taxon1);
+        assertNotNull(aPossibleSolution4.getSolution());
         aHypothesis.addPossibleSolution(aPossibleSolution4);
         aCompConflictSet.add(aHypothesis);
 
@@ -309,13 +321,15 @@ public class PossibleSolutionEvaluatorTest {
 
         Hypothesis aHypothesis = new Hypothesis();
         aPossibleSolution1 = new PossibleSolution ();
-        assertTrue(aPossibleSolution1.setSolution(taxon1));
+        aPossibleSolution1.setSolution(taxon1);
+        assertNotNull(aPossibleSolution1.getSolution());
         aHypothesis.addPossibleSolution(aPossibleSolution1);
         aConflictSet.add(aHypothesis);
 
         aHypothesis = new Hypothesis();
         aPossibleSolution2 = new PossibleSolution ();
-        assertTrue(aPossibleSolution2.setSolution(taxon3));
+        aPossibleSolution2.setSolution(taxon3);
+        assertNotNull(aPossibleSolution2.getSolution());
         aHypothesis.addPossibleSolution(aPossibleSolution2);
         aConflictSet.add(aHypothesis);
 
@@ -336,13 +350,15 @@ public class PossibleSolutionEvaluatorTest {
 
         aHypothesis = new Hypothesis();
         aPossibleSolution1 = new PossibleSolution ();
-        assertTrue(aPossibleSolution1.setSolution(taxon3));
+        aPossibleSolution1.setSolution(taxon3);
+        assertNotNull(aPossibleSolution1.getSolution());
         aHypothesis.addPossibleSolution(aPossibleSolution1);
         aConflictSet.add(aHypothesis);
 
         aHypothesis = new Hypothesis();
         aPossibleSolution2 = new PossibleSolution ();
-        assertTrue(aPossibleSolution2.setSolution(taxon4));
+        aPossibleSolution2.setSolution(taxon4);
+        assertNotNull(aPossibleSolution2.getSolution());
         aHypothesis.addPossibleSolution(aPossibleSolution2);
         aConflictSet.add(aHypothesis);
 
@@ -365,13 +381,15 @@ public class PossibleSolutionEvaluatorTest {
 
         aHypothesis = new Hypothesis();
         aPossibleSolution1 = new PossibleSolution ();
-        assertTrue(aPossibleSolution1.setSolution(taxon3));
+        aPossibleSolution1.setSolution(taxon3);
+        assertNotNull(aPossibleSolution1.getSolution());
         aHypothesis.addPossibleSolution(aPossibleSolution1);
         aConflictSet.add(aHypothesis);
 
         aHypothesis = new Hypothesis();
         aPossibleSolution2 = new PossibleSolution ();
-        assertTrue(aPossibleSolution2.setSolution(taxon4));
+        aPossibleSolution2.setSolution(taxon4);
+        assertNotNull(aPossibleSolution2.getSolution());
         aHypothesis.addPossibleSolution(aPossibleSolution2);
         aConflictSet.add(aHypothesis);
 
@@ -392,9 +410,11 @@ public class PossibleSolutionEvaluatorTest {
         java.lang.System.out.println("inheritPossibleSolutionDescriptionsFrom");
         PossibleSolutionEvaluator instance = new PossibleSolutionEvaluator(new ArrayList(), new ArrayList(), taxonomy);
         PossibleSolution anOldPossibleSolution = new PossibleSolution ();
-        assertTrue(anOldPossibleSolution.setSolution(taxon1));
+        anOldPossibleSolution.setSolution(taxon1);
+        assertNotNull(anOldPossibleSolution.getSolution());
         PossibleSolution aNewPossibleSolution = new PossibleSolution ();
-        assertTrue(aNewPossibleSolution.setSolution(taxon6));
+        aNewPossibleSolution.setSolution(taxon6);
+        assertNotNull(aNewPossibleSolution.getSolution());
         
         anOldPossibleSolution.addToSolutionDescription(new SSCharacterDescriptor("solutions","forma","ovalado"));
         anOldPossibleSolution.addToConfirmedDescription(new SSCharacterDescriptor("confirmed","forma","ovalado"));

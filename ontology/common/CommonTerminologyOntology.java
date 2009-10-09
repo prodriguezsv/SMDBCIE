@@ -56,7 +56,7 @@ public class CommonTerminologyOntology extends jade.content.onto.Ontology  {
     public static final String DESCRIPTOR_ATTRIBUTE="attribute";
     public static final String DESCRIPTOR_STRUCTURE="structure";
     public static final String DESCRIPTOR="Descriptor";
-    public static final String MEASURINGUNIT="MeasuringUnit";
+    //public static final String MEASURINGUNIT="MeasuringUnit";
     
   /**
    * Constructor
@@ -104,8 +104,8 @@ public class CommonTerminologyOntology extends jade.content.onto.Ontology  {
     add(ssHeuristicDescriptorSchema, ontology.common.SSHeuristicDescriptor.class);
     ConceptSchema msHeuristicDescriptorSchema = new ConceptSchema(MSHEURISTICDESCRIPTOR);
     add(msHeuristicDescriptorSchema, ontology.common.MSHeuristicDescriptor.class);
-    ConceptSchema measuringUnitSchema = new ConceptSchema(MEASURINGUNIT);
-    add(measuringUnitSchema, ontology.common.MeasuringUnit.class);
+    /*ConceptSchema measuringUnitSchema = new ConceptSchema(MEASURINGUNIT);
+    add(measuringUnitSchema, ontology.common.MeasuringUnit.class);*/
 
     // adding AgentAction(s)
 
@@ -124,11 +124,11 @@ public class CommonTerminologyOntology extends jade.content.onto.Ontology  {
     rvHeuristicDescriptorSchema.add(RVHEURISTICDESCRIPTOR_VALUE, rangeValueSchema, ObjectSchema.MANDATORY);
     ssHeuristicDescriptorSchema.add(SSHEURISTICDESCRIPTOR_VALUE, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
     msHeuristicDescriptorSchema.add(MSHEURISTICDESCRIPTOR_VALUE, (TermSchema)getSchema(BasicOntology.STRING), 2, ObjectSchema.UNLIMITED);
-    valueSchema.add(VALUE_MEASURINGUNIT, measuringUnitSchema, ObjectSchema.MANDATORY);
+    valueSchema.add(VALUE_MEASURINGUNIT, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
     singleValueSchema.add(SINGLEVALUE_VALUE, (TermSchema)getSchema(BasicOntology.FLOAT), ObjectSchema.MANDATORY);
     rangeValueSchema.add(RANGEVALUE_LOWERBOUND, (TermSchema)getSchema(BasicOntology.FLOAT), ObjectSchema.MANDATORY);
     rangeValueSchema.add(RANGEVALUE_UPPERBOUND, (TermSchema)getSchema(BasicOntology.FLOAT), ObjectSchema.MANDATORY);
-    descriptionSchema.add(DESCRIPTION_DESCRIPTORS, descriptorSchema, 1, ObjectSchema.UNLIMITED);
+    descriptionSchema.add(DESCRIPTION_DESCRIPTORS, descriptorSchema, 0, ObjectSchema.UNLIMITED);
 
     // adding name mappings
 

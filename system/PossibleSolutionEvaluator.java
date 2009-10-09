@@ -146,39 +146,47 @@ public class PossibleSolutionEvaluator {
 		Taxon evalPossibleSolutionTaxon, compPossibleSolutionTaxon;
 
         //do nothing in case that one of them is empty
-        if (aConflictSet.isEmpty() || aCompConflictSet.isEmpty()) return;
+        if (aConflictSet.isEmpty() || aCompConflictSet.isEmpty()) return;        
 
         //Pendiente evaluar si un ordenamiento en la lista de hipotesis mejoraría el proceso
-        Iterator i = aConflictSet.iterator();
-		
-		while (i.hasNext()) {
-			Hypothesis evalHypothesis = (Hypothesis) i.next(); 
+        List aConflictSetCopy = new ArrayList();
         
-            // Scan the entire list of possible solutions belonging to the current hypothesis-to-evaluate
-			Iterator j = evalHypothesis.getPossibleSolutions().iterator();
+        Iterator iterator = aConflictSet.iterator();
+		
+		while (iterator.hasNext()) {
+			aConflictSetCopy.add((Hypothesis) iterator.next());
+		}
+		
+		while (!aConflictSetCopy.isEmpty()) {
+			Hypothesis evalHypothesis = (Hypothesis) aConflictSetCopy.remove(0); 
+        
+            // Scan the entire list of possible solutions belonging to the current hypothesis-to-evaluate			
+			List evalPossibleSolutionsCopy = new ArrayList();
+            
+            iterator = evalHypothesis.getPossibleSolutions().iterator();
 			
-			while (j.hasNext()) {
-				PossibleSolution evalPossibleSolution = (PossibleSolution) j.next();
+			while (iterator.hasNext()) {
+				evalPossibleSolutionsCopy.add((PossibleSolution) iterator.next());
+			}
+			
+			while (!evalPossibleSolutionsCopy.isEmpty()) {
+				PossibleSolution evalPossibleSolution = (PossibleSolution) evalPossibleSolutionsCopy.remove(0);
 
                 // Get the corresponding taxon of the possibleSolution-to-evaluate, if applicable
-                if (evalPossibleSolution.getSolution() instanceof Taxon)
-                    evalPossibleSolutionTaxon = (Taxon) evalPossibleSolution.getSolution();
-                else
-                    evalPossibleSolutionTaxon = this.getTaxonomy().getTaxonFromLevelIndex(evalPossibleSolution.getName(), evalPossibleSolution.getLevel());
+                evalPossibleSolutionTaxon = this.getTaxonomy().getTaxonFromLevelIndex(evalPossibleSolution.getName(), evalPossibleSolution.getLevel());
 
                 if (evalPossibleSolutionTaxon == null) return;
 
                 List aCompConflictSetCopy = new ArrayList();
-                Iterator iterator = aCompConflictSet.iterator();
+                
+                iterator = aCompConflictSet.iterator();
     			
     			while (iterator.hasNext()) {
     				aCompConflictSetCopy.add((Hypothesis) iterator.next());
     			}
-                
-                Iterator k = aCompConflictSetCopy.iterator();
     			
-    			while (k.hasNext()) {
-    				Hypothesis compHypothesis = (Hypothesis) k.next();
+    			while (!aCompConflictSetCopy.isEmpty()) {
+    				Hypothesis compHypothesis = (Hypothesis) aCompConflictSetCopy.remove(0);
 
                 	List aPossibleSolutionsCopy = new ArrayList();
                 	
@@ -186,17 +194,12 @@ public class PossibleSolutionEvaluator {
         			
         			while (iterator.hasNext()) {
         				aPossibleSolutionsCopy.add((PossibleSolution) iterator.next());
-        			}
-                	
-                	Iterator l = aPossibleSolutionsCopy.iterator();
+        			}                
         			
-        			while (l.hasNext()) {
-        				PossibleSolution compPossibleSolution = (PossibleSolution) l.next();
+        			while (!aPossibleSolutionsCopy.isEmpty()) {
+        				PossibleSolution compPossibleSolution = (PossibleSolution) aPossibleSolutionsCopy.remove(0);
 
-                        if (compPossibleSolution.getSolution() instanceof Taxon)
-                            compPossibleSolutionTaxon = (Taxon) compPossibleSolution.getSolution();
-                        else
-                            compPossibleSolutionTaxon = this.getTaxonomy().getTaxonFromLevelIndex(compPossibleSolution.getName(), compPossibleSolution.getLevel());
+                        compPossibleSolutionTaxon = this.getTaxonomy().getTaxonFromLevelIndex(compPossibleSolution.getName(), compPossibleSolution.getLevel());
 
                         if (compPossibleSolutionTaxon == null) return;
                         
@@ -299,11 +302,7 @@ public class PossibleSolutionEvaluator {
 			while (i.hasNext()) {
 				PossibleSolution evalPossibleSolution = (PossibleSolution) i.next();
 
-                // Get the corresponding taxon of the possibleSolution-to-evaluate, if applicable
-                if (evalPossibleSolution.getSolution() instanceof Taxon)
-                    evalPossibleSolutionTaxon = (Taxon) evalPossibleSolution.getSolution();
-                else
-                    evalPossibleSolutionTaxon = this.getTaxonomy().getTaxonFromLevelIndex(evalPossibleSolution.getName(), evalPossibleSolution.getLevel());
+                evalPossibleSolutionTaxon = this.getTaxonomy().getTaxonFromLevelIndex(evalPossibleSolution.getName(), evalPossibleSolution.getLevel());                    
 
                 if (evalPossibleSolutionTaxon == null) return;           
                 
@@ -333,10 +332,7 @@ public class PossibleSolutionEvaluator {
         			while (l.hasNext()) {
         				PossibleSolution compPossibleSolution = (PossibleSolution) l.next();
                     
-                        if (compPossibleSolution.getSolution() instanceof Taxon)
-                            compPossibleSolutionTaxon = (Taxon) compPossibleSolution.getSolution();
-                        else
-                            compPossibleSolutionTaxon = this.getTaxonomy().getTaxonFromLevelIndex(compPossibleSolution.getName(), compPossibleSolution.getLevel());
+                        compPossibleSolutionTaxon = this.getTaxonomy().getTaxonFromLevelIndex(compPossibleSolution.getName(), compPossibleSolution.getLevel());
 
                         if (compPossibleSolutionTaxon == null) return;
                         // Check if the possible solutions are the same object

@@ -55,16 +55,16 @@ public class TaxonomySearchAutomatonTest {
     public void setUp() {
 
     	searchIndex = new HashMap<Descriptor, List<Taxon>>();
-    	rootTaxon = new Taxon(TaxonomicRank.ROOT, null);
-    	taxon1 = new Taxon(TaxonomicRank.FAMILY, "Chromodorididae");
-    	taxon2 = new Taxon(TaxonomicRank.GENUS, "Chromodoris");
+    	rootTaxon = new Taxon(TaxonomicRank.ROOT.getRank(), null);
+    	taxon1 = new Taxon(TaxonomicRank.FAMILY.getRank(), "Chromodorididae");
+    	taxon2 = new Taxon(TaxonomicRank.GENUS.getRank(), "Chromodoris");
         
-        taxon3 = new Taxon(TaxonomicRank.SPECIES, "Chromodoris sphoni");
-        taxon4 = new Taxon(TaxonomicRank.SPECIES, "Chromodoris clenchi");
-        taxon5 = new Taxon(TaxonomicRank.SPECIES, "Chromodoris kempfi");
-        taxon6 = new Taxon(TaxonomicRank.GENUS, "Cadlina");
-        taxon7 = new Taxon(TaxonomicRank.SPECIES, "Cadlina sparsa");
-        taxon8 = new Taxon(TaxonomicRank.GENUS, "Hypselodoris");
+        taxon3 = new Taxon(TaxonomicRank.SPECIES.getRank(), "Chromodoris sphoni");
+        taxon4 = new Taxon(TaxonomicRank.SPECIES.getRank(), "Chromodoris clenchi");
+        taxon5 = new Taxon(TaxonomicRank.SPECIES.getRank(), "Chromodoris kempfi");
+        taxon6 = new Taxon(TaxonomicRank.GENUS.getRank(), "Cadlina");
+        taxon7 = new Taxon(TaxonomicRank.SPECIES.getRank(), "Cadlina sparsa");
+        taxon8 = new Taxon(TaxonomicRank.GENUS.getRank(), "Hypselodoris");
 //-----------------------Taxon No. 1---------------------
         taxon1.addToDescription(new SSCharacterDescriptor("cuerpo","forma","alargado"),
                                     new Modifier(1.0,1.0,0.8));
@@ -141,7 +141,7 @@ public class TaxonomySearchAutomatonTest {
     	taxonomy.setDescriptorsIndex(searchIndex);
     		
         System.out.println("addToTSolutionDescription");
-        TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton(taxonomy,SimilarityDegree.POCOSIMILAR);
+        TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton(taxonomy,SimilarityDegree.POCOSIMILAR.getSimilarityDegree());
         Descriptor aDescriptor1 = new SSCharacterDescriptor("branquia","forma_hojas_branquiales","bipinnada");
         Descriptor aDescriptor2 = new SSCharacterDescriptor("manto","textura_del_borde","lisa");
         Descriptor aDescriptor3 = new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro");
@@ -170,7 +170,7 @@ public class TaxonomySearchAutomatonTest {
     	taxonomy = new Taxonomy();
     	taxonomy.setDescriptorsIndex(searchIndex);
         System.out.println("addToTUnmatchedDescription");
-        TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton(taxonomy,SimilarityDegree.POCOSIMILAR);
+        TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton(taxonomy,SimilarityDegree.POCOSIMILAR.getSimilarityDegree());
         Descriptor aDescriptor1 = new SSCharacterDescriptor("branquia","forma_hojas_branquiales","bipinnada");
         Descriptor aDescriptor2 = new SSCharacterDescriptor("manto","textura_del_borde","lisa");
         Descriptor aDescriptor3 = new SSCharacterDescriptor("pie","coloracion","gris_oscuro_casi_negro");
@@ -202,17 +202,17 @@ public class TaxonomySearchAutomatonTest {
         List<Taxon> aTaxonList = new ArrayList<Taxon>();
         Taxon taxon1,taxon2,taxon3,taxon4;
 
-    	taxon1 = new Taxon(TaxonomicRank.FAMILY, "Chromodorididae");
-    	taxon2 = new Taxon(TaxonomicRank.GENUS, "Chromodoris");
-        taxon3 = new Taxon(TaxonomicRank.SPECIES, "Chromodoris sphoni");
-        taxon4 = new Taxon(TaxonomicRank.SPECIES, "Chromodoris clenchi");
+    	taxon1 = new Taxon(TaxonomicRank.FAMILY.getRank(), "Chromodorididae");
+    	taxon2 = new Taxon(TaxonomicRank.GENUS.getRank(), "Chromodoris");
+        taxon3 = new Taxon(TaxonomicRank.SPECIES.getRank(), "Chromodoris sphoni");
+        taxon4 = new Taxon(TaxonomicRank.SPECIES.getRank(), "Chromodoris clenchi");
         
         aTaxonList.add(taxon1);
         aTaxonList.add(taxon2);
         aTaxonList.add(taxon3);
         aTaxonList.add(taxon4);
 
-        TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton(taxonomy,SimilarityDegree.POCOSIMILAR);
+        TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton(taxonomy,SimilarityDegree.POCOSIMILAR.getSimilarityDegree());
         List<PossibleSolution> result = instance.associateTaxaToPossibleSolutions(aTaxonList);
 
         assertSame(4,result.size());
@@ -232,7 +232,7 @@ public class TaxonomySearchAutomatonTest {
     	taxonomy = new Taxonomy();
     	taxonomy.setDescriptorsIndex(searchIndex);
         System.out.println("checkPrecondition");
-        TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton(taxonomy,SimilarityDegree.DIFERENTE);
+        TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton(taxonomy,SimilarityDegree.DIFERENTE.getSimilarityDegree());
         Description aProblemDescription = new Description();
         SSCharacterDescriptor cD1,cD2,cD3,cD4;
 
@@ -271,7 +271,7 @@ public class TaxonomySearchAutomatonTest {
     	taxonomy = new Taxonomy();
     	taxonomy.setDescriptorsIndex(searchIndex);
         System.out.println("beginSearch");
-        TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton(taxonomy,SimilarityDegree.CONSIDERABLEMENTESIMILAR);
+        TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton(taxonomy,SimilarityDegree.CONSIDERABLEMENTESIMILAR.getSimilarityDegree());
 
         Description aProblemDescription = new Description();
 
@@ -327,7 +327,7 @@ public class TaxonomySearchAutomatonTest {
         aProblemDescription.addDescriptors(new SSCharacterDescriptor("cuerpo","forma","alargado"));
         aProblemDescription.addDescriptors(new SSCharacterDescriptor("cuerpo","forma","corta"));
 
-        TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton(taxonomy,SimilarityDegree.MEDIANAMENTESIMILAR);
+        TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton(taxonomy,SimilarityDegree.MEDIANAMENTESIMILAR.getSimilarityDegree());
         instance.searchPossibleSolutions(aProblemDescription);
         assertFalse(instance.getPossibleSolutions().isEmpty());
     }
@@ -342,7 +342,7 @@ public class TaxonomySearchAutomatonTest {
     	taxonomy = new Taxonomy();
     	taxonomy.setDescriptorsIndex(searchIndex);
         System.out.println("determineSimilarityFor");
-        TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton(taxonomy,SimilarityDegree.MEDIANAMENTESIMILAR);
+        TaxonomySearchAutomaton instance = new TaxonomySearchAutomaton(taxonomy,SimilarityDegree.MEDIANAMENTESIMILAR.getSimilarityDegree());
         /*
          * Descriptor that exist on taxon1
          */

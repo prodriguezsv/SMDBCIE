@@ -50,7 +50,7 @@ public class SearchAutomatonOutputTest {
 
     @Before
     public void setUp() {
-        aTaxon = new Taxon(TaxonomicRank.GENUS, "Glossodoris");
+        aTaxon = new Taxon(TaxonomicRank.GENUS.getRank(), "Glossodoris");
         
         aPossibleSolution = new PossibleSolution();
         aPossibleSolution.setSolution(aTaxon);

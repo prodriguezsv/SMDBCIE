@@ -25,7 +25,7 @@ public class PossibleSolutionSelector {
 	private List generalSolutions;
 	private List goalSolutions;
 	private List specificSolutions;
-	private TaxonomicRank identificationGoal;
+	private String identificationGoal;
 	private int maxNumberSolutions;
 	private boolean showFailedSolutions;
 	private boolean status;
@@ -42,7 +42,7 @@ public class PossibleSolutionSelector {
 	 * USER EXPECTATION: showFailed is a boolean argument, that determines whether or not to show failed solutions to the user.
 	 * @see "Método initializeWith:and:and:and:and:and:and: del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public PossibleSolutionSelector(TaxonomicRank anIdentGoal, List aSuccSList, 
+	public PossibleSolutionSelector(String anIdentGoal, List aSuccSList, 
 			List aFailSList, int aNumberOfSolutions, boolean showFailed) {
 		setIdentificationGoal(anIdentGoal);
 		setSuccessfulConflictSet(aSuccSList);
@@ -104,7 +104,6 @@ public class PossibleSolutionSelector {
 	public void addGeneralSolution(ProposedSolution aProposedSolution) {
 		this.getGeneralSolutions().add(aProposedSolution);
 		this.sortProposedSolutions(this.getGeneralSolutions());
-		//Collections.sortPossibleSolutions(this.getGeneralSolutions());
 	}
 	
 	/**
@@ -119,7 +118,7 @@ public class PossibleSolutionSelector {
 	 * Método de instancia agregado
 	 * @param identificationGoal
 	 */
-	public void setIdentificationGoal(TaxonomicRank identificationGoal) {
+	public void setIdentificationGoal(String identificationGoal) {
 		this.identificationGoal = identificationGoal;
 	}
 	
@@ -130,14 +129,13 @@ public class PossibleSolutionSelector {
 	public void addGoalSolution(ProposedSolution aProposedSolution) {
 		this.getGoalSolutions().add(aProposedSolution);
 		this.sortProposedSolutions(this.getGoalSolutions());
-		//Collections.sortPossibleSolutions(this.getGoalSolutions());
 	}
 
 	/**
 	 * @see "Método identificationGoal del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public TaxonomicRank getIdentificationGoal() {
+	public String getIdentificationGoal() {
 		return identificationGoal;
 	}
 
@@ -196,7 +194,6 @@ public class PossibleSolutionSelector {
 	public void addSpecificSolution(ProposedSolution aProposedSolution) {
 		this.getSpecificSolutions().add(aProposedSolution);
 		this.sortProposedSolutions(this.getSpecificSolutions());
-		//Collections.sortPossibleSolutions(this.getSpecificSolutions());
 	}
 
 	/**
@@ -268,19 +265,19 @@ public class PossibleSolutionSelector {
 		else max = this.getMaxNumberSolutions();
 
 		// Get the identification goal as number
-		goalLevel = TaxonomicRank.getIndex(this.getIdentificationGoal());
+		goalLevel = TaxonomicRank.getIndex(TaxonomicRank.valueOf(this.getIdentificationGoal().toUpperCase()));
 
 		i = 1;
 		while (i <= max) {
 			ps = new ProposedSolution();
-			ps.setStatus(this.isStatus());
+			ps.setState(this.isStatus());
 			ps.setSolution((PossibleSolution)aSortedPossibleSolutionsList.remove(0));
 
-			if (ps.getSolution().getPoints() < 0.0) ps.setCertaintyDegree(CertaintyDegree.UNCERTAIN);
-			if (ps.getSolution().getPoints() == 0.0) ps.setCertaintyDegree(CertaintyDegree.DOUBTFUL);
-			if (ps.getSolution().getPoints() > 0.0) ps.setCertaintyDegree(CertaintyDegree.CERTAIN);
+			if (ps.getSolution().getPoints() < 0.0) ps.setCertaintyDegree(CertaintyDegree.UNCERTAIN.getDegree());
+			if (ps.getSolution().getPoints() == 0.0) ps.setCertaintyDegree(CertaintyDegree.DOUBTFUL.getDegree());
+			if (ps.getSolution().getPoints() > 0.0) ps.setCertaintyDegree(CertaintyDegree.CERTAIN.getDegree());
 			
-			psLevel = TaxonomicRank.getIndex(ps.getSolution().getLevel());
+			psLevel = TaxonomicRank.getIndex(TaxonomicRank.valueOf(ps.getSolution().getLevel().toUpperCase()));
 
 			// If applicable, insert the new proposed solution to the general solutions list
 			if ((psLevel < goalLevel) && (this.getGeneralSolutions().size() < this.getMaxNumberSolutions()))

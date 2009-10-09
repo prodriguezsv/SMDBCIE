@@ -14,7 +14,7 @@ import java.io.Serializable;
  * @author Armando
  */
 public abstract class Value implements jade.content.Concept, Serializable {
-	private MeasuringUnit measuringUnit;
+	private String measuringUnit;
 		
 	// bean stuff
 	protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
@@ -48,15 +48,24 @@ public abstract class Value implements jade.content.Concept, Serializable {
 	 * @see "M&eacute;todo measuringUnit: del protocolo setting-range values (private) en SUKIA SmallTalk"
 	 * @param measuringUnit
 	 */
-	public void setMeasuringUnit(MeasuringUnit aMeasuringUnit) {
-		this.measuringUnit = aMeasuringUnit;
+	public void setMeasuringUnit(String aMeasuringUnit) {
+		boolean iscontained = false;
+		
+		for (MeasuringUnit mu:MeasuringUnit.values()) {
+			if (mu.getMeasuringUnit().equals(aMeasuringUnit)) {
+				iscontained = true;
+				break;
+			}
+		}
+		
+		if (iscontained) this.measuringUnit = aMeasuringUnit;;
 	}
 
 	/**
 	 * @see "M&eacute;todo measuringUnit del protocolo accessing-range values en SUKIA SmallTalk"
 	 * @return
 	 */
-	public MeasuringUnit getMeasuringUnit() {
+	public String getMeasuringUnit() {
 		return measuringUnit;
 	}
 

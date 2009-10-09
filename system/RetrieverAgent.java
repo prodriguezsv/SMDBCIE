@@ -31,12 +31,12 @@ import jade.util.leap.ArrayList;
 import jade.util.leap.List;
 import jade.content.onto.*;
 import jade.content.onto.basic.Action;
+import jade.content.abs.AbsPredicate;
 import jade.content.lang.*;
 import jade.content.ContentElement;
 import jade.content.lang.Codec.CodecException;
 import jade.content.lang.sl.*;
 
-import ontology.CBR.AreSimilarTo;
 import ontology.CBR.CBRTerminologyOntology;
 import ontology.CBR.Hypothesis;
 import ontology.CBR.PossibleSolution;
@@ -83,7 +83,7 @@ public class RetrieverAgent extends Agent {
     @Override
   protected void takeDown() {
     // Imprimir un mensaje de despedida
-    System.out.println("¡Buen día! Agente recuperador "+getAID().getName()+" fuera de servicio.");
+    System.out.println("¡Que tenga buen día! Agente recuperador "+getAID().getName()+" fuera de servicio.");
   }
 
 	/**
@@ -114,17 +114,23 @@ public class RetrieverAgent extends Agent {
                     	
                     	retrieveHypothesis();
                     	
-                    	AreSimilarTo areSimilarTo = new AreSimilarTo();
+                    	//AreSimilarTo areSimilarTo = new AreSimilarTo();
                     	
-                    	areSimilarTo.setSuccessfulConflictSet(getSuccessfulConflictSet());
-                    	areSimilarTo.setFailureConflictSet(getFailureConflictSet());
-                    	areSimilarTo.setProblem(getProblem());
-                    	
-                    	// Convertir objetos Java a cadena
-          	          	getContentManager().fillContent(msg, areSimilarTo);
+                    	//areSimilarTo.setSuccessfulConflictSet(getSuccessfulConflictSet());
+                    	//areSimilarTo.setFailureConflictSet(getFailureConflictSet());
+                    	//areSimilarTo.setProblem(getProblem());                    	                    	
                     	
                         ACLMessage reply = msg.createReply();
                         reply.setPerformative(ACLMessage.INFORM);
+                        
+                        AbsPredicate ap = new AbsPredicate(CBRTerminologyOntology.ARESIMILARTO);
+                        
+                        ap.set(CBRTerminologyOntology.ARESIMILARTO_FAILURECONFLICTSET, ontology.fromObject(getFailureConflictSet()));
+                        ap.set(CBRTerminologyOntology.ARESIMILARTO_SUCCESSFULCONFLICTSET, ontology.fromObject(getSuccessfulConflictSet()));
+                        ap.set(CBRTerminologyOntology.ARESIMILARTO_PROBLEM, ontology.fromObject(getProblem()));
+                        
+                        // Convertir objetos Java a cadena
+          	          	getContentManager().fillContent(reply, ap);
 
                         myAgent.send(reply);
 
@@ -315,9 +321,10 @@ public class RetrieverAgent extends Agent {
 		 the identification goal, establish a new dialog with the user, in order to try to draw
 		 the existing possible solutions nearer to the said goal*/
 		if (!(hypothesis1.getPossibleSolutions().isEmpty())) {
-			if (TaxonomicRank.getIndex(((PossibleSolution)hypothesis1.getPossibleSolutions().get(0)).getLevel()) <
-					 TaxonomicRank.getIndex(OracleIDSystem.getInstance().getIdentGoal())) {
-				dialog = new GoalApproachingHandler(null, OracleIDSystem.getInstance().getIdentGoal(), hypothesis1 //OJO
+			if (TaxonomicRank.getIndex(TaxonomicRank.valueOf(((PossibleSolution)hypothesis1
+					.getPossibleSolutions().get(0)).getLevel().toUpperCase())) <
+					TaxonomicRank.getIndex(TaxonomicRank.valueOf(OracleIDSystem.getInstance().getIdentGoal().toUpperCase()))) {
+				dialog = new GoalApproachingHandler(OracleIDSystem.getInstance().getIdentGoal(), hypothesis1 //OJO
 						,OracleIDSystem.getInstance().getTaxonomy(), OracleIDSystem.getInstance().getMinSimilarityDegree());
 				dialog.chat();
 				status = dialog.getStatus();
@@ -331,9 +338,11 @@ public class RetrieverAgent extends Agent {
 		 	the existing possible solutions nearer to the said goal*/
 			// OJO:hypothesis2.isEmpty() en SUKIA
 			if (!(hypothesis2.getPossibleSolutions().isEmpty())) {
-				if (TaxonomicRank.getIndex(((PossibleSolution)hypothesis2.getPossibleSolutions().get(0)).getLevel()) <
-						 TaxonomicRank.getIndex(OracleIDSystem.getInstance().getIdentGoal())) {
-					dialog = new GoalApproachingHandler(null, OracleIDSystem.getInstance().getIdentGoal(), hypothesis2 //OJO
+				if (TaxonomicRank.getIndex(TaxonomicRank.valueOf(((PossibleSolution)hypothesis2
+						.getPossibleSolutions().get(0)).getLevel().toUpperCase())) <
+						TaxonomicRank.getIndex(TaxonomicRank.valueOf(OracleIDSystem.getInstance()
+								.getIdentGoal().toUpperCase()))) {
+					dialog = new GoalApproachingHandler(OracleIDSystem.getInstance().getIdentGoal(), hypothesis2 //OJO
 							,OracleIDSystem.getInstance().getTaxonomy(), OracleIDSystem.getInstance().getMinSimilarityDegree());
 					dialog.chat();
 					status = dialog.getStatus();
@@ -414,7 +423,7 @@ public class RetrieverAgent extends Agent {
 					
 			if (!(caseNetRoot == null)) {
 				// Create a new instance of case net search automaton
-				searchAutomaton = new CaseMemoryDFSAutomaton(null, caseNetRoot);
+				searchAutomaton = new CaseMemoryDFSAutomaton(caseNetRoot);
 	
 				// Begin the search with the given problem description
 				searchAutomaton.beginSearch(problemDescription);
@@ -533,9 +542,10 @@ public class RetrieverAgent extends Agent {
 			/* Determine if necessary to establish a dialog with the user (in case none of the possible solutions is
 			 equal to or more specific than the identification goal)*/
 			if (((PossibleSolution)hypothesis.getPossibleSolutions().get(0)).getStatus() == true) {
-				if (TaxonomicRank.getIndex(((PossibleSolution)hypothesis.getPossibleSolutions().get(0)).getLevel()) <
-						 TaxonomicRank.getIndex(OracleIDSystem.getInstance().getIdentGoal())) {
-					dialog = new GoalApproachingHandler(null, OracleIDSystem.getInstance().getIdentGoal(), hypothesis
+				if (TaxonomicRank.getIndex(TaxonomicRank.valueOf(((PossibleSolution)hypothesis
+						.getPossibleSolutions().get(0)).getLevel().toUpperCase())) <
+						TaxonomicRank.getIndex(TaxonomicRank.valueOf(OracleIDSystem.getInstance().getIdentGoal().toUpperCase()))) {
+					dialog = new GoalApproachingHandler(OracleIDSystem.getInstance().getIdentGoal(), hypothesis
 							, OracleIDSystem.getInstance().getTaxonomy(), OracleIDSystem.getInstance().getMinSimilarityDegree());
 					dialog.chat();
 					status = dialog.getStatus();

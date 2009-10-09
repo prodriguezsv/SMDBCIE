@@ -36,10 +36,10 @@ public class Reasoner {
 	private List failureConflictSet;
 	private List noResultsSet;
 	private List proposedSolutions;
-	private TaxonomicRank identGoal;
+	private String identGoal;
 	private OracleIDSystem identSystem;
 	private int maxNumberSolutions;
-	private SimilarityDegree minSimilarityDegree;
+	private String minSimilarityDegree;
 	private boolean presentFailedSolutions;
 	
 	/**
@@ -59,7 +59,7 @@ public class Reasoner {
 	 */
 	public void initialize() {
 		// The identification goal. Default value: species
-		setIdentGoal(TaxonomicRank.getMostSpecificLevel());
+		setIdentGoal(TaxonomicRank.getMostSpecificLevel().getRank());
 
 		// USER EXPECTATION: Maximum number of solutions to present. Default value: 3
 		setMaxNumberSolutions(3);
@@ -70,7 +70,7 @@ public class Reasoner {
 
 		/* USER EXPECTATION: Minimal similarity degree used in comparisons. 
 		 Default: moderately similar to equal*/
-		this.setMinSimilarityDegree(SimilarityDegree.MEDIANAMENTESIMILAR);
+		this.setMinSimilarityDegree(SimilarityDegree.MEDIANAMENTESIMILAR.getSimilarityDegree());
 		//if (this.getMinSimilarityDegree().isEmpty()) return;
 
 		// List with Structures that constitute the morphological description given by the user
@@ -178,7 +178,7 @@ public class Reasoner {
 	 * @see "Método identGoal: del protocolo adding en SUKIA SmallTalk"
 	 * @param identGoal
 	 */
-	public void setIdentGoal(TaxonomicRank aTaxonomicLevelsValue) {
+	public void setIdentGoal(String aTaxonomicLevelsValue) {
 		this.identGoal = aTaxonomicLevelsValue;
 	}
 
@@ -186,7 +186,7 @@ public class Reasoner {
 	 * @see "Método identGoal del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public TaxonomicRank getIdentGoal() {
+	public String getIdentGoal() {
 		return identGoal;
 	}
 
@@ -226,7 +226,7 @@ public class Reasoner {
 	 * @see "Método minSimilarityDegree: del protocolo adding en SUKIA SmallTalk"
 	 * @param aSimRangesValue
 	 */
-	public void setMinSimilarityDegree(SimilarityDegree aSimRangesValue) {
+	public void setMinSimilarityDegree(String aSimRangesValue) {
 		minSimilarityDegree = aSimRangesValue;
 	}
 
@@ -234,7 +234,7 @@ public class Reasoner {
 	 * @see "Método minSimilarityDegree del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public SimilarityDegree getMinSimilarityDegree() {
+	public String getMinSimilarityDegree() {
 		return minSimilarityDegree;
 	}
 
@@ -595,9 +595,10 @@ public class Reasoner {
 		 the identification goal, establish a new dialog with the user, in order to try to draw
 		 the existing possible solutions nearer to the said goal*/
 		if (!(hypothesis1.getPossibleSolutions().isEmpty())) {
-			if (TaxonomicRank.getIndex(((PossibleSolution)hypothesis1.getPossibleSolutions().get(0)).getLevel()) <
-					 TaxonomicRank.getIndex(this.getIdentGoal())) {
-				dialog = new GoalApproachingHandler(null, this.getIdentGoal()
+			if (TaxonomicRank.getIndex(TaxonomicRank.valueOf(((PossibleSolution)hypothesis1
+					.getPossibleSolutions().get(0)).getLevel().toUpperCase())) <
+					TaxonomicRank.getIndex(TaxonomicRank.valueOf(this.getIdentGoal()))) {
+				dialog = new GoalApproachingHandler(this.getIdentGoal()
 						,hypothesis1, this.getTaxonomy(), this.getMinSimilarityDegree());
 				dialog.chat();
 				status = dialog.getStatus();
@@ -611,9 +612,10 @@ public class Reasoner {
 		 	the existing possible solutions nearer to the said goal*/
 			// OJO:hypothesis2.isEmpty() en SUKIA
 			if (!(hypothesis2.getPossibleSolutions().isEmpty())) {
-				if (TaxonomicRank.getIndex(((PossibleSolution)hypothesis2.getPossibleSolutions().get(0)).getLevel()) <
-						 TaxonomicRank.getIndex(this.getIdentGoal())) {
-					dialog = new GoalApproachingHandler(null, this.getIdentGoal()
+				if (TaxonomicRank.getIndex(TaxonomicRank.valueOf(((PossibleSolution)hypothesis2
+						.getPossibleSolutions().get(0)).getLevel().toUpperCase())) <
+						TaxonomicRank.getIndex(TaxonomicRank.valueOf(this.getIdentGoal().toUpperCase()))) {
+					dialog = new GoalApproachingHandler(this.getIdentGoal()
 							,hypothesis2, this.getTaxonomy(), this.getMinSimilarityDegree());
 					dialog.chat();
 					status = dialog.getStatus();
@@ -694,7 +696,7 @@ public class Reasoner {
 					
 			if (!(caseNetRoot == null)) {
 				// Create a new instance of case net search automaton
-				searchAutomaton = new CaseMemoryDFSAutomaton(null, caseNetRoot);
+				searchAutomaton = new CaseMemoryDFSAutomaton(caseNetRoot);
 	
 				// Begin the search with the given problem description
 				searchAutomaton.beginSearch(problemDescription);
@@ -845,9 +847,10 @@ public class Reasoner {
 			/* Determine if necessary to establish a dialog with the user (in case none of the possible solutions is
 			 equal to or more specific than the identification goal)*/
 			if (((PossibleSolution)hypothesis.getPossibleSolutions().get(0)).getStatus() == true) {
-				if (TaxonomicRank.getIndex(((PossibleSolution)hypothesis.getPossibleSolutions().get(0)).getLevel()) <
-						 TaxonomicRank.getIndex(this.getIdentGoal())) {
-					dialog = new GoalApproachingHandler(null, this.getIdentGoal()
+				if (TaxonomicRank.getIndex(TaxonomicRank.valueOf(((PossibleSolution)hypothesis
+						.getPossibleSolutions().get(0)).getLevel().toUpperCase())) <
+						TaxonomicRank.getIndex(TaxonomicRank.valueOf(this.getIdentGoal().toUpperCase()))) {
+					dialog = new GoalApproachingHandler(this.getIdentGoal()
 							,hypothesis, this.getTaxonomy(), this.getMinSimilarityDegree());
 					dialog.chat();
 					status = dialog.getStatus();

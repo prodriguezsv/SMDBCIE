@@ -23,7 +23,7 @@ import ontology.common.RangeValue;
  *
  */
 public class Taxon implements jade.content.Concept, Serializable, Comparable<Taxon>{
-	private TaxonomicRank level;
+	private String level;
 	private String name;
 	private Taxon predecessor;
 	private List successors;
@@ -32,7 +32,7 @@ public class Taxon implements jade.content.Concept, Serializable, Comparable<Tax
 	/**
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public Taxon(TaxonomicRank level, String name) {
+	public Taxon(String level, String name) {
 		setLevel(level);
 		setName(name);
 		predecessor = null;
@@ -61,8 +61,17 @@ public class Taxon implements jade.content.Concept, Serializable, Comparable<Tax
 	 * @see "Método level: del protocolo adding en SUKIA SmallTalk"
 	 * @param level
 	 */
-	public void setLevel(TaxonomicRank level) {
-		this.level = level;
+	public void setLevel(String level) {
+		boolean iscontained = false;
+		
+		for (TaxonomicRank t:TaxonomicRank.values()) {
+			if (t.getRank().equals(level)) {
+				iscontained = true;
+				break;
+			}
+		}
+		
+		if (iscontained) this.level = level;
 	}
 
 	/***
@@ -73,7 +82,7 @@ public class Taxon implements jade.content.Concept, Serializable, Comparable<Tax
 	 * @see "Método level del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public TaxonomicRank getLevel() {
+	public String getLevel() {
 		return level;
 	}
 
@@ -152,7 +161,8 @@ public class Taxon implements jade.content.Concept, Serializable, Comparable<Tax
 	 * @param sucessor
 	 */
 	public boolean addSuccessor(Taxon successor) {
-       if ((TaxonomicRank.getIndex(successor.getLevel()) - TaxonomicRank.getIndex(this.getLevel())) != 1)
+       if (TaxonomicRank.getIndex(TaxonomicRank.valueOf(successor.getLevel().toUpperCase()))
+    		   - TaxonomicRank.getIndex(TaxonomicRank.valueOf((this.getLevel().toUpperCase()))) != 1)
     	   return false; //Verificar comportamiento
        
 		if (!this.getSuccessors().contains(successor)) {
@@ -224,11 +234,12 @@ public class Taxon implements jade.content.Concept, Serializable, Comparable<Tax
 	public boolean isSuccessorOf(Taxon aTaxon) {
 		Taxon  predecessorTaxon;
 		
-		if (TaxonomicRank.getIndex(level) <= TaxonomicRank.getIndex(aTaxon.getLevel()))
+		if (TaxonomicRank.getIndex(TaxonomicRank.valueOf(getLevel().toUpperCase())) 
+				<= TaxonomicRank.getIndex(TaxonomicRank.valueOf(aTaxon.getLevel().toUpperCase())))
 			return false;
 		
 		predecessorTaxon = predecessor;
-		while (!(predecessorTaxon.getLevel().equals(TaxonomicRank.ROOT))) {
+		while (!(predecessorTaxon.getLevel().equals(TaxonomicRank.ROOT.getRank()))) {
 			if (predecessorTaxon.getName().equals(aTaxon.getName()))
 				return true;
 
@@ -285,8 +296,8 @@ public class Taxon implements jade.content.Concept, Serializable, Comparable<Tax
 	 * @return
 	 */
 	public boolean isOKDirectLink(Taxon aParentTaxon) {
-		return (((TaxonomicRank.getIndex(this.getLevel())) 
-				- (TaxonomicRank.getIndex(aParentTaxon.getLevel()))) == 1);
+		return (TaxonomicRank.getIndex(TaxonomicRank.valueOf(getLevel().toUpperCase())) 
+				- (TaxonomicRank.getIndex(TaxonomicRank.valueOf(aParentTaxon.getLevel().toUpperCase()))) == 1);
 	}
 	
 	/**
@@ -314,7 +325,7 @@ public class Taxon implements jade.content.Concept, Serializable, Comparable<Tax
 	public boolean isRangesConsistent(Taxon aParentTaxon) {
 		Taxon pt;
 		
-		if (aParentTaxon.getLevel().equals(TaxonomicRank.ROOT))
+		if (aParentTaxon.getLevel().equals(TaxonomicRank.ROOT.getRank()))
 			return true;
 		
 		// Parse the receiver's SAV (structure) description
@@ -326,7 +337,7 @@ public class Taxon implements jade.content.Concept, Serializable, Comparable<Tax
 				/*The attribute's value descriptor is a range value.  Get the receiver's predecessor and loop while the 
 				 predecessor's level is not ROOT*/
 				pt = aParentTaxon;
-				while(!(pt.getLevel().equals(TaxonomicRank.ROOT))) {
+				while(!(pt.getLevel().equals(TaxonomicRank.ROOT.getRank()))) {
 					Iterator j = pt.getDescription().getAllDescriptors();
 					
 					while (j.hasNext()) {

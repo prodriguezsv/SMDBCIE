@@ -33,10 +33,10 @@ public class TaxonomySearchAutomaton {
 	private List<PossibleSolution> possibleSolutions;
 	private TaxonomyAutomatonOutput searchOutput;
 	private final Taxonomy taxonomy;
-	private final SimilarityDegree minSimilarityDegree;
+	private final String minSimilarityDegree;
 	private SearchStatus status;
 
-   public TaxonomySearchAutomaton (Taxonomy searchIndex, SimilarityDegree minSimilarityDegree) {
+   public TaxonomySearchAutomaton (Taxonomy searchIndex, String minSimilarityDegree) {
         searchOutput = new TaxonomyAutomatonOutput();
         possibleSolutions = new ArrayList<PossibleSolution>();
         solutionDescription = new Description();
@@ -403,7 +403,7 @@ public class TaxonomySearchAutomaton {
         SimilarityDegree similarity = SimilarityAssessor.similarityRangeOf(aDescriptor.getValue(),
         		weightedValues);
         
-        if (EnumSet.range(minSimilarityDegree, SimilarityDegree.IGUAL).contains(similarity) != true)
+        if (EnumSet.range(SimilarityDegree.valueOf(minSimilarityDegree.toUpperCase()), SimilarityDegree.IGUAL).contains(similarity) != true)
         	return null;
         
         return aTaxon;

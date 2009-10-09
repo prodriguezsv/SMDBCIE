@@ -38,7 +38,6 @@ import ontology.CBR.Case;
 import ontology.CBR.Problem;
 import ontology.CBR.ProposedSolution;
 import ontology.common.Descriptor;
-import ontology.common.MeasuringUnit;
 import ontology.common.SSCharacterDescriptor;
 import ontology.common.SSHeuristicDescriptor;
 import ontology.common.SVCharacterDescriptor;
@@ -428,13 +427,11 @@ public class OracleIDGui extends JFrame {
 							if (instValue.hasType(kb.getCls("Structure"))) {
 								descriptor = new SVCharacterDescriptor((String)jlStructures.getSelectedValue(), 
 										(String)jlAttributes.getSelectedValue(),
-										new SingleValue(Double.parseDouble(jtfValue.getText()),	MeasuringUnit
-												.valueOf(((String)jcbMeasuringUnit.getSelectedItem()).toUpperCase())));
+										new SingleValue(Double.parseDouble(jtfValue.getText()),	(String)jcbMeasuringUnit.getSelectedItem()));
 							} else {
 								descriptor = new SVHeuristicDescriptor((String)jlStructures.getSelectedValue(), 
 										(String)jlAttributes.getSelectedValue(),
-										new SingleValue(Double.parseDouble(jtfValue.getText()), MeasuringUnit
-												.valueOf(((String)jcbMeasuringUnit.getSelectedItem()).toUpperCase())));
+										new SingleValue(Double.parseDouble(jtfValue.getText()), (String)jcbMeasuringUnit.getSelectedItem()));
 							}
 						} else {
 							
@@ -454,8 +451,7 @@ public class OracleIDGui extends JFrame {
 								else
 									descriptor = new SVCharacterDescriptor((String)jlStructures.getSelectedValue(), 
 											(String)jlAttributes.getSelectedValue(),
-											new SingleValue(Double.parseDouble((String)jlValues.getSelectedValue()), MeasuringUnit
-													.valueOf(((String)jcbMeasuringUnit.getSelectedItem()).toUpperCase())));
+											new SingleValue(Double.parseDouble((String)jlValues.getSelectedValue()), (String)jcbMeasuringUnit.getSelectedItem()));
 							} else {
 								if (jlValues.getSelectedValue() != null) {
 									instValue = kb.getInstance(valuesScope.get((String)jlValues.getSelectedValue()));								
@@ -470,8 +466,7 @@ public class OracleIDGui extends JFrame {
 								else
 									descriptor = new SVHeuristicDescriptor((String)jlStructures.getSelectedValue(), 
 											(String)jlAttributes.getSelectedValue(),
-											new SingleValue(Double.parseDouble((String)jlValues.getSelectedValue()), MeasuringUnit
-													.valueOf(((String)jcbMeasuringUnit.getSelectedItem()).toUpperCase())));
+											new SingleValue(Double.parseDouble((String)jlValues.getSelectedValue()), (String)jcbMeasuringUnit.getSelectedItem()));
 							}
 							
 						}
@@ -554,19 +549,19 @@ public class OracleIDGui extends JFrame {
 	public void presentFirstSolution() {
 		jLabelProposals.setText("Propuesta 1 de " + getProposedSolutions().size());
 		
-		jcbState.setSelected(((ProposedSolution)getProposedSolutions().get(0)).isStatus());
+		jcbState.setSelected(((ProposedSolution)getProposedSolutions().get(0)).getState());
 		jtfCertaintyDegree.setText(((ProposedSolution)getProposedSolutions()
-				.get(0)).getCertaintyDegree().getDegree());
+				.get(0)).getCertaintyDegree());
 		Object solution = ((ProposedSolution)getProposedSolutions()
 				.get(proposedSolution)).getSolution().getSolution();
 		
 		if (solution instanceof Taxon) {
 			jtfName.setText(((Taxon)solution).getName());
-			jtfRank.setText(((Taxon)solution).getLevel().getRank());
+			jtfRank.setText(((Taxon)solution).getLevel());
 			jbSeeSolution.setText("Ver taxón");								
 		} else {
 			jtfName.setText(((Case)solution).getSolution().getTaxonName());
-			jtfRank.setText(((Case)solution).getSolution().getTaxonLevel().getRank());
+			jtfRank.setText(((Case)solution).getSolution().getTaxonLevel());
 			jbSeeSolution.setText("Ver caso");
 		}
 		
@@ -1279,19 +1274,19 @@ public class OracleIDGui extends JFrame {
 								" de " + getProposedSolutions().size());
 						
 						jcbState.setSelected(((ProposedSolution)getProposedSolutions()
-								.get(proposedSolution)).isStatus());
+								.get(proposedSolution)).getState());
 						jtfCertaintyDegree.setText(((ProposedSolution)getProposedSolutions()
-								.get(proposedSolution)).getCertaintyDegree().getDegree());
+								.get(proposedSolution)).getCertaintyDegree());
 						Object solution = ((ProposedSolution)getProposedSolutions()
 								.get(proposedSolution)).getSolution().getSolution();
 						
 						if (solution instanceof Taxon) {
 							jtfName.setText(((Taxon)solution).getName());
-							jtfRank.setText(((Taxon)solution).getLevel().getRank());
+							jtfRank.setText(((Taxon)solution).getLevel());
 							jbSeeSolution.setText("Ver taxón");
 						} else {
 							jtfName.setText(((Case)solution).getSolution().getTaxonName());
-							jtfRank.setText(((Case)solution).getSolution().getTaxonLevel().getRank());
+							jtfRank.setText(((Case)solution).getSolution().getTaxonLevel());
 							jbSeeSolution.setText("Ver caso");
 						}
 						

@@ -24,13 +24,13 @@ public enum SimilarityDegree {
 	 * Constantes de la enumeraci&oacute;n
 	 */
 	DIFERENTE("Diferente", 0, 0),
-	POCOSIMILAR("Poco Similar", 0, 0),
-	RELATIVAMENTESIMILAR("Relativamente Similar", 0, 0),
-	MEDIANAMENTESIMILAR("Medianamente Similar", 0, 0),
-	CONSIDERABLEMENTESIMILAR("Considerablemente Similar", 0, 0),
-	ALTAMENTESIMILAR("Altamente Similar", 0, 0),
+	POCOSIMILAR("PocoSimilar", 0, 0),
+	RELATIVAMENTESIMILAR("RelativamenteSimilar", 0, 0),
+	MEDIANAMENTESIMILAR("MedianamenteSimilar", 0, 0),
+	CONSIDERABLEMENTESIMILAR("ConsiderablementeSimilar", 0, 0),
+	ALTAMENTESIMILAR("AltamenteSimilar", 0, 0),
 	IGUAL("igual", 0, 0),
-	VALORNOCOMPARABLE("Valor no comparable", 0, 0);
+	VALORNOCOMPARABLE("ValorNoComparable", 0, 0);
 	
 	/**
 	 * Variable para manejar el valor de la constante

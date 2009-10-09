@@ -77,8 +77,8 @@ public class CBRTerminologyOntology extends jade.content.onto.Ontology  {
     public static final String PROPOSEDSOLUTION_SOLUTION="solution";
     public static final String PROPOSEDSOLUTION_CERTAINTYDEGREE="certaintyDegree";
     public static final String PROPOSEDSOLUTION="ProposedSolution";
-    public static final String SIMILARITYDEGREE="SimilarityDegree";
-    public static final String CERTAINTYDEGREE="CertaintyDegree";
+    //public static final String SIMILARITYDEGREE="SimilarityDegree";
+    //public static final String CERTAINTYDEGREE="CertaintyDegree";
 
   /**
    * Constructor
@@ -99,10 +99,10 @@ public class CBRTerminologyOntology extends jade.content.onto.Ontology  {
     add(caseSchema, ontology.CBR.Case.class);
     ConceptSchema hypothesisSchema = new ConceptSchema(HYPOTHESIS);
     add(hypothesisSchema, ontology.CBR.Hypothesis.class);
-    ConceptSchema similarityDegreeSchema = new ConceptSchema(SIMILARITYDEGREE);
+    /*ConceptSchema similarityDegreeSchema = new ConceptSchema(SIMILARITYDEGREE);
     add(similarityDegreeSchema, ontology.CBR.SimilarityDegree.class);
     ConceptSchema certaintyDegreeSchema = new ConceptSchema(CERTAINTYDEGREE);
-    add(certaintyDegreeSchema, ontology.CBR.CertaintyDegree.class);
+    add(certaintyDegreeSchema, ontology.CBR.CertaintyDegree.class);*/
 
     // adding AgentAction(s)
     AgentActionSchema retainSchema = new AgentActionSchema(RETAIN);
@@ -130,8 +130,8 @@ public class CBRTerminologyOntology extends jade.content.onto.Ontology  {
 
 
     // adding fields
-    proposedSolutionSchema.add(PROPOSEDSOLUTION_CERTAINTYDEGREE, certaintyDegreeSchema, ObjectSchema.MANDATORY);
-    proposedSolutionSchema.add(PROPOSEDSOLUTION_SOLUTION, proposedSolutionSchema, ObjectSchema.MANDATORY);
+    proposedSolutionSchema.add(PROPOSEDSOLUTION_CERTAINTYDEGREE, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
+    proposedSolutionSchema.add(PROPOSEDSOLUTION_SOLUTION, possibleSolutionSchema, ObjectSchema.MANDATORY);
     proposedSolutionSchema.add(PROPOSEDSOLUTION_STATE, (TermSchema)getSchema(BasicOntology.BOOLEAN), ObjectSchema.MANDATORY);
     possibleSolutionSchema.add(POSSIBLESOLUTION_POINTS, (TermSchema)getSchema(BasicOntology.FLOAT), ObjectSchema.MANDATORY);
     possibleSolutionSchema.add(POSSIBLESOLUTION_CONFIRMEDDESCRIPTION, (ConceptSchema) getSchema(CommonTerminologyOntology.DESCRIPTION), ObjectSchema.OPTIONAL);
@@ -140,17 +140,17 @@ public class CBRTerminologyOntology extends jade.content.onto.Ontology  {
     possibleSolutionSchema.add(POSSIBLESOLUTION_SOLUTIONDESCRIPTION, (ConceptSchema) getSchema(CommonTerminologyOntology.DESCRIPTION), ObjectSchema.MANDATORY);
     possibleSolutionSchema.add(POSSIBLESOLUTION_DOUBTFULDESCRIPTION, (ConceptSchema) getSchema(CommonTerminologyOntology.DESCRIPTION), ObjectSchema.OPTIONAL);
     possibleSolutionSchema.add(POSSIBLESOLUTION_CONTRADICTIONS, (ConceptSchema) getSchema(CommonTerminologyOntology.DESCRIPTION), ObjectSchema.OPTIONAL);
-    solutionSchema.add(SOLUTION_RANK, (ConceptSchema)getSchema(TaxonomyOntology.RANK), ObjectSchema.MANDATORY);
+    solutionSchema.add(SOLUTION_RANK, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
     solutionSchema.add(SOLUTION_JUSTIFICATION, (ConceptSchema) getSchema(CommonTerminologyOntology.DESCRIPTION), ObjectSchema.MANDATORY);
     solutionSchema.add(SOLUTION_NAME, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
     problemSchema.add(PROBLEM_DESCRIPTION, (ConceptSchema) getSchema(CommonTerminologyOntology.DESCRIPTION), ObjectSchema.MANDATORY);
-    problemSchema.add(PROBLEM_GOALRANK, (ConceptSchema)getSchema(TaxonomyOntology.RANK), ObjectSchema.MANDATORY);
-    problemSchema.add(PROBLEM_LEASTSIMILARITYDEGREE, similarityDegreeSchema, ObjectSchema.MANDATORY);
+    problemSchema.add(PROBLEM_GOALRANK, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
+    problemSchema.add(PROBLEM_LEASTSIMILARITYDEGREE, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
     caseSchema.add(CASE_SOLUTION, solutionSchema, ObjectSchema.MANDATORY);
     caseSchema.add(CASE_PROBLEM, problemSchema, ObjectSchema.MANDATORY);
     caseSchema.add(CASE_STATE, (TermSchema)getSchema(BasicOntology.BOOLEAN), ObjectSchema.MANDATORY);
     hypothesisSchema.add(HYPOTHESIS_POSSIBLESOLUTIONS, possibleSolutionSchema, 1, ObjectSchema.UNLIMITED);
-    hypothesisSchema.add(HYPOTHESIS_JUSTIFICATION, (ConceptSchema) getSchema(CommonTerminologyOntology.DESCRIPTION), ObjectSchema.MANDATORY);
+    hypothesisSchema.add(HYPOTHESIS_JUSTIFICATION, (ConceptSchema) getSchema(CommonTerminologyOntology.DESCRIPTION), ObjectSchema.OPTIONAL);
     hypothesisSchema.add(HYPOTHESIS_DESCRIPTION, (ConceptSchema) getSchema(CommonTerminologyOntology.DESCRIPTION), ObjectSchema.MANDATORY);
     hypothesisSchema.add(HYPOTHESIS_UNMATCHEDDESCRIPTION, (ConceptSchema) getSchema(CommonTerminologyOntology.DESCRIPTION), ObjectSchema.OPTIONAL);
     retainSchema.add(RETAIN_CASE, caseSchema, ObjectSchema.MANDATORY);
@@ -160,7 +160,7 @@ public class CBRTerminologyOntology extends jade.content.onto.Ontology  {
     adaptSchema.add(ADAPT_TO, problemSchema, ObjectSchema.MANDATORY);
     retrieveSchema.add(RETRIEVE_SIMILARTO, problemSchema, ObjectSchema.MANDATORY);
     areReasonableSolutionsToSchema.add(AREREASONABLESOLUTIONSTO_PROBLEM, problemSchema, ObjectSchema.MANDATORY);
-    areReasonableSolutionsToSchema.add(AREREASONABLESOLUTIONSTO_PROPOSEDSOLUTIONS, proposedSolutionSchema, 1, ObjectSchema.UNLIMITED);
+    areReasonableSolutionsToSchema.add(AREREASONABLESOLUTIONSTO_PROPOSEDSOLUTIONS, proposedSolutionSchema, 0, ObjectSchema.UNLIMITED);
     isTheMostReasonableToSchema.add(ISTHEMOSTREASONABLETO_PROPOSEDSOLUTION, proposedSolutionSchema, ObjectSchema.MANDATORY);
     isTheMostReasonableToSchema.add(ISTHEMOSTREASONABLETO_PROBLEM, problemSchema, ObjectSchema.MANDATORY);
     isPositiveSchema.add(ISPOSITIVE_CASE, caseSchema, ObjectSchema.MANDATORY);

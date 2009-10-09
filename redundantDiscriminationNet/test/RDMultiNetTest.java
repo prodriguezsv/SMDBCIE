@@ -89,7 +89,7 @@ public class RDMultiNetTest {
 		
 //-----------------------Caso resuelto No. 1---------------------
 		c4 = new Case();
-		c4.getSolution().setTaxonLevel(TaxonomicRank.SPECIES);
+		c4.getSolution().setTaxonLevel(TaxonomicRank.SPECIES.getRank());
 		c4.getSolution().setTaxonName("Glossodoris sedna");
 		c4.setState(true);
 		
@@ -98,7 +98,7 @@ public class RDMultiNetTest {
 		
 //-----------------------Caso resuelto No. 2---------------------
 		c5914 = new Case();
-		c5914.getSolution().setTaxonLevel(TaxonomicRank.FAMILY);
+		c5914.getSolution().setTaxonLevel(TaxonomicRank.FAMILY.getRank());
 		c5914.getSolution().setTaxonName("Chromodorididae");
 		c5914.setState(true);
 		
@@ -109,7 +109,7 @@ public class RDMultiNetTest {
 		
 //-----------------------Caso resuelto No. 3---------------------
 		c67 = new Case();
-		c67.getSolution().setTaxonLevel(TaxonomicRank.SPECIES);
+		c67.getSolution().setTaxonLevel(TaxonomicRank.SPECIES.getRank());
 		c67.getSolution().setTaxonName("Hypselodoris agassizii");
 		c67.setState(true);
 		
@@ -121,7 +121,7 @@ public class RDMultiNetTest {
 		
 //-----------------------Caso resuelto No. 4---------------------
 		c8 = new Case();
-		c8.getSolution().setTaxonLevel(TaxonomicRank.SPECIES);
+		c8.getSolution().setTaxonLevel(TaxonomicRank.SPECIES.getRank());
 		c8.getSolution().setTaxonName("Glossodoris dalli");
 		c8.setState(true);
 		
@@ -129,7 +129,7 @@ public class RDMultiNetTest {
 
 //-----------------------Caso resuelto No. 5---------------------
 		c10 = new Case();
-		c10.getSolution().setTaxonLevel(TaxonomicRank.SPECIES);
+		c10.getSolution().setTaxonLevel(TaxonomicRank.SPECIES.getRank());
 		c10.getSolution().setTaxonName("Aplysiia dactylomela");
 		c10.setState(true);
 		
@@ -141,7 +141,7 @@ public class RDMultiNetTest {
 		
 //-----------------------Caso resuelto No. 6---------------------
 		c11 = new Case();
-		c11.getSolution().setTaxonLevel(TaxonomicRank.SPECIES);
+		c11.getSolution().setTaxonLevel(TaxonomicRank.SPECIES.getRank());
 		c11.getSolution().setTaxonName("Chromodoris kempfi");
 		c11.setState(true);
 		
@@ -149,7 +149,7 @@ public class RDMultiNetTest {
 		
 //-----------------------Caso resuelto No. 7---------------------
 		c12 = new Case();
-		c12.getSolution().setTaxonLevel(TaxonomicRank.SPECIES);
+		c12.getSolution().setTaxonLevel(TaxonomicRank.SPECIES.getRank());
 		c12.getSolution().setTaxonName("Chromodoris kempfi");
 		c12.setState(true);
 		

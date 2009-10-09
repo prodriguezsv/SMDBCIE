@@ -58,15 +58,15 @@ public class HypothesisTest {
 
         assertSame(1,instance.getPossibleSolutions().size());
 
-        aPossibleSolution.setSolution(new Taxon(TaxonomicRank.SPECIES, "Chromodoris sphoni"));
+        aPossibleSolution.setSolution(new Taxon(TaxonomicRank.SPECIES.getRank(), "Chromodoris sphoni"));
 
         assertTrue(instance.addPossibleSolution(aPossibleSolution));
 
         assertSame(2,instance.getPossibleSolutions().size());
 
         aPossibleSolution = new PossibleSolution();
-        aPossibleSolution.setSolution(new Taxon(TaxonomicRank.SPECIES, "Chromodoris sphoni"));
-        aPossibleSolution.setSolution(new Taxon(TaxonomicRank.SPECIES, "Chromodoris clenchi"));
+        aPossibleSolution.setSolution(new Taxon(TaxonomicRank.SPECIES.getRank(), "Chromodoris sphoni"));
+        aPossibleSolution.setSolution(new Taxon(TaxonomicRank.SPECIES.getRank(), "Chromodoris clenchi"));
 
         assertTrue(instance.addPossibleSolution(aPossibleSolution));
 
