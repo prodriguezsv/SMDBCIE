@@ -48,6 +48,7 @@ public class TaxonomyOntology extends jade.content.onto.Ontology  {
     public static final String TAXON_PREDECESSOR="predecessor";
     public static final String TAXON_SUCCESSORS="successors";
     public static final String TAXON="Taxon";
+    public static final String RANK="Rank";
 
   /**
    * Constructor
@@ -65,6 +66,8 @@ public class TaxonomyOntology extends jade.content.onto.Ontology  {
     add(weightedDescriptionSchema, ontology.taxonomy.WeightedDescription.class);
     ConceptSchema modifierSchema = new ConceptSchema(MODIFIER);
     add(modifierSchema, ontology.taxonomy.Modifier.class);
+    ConceptSchema rankSchema = new ConceptSchema(RANK);
+    add(rankSchema, ontology.taxonomy.TaxonomicRank.class);
 
     // adding AgentAction(s)
 
@@ -84,7 +87,7 @@ public class TaxonomyOntology extends jade.content.onto.Ontology  {
     // adding fields
     taxonSchema.add(TAXON_SUCCESSORS, taxonSchema, 0, ObjectSchema.UNLIMITED);
     taxonSchema.add(TAXON_PREDECESSOR, taxonSchema, ObjectSchema.OPTIONAL);
-    taxonSchema.add(TAXON_LEVEL, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
+    taxonSchema.add(TAXON_LEVEL, rankSchema, ObjectSchema.MANDATORY);
     taxonSchema.add(TAXON_WEIGHTEDDESCRIPTION, weightedDescriptionSchema, ObjectSchema.MANDATORY);
     taxonSchema.add(TAXON_NAME, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
     weightedDescriptorSchema.add(WEIGHTEDDESCRIPTOR_DESCRIPTOR, (ConceptSchema) getSchema(CommonTerminologyOntology.DESCRIPTOR), ObjectSchema.MANDATORY);

@@ -3,12 +3,10 @@
  */
 package system;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import jade.util.leap.ArrayList;
+import jade.util.leap.List;
 import ontology.CBR.Hypothesis;
 import ontology.CBR.PossibleSolution;
-import ontology.CBR.ProposedSolution;
 import ontology.CBR.SimilarityDegree;
 import ontology.common.Description;
 import ontology.common.Descriptor;
@@ -34,12 +32,12 @@ public class Reasoner {
 	private Description taxonHierarchySearchJustification;
 	private Description routeSelectJustification;
 	private Description description;
-	private List<Hypothesis> successfulConflictSet;
-	private List<Hypothesis> failureConflictSet;
-	private List<Hypothesis> noResultsSet;
-	private List<ProposedSolution> proposedSolutions;
+	private List successfulConflictSet;
+	private List failureConflictSet;
+	private List noResultsSet;
+	private List proposedSolutions;
 	private TaxonomicRank identGoal;
-	private OracleIDApplication identSystem;
+	private OracleIDSystem identSystem;
 	private int maxNumberSolutions;
 	private SimilarityDegree minSimilarityDegree;
 	private boolean presentFailedSolutions;
@@ -49,7 +47,7 @@ public class Reasoner {
 	 * gained main data structures: the memory case, the taxonomic hierarchy, and the hints base
 	 * @see "Método initialize: del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public Reasoner(OracleIDApplication anIdentificationSystem) {
+	public Reasoner(OracleIDSystem anIdentificationSystem) {
 		setIdentSystem(anIdentificationSystem);
 
 		this.initialize();
@@ -81,18 +79,18 @@ public class Reasoner {
 
 		/* CONFLICT SET: Hypotheses that contain successful possible solutions (i.e., positive cases or taxa) 
 		 for a given Structure belonging to the problem description*/
-		setSuccessfulConflictSet(new ArrayList<Hypothesis>());
+		setSuccessfulConflictSet(new ArrayList());
 
 		/*CONFLICT SET: Hypothesis that contain failed possible solutions (i.e., negative cases only) for a given 
 		 Structure belonging to the problem description*/
-		setFailureConflictSet(new ArrayList<Hypothesis>());
+		setFailureConflictSet(new ArrayList());
 
 		/* CONFLICT SET: Hypothesis that do not contain any possible solutions.  These Hypotheses are associated
 		 to either Structures or GroupingHeuristics for which the search was unsuccessful*/
-		setNoResultsSet(new ArrayList<Hypothesis>());
+		setNoResultsSet(new ArrayList());
 
 		// Set of solutions to present to the user
-		setProposedSolutions(new ArrayList<ProposedSolution>());
+		setProposedSolutions(new ArrayList());
 
 		// Justification list: route selection (using the HintsBase) 
 		setRouteSelectJustification(new Description());
@@ -132,7 +130,7 @@ public class Reasoner {
 	 * Método de instancia agregado
 	 * @param failStructConflictSet
 	 */
-	public void setFailureConflictSet(List<Hypothesis> failStructConflictSet) {
+	public void setFailureConflictSet(List failStructConflictSet) {
 		this.failureConflictSet = failStructConflictSet;
 	}
 	
@@ -148,7 +146,7 @@ public class Reasoner {
 	 * @see "Método failStructConflictSet del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Hypothesis> getFailureConflictSet() {
+	public List getFailureConflictSet() {
 		return failureConflictSet;
 	}
 
@@ -196,7 +194,7 @@ public class Reasoner {
 	 * Método de instancia agregado
 	 * @param identSystem
 	 */
-	public void setIdentSystem(OracleIDApplication identSystem) {
+	public void setIdentSystem(OracleIDSystem identSystem) {
 		this.identSystem = identSystem;
 	}
 
@@ -204,7 +202,7 @@ public class Reasoner {
 	 * @see "Método identSystem del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public OracleIDApplication getIdentSystem() {
+	public OracleIDSystem getIdentSystem() {
 		return identSystem;
 	}
 
@@ -244,7 +242,7 @@ public class Reasoner {
 	 * Método de instancia agregado
 	 * @param noResultsSet
 	 */
-	public void setNoResultsSet(List<Hypothesis> noResultsSet) {
+	public void setNoResultsSet(List noResultsSet) {
 		this.noResultsSet = noResultsSet;
 	}
 
@@ -260,7 +258,7 @@ public class Reasoner {
 	 * @see "Método noResultsSet del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Hypothesis> getNoResultsSet() {
+	public List getNoResultsSet() {
 		return noResultsSet;
 	}
 
@@ -284,7 +282,7 @@ public class Reasoner {
 	 * @see "Método proposedSolutions: del protocolo adding en SUKIA SmallTalk"
 	 * @param proposedSolutions
 	 */
-	public void setProposedSolutions(List<ProposedSolution> proposedSolutions) {
+	public void setProposedSolutions(List proposedSolutions) {
 		this.proposedSolutions = proposedSolutions;
 	}
 
@@ -292,7 +290,7 @@ public class Reasoner {
 	 * @see "Método proposedSolutions del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<ProposedSolution> getProposedSolutions() {
+	public List getProposedSolutions() {
 		return proposedSolutions;
 	}
 
@@ -324,7 +322,7 @@ public class Reasoner {
 	 * Método de instancia agregado
 	 * @param succStructConflictSet
 	 */
-	public void setSuccessfulConflictSet(List<Hypothesis> succStructConflictSet) {
+	public void setSuccessfulConflictSet(List succStructConflictSet) {
 		this.successfulConflictSet = succStructConflictSet;
 	}
 	
@@ -340,7 +338,7 @@ public class Reasoner {
 	 * @see "Método succStructConflictSet del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Hypothesis> getSuccessfulConflictSet() {
+	public List getSuccessfulConflictSet() {
 		return successfulConflictSet;
 	}
 
@@ -419,7 +417,7 @@ public class Reasoner {
 	 * Selection of the best possible solutions, as proposed solutions for an identification session.
 	 * @see "Método selectSolutions del protocolo evaluating and selecting en SUKIA SmallTalk"
 	 */
-	public List<ProposedSolution> selectSolutions() {
+	public List selectSolutions() {
 		PossibleSolutionSelector selector;
 		
 		selector = new PossibleSolutionSelector(this.getIdentGoal(), this.getSuccessfulConflictSet(), 
@@ -596,10 +594,10 @@ public class Reasoner {
 		/* HYPOTHESIS1: If none of the possible solutions is equal to, or more specific than
 		 the identification goal, establish a new dialog with the user, in order to try to draw
 		 the existing possible solutions nearer to the said goal*/
-		if (hypothesis1.getPossibleSolutions().get(0).getStatus() == true) {
-			if (TaxonomicRank.getIndex(hypothesis1.getPossibleSolutions().get(0).getLevel()) <
+		if (!(hypothesis1.getPossibleSolutions().isEmpty())) {
+			if (TaxonomicRank.getIndex(((PossibleSolution)hypothesis1.getPossibleSolutions().get(0)).getLevel()) <
 					 TaxonomicRank.getIndex(this.getIdentGoal())) {
-				dialog = new GoalApproachingHandler(this.getIdentSystem().getOracleIDGui(), this.getIdentGoal()
+				dialog = new GoalApproachingHandler(null, this.getIdentGoal()
 						,hypothesis1, this.getTaxonomy(), this.getMinSimilarityDegree());
 				dialog.chat();
 				status = dialog.getStatus();
@@ -613,9 +611,9 @@ public class Reasoner {
 		 	the existing possible solutions nearer to the said goal*/
 			// OJO:hypothesis2.isEmpty() en SUKIA
 			if (!(hypothesis2.getPossibleSolutions().isEmpty())) {
-				if (TaxonomicRank.getIndex(hypothesis2.getPossibleSolutions().get(0).getLevel()) <
+				if (TaxonomicRank.getIndex(((PossibleSolution)hypothesis2.getPossibleSolutions().get(0)).getLevel()) <
 						 TaxonomicRank.getIndex(this.getIdentGoal())) {
-					dialog = new GoalApproachingHandler(this.getIdentSystem().getOracleIDGui(), this.getIdentGoal()
+					dialog = new GoalApproachingHandler(null, this.getIdentGoal()
 							,hypothesis2, this.getTaxonomy(), this.getMinSimilarityDegree());
 					dialog.chat();
 					status = dialog.getStatus();
@@ -631,10 +629,10 @@ public class Reasoner {
 		
 		while (index <= 2) {
 			if (!(currHypothesis.getPossibleSolutions().isEmpty())) {
-				if (currHypothesis.getPossibleSolutions().get(0).getStatus() == true)
+				if (((PossibleSolution)currHypothesis.getPossibleSolutions().get(0)).getStatus() == true)
 					this.addSuccessfulConflictSet(currHypothesis);
 				else {
-					if (currHypothesis.getPossibleSolutions().get(0).getStatus() == false)
+					if (((PossibleSolution)currHypothesis.getPossibleSolutions().get(0)).getStatus() == false)
 						this.addFailureConflictSet(currHypothesis);
 					else return false;
 				}
@@ -654,7 +652,7 @@ public class Reasoner {
 	 * @return
 	 */
 	public boolean searchHypothesisInCaseMemory() {
-		String s;
+		String structureName;
 		Hypothesis hypothesis1, hypothesis2;
 		Description problemDescription;
 		RDNet net;
@@ -662,35 +660,41 @@ public class Reasoner {
 		CaseMemoryDFSAutomaton searchAutomaton;
 		CaseMemoryDFSAutomatonOutput outputCopy;
 		SearchStatus status;
-		List<String> structureList;
+		java.util.List<String> structureList;
 		
 		structureList = this.getStructuresList();
 		
 		while (!(structureList.isEmpty())) {
 			// Remove the next grouping heuristic from the description
-			s = structureList.remove(0);
+			structureName = structureList.remove(0);
 
-			// Create a first instance of Hypothesis and assign the structure as descriptive element
+			/* Create a first instance of Hypothesis and assign the structure as descriptive element for
+			 * a positive case
+			 */
 			hypothesis1 = new Hypothesis();
-			hypothesis1.setDescription(this.getDescription(s));
+			hypothesis1.setDescription(this.getDescription(structureName));
 
-			// Create a second instance of hypothesis, and again, assign the same structure as descriptive element
+			/* Create a second instance of hypothesis, and again, assign the same structure as descriptive
+			 * element for a negative case
+			 */
 			hypothesis2 = new Hypothesis();
-			hypothesis2.setDescription(this.getDescription(s));
+			hypothesis2.setDescription(this.getDescription(structureName));
 			
-			// Get the SAV problem description from the structure. If no description available, return error value
-			problemDescription = this.getDescription(s);
+			/* Get the SAV problem description from the structure. If no description available, return error
+			 * value
+			 */
+			problemDescription = this.getDescription(structureName);
 			if (problemDescription == null) return false;
 			
 			// Get the net root that corresponds to the structure
-			net = this.getCaseMemory().getRoot().getRDNet(s);
+			net = this.getCaseMemory().getRoot().getRDNet(structureName);
 			if (net == null) 
 				caseNetRoot = null;
 			else caseNetRoot = net.getRoot();
 					
 			if (!(caseNetRoot == null)) {
 				// Create a new instance of case net search automaton
-				searchAutomaton = new CaseMemoryDFSAutomaton(this.getIdentSystem().getOracleIDGui(), caseNetRoot);
+				searchAutomaton = new CaseMemoryDFSAutomaton(null, caseNetRoot);
 	
 				// Begin the search with the given problem description
 				searchAutomaton.beginSearch(problemDescription);
@@ -740,7 +744,7 @@ public class Reasoner {
 			/* At this point, either: a) no net root was found, or b) the status of the net search was unsuccessful 
 			 (i.e., status = #fail). Try doing a taxonomic search*/
 	
-			if (searchInTaxonomyByStructure(s, hypothesis1) == false)
+			if (searchInTaxonomyByStructure(structureName, hypothesis1) == false)
 				return false;
 		}
 	
@@ -769,7 +773,7 @@ public class Reasoner {
 		if (!(hb.getPatternsbyStructureList().sortBySuccessFrecuencyCriteria(this.getDescription()).isEmpty()))
 			if (hb.getPatternsbyStructureList().getPercentageItemsProcessed() > 0.0) return true;
 
-		List<String> structureList = this.getStructuresList();
+		java.util.List<String> structureList = this.getStructuresList();
 		
 		for( String s: structureList) {
 			hb.getSpecificPatternsbyStructureList().resetPercentageItemsProcessed();
@@ -789,7 +793,7 @@ public class Reasoner {
 	private boolean searchHypothesisInTaxonomy() {
 		String structureName;
 		Hypothesis hypothesis;
-		List<String> structureList;
+		java.util.List<String> structureList;
 		
 		structureList = this.getStructuresList();
 		
@@ -840,10 +844,10 @@ public class Reasoner {
 			
 			/* Determine if necessary to establish a dialog with the user (in case none of the possible solutions is
 			 equal to or more specific than the identification goal)*/
-			if (hypothesis.getPossibleSolutions().get(0).getStatus() == true) {
-				if (TaxonomicRank.getIndex(hypothesis.getPossibleSolutions().get(0).getLevel()) <
+			if (((PossibleSolution)hypothesis.getPossibleSolutions().get(0)).getStatus() == true) {
+				if (TaxonomicRank.getIndex(((PossibleSolution)hypothesis.getPossibleSolutions().get(0)).getLevel()) <
 						 TaxonomicRank.getIndex(this.getIdentGoal())) {
-					dialog = new GoalApproachingHandler(this.getIdentSystem().getOracleIDGui(), this.getIdentGoal()
+					dialog = new GoalApproachingHandler(null, this.getIdentGoal()
 							,hypothesis, this.getTaxonomy(), this.getMinSimilarityDegree());
 					dialog.chat();
 					status = dialog.getStatus();
@@ -881,7 +885,7 @@ public class Reasoner {
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
-	public List<String> getCharacterStructuresList() {
+	public java.util.List<String> getCharacterStructuresList() {
 		return this.getDescription().getCharacterStructuresList();
 	}
 	
@@ -889,7 +893,7 @@ public class Reasoner {
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
-	public List<String> getHeuristicStructuresList() {
+	public java.util.List<String> getHeuristicStructuresList() {
 		return this.getDescription().getHeuristicStructuresList();
 	}
 	
@@ -897,7 +901,7 @@ public class Reasoner {
 	 * M&eacute;todo de instancia agregado
 	 * @return una lista de cadenas representando el nombre de las estructuras
 	 */
-	public List<String> getStructuresList() {
+	public java.util.List<String> getStructuresList() {
 		return this.getDescription().getStructuresList();
 	}
 	

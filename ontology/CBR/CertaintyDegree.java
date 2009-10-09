@@ -1,7 +1,7 @@
 /**
  * @see "Categoría Sukia Similarity Assessment de SUKIA Smalltalk"
  */
-package system;
+package ontology.CBR;
 
 
 /**

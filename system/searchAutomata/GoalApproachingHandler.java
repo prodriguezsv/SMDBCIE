@@ -233,7 +233,11 @@ public class GoalApproachingHandler {
         int goalAsIndex = TaxonomicRank.getIndex(goal);
 
         //Scan the associated hypothesis possible solutions list
-        for (PossibleSolution ps:hypothesis.getPossibleSolutions()) {
+        Iterator i = hypothesis.getPossibleSolutions().iterator();
+		
+		while (i.hasNext()) {
+			PossibleSolution ps = (PossibleSolution) i.next(); 
+			
             //Transform the possible solution level to a numeric value
             psLevelAsIndex = TaxonomicRank.getIndex(ps.getLevel());
 
@@ -429,7 +433,7 @@ public class GoalApproachingHandler {
     		return null;
 
 		String msg =	"\nDigite un valor (" + ((RangeValue)descriptor.getValue())
-				.getMeasuringUnit().getMeasuringUnit() + ") para el atributo \"" + descriptor.getAttribute() 
+				.getMeasuringUnit() + ") para el atributo \"" + descriptor.getAttribute() 
 				+ "\" de la estructura \"" + descriptor.getStructure() + "\" o acepte el valor sugerido.\n";
 	
 		suggestedValue = (((RangeValue)descriptor.getValue()).getLowerBound()  + 
@@ -587,12 +591,16 @@ public class GoalApproachingHandler {
 	 * @return
 	 */
 	protected boolean areThereContradictions(Descriptor aDescriptor) {
-	    for (PossibleSolution ps: hypothesis.getPossibleSolutions()){
+        Iterator i = hypothesis.getPossibleSolutions().iterator();
+		
+		while (i.hasNext()) {
+			PossibleSolution ps = (PossibleSolution) i.next();
+	    
 	    	// Para cada par (atributo, valor)
-	    	Iterator i = ps.getSolutionDescription().getAllDescriptors();
+	    	Iterator j = ps.getSolutionDescription().getAllDescriptors();
 			
-			while (i.hasNext()) {
-				Descriptor d = (Descriptor) i.next(); 
+			while (j.hasNext()) {
+				Descriptor d = (Descriptor) j.next(); 
 				if (d.getStructure().equals(aDescriptor.getStructure()) &&
 						d.getAttribute().equals(aDescriptor.getAttribute())	) {
 						return true; // Hay contradiccion
@@ -600,7 +608,7 @@ public class GoalApproachingHandler {
 			}
 			
 			// Para cada par (atributo, valor)
-			Iterator j = ps.getConfirmedDescription().getAllDescriptors();
+			j = ps.getConfirmedDescription().getAllDescriptors();
 			
 			while (j.hasNext()) {
 				Descriptor d = (Descriptor) j.next();
@@ -622,7 +630,11 @@ public class GoalApproachingHandler {
     protected boolean isDescriptorAlreadyProcessed(Descriptor aSAVDescriptor){
         if (hypothesis.getUnmatchedDescription().getDescriptors().contains(aSAVDescriptor)) return true;
 
-        for (PossibleSolution ps:hypothesis.getPossibleSolutions()){
+        Iterator i = hypothesis.getPossibleSolutions().iterator();
+		
+		while (i.hasNext()) {
+			PossibleSolution ps = (PossibleSolution) i.next();
+
             if (ps.getUnconfirmedDescription().getDescriptors().contains(aSAVDescriptor)) return true;
             if (ps.getDoubtfulDescription().getDescriptors().contains(aSAVDescriptor)) return true;
         }

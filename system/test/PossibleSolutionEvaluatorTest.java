@@ -5,9 +5,8 @@
 
 package system.test;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import jade.util.leap.ArrayList;
+import jade.util.leap.List;
 import ontology.CBR.Hypothesis;
 import ontology.CBR.PossibleSolution;
 import ontology.common.Descriptor;
@@ -102,7 +101,7 @@ public class PossibleSolutionEvaluatorTest {
         java.lang.System.out.println("evaluate");
         PossibleSolution aPossibleSolution1,aPossibleSolution2,aPossibleSolution3,aPossibleSolution4;
         String aPointAccumulatingScheme = "+";
-        PossibleSolutionEvaluator instance = new PossibleSolutionEvaluator(new ArrayList<Hypothesis>(), new ArrayList<Hypothesis>(), taxonomy);
+        PossibleSolutionEvaluator instance = new PossibleSolutionEvaluator(new ArrayList(), new ArrayList(), taxonomy);
         /*
          * taxonomy
          * root
@@ -119,7 +118,7 @@ public class PossibleSolutionEvaluatorTest {
          * Case add points to  PossibleSolution1 and PossibleSolution2, taxon1 present on aCompConflictSet and taxon3 has is succesor of taxon1
          */
 
-        List<Hypothesis> aConflictSet = new ArrayList<Hypothesis>();
+        List aConflictSet = new ArrayList();
         
         Hypothesis aHypothesis = new Hypothesis();
         aHypothesis.getDescription().addToConcreteDescription(
@@ -141,7 +140,7 @@ public class PossibleSolutionEvaluatorTest {
         aHypothesis.addPossibleSolution(aPossibleSolution2);
         aConflictSet.add(aHypothesis);
 
-        List<Hypothesis> aCompConflictSet = new ArrayList<Hypothesis>();
+        List aCompConflictSet = new ArrayList();
 
         aHypothesis = new Hypothesis();
         aHypothesis.getDescription().addToConcreteDescription(
@@ -177,7 +176,7 @@ public class PossibleSolutionEvaluatorTest {
          * Case add points to PossibleSolution1, taxon3 present and has is succesor of taxon1 present on aCompConflictSet
          */
 
-        aConflictSet = new ArrayList<Hypothesis>();
+        aConflictSet = new ArrayList();
 
         aHypothesis = new Hypothesis();
         aHypothesis.getDescription().addToConcreteDescription(
@@ -200,7 +199,7 @@ public class PossibleSolutionEvaluatorTest {
         aConflictSet.add(aHypothesis);
 
 
-        aCompConflictSet = new ArrayList<Hypothesis>();
+        aCompConflictSet = new ArrayList();
 
         aHypothesis = new Hypothesis();
         aHypothesis.getDescription().addToConcreteDescription(
@@ -235,7 +234,7 @@ public class PossibleSolutionEvaluatorTest {
 
         aPointAccumulatingScheme = "-";
         
-        aConflictSet = new ArrayList<Hypothesis>();
+        aConflictSet = new ArrayList();
 
         aHypothesis = new Hypothesis();
         aHypothesis.getDescription().addToConcreteDescription(
@@ -252,7 +251,7 @@ public class PossibleSolutionEvaluatorTest {
         aConflictSet.add(aHypothesis);
 
 
-        aCompConflictSet = new ArrayList<Hypothesis>();
+        aCompConflictSet = new ArrayList();
 
         aHypothesis = new Hypothesis();
         aHypothesis.getDescription().addToConcreteDescription(
@@ -288,7 +287,7 @@ public class PossibleSolutionEvaluatorTest {
         java.lang.System.out.println("evaluate");
         PossibleSolution aPossibleSolution1,aPossibleSolution2;
         String aPointAccumulatingScheme = "+";
-        PossibleSolutionEvaluator instance = new PossibleSolutionEvaluator(new ArrayList<Hypothesis>(), new ArrayList<Hypothesis>(), taxonomy);
+        PossibleSolutionEvaluator instance = new PossibleSolutionEvaluator(new ArrayList(), new ArrayList(), taxonomy);
         /*
          * taxonomy
          * root
@@ -306,7 +305,7 @@ public class PossibleSolutionEvaluatorTest {
          * taxon1 just same, and taxon3 same and is sucessor of taxon1
          */
 
-        List<Hypothesis> aConflictSet = new ArrayList<Hypothesis>();
+        List aConflictSet = new ArrayList();
 
         Hypothesis aHypothesis = new Hypothesis();
         aPossibleSolution1 = new PossibleSolution ();
@@ -333,7 +332,7 @@ public class PossibleSolutionEvaluatorTest {
          * One for each, they are un branches separated
          */
 
-        aConflictSet = new ArrayList<Hypothesis>();
+        aConflictSet = new ArrayList();
 
         aHypothesis = new Hypothesis();
         aPossibleSolution1 = new PossibleSolution ();
@@ -362,7 +361,7 @@ public class PossibleSolutionEvaluatorTest {
 
         aPointAccumulatingScheme = "-";
 
-        aConflictSet = new ArrayList<Hypothesis>();
+        aConflictSet = new ArrayList();
 
         aHypothesis = new Hypothesis();
         aPossibleSolution1 = new PossibleSolution ();
@@ -391,7 +390,7 @@ public class PossibleSolutionEvaluatorTest {
     @Test
     public void testInheritPossibleSolutionDescriptionsFrom() {
         java.lang.System.out.println("inheritPossibleSolutionDescriptionsFrom");
-        PossibleSolutionEvaluator instance = new PossibleSolutionEvaluator(new ArrayList<Hypothesis>(), new ArrayList<Hypothesis>(), taxonomy);
+        PossibleSolutionEvaluator instance = new PossibleSolutionEvaluator(new ArrayList(), new ArrayList(), taxonomy);
         PossibleSolution anOldPossibleSolution = new PossibleSolution ();
         assertTrue(anOldPossibleSolution.setSolution(taxon1));
         PossibleSolution aNewPossibleSolution = new PossibleSolution ();

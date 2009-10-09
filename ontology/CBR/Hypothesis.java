@@ -3,9 +3,13 @@
  */
 package ontology.CBR;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import jade.util.leap.ArrayList;
+import jade.util.leap.Iterator;
+import jade.util.leap.List;
+import jade.util.leap.Set;
+import jade.util.leap.SortedSetImpl;
+
+import java.io.Serializable;
 
 import ontology.common.Description;
 import ontology.common.Descriptor;
@@ -15,28 +19,38 @@ import ontology.common.Descriptor;
  * @author Armando
  *
  */
-public class Hypothesis {
+public class Hypothesis implements jade.content.Concept, Serializable{
 	private Description description;
 	private Description justification;
 	private Description unmatchedDescription;
-	private List<PossibleSolution> possibleSolutions;
-	private double points;
+	private List possibleSolutions;
 
 	/**
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
 	public Hypothesis() {
+		this._internalInstanceName = "";
 		setDescription(new Description());
 
 		// Sort criteria: taxonomic level
-		setPossibleSolutions(new ArrayList<PossibleSolution>());
+		setPossibleSolutions(new ArrayList());
 
 		// Sort criteria: concatenated structure and attribute names
 		setUnmatchedDescription(new Description());
 		setJustification(new Description());
-		
-		setPoints(0);
 	}
+
+	private static final long serialVersionUID = 4206237779038972396L;
+
+  	private String _internalInstanceName = null;
+
+  	public Hypothesis(String instance_name) {
+	  this._internalInstanceName = instance_name;
+  	}
+
+  	public String toString() {
+	  return _internalInstanceName;
+  	}
 
 	/**
 	 * @see "Método descriptiveElement: del protocolo adding en SUKIA SmallTalk"
@@ -82,40 +96,9 @@ public class Hypothesis {
 
 	/**
 	 * Método de instancia agregado
-	 * @param points
-	 */
-	public void setPoints(double points) {
-		this.points = points;
-	}
-	
-	/**
-	 * @see "Método incrementPointsBy: del protocolo adding en SUKIA SmallTalk"
-	 * @param increment
-	 */
-	public void incrementPointsBy(double increment) {
-		this.points = this.points + increment;
-	}
-	
-	/**
-	 * @see "Método incrementPointsBy: del protocolo adding en SUKIA SmallTalk"
-	 */
-	public void incrementPoints() {
-		this.points = this.points + 1;
-	}
-	
-	/**
-	 * @see "Método points del protocolo accessing en SUKIA SmallTalk"
-	 * @return
-	 */
-	public double getPoints() {
-		return points;
-	}
-
-	/**
-	 * Método de instancia agregado
 	 * @param possibleSolutions
 	 */
-	public void setPossibleSolutions(List<PossibleSolution> possibleSolutions) {
+	public void setPossibleSolutions(List possibleSolutions) {
 		this.possibleSolutions = possibleSolutions;
 	}
 
@@ -138,13 +121,14 @@ public class Hypothesis {
 		}
 
 		//Obtener el estado de la posible solución del primer elemento y la solución a insertar
-		firstEltStatus = this.getPossibleSolutions().get(0).getStatus();
+		firstEltStatus = ((PossibleSolution)this.getPossibleSolutions().get(0)).getStatus();
 		possSolStatus = aPossibleSolution.getStatus();
 
 		//Los estados de ambos deben ser iguales
 		if (firstEltStatus == possSolStatus){
 			this.getPossibleSolutions().add(aPossibleSolution);
-			Collections.sort(this.getPossibleSolutions());
+			this.sortPossibleSolutions(this.getPossibleSolutions());
+			//Collections.sort(this.getPossibleSolutions());
 			aPossibleSolution.setHypothesis(this);
 			return true;
 		}	
@@ -156,7 +140,7 @@ public class Hypothesis {
 	 * @see "Método possibleSolutions del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<PossibleSolution> getPossibleSolutions() {
+	public List getPossibleSolutions() {
 		return possibleSolutions;
 	}
 
@@ -201,5 +185,27 @@ public class Hypothesis {
 	 */
 	public boolean addAllToUnmatchedDescription(Description anUnmatchedDescription) {
 		return this.getUnmatchedDescription().addAllToConcreteDescription(anUnmatchedDescription);
+	}
+	
+	/**
+	 * Ordena possibleSolutions según el orden natural definido
+	 * @param possibleSolutions
+	 */
+	private void sortPossibleSolutions(List possibleSolutions) {
+		Set possibleSolutionsSet = new SortedSetImpl();
+		
+		Iterator i = possibleSolutions.iterator();
+		
+		while (i.hasNext()) {
+			possibleSolutionsSet.add(i.next());
+		}
+		
+		possibleSolutions.clear();
+		
+		Iterator j = possibleSolutionsSet.iterator();
+		
+		while (j.hasNext()) {
+			possibleSolutions.add(j.next());
+		}
 	}
 }

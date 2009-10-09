@@ -3,7 +3,8 @@
  */
 package ontology.CBR;
 
-import system.CertaintyDegree;
+import java.io.Serializable;
+
 
 
 
@@ -11,7 +12,7 @@ import system.CertaintyDegree;
  * @author Armando
  *
  */
-public class ProposedSolution implements Comparable<ProposedSolution> {
+public class ProposedSolution implements jade.content.Concept, Serializable, Comparable<ProposedSolution> {
 	private CertaintyDegree certaintyDegree;
 	private PossibleSolution solution;
 	private boolean status;
@@ -20,10 +21,23 @@ public class ProposedSolution implements Comparable<ProposedSolution> {
 	 * @see "Método initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
 	public ProposedSolution() {
+		this._internalInstanceName = "";
 		this.setSolution(null);
 		this.setStatus(true);
 		this.setCertaintyDegree(CertaintyDegree.UNKNOWN);
 	}
+	
+	private static final long serialVersionUID = 4206237779038972396L;
+
+	private String _internalInstanceName = null;
+
+  	public ProposedSolution(String instance_name) {
+	  this._internalInstanceName = instance_name;
+  	}
+
+  	public String toString() {
+	  return _internalInstanceName;
+  	}
 
 	/**
 	 * The only possible values for this variable are:

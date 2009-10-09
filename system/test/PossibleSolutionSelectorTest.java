@@ -5,9 +5,8 @@
 
 package system.test;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import jade.util.leap.ArrayList;
+import jade.util.leap.List;
 import ontology.CBR.Hypothesis;
 import ontology.CBR.PossibleSolution;
 import ontology.CBR.ProposedSolution;
@@ -99,9 +98,9 @@ public class PossibleSolutionSelectorTest {
     @Test
     public void testDistribute() {
         java.lang.System.out.println("distribute");
-        PossibleSolutionSelector instance = new PossibleSolutionSelector(TaxonomicRank.SPECIES, new ArrayList<Hypothesis>(),
-                new ArrayList<Hypothesis>(),1, true);
-        List<PossibleSolution> aSortedPossibleSolutionsList = new ArrayList<PossibleSolution>();
+        PossibleSolutionSelector instance = new PossibleSolutionSelector(TaxonomicRank.SPECIES, new ArrayList(),
+                new ArrayList(),1, true);
+        List aSortedPossibleSolutionsList = new ArrayList();
 
         PossibleSolution aPossibleSolution = new PossibleSolution ();
         aPossibleSolution.setPoints(10.0);
@@ -130,7 +129,7 @@ public class PossibleSolutionSelectorTest {
         
         assertTrue(instance.distribute(aSortedPossibleSolutionsList));
 
-        aSortedPossibleSolutionsList = new ArrayList<PossibleSolution>();
+        aSortedPossibleSolutionsList = new ArrayList();
 
         aPossibleSolution = new PossibleSolution ();
         aPossibleSolution.setPoints(10.0);
@@ -157,13 +156,13 @@ public class PossibleSolutionSelectorTest {
         assertTrue(aPossibleSolution.setSolution(taxon5));
         aSortedPossibleSolutionsList.add(aPossibleSolution);
 
-        instance = new PossibleSolutionSelector(TaxonomicRank.GENUS, new ArrayList<Hypothesis>(),
-                new ArrayList<Hypothesis>(),2, true);
+        instance = new PossibleSolutionSelector(TaxonomicRank.GENUS, new ArrayList(),
+                new ArrayList(),2, true);
 
 
         assertTrue(instance.distribute(aSortedPossibleSolutionsList));
 
-        aSortedPossibleSolutionsList = new ArrayList<PossibleSolution>();
+        aSortedPossibleSolutionsList = new ArrayList();
 
         aPossibleSolution = new PossibleSolution ();
         aPossibleSolution.setPoints(10.0);
@@ -190,8 +189,8 @@ public class PossibleSolutionSelectorTest {
         assertTrue(aPossibleSolution.setSolution(taxon5));
         aSortedPossibleSolutionsList.add(aPossibleSolution);
 
-        instance = new PossibleSolutionSelector(TaxonomicRank.FAMILY, new ArrayList<Hypothesis>(),
-                new ArrayList<Hypothesis>(),2, true);
+        instance = new PossibleSolutionSelector(TaxonomicRank.FAMILY, new ArrayList(),
+                new ArrayList(),2, true);
 
         assertTrue(instance.distribute(aSortedPossibleSolutionsList));
 
@@ -203,7 +202,7 @@ public class PossibleSolutionSelectorTest {
     @Test
     public void testSelect() {
         java.lang.System.out.println("select");
-        List<Hypothesis> aConflictSet = new ArrayList<Hypothesis>();
+        List aConflictSet = new ArrayList();
 
         PossibleSolution aPossibleSolution = new PossibleSolution ();
         aPossibleSolution.setPoints(10.0);
@@ -242,13 +241,13 @@ public class PossibleSolutionSelectorTest {
 
 
         PossibleSolutionSelector instance = new PossibleSolutionSelector(TaxonomicRank.FAMILY, aConflictSet,
-                new ArrayList<Hypothesis>(),2, true);
+                new ArrayList(),2, true);
 
-        List<ProposedSolution> aProposedSolution = instance.select();
+        List aProposedSolution = instance.select();
 
         assertEquals(2,aProposedSolution.size());
-        assertEquals(taxon1,aProposedSolution.get(0).getSolution().getSolution());
-        assertEquals(taxon2,aProposedSolution.get(1).getSolution().getSolution());
+        assertEquals(taxon1,((ProposedSolution)aProposedSolution.get(0)).getSolution().getSolution());
+        assertEquals(taxon2,((ProposedSolution)aProposedSolution.get(1)).getSolution().getSolution());
         
     }
 
@@ -258,7 +257,7 @@ public class PossibleSolutionSelectorTest {
     @Test
     public void testSortPossibleSolutions() {
         java.lang.System.out.println("sortPossibleSolutions");
-        List<Hypothesis> aConflictSet = new ArrayList<Hypothesis>();
+        List aConflictSet = new ArrayList();
 
         PossibleSolution aPossibleSolution = new PossibleSolution ();
         aPossibleSolution.setPoints(1.0);
@@ -297,18 +296,18 @@ public class PossibleSolutionSelectorTest {
 
 
         PossibleSolutionSelector instance = new PossibleSolutionSelector(TaxonomicRank.FAMILY, aConflictSet,
-                new ArrayList<Hypothesis>(),2, true);
+                new ArrayList(),2, true);
 
-        List<PossibleSolution> aProposedSolution = instance.sortPossibleSolutions();
+        List aProposedSolution = instance.sortPossibleSolutions();
         /*
          * Sort by points
          */
 
-        assertEquals(5.0,aProposedSolution.get(0).getPoints(),0.0);
-        assertEquals(4.0,aProposedSolution.get(1).getPoints(),0.0);
-        assertEquals(3.0,aProposedSolution.get(2).getPoints(),0.0);
-        assertEquals(2.0,aProposedSolution.get(3).getPoints(),0.0);
-        assertEquals(1.0,aProposedSolution.get(4).getPoints(),0.0);
+        assertEquals(5.0,((PossibleSolution)aProposedSolution.get(0)).getPoints(),0.0);
+        assertEquals(4.0,((PossibleSolution)aProposedSolution.get(1)).getPoints(),0.0);
+        assertEquals(3.0,((PossibleSolution)aProposedSolution.get(2)).getPoints(),0.0);
+        assertEquals(2.0,((PossibleSolution)aProposedSolution.get(3)).getPoints(),0.0);
+        assertEquals(1.0,((PossibleSolution)aProposedSolution.get(4)).getPoints(),0.0);
 
     }
 

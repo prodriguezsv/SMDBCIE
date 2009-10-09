@@ -22,59 +22,42 @@ public class CommonTerminologyOntology extends jade.content.onto.Ontology  {
 
 
    // VOCABULARY
-    public static final String OWNS_ATTRIBUTE="attribute";
-    public static final String OWNS_DESCRIPTIVEELEMENT="descriptiveElement";
-    public static final String OWNS="Owns";
-    public static final String APLIESTO_ATTRIBUTE="attribute";
-    public static final String APLIESTO_DESCRIPTIVEELEMENT="descriptiveElement";
-    public static final String APLIESTO="ApliesTo";
-    public static final String DESCRIBEDBY_SCORE="score";
-    public static final String DESCRIBEDBY_ATTRIBUTE="attribute";
-    public static final String DESCRIBEDBY="DescribedBy";
-    public static final String DESCRIBES_SCORE="score";
-    public static final String DESCRIBES_ATTRIBUTE="attribute";
-    public static final String DESCRIBES="Describes";
+    public static final String MSHEURISTICDESCRIPTOR_VALUE="value";
     public static final String MSHEURISTICDESCRIPTOR="MSHeuristicDescriptor";
+    public static final String SSHEURISTICDESCRIPTOR_VALUE="value";
     public static final String SSHEURISTICDESCRIPTOR="SSHeuristicDescriptor";
     public static final String QUALITATIVEHEURISTICDESCRIPTOR="QualitativeHeuristicDescriptor";
     public static final String HEURISTICDESCRIPTOR="HeuristicDescriptor";
     public static final String DESCRIPTION_DESCRIPTORS="descriptors";
     public static final String DESCRIPTION="Description";
+    public static final String RVHEURISTICDESCRIPTOR_VALUE="value";
     public static final String RVHEURISTICDESCRIPTOR="RVHeuristicDescriptor";
+    public static final String SVHEURISTICDESCRIPTOR_VALUE="value";
     public static final String SVHEURISTICDESCRIPTOR="SVHeuristicDescriptor";
     public static final String QUANTITATIVEHEURISTICDESCRIPTOR="QuantitativeHeuristicDescriptor";
+    public static final String SSCHARACTERDESCRIPTOR_VALUE="value";
     public static final String SSCHARACTERDESCRIPTOR="SSCharacterDescriptor";
     public static final String QUALITATIVECHARACTERDESCRIPTOR="QualitativeCharacterDescriptor";
     public static final String CHARACTERDESCRIPTOR="CharacterDescriptor";
     public static final String RANGEVALUE_UPPERBOUND="upperBound";
     public static final String RANGEVALUE_LOWERBOUND="lowerBound";
     public static final String RANGEVALUE="RangeValue";
+    public static final String RVCHARACTERDESCRIPTOR_VALUE="value";
     public static final String RVCHARACTERDESCRIPTOR="RVCharacterDescriptor";
+    public static final String SVCHARACTERDESCRIPTOR_VALUE="value";
     public static final String SVCHARACTERDESCRIPTOR="SVCharacterDescriptor";
     public static final String QUANTITATIVECHARACTERDESCRIPTOR="QuantitativeCharacterDescriptor";
+    public static final String MSCHARACTERDESCRIPTOR_VALUE="value";
     public static final String MSCHARACTERDESCRIPTOR="MSCharacterDescriptor";
-    public static final String DEFINEDTERM_TERM="term";
-    public static final String DEFINEDTERM_DEFINITION="definition";
-    public static final String DEFINEDTERM="DefinedTerm";
     public static final String SINGLEVALUE_VALUE="value";
     public static final String SINGLEVALUE="SingleValue";
-    public static final String VALUE_MEASURINGUNIT="measuringUnit";
-    public static final String VALUE_DESCRIBES="describes";
+    public static final String VALUE_MEASURINGUNIT="measuringUnit";    
     public static final String VALUE="Value";
-    public static final String STATE_DESCRIBES="describes";
-    public static final String STATE="State";
-    public static final String DESCRIPTOR_SCORE="score";
     public static final String DESCRIPTOR_ATTRIBUTE="attribute";
     public static final String DESCRIPTOR_STRUCTURE="structure";
     public static final String DESCRIPTOR="Descriptor";
-    public static final String ATTRIBUTE_APLIESTO="apliesTo";
-    public static final String ATTRIBUTE_DESCRIBEDBY="describedBy";
-    public static final String ATTRIBUTE="Attribute";
-    public static final String STRUCTURE_OWNS="owns";
-    public static final String STRUCTURE="Structure";
-    public static final String ENVIRONMENTALCATEGORY_OWNS="owns";
-    public static final String ENVIRONMENTALCATEGORY="EnvironmentalCategory";
-
+    public static final String MEASURINGUNIT="MeasuringUnit";
+    
   /**
    * Constructor
   */
@@ -83,22 +66,12 @@ public class CommonTerminologyOntology extends jade.content.onto.Ontology  {
     try { 
 
     // adding Concept(s)
-    ConceptSchema environmentalCategorySchema = new ConceptSchema(ENVIRONMENTALCATEGORY);
-    add(environmentalCategorySchema, ontology.common.EnvironmentalCategory.class);
-    ConceptSchema structureSchema = new ConceptSchema(STRUCTURE);
-    add(structureSchema, ontology.common.Structure.class);
-    ConceptSchema attributeSchema = new ConceptSchema(ATTRIBUTE);
-    add(attributeSchema, ontology.common.Attribute.class);
     ConceptSchema descriptorSchema = new ConceptSchema(DESCRIPTOR);
     add(descriptorSchema, ontology.common.Descriptor.class);
-    ConceptSchema stateSchema = new ConceptSchema(STATE);
-    add(stateSchema, ontology.common.State.class);
     ConceptSchema valueSchema = new ConceptSchema(VALUE);
     add(valueSchema, ontology.common.Value.class);
     ConceptSchema singleValueSchema = new ConceptSchema(SINGLEVALUE);
     add(singleValueSchema, ontology.common.SingleValue.class);
-    ConceptSchema definedTermSchema = new ConceptSchema(DEFINEDTERM);
-    add(definedTermSchema, ontology.common.DefinedTerm.class);
     ConceptSchema msCharacterDescriptorSchema = new ConceptSchema(MSCHARACTERDESCRIPTOR);
     add(msCharacterDescriptorSchema, ontology.common.MSCharacterDescriptor.class);
     ConceptSchema quantitativeCharacterDescriptorSchema = new ConceptSchema(QUANTITATIVECHARACTERDESCRIPTOR);
@@ -131,55 +104,35 @@ public class CommonTerminologyOntology extends jade.content.onto.Ontology  {
     add(ssHeuristicDescriptorSchema, ontology.common.SSHeuristicDescriptor.class);
     ConceptSchema msHeuristicDescriptorSchema = new ConceptSchema(MSHEURISTICDESCRIPTOR);
     add(msHeuristicDescriptorSchema, ontology.common.MSHeuristicDescriptor.class);
+    ConceptSchema measuringUnitSchema = new ConceptSchema(MEASURINGUNIT);
+    add(measuringUnitSchema, ontology.common.MeasuringUnit.class);
 
     // adding AgentAction(s)
 
     // adding AID(s)
 
     // adding Predicate(s)
-    PredicateSchema describesSchema = new PredicateSchema(DESCRIBES);
-    add(describesSchema, ontology.common.Describes.class);
-    PredicateSchema describedBySchema = new PredicateSchema(DESCRIBEDBY);
-    add(describedBySchema, ontology.common.DescribedBy.class);
-    PredicateSchema apliesToSchema = new PredicateSchema(APLIESTO);
-    add(apliesToSchema, ontology.common.ApliesTo.class);
-    PredicateSchema ownsSchema = new PredicateSchema(OWNS);
-    add(ownsSchema, ontology.common.Owns.class);
-
 
     // adding fields
-    environmentalCategorySchema.add(ENVIRONMENTALCATEGORY_OWNS, attributeSchema, 1, ObjectSchema.UNLIMITED);
-    structureSchema.add(STRUCTURE_OWNS, attributeSchema, 1, ObjectSchema.UNLIMITED);
-    attributeSchema.add(ATTRIBUTE_DESCRIBEDBY, new ConceptSchema("Concept"), 0, ObjectSchema.UNLIMITED);
-    attributeSchema.add(ATTRIBUTE_APLIESTO, new ConceptSchema("Concept"), 1, ObjectSchema.UNLIMITED);
-    descriptorSchema.add(DESCRIPTOR_STRUCTURE, new ConceptSchema("Concept"), ObjectSchema.MANDATORY);
-    descriptorSchema.add(DESCRIPTOR_ATTRIBUTE, attributeSchema, ObjectSchema.MANDATORY);
-    descriptorSchema.add(DESCRIPTOR_SCORE, new ConceptSchema("Concept"), 1, ObjectSchema.UNLIMITED);
-    stateSchema.add(STATE_DESCRIBES, attributeSchema, 1, ObjectSchema.UNLIMITED);
-    valueSchema.add(VALUE_DESCRIBES, attributeSchema, 1, ObjectSchema.UNLIMITED);
-    valueSchema.add(VALUE_MEASURINGUNIT, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
+    descriptorSchema.add(DESCRIPTOR_STRUCTURE, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
+    descriptorSchema.add(DESCRIPTOR_ATTRIBUTE, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
+    svCharacterDescriptorSchema.add(SVCHARACTERDESCRIPTOR_VALUE, singleValueSchema, ObjectSchema.MANDATORY);
+    rvCharacterDescriptorSchema.add(RVCHARACTERDESCRIPTOR_VALUE, rangeValueSchema, ObjectSchema.MANDATORY);
+    ssCharacterDescriptorSchema.add(SSCHARACTERDESCRIPTOR_VALUE, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
+    msCharacterDescriptorSchema.add(MSCHARACTERDESCRIPTOR_VALUE, (TermSchema)getSchema(BasicOntology.STRING), 2, ObjectSchema.UNLIMITED);
+    svHeuristicDescriptorSchema.add(SVHEURISTICDESCRIPTOR_VALUE, singleValueSchema, ObjectSchema.MANDATORY);
+    rvHeuristicDescriptorSchema.add(RVHEURISTICDESCRIPTOR_VALUE, rangeValueSchema, ObjectSchema.MANDATORY);
+    ssHeuristicDescriptorSchema.add(SSHEURISTICDESCRIPTOR_VALUE, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
+    msHeuristicDescriptorSchema.add(MSHEURISTICDESCRIPTOR_VALUE, (TermSchema)getSchema(BasicOntology.STRING), 2, ObjectSchema.UNLIMITED);
+    valueSchema.add(VALUE_MEASURINGUNIT, measuringUnitSchema, ObjectSchema.MANDATORY);
     singleValueSchema.add(SINGLEVALUE_VALUE, (TermSchema)getSchema(BasicOntology.FLOAT), ObjectSchema.MANDATORY);
-    definedTermSchema.add(DEFINEDTERM_DEFINITION, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.OPTIONAL);
-    definedTermSchema.add(DEFINEDTERM_TERM, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
     rangeValueSchema.add(RANGEVALUE_LOWERBOUND, (TermSchema)getSchema(BasicOntology.FLOAT), ObjectSchema.MANDATORY);
     rangeValueSchema.add(RANGEVALUE_UPPERBOUND, (TermSchema)getSchema(BasicOntology.FLOAT), ObjectSchema.MANDATORY);
     descriptionSchema.add(DESCRIPTION_DESCRIPTORS, descriptorSchema, 1, ObjectSchema.UNLIMITED);
-    describesSchema.add(DESCRIBES_ATTRIBUTE, attributeSchema, ObjectSchema.MANDATORY);
-    describesSchema.add(DESCRIBES_SCORE, new ConceptSchema("Concept"), 1, ObjectSchema.UNLIMITED);
-    describedBySchema.add(DESCRIBEDBY_ATTRIBUTE, attributeSchema, ObjectSchema.MANDATORY);
-    describedBySchema.add(DESCRIBEDBY_SCORE, new ConceptSchema("Concept"), 1, ObjectSchema.UNLIMITED);
-    apliesToSchema.add(APLIESTO_DESCRIPTIVEELEMENT, new ConceptSchema("Concept"), ObjectSchema.OPTIONAL);
-    apliesToSchema.add(APLIESTO_ATTRIBUTE, attributeSchema, ObjectSchema.MANDATORY);
-    ownsSchema.add(OWNS_DESCRIPTIVEELEMENT, new ConceptSchema("Concept"), ObjectSchema.OPTIONAL);
-    ownsSchema.add(OWNS_ATTRIBUTE, attributeSchema, ObjectSchema.MANDATORY);
 
     // adding name mappings
 
     // adding inheritance
-    environmentalCategorySchema.addSuperSchema(definedTermSchema);
-    structureSchema.addSuperSchema(definedTermSchema);
-    attributeSchema.addSuperSchema(definedTermSchema);
-    stateSchema.addSuperSchema(definedTermSchema);
     singleValueSchema.addSuperSchema(valueSchema);
     msCharacterDescriptorSchema.addSuperSchema(qualitativeCharacterDescriptorSchema);
     quantitativeCharacterDescriptorSchema.addSuperSchema(characterDescriptorSchema);

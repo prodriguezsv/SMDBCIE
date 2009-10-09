@@ -3,9 +3,9 @@
  */
 package system;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import jade.util.leap.ArrayList;
+import jade.util.leap.Iterator;
+import jade.util.leap.List;
 import ontology.CBR.Hypothesis;
 import ontology.CBR.PossibleSolution;
 import ontology.common.HeuristicDescriptor;
@@ -18,14 +18,14 @@ import ontology.taxonomy.Taxonomy;
  *
  */
 public class PossibleSolutionEvaluator {
-	private List<Hypothesis> failureConflictSet;
-	private List<Hypothesis> successfulConflictSet;
+	private List failureConflictSet;
+	private List successfulConflictSet;
 	private Taxonomy taxonomy;
 
 	/**
 	 * @see "M&ecute;todo initializeWith:and:and:and:and:and: del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public PossibleSolutionEvaluator(List<Hypothesis> aSuccessfulStructList, List<Hypothesis> aFailedStructList,
+	public PossibleSolutionEvaluator(List aSuccessfulStructList, List aFailedStructList,
 			Taxonomy aTaxonomy) {
 		setSuccessfulConflictSet(aSuccessfulStructList);
 		setFailureConflictSet(aFailedStructList);
@@ -52,7 +52,7 @@ public class PossibleSolutionEvaluator {
 	 * M&ecute;todo de instancia agregado
 	 * @param failedStructConflictSet
 	 */
-	public void setFailureConflictSet(List<Hypothesis> failedStructConflictSet) {
+	public void setFailureConflictSet(List failedStructConflictSet) {
 		this.failureConflictSet = failedStructConflictSet;
 	}
 
@@ -60,7 +60,7 @@ public class PossibleSolutionEvaluator {
 	 * @see "M&ecute;todo failedStructConflictSet del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Hypothesis> getFailureConflictSet() {
+	public List getFailureConflictSet() {
 		return failureConflictSet;
 	}
 
@@ -68,7 +68,7 @@ public class PossibleSolutionEvaluator {
 	 * M&ecute;todo de instancia agregado
 	 * @param successfulStructConflictSet
 	 */
-	public void setSuccessfulConflictSet(List<Hypothesis> successfulStructConflictSet) {
+	public void setSuccessfulConflictSet(List successfulStructConflictSet) {
 		this.successfulConflictSet = successfulStructConflictSet;
 	}
 
@@ -76,7 +76,7 @@ public class PossibleSolutionEvaluator {
 	 * @see "M&ecute;todo successfulStructConflictSet del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Hypothesis> getSuccessfulConflictSet() {
+	public List getSuccessfulConflictSet() {
 		return successfulConflictSet;
 	}
 
@@ -142,16 +142,24 @@ public class PossibleSolutionEvaluator {
 	 * @param aCompConflictSet
 	 * @param aPointAccumulatingScheme
 	 */
-	public void evaluate(List<Hypothesis> aConflictSet, List<Hypothesis> aCompConflictSet, String aPointAccumulatingScheme) {
+	public void evaluate(List aConflictSet, List aCompConflictSet, String aPointAccumulatingScheme) {
 		Taxon evalPossibleSolutionTaxon, compPossibleSolutionTaxon;
 
         //do nothing in case that one of them is empty
         if (aConflictSet.isEmpty() || aCompConflictSet.isEmpty()) return;
 
         //Pendiente evaluar si un ordenamiento en la lista de hipotesis mejoraría el proceso
-        for (Hypothesis evalHypothesis:aConflictSet){
+        Iterator i = aConflictSet.iterator();
+		
+		while (i.hasNext()) {
+			Hypothesis evalHypothesis = (Hypothesis) i.next(); 
+        
             // Scan the entire list of possible solutions belonging to the current hypothesis-to-evaluate
-            for (PossibleSolution evalPossibleSolution: evalHypothesis.getPossibleSolutions()){
+			Iterator j = evalHypothesis.getPossibleSolutions().iterator();
+			
+			while (j.hasNext()) {
+				PossibleSolution evalPossibleSolution = (PossibleSolution) j.next();
+
                 // Get the corresponding taxon of the possibleSolution-to-evaluate, if applicable
                 if (evalPossibleSolution.getSolution() instanceof Taxon)
                     evalPossibleSolutionTaxon = (Taxon) evalPossibleSolution.getSolution();
@@ -160,12 +168,31 @@ public class PossibleSolutionEvaluator {
 
                 if (evalPossibleSolutionTaxon == null) return;
 
-                List<Hypothesis> aCompConflictSetCopy = new ArrayList<Hypothesis>(aCompConflictSet);
+                List aCompConflictSetCopy = new ArrayList();
+                Iterator iterator = aCompConflictSet.iterator();
+    			
+    			while (iterator.hasNext()) {
+    				aCompConflictSetCopy.add((Hypothesis) iterator.next());
+    			}
                 
-                for (Hypothesis compHypothesis:aCompConflictSetCopy){
-                	List<PossibleSolution> aPossibleSolutionsCopy = new ArrayList<PossibleSolution>(compHypothesis.getPossibleSolutions());
+                Iterator k = aCompConflictSetCopy.iterator();
+    			
+    			while (k.hasNext()) {
+    				Hypothesis compHypothesis = (Hypothesis) k.next();
+
+                	List aPossibleSolutionsCopy = new ArrayList();
                 	
-                    for (PossibleSolution compPossibleSolution: aPossibleSolutionsCopy){
+                    iterator = compHypothesis.getPossibleSolutions().iterator();
+        			
+        			while (iterator.hasNext()) {
+        				aPossibleSolutionsCopy.add((PossibleSolution) iterator.next());
+        			}
+                	
+                	Iterator l = aPossibleSolutionsCopy.iterator();
+        			
+        			while (l.hasNext()) {
+        				PossibleSolution compPossibleSolution = (PossibleSolution) l.next();
+
                         if (compPossibleSolution.getSolution() instanceof Taxon)
                             compPossibleSolutionTaxon = (Taxon) compPossibleSolution.getSolution();
                         else
@@ -251,23 +278,27 @@ public class PossibleSolutionEvaluator {
 	 * @param aConflictSet
 	 * @param aPointAccumulatingScheme
 	 */
-	public void evaluate(List<Hypothesis> aConflictSet, String aPointAccumulatingScheme) {
+	public void evaluate(List aConflictSet, String aPointAccumulatingScheme) {
 		Taxon evalPossibleSolutionTaxon, compPossibleSolutionTaxon;
-		List<Hypothesis> tempList;
+		List tempList;
 
         //do nothing in case that one of them is empty
         if (aConflictSet.isEmpty()) return;
         
         if (aConflictSet.size() < 2) return;
 
-        tempList = new ArrayList<Hypothesis>();
+        tempList = new ArrayList();
         
         //Pendiente evaluar si un ordenamiento en la lista de hipotesis mejoraría el proceso
         while (!aConflictSet.isEmpty()) {
-        	Hypothesis evalHypothesis = aConflictSet.remove(0);
+        	Hypothesis evalHypothesis = (Hypothesis) aConflictSet.remove(0);
 
             // Scan the entire list of possible solutions belonging to the current hypothesis-to-evaluate
-            for (PossibleSolution evalPossibleSolution: evalHypothesis.getPossibleSolutions()){
+        	Iterator i = evalHypothesis.getPossibleSolutions().iterator();
+			
+			while (i.hasNext()) {
+				PossibleSolution evalPossibleSolution = (PossibleSolution) i.next();
+
                 // Get the corresponding taxon of the possibleSolution-to-evaluate, if applicable
                 if (evalPossibleSolution.getSolution() instanceof Taxon)
                     evalPossibleSolutionTaxon = (Taxon) evalPossibleSolution.getSolution();
@@ -276,12 +307,32 @@ public class PossibleSolutionEvaluator {
 
                 if (evalPossibleSolutionTaxon == null) return;           
                 
-                List<Hypothesis> aConflictSetCopy = new ArrayList<Hypothesis>(aConflictSet);
+                List aConflictSetCopy = new ArrayList();
                 
-                for (Hypothesis compHypothesis:aConflictSetCopy){
-                	List<PossibleSolution> aPossibleSolutionsCopy = new ArrayList<PossibleSolution>(compHypothesis.getPossibleSolutions());
+                Iterator iterator = aConflictSet.iterator();
+    			
+    			while (iterator.hasNext()) {
+    				aConflictSetCopy.add((Hypothesis) iterator.next());
+    			}
+                
+    			Iterator k = aConflictSetCopy.iterator();
+    			
+    			while (k.hasNext()) {
+    				Hypothesis compHypothesis = (Hypothesis) k.next();
+
+                	List aPossibleSolutionsCopy = new ArrayList();
                 	
-                    for (PossibleSolution compPossibleSolution: aPossibleSolutionsCopy) {
+                	iterator = compHypothesis.getPossibleSolutions().iterator();
+        			
+        			while (iterator.hasNext()) {
+        				aPossibleSolutionsCopy.add((PossibleSolution) iterator.next());
+        			}
+                	
+        			Iterator l = aPossibleSolutionsCopy.iterator();
+        			
+        			while (l.hasNext()) {
+        				PossibleSolution compPossibleSolution = (PossibleSolution) l.next();
+                    
                         if (compPossibleSolution.getSolution() instanceof Taxon)
                             compPossibleSolutionTaxon = (Taxon) compPossibleSolution.getSolution();
                         else

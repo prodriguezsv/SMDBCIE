@@ -4,6 +4,8 @@
  */
 package ontology.CBR;
 
+import java.io.Serializable;
+
 import ontology.common.Description;
 import ontology.common.Descriptor;
 
@@ -18,7 +20,7 @@ import ontology.common.Descriptor;
  * @author Armando
  *
  */
-public class Case {
+public class Case implements jade.content.Concept, Serializable {
 	/**
 	 * A list containing a set of Descriptor's (a description of the problem)
 	 */
@@ -42,7 +44,20 @@ public class Case {
 		problem = new Problem();
 		solution = new Solution();
 		state = false;
+		this._internalInstanceName = "";
 	}
+	
+	private static final long serialVersionUID = 4206237779038972396L;
+
+  	private String _internalInstanceName = null;
+
+  	public Case(String instance_name) {
+	  this._internalInstanceName = instance_name;
+  	}
+
+  	public String toString() {
+	  return _internalInstanceName;
+  	}
 	
 	/**
 	 * Constructor alternativo

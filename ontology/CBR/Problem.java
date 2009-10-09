@@ -3,14 +3,17 @@
  */
 package ontology.CBR;
 
+import java.io.Serializable;
+
 import ontology.common.Description;
+import ontology.taxonomy.TaxonomicRank;
 
 /**
  * Representa la especificación de un problema particular a resolver
  * @author Armando
  *
  */
-public class Problem {
+public class Problem implements jade.content.Concept, Serializable {
 	/**
 	 * A list containing a set of Descriptor's (a description of the problem)
 	 */
@@ -18,7 +21,7 @@ public class Problem {
 	/**
 	 * Especifica la meta de identificaci&oacute;n
 	 */
-	private String goalRank;
+	private TaxonomicRank goalRank;
 	/**
 	 * Especifica la espectativa de desempe&ntilde;o m&iacute;nima
 	 */
@@ -28,10 +31,23 @@ public class Problem {
 	 * Constructor por defecto
 	 */
 	public Problem() {
+		this._internalInstanceName = "";
 		description = new Description();
 		goalRank = null;
 		leastSimilarityDegree = null;
 	}
+	
+	private static final long serialVersionUID = 4206237779038972396L;
+
+  	private String _internalInstanceName = null;
+
+  	public Problem(String instance_name) {
+	  this._internalInstanceName = instance_name;
+  	}
+
+  	public String toString() {
+	  return _internalInstanceName;
+  	}
 	
 	/**
 	 * Constructor por defecto
@@ -62,7 +78,7 @@ public class Problem {
 	 * M&eacute;todo accesor de escritura
 	 * @param goalRank
 	 */
-	public void setGoalRank(String goalRank) {
+	public void setGoalRank(TaxonomicRank goalRank) {
 		this.goalRank = goalRank;
 	}
 
@@ -70,7 +86,7 @@ public class Problem {
 	 * M&eacute;todo accesor de lectura
 	 * @return
 	 */
-	public String getGoalRank() {
+	public TaxonomicRank getGoalRank() {
 		return goalRank;
 	}
 
@@ -81,7 +97,7 @@ public class Problem {
 	public void setLeastSimilarityDegree(SimilarityDegree leastDegreeOfCertainty) {
 		this.leastSimilarityDegree = leastDegreeOfCertainty;
 	}
-
+	
 	/**
 	 * M&eacute;todo accesor de lectura
 	 * @return
@@ -89,4 +105,5 @@ public class Problem {
 	public SimilarityDegree getLeastSimilarityDegree() {
 		return leastSimilarityDegree;
 	}
+	
 }

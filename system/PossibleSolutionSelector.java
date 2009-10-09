@@ -3,11 +3,12 @@
  */
 package system;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Collections;
-
+import jade.util.leap.ArrayList;
+import jade.util.leap.Iterator;
+import jade.util.leap.List;
+import jade.util.leap.Set;
+import jade.util.leap.SortedSetImpl;
+import ontology.CBR.CertaintyDegree;
 import ontology.CBR.Hypothesis;
 import ontology.CBR.PossibleSolution;
 import ontology.CBR.ProposedSolution;
@@ -19,11 +20,11 @@ import ontology.taxonomy.TaxonomicRank;
  *
  */
 public class PossibleSolutionSelector {
-	private List<Hypothesis> failureConflictSet;
-	private List<Hypothesis> successfulConflictSet;
-	private List<ProposedSolution> generalSolutions;
-	private List<ProposedSolution> goalSolutions;
-	private List<ProposedSolution> specificSolutions;
+	private List failureConflictSet;
+	private List successfulConflictSet;
+	private List generalSolutions;
+	private List goalSolutions;
+	private List specificSolutions;
 	private TaxonomicRank identificationGoal;
 	private int maxNumberSolutions;
 	private boolean showFailedSolutions;
@@ -41,8 +42,8 @@ public class PossibleSolutionSelector {
 	 * USER EXPECTATION: showFailed is a boolean argument, that determines whether or not to show failed solutions to the user.
 	 * @see "Método initializeWith:and:and:and:and:and:and: del protocolo initializing en SUKIA SmallTalk"
 	 */
-	public PossibleSolutionSelector(TaxonomicRank anIdentGoal, List<Hypothesis> aSuccSList, 
-			List<Hypothesis> aFailSList, int aNumberOfSolutions, boolean showFailed) {
+	public PossibleSolutionSelector(TaxonomicRank anIdentGoal, List aSuccSList, 
+			List aFailSList, int aNumberOfSolutions, boolean showFailed) {
 		setIdentificationGoal(anIdentGoal);
 		setSuccessfulConflictSet(aSuccSList);
 		setFailureConflictSet(aFailSList);
@@ -51,16 +52,16 @@ public class PossibleSolutionSelector {
 
 		setStatus(false);
 
-		setGoalSolutions(new ArrayList<ProposedSolution>());
-		setSpecificSolutions(new ArrayList<ProposedSolution>());
-		setGeneralSolutions(new ArrayList<ProposedSolution>());
+		setGoalSolutions(new ArrayList());
+		setSpecificSolutions(new ArrayList());
+		setGeneralSolutions(new ArrayList());
 	}
 
 	/**
 	 * Método de instancia agregado
 	 * @param failedStructConflictSet
 	 */
-	public void setFailureConflictSet(List<Hypothesis> failedStructConflictSet) {
+	public void setFailureConflictSet(List failedStructConflictSet) {
 		this.failureConflictSet = failedStructConflictSet;
 	}
 
@@ -68,7 +69,7 @@ public class PossibleSolutionSelector {
 	 * @see "Método failedStructConflictSet del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Hypothesis> getFailureConflictSet() {
+	public List getFailureConflictSet() {
 		return failureConflictSet;
 	}
 
@@ -76,7 +77,7 @@ public class PossibleSolutionSelector {
 	 * Método de instancia agregado
 	 * @param generalSolutions
 	 */
-	public void setGeneralSolutions(List<ProposedSolution> generalSolutions) {
+	public void setGeneralSolutions(List generalSolutions) {
 		this.generalSolutions = generalSolutions;
 	}
 
@@ -84,7 +85,7 @@ public class PossibleSolutionSelector {
 	 * @see "Método generalSolutions del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<ProposedSolution> getGeneralSolutions() {
+	public List getGeneralSolutions() {
 		return generalSolutions;
 	}
 
@@ -92,7 +93,7 @@ public class PossibleSolutionSelector {
 	 * Método de instancia agregado
 	 * @param goalSolutions
 	 */
-	public void setGoalSolutions(List<ProposedSolution> goalSolutions) {
+	public void setGoalSolutions(List goalSolutions) {
 		this.goalSolutions = goalSolutions;
 	}
 
@@ -102,14 +103,15 @@ public class PossibleSolutionSelector {
 	 */
 	public void addGeneralSolution(ProposedSolution aProposedSolution) {
 		this.getGeneralSolutions().add(aProposedSolution);
-		Collections.sort(this.getGeneralSolutions());
+		this.sortProposedSolutions(this.getGeneralSolutions());
+		//Collections.sortPossibleSolutions(this.getGeneralSolutions());
 	}
 	
 	/**
 	 * @see "Método goalSolutions del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<ProposedSolution> getGoalSolutions() {
+	public List getGoalSolutions() {
 		return goalSolutions;
 	}
 
@@ -127,7 +129,8 @@ public class PossibleSolutionSelector {
 	 */
 	public void addGoalSolution(ProposedSolution aProposedSolution) {
 		this.getGoalSolutions().add(aProposedSolution);
-		Collections.sort(this.getGoalSolutions());
+		this.sortProposedSolutions(this.getGoalSolutions());
+		//Collections.sortPossibleSolutions(this.getGoalSolutions());
 	}
 
 	/**
@@ -174,7 +177,7 @@ public class PossibleSolutionSelector {
 	 * Mpetodo de instancia agregado
 	 * @param specificSolutions
 	 */
-	public void setSpecificSolutions(List<ProposedSolution> specificSolutions) {
+	public void setSpecificSolutions(List specificSolutions) {
 		this.specificSolutions = specificSolutions;
 	}
 
@@ -182,7 +185,7 @@ public class PossibleSolutionSelector {
 	 * @see "Método specificSolutions del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<ProposedSolution> getSpecificSolutions() {
+	public List getSpecificSolutions() {
 		return specificSolutions;
 	}
 	
@@ -192,14 +195,15 @@ public class PossibleSolutionSelector {
 	 */
 	public void addSpecificSolution(ProposedSolution aProposedSolution) {
 		this.getSpecificSolutions().add(aProposedSolution);
-		Collections.sort(this.getSpecificSolutions());
+		this.sortProposedSolutions(this.getSpecificSolutions());
+		//Collections.sortPossibleSolutions(this.getSpecificSolutions());
 	}
 
 	/**
 	 * Método de instancia agregado
 	 * @param successfulStructConflictSet
 	 */
-	public void setSuccessfulConflictSet(List<Hypothesis> successfulStructConflictSet) {
+	public void setSuccessfulConflictSet(List successfulStructConflictSet) {
 		this.successfulConflictSet = successfulStructConflictSet;
 	}
 
@@ -207,7 +211,7 @@ public class PossibleSolutionSelector {
 	 * @see "Método successfulStructConflictSet del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<Hypothesis> getSuccessfulConflictSet() {
+	public List getSuccessfulConflictSet() {
 		return successfulConflictSet;
 	}
 
@@ -250,7 +254,7 @@ public class PossibleSolutionSelector {
 	 * Returns: self. The process ran OK.
 	 * @return
 	 */
-	public boolean distribute(List<PossibleSolution> aSortedPossibleSolutionsList) {
+	public boolean distribute(List aSortedPossibleSolutionsList) {
 		ProposedSolution ps;
 		int max, goalLevel, i, psLevel;
 		
@@ -270,7 +274,7 @@ public class PossibleSolutionSelector {
 		while (i <= max) {
 			ps = new ProposedSolution();
 			ps.setStatus(this.isStatus());
-			ps.setSolution(aSortedPossibleSolutionsList.remove(0));
+			ps.setSolution((PossibleSolution)aSortedPossibleSolutionsList.remove(0));
 
 			if (ps.getSolution().getPoints() < 0.0) ps.setCertaintyDegree(CertaintyDegree.UNCERTAIN);
 			if (ps.getSolution().getPoints() == 0.0) ps.setCertaintyDegree(CertaintyDegree.DOUBTFUL);
@@ -319,13 +323,13 @@ public class PossibleSolutionSelector {
 	 * Returns: an empty list, OR a list with THE BEST identification solutions.
 	 * @return
 	 */
-	public List<ProposedSolution> select() {
-		List<PossibleSolution> proposedSolutionsList;
-		List<ProposedSolution> solutions;
+	public List select() {
+		List proposedSolutionsList;
+		List solutions;
 		int i;
 		
 		proposedSolutionsList = this.sortPossibleSolutions();
-		solutions = new ArrayList<ProposedSolution>();
+		solutions = new ArrayList();
 
 		if (proposedSolutionsList.isEmpty())
 			return solutions;
@@ -359,22 +363,29 @@ public class PossibleSolutionSelector {
 	 * @see "Método sortPossibleSolutions del protocolo selecting solutions en SUKIA SmallTalk"
 	 * @return
 	 */
-	public List<PossibleSolution> sortPossibleSolutions() {
-		List<PossibleSolution> pSolutions;
+	public List sortPossibleSolutions() {
+		List pSolutions;
 		//Hypothesis hypothesis;
 	
 		/* All possible solutions will be sorted by their point number: those with higher scores will 
 		 be at the beginning of the list*/
-		pSolutions = new ArrayList<PossibleSolution>();
+		pSolutions = new ArrayList();
 
 		// FIRST CHOICE: Load all successful (i.e., positive) structure possible solutions, if any
-        for (Hypothesis hypothesis:this.getSuccessfulConflictSet()){
-            for (PossibleSolution aPossibleSolution:hypothesis.getPossibleSolutions()){
+		Iterator i = this.getSuccessfulConflictSet().iterator();
+		
+		while (i.hasNext()) {
+			Hypothesis hypothesis = (Hypothesis) i.next(); 
+
+			Iterator j = hypothesis.getPossibleSolutions().iterator();
+			
+			while (j.hasNext()) {
+				PossibleSolution aPossibleSolution = (PossibleSolution) j.next();
                 pSolutions.add(aPossibleSolution);
             }
         }
         
-        this.sort(pSolutions);
+        this.sortPossibleSolutions(pSolutions);
         
 		if (!(pSolutions.isEmpty())) {
 			this.setStatus(true);
@@ -385,13 +396,19 @@ public class PossibleSolutionSelector {
 		  load them in the list*/
 		if (this.isShowFailedSolutions()) {
 			// Load all failed (i.e., negative) structure possible solutions, if any
-            for (Hypothesis hypothesis:this.getFailureConflictSet()){
-                for (PossibleSolution aPossibleSolution:hypothesis.getPossibleSolutions()){
+			i = this.getFailureConflictSet().iterator();
+			
+			while (i.hasNext()) {
+				Hypothesis hypothesis = (Hypothesis) i.next(); 
+				Iterator j = hypothesis.getPossibleSolutions().iterator();
+				
+				while (j.hasNext()) {
+					PossibleSolution aPossibleSolution = (PossibleSolution) j.next();
                     pSolutions.add(aPossibleSolution);
                 }
             }
 
-            this.sort(pSolutions);
+            this.sortPossibleSolutions(pSolutions);
 			if (!(pSolutions.isEmpty()))
 				this.setStatus(false);
 		}
@@ -403,9 +420,17 @@ public class PossibleSolutionSelector {
 	 * Método de instancia agregado
 	 * @param pSolutions
 	 */
-	private void sort(List<PossibleSolution> pSolutions) {
-		Collections.sort(pSolutions,
-				new Comparator<PossibleSolution>() {
+	private void sortPossibleSolutions(List pSolutions) {
+		java.util.List<PossibleSolution> anotherPSolutions = new java.util.ArrayList<PossibleSolution>();
+		
+		Iterator i = pSolutions.iterator();
+		
+		while (i.hasNext()) {
+			anotherPSolutions.add((PossibleSolution)i.next());
+		}
+		
+		java.util.Collections.sort(anotherPSolutions,
+				new java.util.Comparator<PossibleSolution>() {
 					public int compare(PossibleSolution elem1, PossibleSolution elem2) {
 						if ((elem2.getPoints()	- elem1.getPoints()) > 0)
 							return 1;
@@ -413,6 +438,32 @@ public class PossibleSolutionSelector {
 							return -1;
 						else return 0;
 					}
-				});
+				}); //OJO buscar alternativa de ordenamiento
+		
+		pSolutions.clear();
+		
+		java.util.Iterator<PossibleSolution> j = anotherPSolutions.iterator();
+		
+		while (j.hasNext()) {
+			pSolutions.add(j.next());
+		}
+	}
+	
+	private void sortProposedSolutions(List proposedSolutions) {
+		Set proposedSolutionsSet = new SortedSetImpl();
+		
+		Iterator i = proposedSolutions.iterator();
+		
+		while (i.hasNext()) {
+			proposedSolutionsSet.add(i.next());
+		}
+		
+		proposedSolutions.clear();
+		
+		Iterator j = proposedSolutionsSet.iterator();
+		
+		while (j.hasNext()) {
+			proposedSolutions.add(j.next());
+		}
 	}
 }

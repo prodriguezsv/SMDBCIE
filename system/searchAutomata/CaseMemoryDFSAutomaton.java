@@ -10,7 +10,6 @@ import redundantDiscriminationNet.RootNorm;
 import jade.util.leap.Iterator;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -428,8 +427,8 @@ public class CaseMemoryDFSAutomaton {
 	                // against the doubtful description. If this time the SAVDescriptior is NOT a member of
 	                // the doubtful description, return self, indicating that there is at least one
 	                // index-value to show to the user
-	                if (!this.getUnconfirmedDescription().getDescriptors().contains(((Norm)idxSucc).getDescriptor())) {
-	                    if (!this.getDoubtfulDescription().getDescriptors().contains(((Norm)idxSucc).getDescriptor()))
+	                if (!this.getUnconfirmedDescription().getDescriptors().contains(idxSucc.getDescriptor())) {
+	                    if (!this.getDoubtfulDescription().getDescriptors().contains(idxSucc.getDescriptor()))
 	                        return true;
 	                }
 	            }
@@ -501,15 +500,18 @@ public class CaseMemoryDFSAutomaton {
                 if (succ instanceof Norm){
                     tempList.add(d);
                 } else {
-                    //The matched index points to a case. Place the corresponding descriptor in the solution description
-                    //and associate the corresponding case to a PossibleSolution. Next, place the possible solution in the
-                    //output possible solutions list. Finally, remove the descriptor from the solution description
+                    /*The matched index points to a case. Place the corresponding descriptor in the solution
+                     *description and associate the corresponding case to a PossibleSolution. Next, place the
+                     *ossible solution in the output possible solutions list. Finally, remove the descriptor
+                     *from the solution description
+                     */
                     this.addToSolutionDescription(d);
                     
                     aCaseList.add((SheetCase)succ);
                     List<PossibleSolution> pSolutionList = associateCasesToPossibleSolutions(aCaseList);
                     this.addToPossibleSolutions(pSolutionList.remove(0));
                     
+                    //OJO
                     this.getSolutionDescription().getDescriptors().remove(getSolutionDescription().getDescriptors().size()-1);
                 }
             }
@@ -585,6 +587,7 @@ public class CaseMemoryDFSAutomaton {
                     List<PossibleSolution> pSolutionList = associateCasesToPossibleSolutions(aCaseList);
                     this.addToPossibleSolutions(pSolutionList.remove(0));
                     
+                    //OJO
                     getSolutionDescription().getDescriptors().remove(getSolutionDescription().getDescriptors().size()-1);
 
                 }
@@ -887,7 +890,9 @@ public class CaseMemoryDFSAutomaton {
                 //Make sure that the descriptor is NOT already included in neither the unconfirmed and doubtful descriptions
                 if (!getUnconfirmedDescription().getDescriptors().contains(idxSuccessor.getDescriptor())
                 		&& !getDoubtfulDescription().getDescriptors().contains(idxSuccessor.getDescriptor()))
-                    alternativeCases.add(idxSuccessor);                
+                    if (idxSuccessor instanceof SheetCase)
+                    	alternativeCases.add(idxSuccessor);
+                    else alternativeNorms.add(idxSuccessor);
             }
         }
         //Present the list of alternatives (associated to one index) to the user, preferably the cases
@@ -900,7 +905,7 @@ public class CaseMemoryDFSAutomaton {
         if (alternativeNorms.isEmpty() != true){
             List<Node> newList = new ArrayList<Node>();
             
-            //Remover las normas más útiles
+            //Dejar las normas más útiles
             while (alternativeNorms.isEmpty() != true){
             	Node n = alternativeNorms.remove(0);
                 if (!isUseless(alternativeNorms.remove(0))) newList.add(n);
@@ -917,7 +922,7 @@ public class CaseMemoryDFSAutomaton {
         //At this point, all alternatives for this norm failed because they were either unconfirmed or
         // rejected due to doubt. Present to the user the possibility to BACKTRACK
 
-        int answer = JOptionPane.showConfirmDialog(null, "Hasta ahora las alternativas presentadas \n no han " +
+        int answer = JOptionPane.showConfirmDialog(frame, "Hasta ahora las alternativas presentadas no han " +
         		"ayudado a resolver el problema. \n ¿Desea continuar evaluando otras alternativas?", "OracleID",
         		JOptionPane.YES_NO_OPTION);
 
@@ -978,9 +983,13 @@ public class CaseMemoryDFSAutomaton {
         			} else if (n instanceof SheetCase) {
         				// The solution is a case
         				addToConfirmedDescription(n.getDescriptor());
+        				
         				List<SheetCase> caseList = new ArrayList<SheetCase>();
         				caseList.add((SheetCase)n);
         				List<PossibleSolution> ps = associateCasesToPossibleSolutions(caseList);
+        				
+        				//OJO: las descripciones se ordenan automaticamente al insertar un descriptor
+        				this.getConfirmedDescription().getDescriptors().remove(getConfirmedDescription().getDescriptors().size()-1);
         				
         				while(ps.isEmpty() != true)
                             addToPossibleSolutions(ps.remove(0));
@@ -1027,6 +1036,7 @@ public class CaseMemoryDFSAutomaton {
 	public SearchStatus searchPossibleSolutionsDialog(Descriptor aSAVDescriptor){
 		Map<String, Descriptor> descriptors;
 		List<String> values;
+		SingleDSuggestionDialog.Response response;
 		
         //Partial match: Look for an index under the current norm, whose label matches the
         //descriptor's attribute. Disregard the descriptor's value
@@ -1071,15 +1081,13 @@ public class CaseMemoryDFSAutomaton {
 		else if (aSAVDescriptor.getValue() instanceof SingleValue)
 			oldValue = "" + ((SingleValue)aSAVDescriptor.getValue()).getValue();
         
-        String message = "No reconozco el valor " + oldValue + " del atributo "+ aSAVDescriptor.getAttribute()+
-        			" de la estructura " +aSAVDescriptor.getStructure()+ "\nbrindado en la descripción del espécimen." +
-        			"\nSin embargo, sí puedo reconocer los siguientes valores.\n ¿Es algun valor válido?" +
-        			"\n\nSi no es posible proveer la respuesta, escriba \"reject\"." +
-					"\nSi tiene dudas de la respuesta, escriba \"doubtful\"." +
-					"\nSi quiere abortar la interacción, haga click en cancelar.\n";
+        String message = "No reconozco el valor \"" + oldValue + "\" del atributo \""+ aSAVDescriptor.getAttribute()+
+        			"\" de la estructura \"" +aSAVDescriptor.getStructure()+ "\" brindado en la descripción del espécimen." +
+        			"\nSin embargo, sí puedo reconocer los siguientes valores.\n¿Es algun valor válido?";
         
         descriptors = new HashMap<String, Descriptor>();
-        values = new ArrayList<String>(Arrays.asList("reject", "doubtful"));
+        
+        values = new ArrayList<String>();
         
     	for (SheetCase sc:aCaseList) {
     		if (sc.getDescriptor().getValue() instanceof String) {
@@ -1092,11 +1100,12 @@ public class CaseMemoryDFSAutomaton {
     		}
     	}
     	
-    	String result = (String) JOptionPane.showInputDialog(null, message, "OracleID", JOptionPane.QUESTION_MESSAGE,
-    			null, values.toArray(), "reject");
-    	
+        SingleDSuggestionDialog dialog = new SingleDSuggestionDialog(frame, message, values.toArray());
+		
+		response = dialog.getResponse();
+    	    	
     	//El usuario rechaza la sugerencia
-        if (result.equals("reject")){
+        if (response == SingleDSuggestionDialog.Response.REJECT){
         	for (Descriptor d:descriptors.values())
                 addToUnconfirmedDescription(d);
             
@@ -1107,7 +1116,7 @@ public class CaseMemoryDFSAutomaton {
 
         //User is in doubt. Flush the descriptor list by placing all SAVDescriptors in the doubtful
         //description. Continue processing the next attribute
-        if (result.equals("doubtful")){
+        if (response == SingleDSuggestionDialog.Response.DOUBT){
         	for (Descriptor d:descriptors.values())
                 addToDoubtfulDescription(d);
             
@@ -1117,10 +1126,10 @@ public class CaseMemoryDFSAutomaton {
         }
         
         //User cancels. Cancel the process and exit.
-        if (result == null)
+        if (response == SingleDSuggestionDialog.Response.CANCEL)
         	return (status = SearchStatus.CANCEL);
 
-        SheetCase sc = this.getSheetCase(descriptors.get(result), aCaseList);
+        SheetCase sc = this.getSheetCase(descriptors.get(dialog.getValue()), aCaseList);
         
         //At this point, the answer must be successful.
         //Associate the confirmed case to PossibleSolution. Then exit successfully
@@ -1130,7 +1139,7 @@ public class CaseMemoryDFSAutomaton {
         List<PossibleSolution> pSolutionList = associateCasesToPossibleSolutions(aCaseList);
         this.addToPossibleSolutions(pSolutionList.remove(0));
         
-        this.getSolutionDescription().getDescriptors().remove(getSolutionDescription().getDescriptors().size()-1);
+        this.getConfirmedDescription().getDescriptors().remove(getConfirmedDescription().getDescriptors().size()-1);
         
         return (status = SearchStatus.SUCCESS);
     }

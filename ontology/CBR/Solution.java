@@ -4,6 +4,8 @@
  */
 package ontology.CBR;
 
+import java.io.Serializable;
+
 import ontology.common.Description;
 import ontology.taxonomy.TaxonomicRank;
 
@@ -12,7 +14,7 @@ import ontology.taxonomy.TaxonomicRank;
  * @author Armando
  *
  */
-public class Solution {
+public class Solution implements jade.content.Concept, Serializable {
 	/**
 	 *  A list containing a set of Descriptor's (the solution path of the case, i.e., the result of the
 	 *  traversal across the net and other reference structures).
@@ -32,9 +34,22 @@ public class Solution {
 	 * @see "M&eacute;todo initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
 	public Solution() {
+		this._internalInstanceName = "";
 		justification = new Description();
 		taxonLevel = null;
 		taxonName = null;
+	}
+	
+	private static final long serialVersionUID = 4206237779038972396L;
+
+	private String _internalInstanceName = null;
+
+	public Solution(String instance_name) {
+		this._internalInstanceName = instance_name;
+	}
+
+	public String toString() {
+		return _internalInstanceName;
 	}
 	
 	/**

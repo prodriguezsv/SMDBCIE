@@ -3,6 +3,8 @@
  */
 package ontology.CBR;
 
+import java.io.Serializable;
+
 import ontology.common.Description;
 import ontology.common.Descriptor;
 import ontology.taxonomy.Taxon;
@@ -13,7 +15,7 @@ import ontology.taxonomy.TaxonomicRank;
  * @author Armando
  *
  */
-public class PossibleSolution implements Comparable<PossibleSolution> {
+public class PossibleSolution implements jade.content.Concept, Serializable, Comparable<PossibleSolution> {
 	private Description confirmedDescription;
 	private Description unconfirmedDescription;
 	private Description contradictions;
@@ -28,6 +30,7 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 	 * @see "M&eacute;todo initialize del protocolo initializing en SUKIA SmallTalk"
 	 */
 	public PossibleSolution() {
+		this._internalInstanceName = "";
 		setSolutionDescription(new Description());
 		setConfirmedDescription(new Description());
 		setUnconfirmedDescription(new Description());
@@ -38,6 +41,18 @@ public class PossibleSolution implements Comparable<PossibleSolution> {
 		setEvaluated(false);
 		setPoints(0);
 	}
+	
+	private static final long serialVersionUID = 4206237779038972396L;
+
+  	private String _internalInstanceName = null;
+
+  	public PossibleSolution(String instance_name) {
+	  this._internalInstanceName = instance_name;
+  	}
+
+  	public String toString() {
+	  return _internalInstanceName;
+  	}
 
 	/**
 	 * M&eacute;todo accesor de escritura
