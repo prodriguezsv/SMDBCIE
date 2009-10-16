@@ -1,8 +1,10 @@
 package oracleIDGui;
 
 import javax.swing.JPanel;
+
 import java.awt.Frame;
 import java.awt.BorderLayout;
+
 import javax.swing.JDialog;
 import java.awt.GridLayout;
 import javax.swing.JButton;
@@ -42,6 +44,7 @@ public class RangeDSuggestionDialog extends JDialog {
 	public RangeDSuggestionDialog(OracleIDGui owner, String indication, String value) {
 		super(owner);
 		initialize();
+		setLocation();
 		jLabelIndication.setText(indication);
 		jtfValue.setText(value);
 		this.setVisible(true);
@@ -62,6 +65,7 @@ public class RangeDSuggestionDialog extends JDialog {
 	 */
 	private void initialize() {
 		this.setSize(300, 200);
+		this.setModal(true);
 		this.setContentPane(getJContentPane());
 		this.addWindowListener(new java.awt.event.WindowAdapter() {
 			public void windowClosing(java.awt.event.WindowEvent e) {
@@ -122,7 +126,7 @@ public class RangeDSuggestionDialog extends JDialog {
 			jbAccept.setText("Aceptar");
 			jbAccept.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					if (jtfValue.getText().equals("")) {
+					if (!jtfValue.getText().equals("")) {
 						try {
 							Double.parseDouble(jtfValue.getText());
 							response = Response.ACEPT;
@@ -229,4 +233,11 @@ public class RangeDSuggestionDialog extends JDialog {
 		return jtfValue;
 	}
 
+	public void setLocation() {
+		//pack(); //Reajustar al tamaño preferido 
+		int centerX = (int) this.getOwner().getLocation().getX() + this.getOwner().getWidth()/ 2;
+		int centerY = (int) this.getOwner().getLocation().getY() + this.getOwner().getHeight()/ 2;
+				
+		setLocation(centerX - getWidth() / 2, centerY - getHeight() / 2);
+	}	
 }

@@ -54,6 +54,7 @@ public class SingleDSuggestionDialog extends JDialog {
 	public SingleDSuggestionDialog(OracleIDGui owner, String indication, Object values[]) {
 		super(owner);
 		initialize();
+		setLocation();
 		jLabelIndication.setText(indication);
 		jlValues.setListData(values);
 		this.setVisible(true);
@@ -248,5 +249,13 @@ public class SingleDSuggestionDialog extends JDialog {
 		}
 		return jLabelIndication;
 	}
+	
+	public void setLocation() {
+		pack(); //Reajustar al tamaño preferido 
+		int centerX = (int) this.getOwner().getLocation().getX() + this.getOwner().getWidth()/ 2;
+		int centerY = (int) this.getOwner().getLocation().getY() + this.getOwner().getHeight()/ 2;
+				
+		setLocation(centerX - getWidth() / 2, centerY - getHeight() / 2);
+	}	
 
 }  //  @jve:decl-index=0:visual-constraint="10,10"

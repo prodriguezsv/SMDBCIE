@@ -373,8 +373,9 @@ public class OracleIDGui extends JFrame {
 	private JComboBox getJcbMeasuringUnit() {
 		if (jcbMeasuringUnit == null) {
 			jcbMeasuringUnit = new JComboBox();
-			jcbMeasuringUnit.setEditable(true);
+			jcbMeasuringUnit.setEditable(false);
 			jcbMeasuringUnit.setToolTipText("Proporcione un valor para la estructura y atributo seleccionado");
+			jcbMeasuringUnit.setEnabled(true);
 			jcbMeasuringUnit.setName("jcbMeasuringUnit");
 		}
 		
@@ -419,8 +420,8 @@ public class OracleIDGui extends JFrame {
 					
 					if (jlStructures.getSelectedValue() != null &&
 							jlAttributes.getSelectedValue() != null &&
-							(jlValues.getSelectedValue() != null) ||
-							!jtfValue.getText().equals("")) {
+							(jlValues.getSelectedValue() != null ||
+							!jtfValue.getText().equals(""))) {
 						if (valuesScope.isEmpty()) {
 							instValue = kb.getInstance(structuresScope.get((String)jlStructures.getSelectedValue()));
 							
@@ -439,34 +440,50 @@ public class OracleIDGui extends JFrame {
 							
 							if (instValue.hasType(kb.getCls("Structure"))) {
 								if (jlValues.getSelectedValue() != null) {
-									instValue = kb.getInstance(valuesScope.get((String)jlValues.getSelectedValue()));								
+									instValue = kb.getInstance(valuesScope.get((String)jlValues.getSelectedValue()));		
+									if (instValue.hasType(kb.getCls("State")))
+										descriptor = new SSCharacterDescriptor((String)jlStructures.getSelectedValue(), 
+												(String)jlAttributes.getSelectedValue(),
+												(String)jlValues.getSelectedValue());
+									else
+										descriptor = new SVCharacterDescriptor((String)jlStructures.getSelectedValue(), 
+												(String)jlAttributes.getSelectedValue(),
+												new SingleValue(Double.parseDouble((String)jlValues.getSelectedValue()), (String)jcbMeasuringUnit.getSelectedItem()));
 								} else {
 									instValue = kb.getInstance(valuesScope.values().iterator().next());
-								}
-								
-								if (instValue.hasType(kb.getCls("State")))
-									descriptor = new SSCharacterDescriptor((String)jlStructures.getSelectedValue(), 
-											(String)jlAttributes.getSelectedValue(),
-											(String)jlValues.getSelectedValue());
-								else
-									descriptor = new SVCharacterDescriptor((String)jlStructures.getSelectedValue(), 
-											(String)jlAttributes.getSelectedValue(),
-											new SingleValue(Double.parseDouble((String)jlValues.getSelectedValue()), (String)jcbMeasuringUnit.getSelectedItem()));
+									if (instValue.hasType(kb.getCls("State")))
+										descriptor = new SSCharacterDescriptor((String)jlStructures.getSelectedValue(), 
+												(String)jlAttributes.getSelectedValue(),
+												(String)jtfValue.getText());
+									else
+										descriptor = new SVCharacterDescriptor((String)jlStructures.getSelectedValue(), 
+												(String)jlAttributes.getSelectedValue(),
+												new SingleValue(Double.parseDouble((String)(String)jtfValue.getText()), (String)jcbMeasuringUnit.getSelectedItem()));
+								}								
 							} else {
 								if (jlValues.getSelectedValue() != null) {
-									instValue = kb.getInstance(valuesScope.get((String)jlValues.getSelectedValue()));								
+									instValue = kb.getInstance(valuesScope.get((String)jlValues.getSelectedValue()));
+									
+									if (instValue.hasType(kb.getCls("State")))
+										descriptor = new SSHeuristicDescriptor((String)jlStructures.getSelectedValue(), 
+												(String)jlAttributes.getSelectedValue(),
+												(String)jlValues.getSelectedValue());
+									else
+										descriptor = new SVHeuristicDescriptor((String)jlStructures.getSelectedValue(), 
+												(String)jlAttributes.getSelectedValue(),
+												new SingleValue(Double.parseDouble((String)jlValues.getSelectedValue()), (String)jcbMeasuringUnit.getSelectedItem()));
 								} else {
 									instValue = kb.getInstance(valuesScope.values().iterator().next());
-								}
-								
-								if (instValue.hasType(kb.getCls("State")))
-									descriptor = new SSHeuristicDescriptor((String)jlStructures.getSelectedValue(), 
-											(String)jlAttributes.getSelectedValue(),
-											(String)jlValues.getSelectedValue());
-								else
-									descriptor = new SVHeuristicDescriptor((String)jlStructures.getSelectedValue(), 
-											(String)jlAttributes.getSelectedValue(),
-											new SingleValue(Double.parseDouble((String)jlValues.getSelectedValue()), (String)jcbMeasuringUnit.getSelectedItem()));
+									
+									if (instValue.hasType(kb.getCls("State")))
+										descriptor = new SSHeuristicDescriptor((String)jlStructures.getSelectedValue(), 
+												(String)jlAttributes.getSelectedValue(),
+												(String)(String)jtfValue.getText());
+									else
+										descriptor = new SVHeuristicDescriptor((String)jlStructures.getSelectedValue(), 
+												(String)jlAttributes.getSelectedValue(),
+												new SingleValue(Double.parseDouble((String)jtfValue.getText()), (String)jcbMeasuringUnit.getSelectedItem()));
+								}														
 							}
 							
 						}
@@ -516,6 +533,12 @@ public class OracleIDGui extends JFrame {
 			jbNewProblem = new JButton();
 			jbNewProblem.setText("Nuevo problema");
 			jbNewProblem.setName("jbNewProblem");
+			jbNewProblem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					clearProblem();
+					clearSolution();
+				}
+			});
 		}
 		return jbNewProblem;
 	}
@@ -567,6 +590,7 @@ public class OracleIDGui extends JFrame {
 		
 		jlDescriptions.setListData(((ProposedSolution)getProposedSolutions()
 				.get(proposedSolution)).getSolution().getSolutionDescription().getDescriptors().toArray());
+		jtpCase.setSelectedIndex(1);		
 	}
 	
 	private void clearSolution() {
@@ -583,6 +607,16 @@ public class OracleIDGui extends JFrame {
 		jrbContradictions.setSelected(false);	
 		this.getProposedSolutions().clear();
 		proposedSolution = 0;
+	}
+	
+	private void clearProblem() {
+		jlStructures.clearSelection();
+		jlAttributes.clearSelection();
+		jlAttributes.setListData((new ArrayList<String>()).toArray());
+		jlValues.clearSelection();
+		jlValues.setListData((new ArrayList<String>()).toArray());
+		jtfValue.setText("");
+		jlDescription.setListData((new ArrayList<String>()).toArray());
 	}
 
 	/**
@@ -1320,11 +1354,19 @@ public class OracleIDGui extends JFrame {
 	}
 	
 	public void setLocation() {
+		int  width, height;
+		
 		pack();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int centerX = (int)screenSize.getWidth() / 2;
 		int centerY = (int)screenSize.getHeight() / 2;
-		setLocation(centerX - getWidth() / 2, centerY - getHeight() / 2);
+		
+		if (screenSize.getHeight() < getHeight()) height = (int) screenSize.getHeight();
+		else height = getHeight();
+		if (screenSize.getWidth() < getWidth()) width = (int)screenSize.getWidth();
+		else width = (int)getWidth();
+		
+		setLocation(centerX - width / 2, centerY - height / 2);
 	}	
 
 }  //  @jve:decl-index=0:visual-constraint="23,43"

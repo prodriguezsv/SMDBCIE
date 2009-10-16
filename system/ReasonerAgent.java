@@ -70,7 +70,7 @@ public class ReasonerAgent extends Agent {
     @Override
   protected void takeDown() {
     // Imprimir un mensaje de despedida
-    System.out.println("¡Qué tenga buen día! Agente razonador "+getAID().getName()+" fuera de servicio.");
+    System.out.println("¡Que tenga buen día! Agente razonador "+getAID().getName()+" fuera de servicio.");
   }
 	/**
 	 * La clase interna AdaptationRequestsServer.
