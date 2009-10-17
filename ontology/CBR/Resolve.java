@@ -1,8 +1,6 @@
 package ontology.CBR;
 
 import java.io.Serializable;
-import java.beans.PropertyChangeSupport;
-import java.beans.PropertyChangeListener;
 
 
 /**
@@ -10,20 +8,8 @@ import java.beans.PropertyChangeListener;
 * @author ontology bean generator
 * @version 2009/10/6, 23:03:27
 */
+@SuppressWarnings("serial")
 public class Resolve implements jade.content.AgentAction, Serializable {
-  // bean stuff
-   protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-
-   public void addPropertyChangeListener(PropertyChangeListener pcl) {
-     pcs.addPropertyChangeListener(pcl);
-   }
-
-   public void removePropertyChangeListener(PropertyChangeListener pcl) {
-     pcs.removePropertyChangeListener(pcl);
-   }
-
-
-  private static final long serialVersionUID = 4206237779038972396L;
 
   private String _internalInstanceName = null;
 
@@ -44,7 +30,6 @@ public class Resolve implements jade.content.AgentAction, Serializable {
    */
    private Problem problema;
    public void setProblema(Problem value) { 
-     pcs.firePropertyChange("problema", (this.problema==null?new Problem():this.problema), value);
     this.problema=value;
    }
    public Problem getProblema() {

@@ -3,8 +3,6 @@
  */
 package ontology.taxonomy;
 
-import java.io.Serializable;
-
 import ontology.common.Descriptor;
 
 /**
@@ -12,7 +10,8 @@ import ontology.common.Descriptor;
  * @author Armando
  *
  */
-public class WeightedDescriptor implements jade.content.Concept, Serializable {
+@SuppressWarnings("serial")
+public class WeightedDescriptor implements jade.content.Concept {
 	private Descriptor descriptor;
 	private Modifier modifier;
 
@@ -29,8 +28,6 @@ public class WeightedDescriptor implements jade.content.Concept, Serializable {
 		this.setDescriptor(descriptor);
 		this.setModifier(modifier);
 	}
-	
-	private static final long serialVersionUID = -8627856865395943317L;
 
 	private String _internalInstanceName = null;
 

@@ -7,10 +7,6 @@ import jade.util.leap.ArrayList;
 import jade.util.leap.Iterator;
 import jade.util.leap.List;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.io.Serializable;
-
 import ontology.common.CharacterDescriptor;
 import ontology.common.Description;
 import ontology.common.Descriptor;
@@ -22,20 +18,8 @@ import ontology.common.RVHeuristicDescriptor;
  * @author Armando
  *
  */
-public class WeightedDescription implements jade.content.Concept, Serializable {
-	// bean stuff
-   protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-
-   public void addPropertyChangeListener(PropertyChangeListener pcl) {
-     pcs.addPropertyChangeListener(pcl);
-   }
-
-   public void removePropertyChangeListener(PropertyChangeListener pcl) {
-     pcs.removePropertyChangeListener(pcl);
-   }
-
-
-  private static final long serialVersionUID = -8627856865395943317L;
+@SuppressWarnings("serial")
+public class WeightedDescription implements jade.content.Concept {
 
   private String _internalInstanceName = null;
 

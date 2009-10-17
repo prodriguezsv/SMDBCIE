@@ -9,7 +9,6 @@ import jade.util.leap.List;
 import jade.util.leap.Set;
 import jade.util.leap.SortedSetImpl;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +21,8 @@ import ontology.common.RangeValue;
  * @author Armando
  *
  */
-public class Taxon implements jade.content.Concept, Serializable, Comparable<Taxon>{
+@SuppressWarnings("serial")
+public class Taxon implements jade.content.Concept, Comparable<Taxon>{
 	private String level;
 	private String name;
 	private Taxon predecessor;
@@ -39,8 +39,6 @@ public class Taxon implements jade.content.Concept, Serializable, Comparable<Tax
 		setSuccessors(new ArrayList());
 		setWeightedDescription(new WeightedDescription());
 	}
-	
-	private static final long serialVersionUID = -8627856865395943317L;
 
 	private String _internalInstanceName = null;
 

@@ -10,14 +10,13 @@ package ontology.common;
  * ya que ning&uacute;n par attribute-value particular generaliza todos los casos bajo ellos.
  * 
 */
+@SuppressWarnings("serial")
 public class SSHeuristicDescriptor extends QualitativeHeuristicDescriptor {
 	String value;
 	
 	public SSHeuristicDescriptor() {
 		
 	}
-	
-	private static final long serialVersionUID = -3087841394215437493L;
 
 	public SSHeuristicDescriptor(String instance_name) {
 		super(instance_name);

@@ -9,28 +9,12 @@ import jade.util.leap.List;
 import jade.util.leap.Set;
 import jade.util.leap.SortedSetImpl;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.io.Serializable;
-
 /**
  * @author Armando
  *
  */
-public class Description implements jade.content.Concept, Serializable {
-   // bean stuff
-   protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-
-   public void addPropertyChangeListener(PropertyChangeListener pcl) {
-     pcs.addPropertyChangeListener(pcl);
-   }
-
-   public void removePropertyChangeListener(PropertyChangeListener pcl) {
-     pcs.removePropertyChangeListener(pcl);
-   }
-
-
-  private static final long serialVersionUID = -3087841394215437493L;
+@SuppressWarnings("serial")
+public class Description implements jade.content.Concept {
 
   private String _internalInstanceName = null;
 

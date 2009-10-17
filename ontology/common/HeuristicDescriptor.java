@@ -10,6 +10,7 @@ package ontology.common;
  * ya que ningún par attribute-value particular generaliza todos los casos bajo ellos.
  * 
 */
+@SuppressWarnings("serial")
 public abstract class HeuristicDescriptor extends Descriptor {
 	/**
 	 * Class instance invariant: self MUST always have exactly two values. The first
@@ -20,8 +21,6 @@ public abstract class HeuristicDescriptor extends Descriptor {
 	public HeuristicDescriptor() {
 
 	}
-	
-	private static final long serialVersionUID = -3087841394215437493L;
 
 	public HeuristicDescriptor(String instance_name) {
 		super(instance_name);

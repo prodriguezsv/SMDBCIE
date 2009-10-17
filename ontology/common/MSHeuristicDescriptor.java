@@ -14,14 +14,13 @@ import jade.util.leap.List;
  * ya que ning&uacute;n par attribute-value particular generaliza todos los casos bajo ellos.
  * 
 */
+@SuppressWarnings("serial")
 public class MSHeuristicDescriptor extends QualitativeHeuristicDescriptor {
 	private List value;
 	
 	public MSHeuristicDescriptor() {
 		value = new ArrayList();
 	}
-	
-	private static final long serialVersionUID = -3087841394215437493L;
 	
 	public MSHeuristicDescriptor(String instance_name) {
 		super(instance_name);

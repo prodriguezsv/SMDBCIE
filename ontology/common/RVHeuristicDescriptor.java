@@ -11,14 +11,13 @@ package ontology.common;
  * ya que ning&uacute;n par attribute-value particular generaliza todos los casos bajo ellos.
  * 
 */
+@SuppressWarnings("serial")
 public class RVHeuristicDescriptor extends QualitativeHeuristicDescriptor {
 	RangeValue value;
 	
 	public RVHeuristicDescriptor() {
 		
 	}
-	
-	private static final long serialVersionUID = -3087841394215437493L;
 
     public RVHeuristicDescriptor(String instance_name) {
     	super(instance_name);

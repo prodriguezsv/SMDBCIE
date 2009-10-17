@@ -10,14 +10,13 @@ package ontology.common;
  * ya que ning&uacute;n par attribute-value particular generaliza todos los casos bajo ellos.
  * 
 */
+@SuppressWarnings("serial")
 public class SSCharacterDescriptor extends QualitativeCharacterDescriptor {
 	String value;
 	
 	public SSCharacterDescriptor() {
 		
 	}
-	
-	private static final long serialVersionUID = -3087841394215437493L;
 
 	public SSCharacterDescriptor(String instance_name) {
 		super(instance_name);

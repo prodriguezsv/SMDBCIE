@@ -3,29 +3,13 @@
  */
 package ontology.common;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-
 /**
  * @author Armando
  *
  */
+@SuppressWarnings("serial")
 public class SingleValue extends Value{
 	private double value;
-	
-   // bean stuff
-	protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-
-   	public void addPropertyChangeListener(PropertyChangeListener pcl) {
-	   pcs.addPropertyChangeListener(pcl);
-   	}
-
-   	public void removePropertyChangeListener(PropertyChangeListener pcl) {
-	   pcs.removePropertyChangeListener(pcl);
-   	}
-
-
-   	private static final long serialVersionUID = -3087841394215437493L;
 
   	private String _internalInstanceName = null;
 

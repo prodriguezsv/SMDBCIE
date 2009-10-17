@@ -1,30 +1,13 @@
 package ontology.taxonomy;
 
-import java.io.Serializable;
-import java.beans.PropertyChangeSupport;
-import java.beans.PropertyChangeListener;
-
-
 /**
 * Protege name: IsPredecessorTaxonOf
 * @author ontology bean generator
 * @version 2009/09/30, 13:34:31
 */
-public class IsPredecessorTaxonOf implements jade.content.Predicate, Serializable {
-	// bean stuff
-   protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-
-   public void addPropertyChangeListener(PropertyChangeListener pcl) {
-     pcs.addPropertyChangeListener(pcl);
-   }
-
-   public void removePropertyChangeListener(PropertyChangeListener pcl) {
-     pcs.removePropertyChangeListener(pcl);
-   }
-
-
-  private static final long serialVersionUID = -8627856865395943317L;
-
+@SuppressWarnings("serial")
+public class IsPredecessorTaxonOf implements jade.content.Predicate {
+	
   private String _internalInstanceName = null;
 
   public IsPredecessorTaxonOf() {
@@ -44,7 +27,6 @@ public class IsPredecessorTaxonOf implements jade.content.Predicate, Serializabl
    */
    private Taxon subjectTaxon;
    public void setSubjectTaxon(Taxon value) { 
-     pcs.firePropertyChange("subjectTaxon", (this.subjectTaxon==null?new Taxon():this.subjectTaxon), value);
     this.subjectTaxon=value;
    }
    public Taxon getSubjectTaxon() {
@@ -56,7 +38,6 @@ public class IsPredecessorTaxonOf implements jade.content.Predicate, Serializabl
    */
    private Taxon objectTaxon;
    public void setObjectTaxon(Taxon value) { 
-     pcs.firePropertyChange("objectTaxon", (this.objectTaxon==null?new Taxon():this.objectTaxon), value);
     this.objectTaxon=value;
    }
    public Taxon getObjectTaxon() {

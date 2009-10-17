@@ -1,9 +1,5 @@
 package ontology.CBR;
 
-import java.io.Serializable;
-import java.beans.PropertyChangeSupport;
-import java.beans.PropertyChangeListener;
-
 import jade.util.leap.*;
 
 /**
@@ -11,19 +7,8 @@ import jade.util.leap.*;
 * @author ontology bean generator
 * @version 2009/10/6, 23:03:27
 */
-public class AreReasonableSolutionsTo implements jade.content.Predicate, Serializable {
-   // bean stuff
-   protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-
-   public void addPropertyChangeListener(PropertyChangeListener pcl) {
-     pcs.addPropertyChangeListener(pcl);
-   }
-
-   public void removePropertyChangeListener(PropertyChangeListener pcl) {
-     pcs.removePropertyChangeListener(pcl);
-   }
-
-
+public class AreReasonableSolutionsTo implements jade.content.Predicate {
+	
   private static final long serialVersionUID = 4206237779038972396L;
 
   private String _internalInstanceName = null;
@@ -45,7 +30,6 @@ public class AreReasonableSolutionsTo implements jade.content.Predicate, Seriali
    */
    private Problem problem;
    public void setProblem(Problem value) { 
-     pcs.firePropertyChange("problem", (this.problem==null?new Problem():this.problem), value);
     this.problem=value;
    }
    public Problem getProblem() {

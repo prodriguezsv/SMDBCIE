@@ -1,8 +1,5 @@
 package ontology.taxonomy;
 
-import java.io.Serializable;
-import java.beans.PropertyChangeSupport;
-import java.beans.PropertyChangeListener;
 
 
 /**
@@ -10,20 +7,8 @@ import java.beans.PropertyChangeListener;
 * @author ontology bean generator
 * @version 2009/09/30, 13:34:31
 */
-public class IsSheetTaxon implements jade.content.Predicate, Serializable {
-	// bean stuff
-   protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-
-   public void addPropertyChangeListener(PropertyChangeListener pcl) {
-     pcs.addPropertyChangeListener(pcl);
-   }
-
-   public void removePropertyChangeListener(PropertyChangeListener pcl) {
-     pcs.removePropertyChangeListener(pcl);
-   }
-
-
-  private static final long serialVersionUID = -8627856865395943317L;
+@SuppressWarnings("serial")
+public class IsSheetTaxon implements jade.content.Predicate {
 
   private String _internalInstanceName = null;
 
@@ -44,7 +29,6 @@ public class IsSheetTaxon implements jade.content.Predicate, Serializable {
    */
    private Taxon taxon;
    public void setTaxon(Taxon value) { 
-     pcs.firePropertyChange("taxon", (this.taxon==null?new Taxon():this.taxon), value);
     this.taxon=value;
    }
    public Taxon getTaxon() {

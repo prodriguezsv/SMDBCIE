@@ -14,14 +14,13 @@ import jade.util.leap.List;
  * ya que ning&uacute;n par attribute-value particular generaliza todos los casos bajo ellos.
  * 
 */
+@SuppressWarnings("serial")
 public class MSCharacterDescriptor extends QualitativeCharacterDescriptor {
 	private List value;
 	
 	public MSCharacterDescriptor() {
 		value = new ArrayList();
 	}
-	
-	private static final long serialVersionUID = -3087841394215437493L;
 
 	public MSCharacterDescriptor(String instance_name) {
 		super(instance_name);

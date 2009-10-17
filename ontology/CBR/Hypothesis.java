@@ -9,8 +9,6 @@ import jade.util.leap.List;
 import jade.util.leap.Set;
 import jade.util.leap.SortedSetImpl;
 
-import java.io.Serializable;
-
 import ontology.common.Description;
 import ontology.common.Descriptor;
 
@@ -19,7 +17,8 @@ import ontology.common.Descriptor;
  * @author Armando
  *
  */
-public class Hypothesis implements jade.content.Concept, Serializable{
+@SuppressWarnings("serial")
+public class Hypothesis implements jade.content.Concept {
 	private Description description;
 	private Description justification;
 	private Description unmatchedDescription;
@@ -39,8 +38,6 @@ public class Hypothesis implements jade.content.Concept, Serializable{
 		setUnmatchedDescription(new Description());
 		setJustification(new Description());
 	}
-
-	private static final long serialVersionUID = 4206237779038972396L;
 
   	private String _internalInstanceName = null;
 

@@ -3,16 +3,12 @@
  */
 package ontology.CBR;
 
-import java.io.Serializable;
-
-
-
 
 /**
  * @author Armando
  *
  */
-public class ProposedSolution implements jade.content.Concept, Serializable, Comparable<ProposedSolution> {
+public class ProposedSolution implements jade.content.Concept, Comparable<ProposedSolution> {
 	private String certaintyDegree;
 	private PossibleSolution solution;
 	private boolean state;

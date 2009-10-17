@@ -3,13 +3,12 @@
  */
 package ontology.taxonomy;
 
-import java.io.Serializable;
-
 /**
  * @author Armando
  *
  */
-public class Modifier implements jade.content.Concept, Serializable {
+@SuppressWarnings("serial")
+public class Modifier implements jade.content.Concept {
 	private double structureWeight;
 	private double attributeWeight;
 	private double valueWeight;
@@ -20,8 +19,6 @@ public class Modifier implements jade.content.Concept, Serializable {
 	public Modifier() {
 		this._internalInstanceName = "";
 	}
-	
-	private static final long serialVersionUID = -8627856865395943317L;
 
 	private String _internalInstanceName = null;
 

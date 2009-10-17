@@ -3,8 +3,6 @@
  */
 package ontology.CBR;
 
-import java.io.Serializable;
-
 import ontology.common.Description;
 import ontology.taxonomy.TaxonomicRank;
 
@@ -13,7 +11,8 @@ import ontology.taxonomy.TaxonomicRank;
  * @author Armando
  *
  */
-public class Problem implements jade.content.Concept, Serializable {
+@SuppressWarnings("serial")
+public class Problem implements jade.content.Concept {
 	/**
 	 * A list containing a set of Descriptor's (a description of the problem)
 	 */
@@ -36,8 +35,6 @@ public class Problem implements jade.content.Concept, Serializable {
 		goalRank = null;
 		leastSimilarityDegree = null;
 	}
-	
-	private static final long serialVersionUID = 4206237779038972396L;
 
   	private String _internalInstanceName = null;
 

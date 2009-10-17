@@ -11,14 +11,13 @@ package ontology.common;
  * ya que ning&uacute;n par attribute-value particular generaliza todos los casos bajo ellos.
  * 
 */
+@SuppressWarnings("serial")
 public class RVCharacterDescriptor extends QualitativeCharacterDescriptor {
 	RangeValue value;
 	
 	public RVCharacterDescriptor() {
 	
 	}
-	
-	private static final long serialVersionUID = -3087841394215437493L;
 
 	public RVCharacterDescriptor(String instance_name) {
 		super(instance_name);
