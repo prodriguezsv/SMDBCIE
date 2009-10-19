@@ -7,15 +7,15 @@ package ontology.common;
 * @version 2009/10/17, 11:59:53
 */
 @SuppressWarnings("serial")
-public class IsStructure implements jade.content.Predicate {
+public class IsDescriptiveElement implements jade.content.Predicate {
 
 	  private String _internalInstanceName = null;
 
-	  public IsStructure() {
+	  public IsDescriptiveElement() {
 	    this._internalInstanceName = "";
 	  }
 
-	  public IsStructure(String instance_name) {
+	  public IsDescriptiveElement(String instance_name) {
 	    this._internalInstanceName = instance_name;
 	  }
 
@@ -26,11 +26,11 @@ public class IsStructure implements jade.content.Predicate {
 	  /**
 	   * Protege name: structure
 	   */
-	   private String structure;
-	   public void setStructure(String value) { 
-	    this.structure=value;
+	   private String descriptiveElement;
+	   public void setDescriptiveElement(String value) { 
+	    this.descriptiveElement=value;
 	   }
-	   public String getStructure() {
-	     return this.structure;
+	   public String getDescriptiveElement() {
+	     return this.descriptiveElement;
 	   }
 }

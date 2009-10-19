@@ -8,9 +8,8 @@ import jade.content.schema.*;
  * @author ontology bean generator
  * @version 2009/09/29, 11:00:34
  */
+@SuppressWarnings("serial")
 public class CommonTerminologyOntology extends jade.content.onto.Ontology  {
-
-  private static final long serialVersionUID = -4182418339071425982L;
 
   //NAME
   public static final String ONTOLOGY_NAME = "CommonTerminology";
@@ -56,7 +55,20 @@ public class CommonTerminologyOntology extends jade.content.onto.Ontology  {
     public static final String DESCRIPTOR_ATTRIBUTE="attribute";
     public static final String DESCRIPTOR_STRUCTURE="structure";
     public static final String DESCRIPTOR="Descriptor";
-    //public static final String MEASURINGUNIT="MeasuringUnit";
+    public static final String ISDESCRIPTIVEELEMENT_DESCRIPTIVEELEMENT="descriptiveElement";
+    public static final String ISDESCRIPTIVEELEMENT="IsDescriptiveElement";
+    public static final String APPLIESTO_ATTRIBUTE="attribute";
+    public static final String APPLIESTO_DESCRIPTIVEELEMENT="descriptiveElement";
+    public static final String APPLIESTO="AppliesTo";
+    public static final String OWNS_ATTRIBUTE="attribute";
+    public static final String OWNS_DESCRIPTIVEELEMENT="descriptiveElement";
+    public static final String OWNS="Owns";
+    public static final String DESCRIBEDBY_ATTRIBUTE="attribute";
+    public static final String DESCRIBEDBY_SCORE="score";
+    public static final String DESCRIBEDBY="DescribedBy";
+    public static final String DESCRIBES_ATTRIBUTE="attribute";
+    public static final String DESCRIBES_SCORE="score";
+    public static final String DESCRIBES="Describes";
     
   /**
    * Constructor
@@ -104,14 +116,22 @@ public class CommonTerminologyOntology extends jade.content.onto.Ontology  {
     add(ssHeuristicDescriptorSchema, ontology.common.SSHeuristicDescriptor.class);
     ConceptSchema msHeuristicDescriptorSchema = new ConceptSchema(MSHEURISTICDESCRIPTOR);
     add(msHeuristicDescriptorSchema, ontology.common.MSHeuristicDescriptor.class);
-    /*ConceptSchema measuringUnitSchema = new ConceptSchema(MEASURINGUNIT);
-    add(measuringUnitSchema, ontology.common.MeasuringUnit.class);*/
 
     // adding AgentAction(s)
 
     // adding AID(s)
 
     // adding Predicate(s)
+    PredicateSchema isDescriptiveElementSchema = new PredicateSchema(ISDESCRIPTIVEELEMENT);
+    add(isDescriptiveElementSchema, ontology.common.IsDescriptiveElement.class);
+    PredicateSchema describesSchema = new PredicateSchema(DESCRIBES);
+    add(describesSchema, ontology.common.Describes.class);
+    PredicateSchema describedBySchema = new PredicateSchema(DESCRIBEDBY);
+    add(describedBySchema, ontology.common.DescribedBy.class);
+    PredicateSchema ownsSchema = new PredicateSchema(OWNS);
+    add(ownsSchema, ontology.common.Owns.class);
+    PredicateSchema appliesToSchema = new PredicateSchema(APPLIESTO);
+    add(appliesToSchema, ontology.common.AppliesTo.class);
 
     // adding fields
     descriptorSchema.add(DESCRIPTOR_STRUCTURE, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
@@ -129,6 +149,15 @@ public class CommonTerminologyOntology extends jade.content.onto.Ontology  {
     rangeValueSchema.add(RANGEVALUE_LOWERBOUND, (TermSchema)getSchema(BasicOntology.FLOAT), ObjectSchema.MANDATORY);
     rangeValueSchema.add(RANGEVALUE_UPPERBOUND, (TermSchema)getSchema(BasicOntology.FLOAT), ObjectSchema.MANDATORY);
     descriptionSchema.add(DESCRIPTION_DESCRIPTORS, descriptorSchema, 0, ObjectSchema.UNLIMITED);
+    isDescriptiveElementSchema.add(ISDESCRIPTIVEELEMENT_DESCRIPTIVEELEMENT, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
+    describesSchema.add(DESCRIBES_SCORE, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
+    describesSchema.add(DESCRIBES_ATTRIBUTE, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
+    describedBySchema.add(DESCRIBEDBY_SCORE, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
+    describedBySchema.add(DESCRIBEDBY_ATTRIBUTE, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
+    ownsSchema.add(OWNS_DESCRIPTIVEELEMENT, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
+    ownsSchema.add(OWNS_ATTRIBUTE, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
+    appliesToSchema.add(APPLIESTO_DESCRIPTIVEELEMENT, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
+    appliesToSchema.add(APPLIESTO_ATTRIBUTE, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
 
     // adding name mappings
 

@@ -6,14 +6,14 @@ package ontology.common;
 * @version 2009/09/30, 12:55:45
 */
 @SuppressWarnings("serial")
-public class ApliesTo implements jade.content.Predicate {
+public class AppliesTo implements jade.content.Predicate {
   private String _internalInstanceName = null;
 
-  public ApliesTo() {
+  public AppliesTo() {
     this._internalInstanceName = "";
   }
 
-  public ApliesTo(String instance_name) {
+  public AppliesTo(String instance_name) {
     this._internalInstanceName = instance_name;
   }
 

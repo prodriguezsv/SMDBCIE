@@ -1,62 +1,188 @@
-/**
- * @see "Categoría Sukia Reasoner en SUKIA SmallTalk"
- */
+/*****************************************************************
+JADE - Java Agent DEvelopment Framework is a framework to develop 
+multi-agent systems in compliance with the FIPA specifications.
+Copyright (C) 2000 CSELT S.p.A. 
+
+GNU Lesser General Public License
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation, 
+version 2.1 of the License. 
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the
+Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+Boston, MA  02111-1307, USA.
+*****************************************************************/
+
 package system;
 
+import jade.core.Agent;
+import jade.core.behaviours.*;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 import jade.util.leap.ArrayList;
 import jade.util.leap.Iterator;
 import jade.util.leap.List;
 import jade.util.leap.Set;
 import jade.util.leap.SortedSetImpl;
+import jade.content.onto.*;
+import jade.content.onto.basic.Action;
+import jade.content.abs.AbsPredicate;
+import jade.content.lang.*;
+import jade.content.ContentElement;
+import jade.content.lang.Codec.CodecException;
+import jade.content.lang.sl.*;
+
+import ontology.CBR.CBRTerminologyOntology;
 import ontology.CBR.CertaintyDegree;
 import ontology.CBR.Hypothesis;
 import ontology.CBR.PossibleSolution;
+import ontology.CBR.Problem;
 import ontology.CBR.ProposedSolution;
+import ontology.CBR.Select;
 import ontology.taxonomy.TaxonomicRank;
 
+@SuppressWarnings("serial")
+public class SelectorAgent extends Agent {
+  //Se registra el lenguaje de contenido y la ontologÃ­a
+  private Codec codec = new SLCodec();
+  private Ontology ontology = CBRTerminologyOntology.getInstance();
+  private List proposedSolutions;
+  private Problem problem;
+  private List successfulConflictSet;
+  private List failureConflictSet;
+  private List generalSolutions;
+  private List goalSolutions;
+  private List specificSolutions;
+  private boolean status;
+  private String identificationGoal;
+  private int maxNumberSolutions;
+  private boolean showFailedSolutions;
 
-/**
- * @author Armando
- *
- */
-public class PossibleSolutionSelector {
-	private List failureConflictSet;
-	private List successfulConflictSet;
-	private List generalSolutions;
-	private List goalSolutions;
-	private List specificSolutions;
-	private String identificationGoal;
-	private int maxNumberSolutions;
-	private boolean showFailedSolutions;
-	private boolean status;
+  // Incialización del agente
+	@Override
+  protected void setup() {
+    // Imprimir un mensaje de bienvenida
+	System.out.println("¡Hola! Agente selector "+getAID().getName()+" listo.");
+
+    getContentManager().registerLanguage(codec);
+    getContentManager().registerOntology(ontology);
+    
+    setGoalSolutions(new ArrayList());
+	setSpecificSolutions(new ArrayList());
+	setGeneralSolutions(new ArrayList());
+    
+    // Agrega el comportamiento de servir solicitudes de identificación
+    addBehaviour(new EvaluationRequestsServer());
+  }
+
+  // Operaciones de limpieza del agente
+    @Override
+  protected void takeDown() {
+    // Imprimir un mensaje de despedida
+    System.out.println("¡Que tenga buen día! Agente selector "+getAID().getName()+" fuera de servicio.");
+  }
 
 	/**
-	 * Método de instancia agregado
+	   La clase interna IdentificationRequestsServer.
 	 */
-	public PossibleSolutionSelector() {
-		super();
+	private class EvaluationRequestsServer extends CyclicBehaviour {
+	  public void action() {
+
+		// Preparar plantilla para recibir el mensaje
+        MessageTemplate mt = MessageTemplate.and(MessageTemplate.and(
+            MessageTemplate.MatchLanguage(codec.getName()),
+            MessageTemplate.MatchOntology(ontology.getName())),
+            MessageTemplate.MatchPerformative(ACLMessage.REQUEST));
+
+        ACLMessage msg = receive(mt);
+
+        if (msg != null) {
+        	try {
+                if (msg.getPerformative() == ACLMessage.REQUEST) {
+                    ContentElement ce = null;
+                    // Convertir la cadena a objetos Java
+                    ce = getContentManager().extractContent(msg);
+                    if (ce instanceof Action) {
+                    	Select select = (Select) ((Action) ce).getAction();
+                    	
+                    	setSuccessfulConflictSet(select.getSuccessfulConflictSet());
+                    	setFailureConflictSet(select.getFailureConflictSet());
+                    	setProblem(select.getTo());
+                    	initialize();
+                    	
+                    	setProposedSolutions(select());
+                    	
+                        ACLMessage reply = msg.createReply();
+                        reply.setPerformative(ACLMessage.INFORM);
+                        
+                        AbsPredicate ap = new AbsPredicate(CBRTerminologyOntology.ARESELECTEDSOLUTIONSTO);
+                        
+                        ap.set(CBRTerminologyOntology.ARESELECTEDSOLUTIONSTO_PROPOSEDSOLUTIONS, ontology.fromObject(getProposedSolutions()));         
+                        ap.set(CBRTerminologyOntology.ARESELECTEDSOLUTIONSTO_TO, ontology.fromObject(getProblem()));
+                        
+                        // Convertir objetos Java a cadena
+          	          	getContentManager().fillContent(reply, ap);
+
+                        myAgent.send(reply);
+
+                        System.out.println(getAID().getName()+" ha enviado posibles soluciones más razonables.");
+                    }
+                }
+            }
+            catch (CodecException ce) {
+                ce.printStackTrace();
+            }
+            catch (OntologyException oe) {
+                oe.printStackTrace();
+            }
+        } else {
+		    block();
+		}
+       }
+	  } // Fin de la clase interna SelectionRequestsServer
+	
+	private void initialize() {
+	  generalSolutions.clear();
+	  goalSolutions.clear();
+	  specificSolutions.clear();
+	  status = false;
+	  identificationGoal = getProblem().getGoalRank();
+	  maxNumberSolutions = OracleIDSystem.getInstance().getMaxNumberSolutions();
+	  showFailedSolutions = OracleIDSystem.getInstance().isPresentFailedSolutions();
 	}
 	
 	/**
-	 * USER EXPECTATION: aNumberOfSolutions is an integer argument, that determines the maximum number of solutions the user wants to see.
-	 * USER EXPECTATION: showFailed is a boolean argument, that determines whether or not to show failed solutions to the user.
-	 * @see "Método initializeWith:and:and:and:and:and:and: del protocolo initializing en SUKIA SmallTalk"
+	 * @see "Método proposedSolutions: del protocolo adding en SUKIA SmallTalk"
+	 * @param proposedSolutions
 	 */
-	public PossibleSolutionSelector(String anIdentGoal, List aSuccSList, 
-			List aFailSList, int aNumberOfSolutions, boolean showFailed) {
-		setIdentificationGoal(anIdentGoal);
-		setSuccessfulConflictSet(aSuccSList);
-		setFailureConflictSet(aFailSList);
-		setMaxNumberSolutions(aNumberOfSolutions);
-		setShowFailedSolutions(showFailed);
-
-		setStatus(false);
-
-		setGoalSolutions(new ArrayList());
-		setSpecificSolutions(new ArrayList());
-		setGeneralSolutions(new ArrayList());
+	private void setProposedSolutions(List proposedSolutions) {
+		this.proposedSolutions = proposedSolutions;
 	}
 
+	/**
+	 * @see "Método proposedSolutions del protocolo accessing en SUKIA SmallTalk"
+	 * @return
+	 */
+	private List getProposedSolutions() {
+		return proposedSolutions;
+	}
+
+	private Problem getProblem() {
+		return problem;
+	}
+
+	private void setProblem(Problem problem) {
+		this.problem = problem;
+	}
+	
 	/**
 	 * Método de instancia agregado
 	 * @param failedStructConflictSet
@@ -113,14 +239,6 @@ public class PossibleSolutionSelector {
 	public List getGoalSolutions() {
 		return goalSolutions;
 	}
-
-	/**
-	 * Método de instancia agregado
-	 * @param identificationGoal
-	 */
-	public void setIdentificationGoal(String identificationGoal) {
-		this.identificationGoal = identificationGoal;
-	}
 	
 	/**
 	 * @see "Método goalSolutions: del protocolo adding en SUKIA SmallTalk"
@@ -130,47 +248,7 @@ public class PossibleSolutionSelector {
 		this.getGoalSolutions().add(aProposedSolution);
 		this.sortProposedSolutions(this.getGoalSolutions());
 	}
-
-	/**
-	 * @see "Método identificationGoal del protocolo accessing en SUKIA SmallTalk"
-	 * @return
-	 */
-	public String getIdentificationGoal() {
-		return identificationGoal;
-	}
-
-	/**
-	 * Método de instancia agregado
-	 * @param maxNumberSolutions
-	 */
-	public void setMaxNumberSolutions(int maxNumberSolutions) {
-		this.maxNumberSolutions = maxNumberSolutions;
-	}
-
-	/**
-	 * @see "Método maxNumberSolutions del protocolo accessing en SUKIA SmallTalk"
-	 * @return
-	 */
-	public int getMaxNumberSolutions() {
-		return maxNumberSolutions;
-	}
-
-	/**
-	 * Método de instancia agregado
-	 * @param showFailedSolutions
-	 */
-	public void setShowFailedSolutions(boolean showFailedSolutions) {
-		this.showFailedSolutions = showFailedSolutions;
-	}
-
-	/**
-	 * @see "Método showFailedSolutions del protocolo accessing en SUKIA SmallTalk"
-	 * @return
-	 */
-	public boolean isShowFailedSolutions() {
-		return showFailedSolutions;
-	}
-
+	
 	/**
 	 * Mpetodo de instancia agregado
 	 * @param specificSolutions
@@ -226,6 +304,54 @@ public class PossibleSolutionSelector {
 	 */
 	public boolean isStatus() {
 		return status;
+	}
+	
+	/**
+	 * Método de instancia agregado
+	 * @param identificationGoal
+	 */
+	public void setIdentificationGoal(String identificationGoal) {
+		this.identificationGoal = identificationGoal;
+	}
+
+	/**
+	 * @see "Método identificationGoal del protocolo accessing en SUKIA SmallTalk"
+	 * @return
+	 */
+	public String getIdentificationGoal() {
+		return identificationGoal;
+	}
+
+	/**
+	 * Método de instancia agregado
+	 * @param maxNumberSolutions
+	 */
+	public void setMaxNumberSolutions(int maxNumberSolutions) {
+		this.maxNumberSolutions = maxNumberSolutions;
+	}
+
+	/**
+	 * @see "Método maxNumberSolutions del protocolo accessing en SUKIA SmallTalk"
+	 * @return
+	 */
+	public int getMaxNumberSolutions() {
+		return maxNumberSolutions;
+	}
+
+	/**
+	 * Método de instancia agregado
+	 * @param showFailedSolutions
+	 */
+	public void setShowFailedSolutions(boolean showFailedSolutions) {
+		this.showFailedSolutions = showFailedSolutions;
+	}
+
+	/**
+	 * @see "Método showFailedSolutions del protocolo accessing en SUKIA SmallTalk"
+	 * @return
+	 */
+	public boolean isShowFailedSolutions() {
+		return showFailedSolutions;
 	}
 	
 	/**

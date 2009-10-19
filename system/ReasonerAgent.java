@@ -23,6 +23,9 @@ Boston, MA  02111-1307, USA.
 
 package system;
 
+import javax.swing.JOptionPane;
+
+import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.*;
 import jade.lang.acl.ACLMessage;
@@ -38,8 +41,12 @@ import jade.content.lang.Codec.CodecException;
 import jade.content.lang.sl.*;
 
 import ontology.CBR.Adapt;
+import ontology.CBR.AreEvaluatedSolutionsTo;
+import ontology.CBR.AreSelectedSolutionsTo;
 import ontology.CBR.CBRTerminologyOntology;
+import ontology.CBR.Evaluate;
 import ontology.CBR.Problem;
+import ontology.CBR.Select;
 
 @SuppressWarnings("serial")
 public class ReasonerAgent extends Agent {
@@ -50,6 +57,7 @@ public class ReasonerAgent extends Agent {
   private Problem problem;
   private List successfulConflictSet;
   private List failureConflictSet;
+  private AID replyToAgent;
 
   // Incialización del agente
 	@Override
@@ -101,26 +109,8 @@ public class ReasonerAgent extends Agent {
                     	setFailureConflictSet(adapt.getFailureConflictSet());
                     	setProblem(adapt.getTo());
                     	
-                    	adaptHypothesis();
-                    	
-                    	/*AreReasonableSolutionsTo areReasonableSolutionsTo = new AreReasonableSolutionsTo();
-                    	areReasonableSolutionsTo.setProposedSolutions(getProposedSolutions());
-                    	areReasonableSolutionsTo.setProblem(adapt.getTo());*/                                    
-                    	
-                        ACLMessage reply = msg.createReply();
-                        reply.setPerformative(ACLMessage.INFORM);
-                        
-                        AbsPredicate ap = new AbsPredicate(CBRTerminologyOntology.AREREASONABLESOLUTIONSTO);
-                        
-                        ap.set(CBRTerminologyOntology.AREREASONABLESOLUTIONSTO_PROPOSEDSOLUTIONS, ontology.fromObject(getProposedSolutions()));
-                        ap.set(CBRTerminologyOntology.AREREASONABLESOLUTIONSTO_PROBLEM, ontology.fromObject(getProblem()));
-                        
-                        // Convertir objetos Java a cadena
-          	          	getContentManager().fillContent(reply, ap);
-
-                        myAgent.send(reply);
-
-                        System.out.println(getAID().getName()+" ha enviado respuesta de consulta sobre posibles soluciones.");
+                    	replyToAgent = msg.getSender();
+                    	myAgent.addBehaviour(new AdaptationPerformer());                                       	                       
                     }
                 }
             }
@@ -136,14 +126,180 @@ public class ReasonerAgent extends Agent {
        }
 	 } // Fin de la clase interna AdaptationRequestsServer
 	
-	private void adaptHypothesis() {
-		// Evaluate all possible solutions
-		if (this.evaluatePossibleSolutions() == false)
-			return;
+	/**
+	 * Este es el comportamiento usado por el agente interfaz para realizar un proceso de identificación
+	 */
+	private class AdaptationPerformer extends Behaviour {
+	  private MessageTemplate mt; // La plantilla para recibir respuestas
+	  private int step = 0; // Guarda el estado de la conversación
+	  
+	  public void action() {
+	    switch (step) {
+	    case 0:
+		    // Enviar el mensaje al agente recuperador de posibles soluciones
+		    ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
+	        msg.addReceiver(OracleIDSystem.getInstance().getEvaluatorAID());
+		    
+	        try {
+	          msg.setLanguage(codec.getName());
+	          msg.setOntology(ontology.getName());
+	          msg.setConversationId("species-id"+System.currentTimeMillis());
+	          msg.setReplyWith(getAID().getName()+System.currentTimeMillis()); // Valor único
+	
+	          Evaluate eval = new Evaluate();
+	          eval.setSuccessfulConflictSet(getSuccessfulConflictSet());
+	          eval.setFailureConflictSet(getFailureConflictSet());
+	          eval.setTo(getProblem());
+	          
+	          Action action = new Action();
+	          action.setAction(eval);
+	          action.setActor(OracleIDSystem.getInstance().getEvaluatorAID());
+	          
+	          // Convertir objetos Java a cadena
+	          getContentManager().fillContent(msg, action);
+	          send(msg);
+	          System.out.println(getAID().getName()+" solicitando evaluación de soluciones posibles... ");
+	        }
+	        catch (CodecException ce) {
+	          ce.printStackTrace();
+	        }
+	        catch (OntologyException oe) {
+	          oe.printStackTrace();
+	        }
+	      
+	        step = 1;
+	        
+	        break;
+	    case 1:
+	    	// Preparar plantilla para recibir el mensaje
+	    	mt = MessageTemplate.and(MessageTemplate.and(
+			MessageTemplate.MatchLanguage(codec.getName()),
+			MessageTemplate.MatchOntology(ontology.getName())),
+			MessageTemplate.MatchPerformative(ACLMessage.INFORM));
 
-		// Select the proposed solutions
-		this.setProposedSolutions(this.selectSolutions());
-	}
+	    	// Recibir todas las aceptaciones de servicio
+	    	ACLMessage reply = myAgent.blockingReceive(mt);
+	    	if (reply != null) {
+	    		try {
+		    		// Respuesta recibida
+		    		ContentElement ce = null;
+	              
+		    		// Convertir la cadena a objetos Java
+		    		ce = getContentManager().extractContent(reply);
+	
+		    		if (ce instanceof AreEvaluatedSolutionsTo) {
+		    			AreEvaluatedSolutionsTo areEST = (AreEvaluatedSolutionsTo) ce;
+	            	  
+				        System.out.println(getAID().getName()+" ha recibido las soluciones posibles evaluadas...");
+				          
+				        if (!areEST.getSuccessfulConflictSet().isEmpty() 
+				        		|| !areEST.getFailureConflictSet().isEmpty()) {
+					        // Enviar el mensaje a agente razonador para evaluar las posibles soluciones
+						    msg = new ACLMessage(ACLMessage.REQUEST);
+					        msg.addReceiver(OracleIDSystem.getInstance().getSelectorAID());
+					        msg.addReplyTo(msg.getSender());
+						    
+					        msg.setLanguage(codec.getName());
+					        msg.setOntology(ontology.getName());
+					        msg.setConversationId("species-id"+System.currentTimeMillis());
+					        msg.setReplyWith(getAID().getName()+System.currentTimeMillis()); // Valor único
+					
+					        Select select = new Select();
+					        select.setFailureConflictSet(areEST.getFailureConflictSet());
+					        select.setSuccessfulConflictSet(areEST.getSuccessfulConflictSet());
+					        select.setTo(areEST.getTo());
+					        
+					        Action action = new Action();
+					        action.setAction(select);
+					        action.setActor(OracleIDSystem.getInstance().getSelectorAID());
+					          
+					        // Convertir objetos Java a cadena
+					        getContentManager().fillContent(msg, action);
+					        send(msg);
+					        System.out.println(getAID().getName()+" seleccionando las hipotesis más razonables al problema...");
+					        step = 2;
+				        } else {
+				        	JOptionPane.showMessageDialog(null, "No se han encontrado hipotesis de soluciones posibles...\n\n" +
+				        			"Intente especificar más su descripción", "OracleID", JOptionPane.INFORMATION_MESSAGE);
+				        	step = 3;
+				        }
+		    		}
+	    		}
+	    		catch (CodecException ce) {
+			          ce.printStackTrace();
+		        }
+		        catch (OntologyException oe) {
+		          oe.printStackTrace();
+		        }
+	          } else {
+	        	  block();
+	          }
+              
+	    	break;
+	    case 2:
+	    	// Preparar plantilla para recibir el mensaje
+	    	mt = MessageTemplate.and(MessageTemplate.and(
+	    	MessageTemplate.MatchLanguage(codec.getName()),
+	    	MessageTemplate.MatchOntology(ontology.getName())),
+	    	MessageTemplate.MatchPerformative(ACLMessage.INFORM));
+
+	    	// Recibir todos los casos devueltos
+	    	reply = myAgent.blockingReceive(mt);
+	    	if (reply != null) {
+	    		try {
+		    		// Respuesta recibida
+		    		ContentElement ce = null;
+	              
+		    		// Convertir la cadena a objetos Java
+		    		ce = getContentManager().extractContent(reply);
+	
+		    		if (ce instanceof AreSelectedSolutionsTo) {
+		    			AreSelectedSolutionsTo areSST = (AreSelectedSolutionsTo) ce;
+		    			
+		    			setProposedSolutions(areSST.getProposedSolutions());
+	            	  
+				        System.out.println(getAID().getName()+"ha recibido las soluciones propuestas seleccionadas...");
+				        
+				        ACLMessage sendingMsg = reply.createReply();
+				        sendingMsg.clearAllReceiver();
+				        sendingMsg.addReceiver(replyToAgent);
+				        sendingMsg.setPerformative(ACLMessage.INFORM);
+                        
+                        AbsPredicate ap = new AbsPredicate(CBRTerminologyOntology.AREREASONABLESOLUTIONSTO);
+                        
+                        ap.set(CBRTerminologyOntology.AREREASONABLESOLUTIONSTO_PROPOSEDSOLUTIONS, ontology.fromObject(getProposedSolutions()));
+                        ap.set(CBRTerminologyOntology.AREREASONABLESOLUTIONSTO_PROBLEM, ontology.fromObject(getProblem()));
+                        
+                        // Convertir objetos Java a cadena
+          	          	getContentManager().fillContent(sendingMsg, ap);
+
+                        myAgent.send(sendingMsg);
+
+                        System.out.println(getAID().getName()+" ha enviado respuesta de consulta sobre posibles soluciones.");
+				        
+				        step = 3;
+		    		}
+	    		}
+	    		catch (CodecException ce) {
+			          ce.printStackTrace();
+		        }
+		        catch (OntologyException oe) {
+		          oe.printStackTrace();
+		        }
+	    	} else {
+	    		block();
+	    	}
+	    }
+	  }
+
+	  public boolean done() {
+		  if (step == 3) {
+			  System.out.println(getAID().getName()+" ha terminado de adaptar las posibles soluciones...");
+		  }
+		  
+		  return (step == 3);
+	  }
+	}  // Fin de la clase interna IdentificationPerformer
 
 	/**
 	 * @see "Método proposedSolutions: del protocolo adding en SUKIA SmallTalk"
@@ -199,34 +355,5 @@ public class ReasonerAgent extends Agent {
 	 */
 	private List getSuccessfulConflictSet() {
 		return successfulConflictSet;
-	}
-	
-	/**
-	 * Evaluation of all possible solutions belonging to Hypotheses stored in all conflict sets
-	 * @see "Método evaluatePossibleSolutions del protocolo evaluating and selecting en SUKIA SmallTalk"
-	 */
-	private boolean evaluatePossibleSolutions() {
-		PossibleSolutionEvaluator evaluator;
-		
-		evaluator = new PossibleSolutionEvaluator(this.getSuccessfulConflictSet(), this.getFailureConflictSet(),
-				OracleIDSystem.getInstance().getTaxonomy());
-	
-		evaluator.evaluate();
-		
-		return true;
-	}
-	
-	/**
-	 * Selection of the best possible solutions, as proposed solutions for an identification session.
-	 * @see "Método selectSolutions del protocolo evaluating and selecting en SUKIA SmallTalk"
-	 */
-	private List selectSolutions() {
-		PossibleSolutionSelector selector;
-		
-		selector = new PossibleSolutionSelector(OracleIDSystem.getInstance().getIdentGoal()
-				, this.getSuccessfulConflictSet(), this.getFailureConflictSet()
-				, OracleIDSystem.getInstance().getMaxNumberSolutions(), OracleIDSystem.getInstance().isPresentFailedSolutions());
-
-		return selector.select();
 	}
 }

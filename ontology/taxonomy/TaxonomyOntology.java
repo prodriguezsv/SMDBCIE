@@ -9,9 +9,8 @@ import jade.content.schema.*;
  * @author ontology bean generator
  * @version 2009/09/30, 13:34:31
  */
+@SuppressWarnings("serial")
 public class TaxonomyOntology extends jade.content.onto.Ontology  {
-
-  private static final long serialVersionUID = -8627856865395943317L;
 
   //NAME
   public static final String ONTOLOGY_NAME = "Taxonomy";

@@ -60,6 +60,8 @@ public class OracleIDSystem {
 	private AgentController learnerAgentController;
 	private AgentController reasonerAgentController;
 	private AgentController retrieverAgentController;
+	private AgentController evaluatorAgentController;
+	private AgentController selectorAgentController;
 	/**
 	 * Contenedor principal de la plataforma jade
 	 */
@@ -358,6 +360,40 @@ public class OracleIDSystem {
 		return aid;
 	}
 	
+	/**
+	 * @see "Método reasoner del protocolo accessing en SUKIA SmallTalk"
+	 * @return
+	 */
+	public AID getEvaluatorAID() {
+		AID aid = null;
+		
+		try {
+			aid = new AID(OracleIDSystem.getInstance().getEvaluatorAgentController().getName(), AID.ISGUID);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return aid;
+	}
+	
+	/**
+	 * @see "Método reasoner del protocolo accessing en SUKIA SmallTalk"
+	 * @return
+	 */
+	public AID getSelectorAID() {
+		AID aid = null;
+		
+		try {
+			aid = new AID(OracleIDSystem.getInstance().getSelectorAgentController().getName(), AID.ISGUID);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return aid;
+	}
+	
 	private AgentController getInterfaceAgentController() {
 		return interfaceAgentController;
 	}
@@ -388,6 +424,22 @@ public class OracleIDSystem {
 
 	private void setRetrieverAgentController(AgentController retrieverAgentController) {
 		this.retrieverAgentController = retrieverAgentController;
+	}
+
+	public AgentController getEvaluatorAgentController() {
+		return evaluatorAgentController;
+	}
+
+	public void setEvaluatorAgentController(AgentController evaluatorAgentController) {
+		this.evaluatorAgentController = evaluatorAgentController;
+	}
+
+	public AgentController getSelectorAgentController() {
+		return selectorAgentController;
+	}
+
+	public void setSelectorAgentController(AgentController selectorAgentController) {
+		this.selectorAgentController = selectorAgentController;
 	}
 
 	private ContainerController getMainContainer() {
@@ -438,6 +490,14 @@ public class OracleIDSystem {
 				OracleIDSystem.getInstance().setLearnerAgentController(cc.createNewAgent("Learner", 
 						"system.LearnerAgent", null));
 				OracleIDSystem.getInstance().getLearnerAgentController().start();
+				
+				OracleIDSystem.getInstance().setEvaluatorAgentController(cc.createNewAgent("Evaluator", 
+						"system.EvaluatorAgent", null));
+				OracleIDSystem.getInstance().getEvaluatorAgentController().start();
+				
+				OracleIDSystem.getInstance().setSelectorAgentController(cc.createNewAgent("Selector", 
+						"system.SelectorAgent", null));
+				OracleIDSystem.getInstance().getSelectorAgentController().start();
 			}
 			catch (Exception e) {
 				e.printStackTrace();
@@ -450,7 +510,9 @@ public class OracleIDSystem {
 			OracleIDSystem.getInstance().getInterfaceAgentController().kill();
 			OracleIDSystem.getInstance().getReasonerAgentController().kill();
 			OracleIDSystem.getInstance().getRetrieverAgentController().kill();
-			OracleIDSystem.getInstance().getLearnerAgentController().kill();	
+			OracleIDSystem.getInstance().getLearnerAgentController().kill();
+			OracleIDSystem.getInstance().getEvaluatorAgentController().kill();
+			OracleIDSystem.getInstance().getSelectorAgentController().kill();
 			OracleIDSystem.getInstance().getMainContainer().kill();
 			jade.core.Runtime.instance().shutDown();
 		}

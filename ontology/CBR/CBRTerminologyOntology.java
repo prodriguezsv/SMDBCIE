@@ -10,9 +10,8 @@ import jade.content.schema.*;
  * @author ontology bean generator
  * @version 2009/10/6, 23:03:27
  */
+@SuppressWarnings("serial")
 public class CBRTerminologyOntology extends jade.content.onto.Ontology  {
-
-  private static final long serialVersionUID = 4206237779038972396L;
 
   //NAME
   public static final String ONTOLOGY_NAME = "CBRTerminology";
@@ -77,8 +76,21 @@ public class CBRTerminologyOntology extends jade.content.onto.Ontology  {
     public static final String PROPOSEDSOLUTION_SOLUTION="solution";
     public static final String PROPOSEDSOLUTION_CERTAINTYDEGREE="certaintyDegree";
     public static final String PROPOSEDSOLUTION="ProposedSolution";
-    //public static final String SIMILARITYDEGREE="SimilarityDegree";
-    //public static final String CERTAINTYDEGREE="CertaintyDegree";
+    public static final String SELECT_TO="to";
+    public static final String SELECT_SUCCESSFULCONFLICTSET="successfulConflictSet";
+    public static final String SELECT_FAILURECONFLICTSET="failureConflictSet";
+    public static final String SELECT="Select";
+    public static final String EVALUATE_TO="to";
+    public static final String EVALUATE_SUCCESSFULCONFLICTSET="successfulConflictSet";
+    public static final String EVALUATE_FAILURECONFLICTSET="failureConflictSet";
+    public static final String EVALUATE="Evaluate";
+    public static final String ARESELECTEDSOLUTIONSTO_PROPOSEDSOLUTIONS="proposedSolutions";
+    public static final String ARESELECTEDSOLUTIONSTO_TO="to";
+    public static final String ARESELECTEDSOLUTIONSTO="AreSelectedSolutionsTo";
+    public static final String AREEVALUATEDSOLUTIONSTO_FAILURECONFLICTSET="failureConflictSet";
+    public static final String AREEVALUATEDSOLUTIONSTO_SUCCESSFULCONFLICTSET="successfulConflictSet";
+    public static final String AREEVALUATEDSOLUTIONSTO_TO="to";
+    public static final String AREEVALUATEDSOLUTIONSTO="AreEvaluatedSolutionsTo";
 
   /**
    * Constructor
@@ -99,10 +111,6 @@ public class CBRTerminologyOntology extends jade.content.onto.Ontology  {
     add(caseSchema, ontology.CBR.Case.class);
     ConceptSchema hypothesisSchema = new ConceptSchema(HYPOTHESIS);
     add(hypothesisSchema, ontology.CBR.Hypothesis.class);
-    /*ConceptSchema similarityDegreeSchema = new ConceptSchema(SIMILARITYDEGREE);
-    add(similarityDegreeSchema, ontology.CBR.SimilarityDegree.class);
-    ConceptSchema certaintyDegreeSchema = new ConceptSchema(CERTAINTYDEGREE);
-    add(certaintyDegreeSchema, ontology.CBR.CertaintyDegree.class);*/
 
     // adding AgentAction(s)
     AgentActionSchema retainSchema = new AgentActionSchema(RETAIN);
@@ -113,6 +121,10 @@ public class CBRTerminologyOntology extends jade.content.onto.Ontology  {
     add(adaptSchema, ontology.CBR.Adapt.class);
     AgentActionSchema retrieveSchema = new AgentActionSchema(RETRIEVE);
     add(retrieveSchema, ontology.CBR.Retrieve.class);
+    AgentActionSchema evaluateSchema = new AgentActionSchema(EVALUATE);
+    add(evaluateSchema, ontology.CBR.Evaluate.class);
+    AgentActionSchema selectSchema = new AgentActionSchema(SELECT);
+    add(selectSchema, ontology.CBR.Select.class);
 
     // adding AID(s)
 
@@ -127,6 +139,10 @@ public class CBRTerminologyOntology extends jade.content.onto.Ontology  {
     add(isNegativeSchema, ontology.CBR.IsNegative.class);
     PredicateSchema areSimilarToSchema = new PredicateSchema(ARESIMILARTO);
     add(areSimilarToSchema, ontology.CBR.AreSimilarTo.class);
+    PredicateSchema areEvaluatedSolutionsToSchema = new PredicateSchema(AREEVALUATEDSOLUTIONSTO);
+    add(areEvaluatedSolutionsToSchema, ontology.CBR.AreEvaluatedSolutionsTo.class);
+    PredicateSchema areSelectedSolutionsToSchema = new PredicateSchema(ARESELECTEDSOLUTIONSTO);
+    add(areSelectedSolutionsToSchema, ontology.CBR.AreSelectedSolutionsTo.class);
 
 
     // adding fields
@@ -169,6 +185,17 @@ public class CBRTerminologyOntology extends jade.content.onto.Ontology  {
     areSimilarToSchema.add(ARESIMILARTO_SUCCESSFULCONFLICTSET, hypothesisSchema, 0, ObjectSchema.UNLIMITED);
     areSimilarToSchema.add(ARESIMILARTO_FAILURECONFLICTSET, hypothesisSchema, 0, ObjectSchema.UNLIMITED);
     areSimilarToSchema.add(ARESIMILARTO_PROBLEM, problemSchema, ObjectSchema.MANDATORY);
+    evaluateSchema.add(EVALUATE_FAILURECONFLICTSET, hypothesisSchema, 0, ObjectSchema.UNLIMITED);
+    evaluateSchema.add(EVALUATE_SUCCESSFULCONFLICTSET, hypothesisSchema, 0, ObjectSchema.UNLIMITED);
+    evaluateSchema.add(EVALUATE_TO, problemSchema, ObjectSchema.MANDATORY);    
+    selectSchema.add(SELECT_FAILURECONFLICTSET, hypothesisSchema, 0, ObjectSchema.UNLIMITED);
+    selectSchema.add(SELECT_SUCCESSFULCONFLICTSET, hypothesisSchema, 0, ObjectSchema.UNLIMITED);
+    selectSchema.add(SELECT_TO, problemSchema, ObjectSchema.MANDATORY);
+    areEvaluatedSolutionsToSchema.add(AREEVALUATEDSOLUTIONSTO_TO, problemSchema, ObjectSchema.MANDATORY);
+    areEvaluatedSolutionsToSchema.add(AREEVALUATEDSOLUTIONSTO_SUCCESSFULCONFLICTSET, hypothesisSchema, 0, ObjectSchema.UNLIMITED);
+    areEvaluatedSolutionsToSchema.add(AREEVALUATEDSOLUTIONSTO_FAILURECONFLICTSET, hypothesisSchema, 0, ObjectSchema.UNLIMITED);
+    areSelectedSolutionsToSchema.add(ARESELECTEDSOLUTIONSTO_TO, problemSchema, ObjectSchema.MANDATORY);
+    areSelectedSolutionsToSchema.add(ARESELECTEDSOLUTIONSTO_PROPOSEDSOLUTIONS, proposedSolutionSchema, 0, ObjectSchema.UNLIMITED);
 
     // adding name mappings
 

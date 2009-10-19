@@ -1,42 +1,184 @@
-/**
- * @see "Categor&icute;a Sukia Reasoner en SUKIA SmallTalk"
- */
+/*****************************************************************
+JADE - Java Agent DEvelopment Framework is a framework to develop 
+multi-agent systems in compliance with the FIPA specifications.
+Copyright (C) 2000 CSELT S.p.A. 
+
+GNU Lesser General Public License
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation, 
+version 2.1 of the License. 
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the
+Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+Boston, MA  02111-1307, USA.
+*****************************************************************/
+
 package system;
 
+import jade.core.Agent;
+import jade.core.behaviours.*;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 import jade.util.leap.ArrayList;
 import jade.util.leap.Iterator;
 import jade.util.leap.List;
+import jade.content.onto.*;
+import jade.content.onto.basic.Action;
+import jade.content.abs.AbsPredicate;
+import jade.content.lang.*;
+import jade.content.ContentElement;
+import jade.content.lang.Codec.CodecException;
+import jade.content.lang.sl.*;
+
+import ontology.CBR.CBRTerminologyOntology;
+import ontology.CBR.Evaluate;
 import ontology.CBR.Hypothesis;
 import ontology.CBR.PossibleSolution;
+import ontology.CBR.Problem;
 import ontology.common.HeuristicDescriptor;
 import ontology.taxonomy.Taxon;
-import ontology.taxonomy.Taxonomy;
 
+@SuppressWarnings("serial")
+public class EvaluatorAgent extends Agent {
+  //Se registra el lenguaje de contenido y la ontologÃ­a
+  private Codec codec = new SLCodec();
+  private Ontology ontology = CBRTerminologyOntology.getInstance();
+  private Problem problem;
+  private List successfulConflictSet;
+  private List failureConflictSet;
 
-/**
- * @author Armando
- *
- */
-public class PossibleSolutionEvaluator {
-	private List failureConflictSet;
-	private List successfulConflictSet;
-	private Taxonomy taxonomy;
+  // Incialización del agente
+	@Override
+  protected void setup() {
+    // Imprimir un mensaje de bienvenida
+	System.out.println("¡Hola! Agente evaluador "+getAID().getName()+" listo.");
+
+    getContentManager().registerLanguage(codec);
+    getContentManager().registerOntology(ontology);
+    
+    // Agrega el comportamiento de servir solicitudes de identificación
+    addBehaviour(new EvaluationRequestsServer());
+  }
+
+  // Operaciones de limpieza del agente
+    @Override
+  protected void takeDown() {
+    // Imprimir un mensaje de despedida
+    System.out.println("¡Que tenga buen día! Agente evaluador "+getAID().getName()+" fuera de servicio.");
+  }
 
 	/**
-	 * @see "M&ecute;todo initializeWith:and:and:and:and:and: del protocolo initializing en SUKIA SmallTalk"
+	   La clase interna IdentificationRequestsServer.
 	 */
-	public PossibleSolutionEvaluator(List aSuccessfulStructList, List aFailedStructList,
-			Taxonomy aTaxonomy) {
-		setSuccessfulConflictSet(aSuccessfulStructList);
-		setFailureConflictSet(aFailedStructList);
-		setTaxonomy(aTaxonomy);
+	private class EvaluationRequestsServer extends CyclicBehaviour {
+	  public void action() {
+
+		// Preparar plantilla para recibir el mensaje
+        MessageTemplate mt = MessageTemplate.and(MessageTemplate.and(
+            MessageTemplate.MatchLanguage(codec.getName()),
+            MessageTemplate.MatchOntology(ontology.getName())),
+            MessageTemplate.MatchPerformative(ACLMessage.REQUEST));
+
+        ACLMessage msg = receive(mt);
+
+        if (msg != null) {
+        	try {
+                if (msg.getPerformative() == ACLMessage.REQUEST) {
+                    ContentElement ce = null;
+                    // Convertir la cadena a objetos Java
+                    ce = getContentManager().extractContent(msg);
+                    if (ce instanceof Action) {
+                    	Evaluate eval = (Evaluate) ((Action) ce).getAction();
+                    	
+                    	setSuccessfulConflictSet(eval.getSuccessfulConflictSet());
+                    	setFailureConflictSet(eval.getFailureConflictSet());
+                    	setProblem(eval.getTo());
+                    	
+                    	evaluate();
+                    	
+                        ACLMessage reply = msg.createReply();
+                        reply.setPerformative(ACLMessage.INFORM);
+                        
+                        AbsPredicate ap = new AbsPredicate(CBRTerminologyOntology.AREEVALUATEDSOLUTIONSTO);
+                        
+                        ap.set(CBRTerminologyOntology.AREEVALUATEDSOLUTIONSTO_FAILURECONFLICTSET, ontology.fromObject(getFailureConflictSet()));
+                        ap.set(CBRTerminologyOntology.AREEVALUATEDSOLUTIONSTO_SUCCESSFULCONFLICTSET, ontology.fromObject(getSuccessfulConflictSet()));
+                        ap.set(CBRTerminologyOntology.AREEVALUATEDSOLUTIONSTO_TO, ontology.fromObject(getProblem()));
+                        
+                        // Convertir objetos Java a cadena
+          	          	getContentManager().fillContent(reply, ap);
+
+                        myAgent.send(reply);
+
+                        System.out.println(getAID().getName()+" ha enviado posibles soluciones evaluadas.");
+                    }
+                }
+            }
+            catch (CodecException ce) {
+                ce.printStackTrace();
+            }
+            catch (OntologyException oe) {
+                oe.printStackTrace();
+            }
+        } else {
+		    block();
+		}
+       }
+	  } // Fin de la clase interna LearningRequestsServer
+	
+	private Problem getProblem() {
+		return problem;
+	}
+
+	private void setProblem(Problem problem) {
+		this.problem = problem;
+	}
+
+	/**
+	 * Método de instancia agregado
+	 * @param failStructConflictSet
+	 */
+	private void setFailureConflictSet(List failStructConflictSet) {
+		this.failureConflictSet = failStructConflictSet;
+	}
+
+	/**
+	 * @see "Método failStructConflictSet del protocolo accessing en SUKIA SmallTalk"
+	 * @return
+	 */
+	private List getFailureConflictSet() {
+		return failureConflictSet;
+	}
+	
+	/**
+	 * Método de instancia agregado
+	 * @param succStructConflictSet
+	 */
+	private void setSuccessfulConflictSet(List succStructConflictSet) {
+		this.successfulConflictSet = succStructConflictSet;
+	}
+
+	/**
+	 * @see "Método succStructConflictSet del protocolo accessing en SUKIA SmallTalk"
+	 * @return
+	 */
+	private List getSuccessfulConflictSet() {
+		return successfulConflictSet;
 	}
 	
 	/**
 	 * @see "M&ecute;todo losePoints del protocolo de clase point-accummulatind scheme en SUKIA SmallTalk"
 	 * @return
 	 */
-	public static String losePoints() {
+	private static String losePoints() {
 		return "-";
 	}
 	
@@ -44,70 +186,21 @@ public class PossibleSolutionEvaluator {
 	 * @see "M&ecute;todo winPoints del protocolo de clase point-accummulatind scheme en SUKIA SmallTalk"
 	 * @return
 	 */
-	public static String winPoints() {
+	private static String winPoints() {
 		return "+";
 	}
-
-	/**
-	 * M&ecute;todo de instancia agregado
-	 * @param failedStructConflictSet
-	 */
-	public void setFailureConflictSet(List failedStructConflictSet) {
-		this.failureConflictSet = failedStructConflictSet;
-	}
-
-	/**
-	 * @see "M&ecute;todo failedStructConflictSet del protocolo accessing en SUKIA SmallTalk"
-	 * @return
-	 */
-	public List getFailureConflictSet() {
-		return failureConflictSet;
-	}
-
-	/**
-	 * M&ecute;todo de instancia agregado
-	 * @param successfulStructConflictSet
-	 */
-	public void setSuccessfulConflictSet(List successfulStructConflictSet) {
-		this.successfulConflictSet = successfulStructConflictSet;
-	}
-
-	/**
-	 * @see "M&ecute;todo successfulStructConflictSet del protocolo accessing en SUKIA SmallTalk"
-	 * @return
-	 */
-	public List getSuccessfulConflictSet() {
-		return successfulConflictSet;
-	}
-
-	/**
-	 * M&ecute;todo de instancia agregado
-	 * @param taxonomy
-	 */
-	public void setTaxonomy(Taxonomy taxonomy) {
-		this.taxonomy = taxonomy;
-	}
-
-	/**
-	 * @see "M&ecute;todo taxonomy del protocolo accessing en SUKIA SmallTalk"
-	 * @return
-	 */
-	public Taxonomy getTaxonomy() {
-		return taxonomy;
-	}
-
+	
 	/**
 	 * Conflict set evaluation process
 	 * @see "Método evaluate del protocolo evaluating en SUKIA SmallTalk"
 	 */
 	public void evaluate() {
 		// Step 1: Evaluate each conflict set individually
-		this.evaluate(this.getSuccessfulConflictSet(), PossibleSolutionEvaluator.winPoints());
-		this.evaluate(this.getFailureConflictSet(), PossibleSolutionEvaluator.winPoints());
+		this.evaluate(getSuccessfulConflictSet(), winPoints());
+		this.evaluate(getFailureConflictSet(), winPoints());
 
 		// Step 2: Evaluate every conflict set against other conflict sets
-		this.evaluate(this.getSuccessfulConflictSet(), this.getFailureConflictSet(), 
-				PossibleSolutionEvaluator.losePoints());
+		this.evaluate(getSuccessfulConflictSet(), getFailureConflictSet(), losePoints());
 	}
 	
 	/**
@@ -173,7 +266,7 @@ public class PossibleSolutionEvaluator {
 				PossibleSolution evalPossibleSolution = (PossibleSolution) evalPossibleSolutionsCopy.remove(0);
 
                 // Get the corresponding taxon of the possibleSolution-to-evaluate, if applicable
-                evalPossibleSolutionTaxon = this.getTaxonomy().getTaxonFromLevelIndex(evalPossibleSolution.getName(), evalPossibleSolution.getLevel());
+                evalPossibleSolutionTaxon = OracleIDSystem.getInstance().getTaxonomy().getTaxonFromLevelIndex(evalPossibleSolution.getName(), evalPossibleSolution.getLevel());
 
                 if (evalPossibleSolutionTaxon == null) return;
 
@@ -199,7 +292,7 @@ public class PossibleSolutionEvaluator {
         			while (!aPossibleSolutionsCopy.isEmpty()) {
         				PossibleSolution compPossibleSolution = (PossibleSolution) aPossibleSolutionsCopy.remove(0);
 
-                        compPossibleSolutionTaxon = this.getTaxonomy().getTaxonFromLevelIndex(compPossibleSolution.getName(), compPossibleSolution.getLevel());
+                        compPossibleSolutionTaxon = OracleIDSystem.getInstance().getTaxonomy().getTaxonFromLevelIndex(compPossibleSolution.getName(), compPossibleSolution.getLevel());
 
                         if (compPossibleSolutionTaxon == null) return;
                         
@@ -207,14 +300,14 @@ public class PossibleSolutionEvaluator {
                         if (evalPossibleSolutionTaxon.equals(compPossibleSolutionTaxon)) {
                         	//OJO: verificar este discernimiento
                         	if (evalHypothesis.getDescription().getDescriptors().get(0) instanceof HeuristicDescriptor) {
-                        		aPointAccumulatingScheme = PossibleSolutionEvaluator.losePoints();
+                        		aPointAccumulatingScheme = losePoints();
                         	} else {
                         		if (compHypothesis.getDescription().getDescriptors().get(0) instanceof HeuristicDescriptor)
-                        			aPointAccumulatingScheme = PossibleSolutionEvaluator.winPoints();
-                        		else aPointAccumulatingScheme = PossibleSolutionEvaluator.losePoints();
+                        			aPointAccumulatingScheme = winPoints();
+                        		else aPointAccumulatingScheme = losePoints();
                         	}
                         		
-                            if (aPointAccumulatingScheme.equals(PossibleSolutionEvaluator.winPoints())) {
+                            if (aPointAccumulatingScheme.equals(winPoints())) {
                                 // Inherit the compare solution's descriptions and remove it from the hypothesis-to-compare possibleSolutions list
                                 this.inheritPossibleSolutionDescriptionsFrom(compPossibleSolution, evalPossibleSolution);
                                 evalPossibleSolution.incrementPoints();
@@ -230,14 +323,14 @@ public class PossibleSolutionEvaluator {
                             if (evalPossibleSolutionTaxon.isSuccessorOf(compPossibleSolutionTaxon)) {
                             	//OJO: verificar este discernimiento
                             	if (evalHypothesis.getDescription().getDescriptors().get(0) instanceof HeuristicDescriptor) {
-                            		aPointAccumulatingScheme = PossibleSolutionEvaluator.losePoints();
+                            		aPointAccumulatingScheme = losePoints();
                             	} else {
                             		if (compHypothesis.getDescription().getDescriptors().get(0) instanceof HeuristicDescriptor)
-                            			aPointAccumulatingScheme = PossibleSolutionEvaluator.winPoints();
-                            		else aPointAccumulatingScheme = PossibleSolutionEvaluator.losePoints();
+                            			aPointAccumulatingScheme = winPoints();
+                            		else aPointAccumulatingScheme = losePoints();
                             	}
                             	
-                                if (aPointAccumulatingScheme.equals(PossibleSolutionEvaluator.winPoints())) {
+                                if (aPointAccumulatingScheme.equals(winPoints())) {
                                     this.inheritPossibleSolutionDescriptionsFrom(compPossibleSolution, evalPossibleSolution);
                                     evalPossibleSolution.incrementPoints();
                                 } else {
@@ -302,7 +395,7 @@ public class PossibleSolutionEvaluator {
 			while (i.hasNext()) {
 				PossibleSolution evalPossibleSolution = (PossibleSolution) i.next();
 
-                evalPossibleSolutionTaxon = this.getTaxonomy().getTaxonFromLevelIndex(evalPossibleSolution.getName(), evalPossibleSolution.getLevel());                    
+                evalPossibleSolutionTaxon = OracleIDSystem.getInstance().getTaxonomy().getTaxonFromLevelIndex(evalPossibleSolution.getName(), evalPossibleSolution.getLevel());                    
 
                 if (evalPossibleSolutionTaxon == null) return;           
                 
@@ -332,13 +425,13 @@ public class PossibleSolutionEvaluator {
         			while (l.hasNext()) {
         				PossibleSolution compPossibleSolution = (PossibleSolution) l.next();
                     
-                        compPossibleSolutionTaxon = this.getTaxonomy().getTaxonFromLevelIndex(compPossibleSolution.getName(), compPossibleSolution.getLevel());
+                        compPossibleSolutionTaxon = OracleIDSystem.getInstance().getTaxonomy().getTaxonFromLevelIndex(compPossibleSolution.getName(), compPossibleSolution.getLevel());
 
                         if (compPossibleSolutionTaxon == null) return;
                         // Check if the possible solutions are the same object
                         if (evalPossibleSolutionTaxon.equals(compPossibleSolutionTaxon)) {
                         	
-                            if (aPointAccumulatingScheme.equals(PossibleSolutionEvaluator.winPoints())) {
+                            if (aPointAccumulatingScheme.equals(winPoints())) {
                                 // Inherit the compare solution's descriptions and remove it from the hypothesis-to-compare possibleSolutions list
                                 this.inheritPossibleSolutionDescriptionsFrom(compPossibleSolution, evalPossibleSolution);
                                 evalPossibleSolution.incrementPoints();
@@ -353,7 +446,7 @@ public class PossibleSolutionEvaluator {
                             // Determine if the possibleSolution-to-evaluate is a successor taxon of the possibleSolution-to-compare
                             if (evalPossibleSolutionTaxon.isSuccessorOf(compPossibleSolutionTaxon)) {
                             	
-                                if (aPointAccumulatingScheme.equals(PossibleSolutionEvaluator.winPoints())) {
+                                if (aPointAccumulatingScheme.equals(winPoints())) {
                                     this.inheritPossibleSolutionDescriptionsFrom(compPossibleSolution, evalPossibleSolution);
                                     evalPossibleSolution.incrementPoints();
                                 } else {
@@ -381,10 +474,11 @@ public class PossibleSolutionEvaluator {
 	 * @param anOldPossibleSolution
 	 * @param aNewPossibleSolution
 	 */
-	public void inheritPossibleSolutionDescriptionsFrom(PossibleSolution anOldPossibleSolution, PossibleSolution aNewPossibleSolution) {
+	private void inheritPossibleSolutionDescriptionsFrom(PossibleSolution anOldPossibleSolution, PossibleSolution aNewPossibleSolution) {
 		aNewPossibleSolution.addAllToSolutionDescription(anOldPossibleSolution.getSolutionDescription());
 		aNewPossibleSolution.addAllToConfirmedDescription(anOldPossibleSolution.getConfirmedDescription());
 		aNewPossibleSolution.addAllToUnconfirmedDescription(anOldPossibleSolution.getUnconfirmedDescription());
 		aNewPossibleSolution.addAllToDoubtfulDescription(anOldPossibleSolution.getDoubtfulDescription());
 	}
+
 }

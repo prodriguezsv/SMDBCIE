@@ -617,6 +617,7 @@ public class OracleIDGui extends JFrame {
 		jlValues.setListData((new ArrayList<String>()).toArray());
 		jtfValue.setText("");
 		jlDescription.setListData((new ArrayList<String>()).toArray());
+		this.problem.getDescription().clearAllDescriptors();
 	}
 
 	/**

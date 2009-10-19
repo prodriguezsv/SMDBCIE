@@ -7,9 +7,8 @@ import jade.util.leap.*;
 * @author ontology bean generator
 * @version 2009/10/6, 23:03:27
 */
+@SuppressWarnings("serial")
 public class AreReasonableSolutionsTo implements jade.content.Predicate {
-	
-  private static final long serialVersionUID = 4206237779038972396L;
 
   private String _internalInstanceName = null;
 

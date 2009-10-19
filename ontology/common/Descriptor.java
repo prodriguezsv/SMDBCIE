@@ -10,6 +10,7 @@ package ontology.common;
  * ya que ning&uacute;n par attribute-value particular generaliza todos los casos bajo ellos.
  * 
 */
+@SuppressWarnings("serial")
 public abstract class Descriptor implements jade.content.Concept, Comparable<Descriptor> {
 	private String structure;
 	private String attribute;
@@ -23,8 +24,6 @@ public abstract class Descriptor implements jade.content.Concept, Comparable<Des
 	public Descriptor() {
 		this._internalInstanceName = "";
 	}
-	
-	private static final long serialVersionUID = -3087841394215437493L;
 
 	private String _internalInstanceName = null;
 
