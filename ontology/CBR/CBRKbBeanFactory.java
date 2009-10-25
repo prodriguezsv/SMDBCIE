@@ -1491,7 +1491,7 @@ public class CBRKbBeanFactory {
 
     tempSymbolValue = getStringValue( protegeInst, kb.getSlot( "rank" ) );
     if (tempSymbolValue != null) {
-      javaInst.setTaxonLevel(tempSymbolValue.toUpperCase());
+      javaInst.setTaxonLevel(tempSymbolValue);
     }
 
     tempInstanceValue = getInstanceValue( protegeInst, kb.getSlot( "justification" ) );
@@ -1611,9 +1611,9 @@ public class CBRKbBeanFactory {
         }
     }
 
-    tempInstanceValue = getInstanceValue( protegeInst, kb.getSlot( "problema" ) );
+    tempInstanceValue = getInstanceValue( protegeInst, kb.getSlot( "problem" ) );
     if (tempInstanceValue != null) {
-        if (tempInstanceValue.hasType(kb.getCls("Problema") )) {
+        if (tempInstanceValue.hasType(kb.getCls("Problem") )) {
           try {
             Object referredBean = getJadeInstanceFor(tempInstanceValue);
 
@@ -1799,9 +1799,9 @@ public class CBRKbBeanFactory {
     //javaInst set all properties
 
 
-    tempInstanceValue = getInstanceValue( protegeInst, kb.getSlot( "problema" ) );
+    tempInstanceValue = getInstanceValue( protegeInst, kb.getSlot( "problem" ) );
     if (tempInstanceValue != null) {
-        if (tempInstanceValue.hasType(kb.getCls("Problema") )) {
+        if (tempInstanceValue.hasType(kb.getCls("Problem") )) {
           try {
             Object referredBean = getJadeInstanceFor(tempInstanceValue);
 
@@ -1927,7 +1927,7 @@ public class CBRKbBeanFactory {
 
     tempInstanceValue = getInstanceValue( protegeInst, kb.getSlot( "similarTo" ) );
     if (tempInstanceValue != null) {
-        if (tempInstanceValue.hasType(kb.getCls("Problema") )) {
+        if (tempInstanceValue.hasType(kb.getCls("Problem") )) {
           try {
             Object referredBean = getJadeInstanceFor(tempInstanceValue);
 
@@ -1967,9 +1967,9 @@ public class CBRKbBeanFactory {
     //javaInst set all properties
 
 
-    tempInstanceValue = getInstanceValue( protegeInst, kb.getSlot( "problema" ) );
+    tempInstanceValue = getInstanceValue( protegeInst, kb.getSlot( "problem" ) );
     if (tempInstanceValue != null) {
-        if (tempInstanceValue.hasType(kb.getCls("Problema") )) {
+        if (tempInstanceValue.hasType(kb.getCls("Problem") )) {
           try {
             Object referredBean = getJadeInstanceFor(tempInstanceValue);
 
@@ -2048,9 +2048,9 @@ public class CBRKbBeanFactory {
         }
     }
 
-    tempInstanceValue = getInstanceValue( protegeInst, kb.getSlot( "problema" ) );
+    tempInstanceValue = getInstanceValue( protegeInst, kb.getSlot( "problem" ) );
     if (tempInstanceValue != null) {
-        if (tempInstanceValue.hasType(kb.getCls("Problema") )) {
+        if (tempInstanceValue.hasType(kb.getCls("Problem") )) {
           try {
             Object referredBean = getJadeInstanceFor(tempInstanceValue);
 

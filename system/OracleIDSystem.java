@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import javax.swing.JOptionPane;
+
 import oracleIDGui.OracleIDGui;
 
 import edu.stanford.smi.protege.model.Cls;
@@ -20,6 +22,9 @@ import edu.stanford.smi.protege.model.Instance;
 import edu.stanford.smi.protege.model.KnowledgeBase;
 import edu.stanford.smi.protege.model.Project;
 
+import ontology.CBR.CBRKbBeanFactory;
+import ontology.CBR.CBRKbBeanFactoryException;
+import ontology.CBR.Case;
 import ontology.CBR.SimilarityDegree;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.TaxonomicRank;
@@ -46,6 +51,7 @@ public class OracleIDSystem {
 	 */
 	private KnowledgeBase commonKb, taxonomyKb, cbrKb;
 	private TaxonomyKbBeanFactory taxonomyKbBeanFactory;
+	private CBRKbBeanFactory cbrKbBeanFactory;
 	/**
 	 * Espectativas o parámetros del sistema: meta de identificación
 	 */
@@ -67,6 +73,11 @@ public class OracleIDSystem {
 	 */
 	private ContainerController mainContainer;
 	private OracleIDGui systemGui;
+	/**
+	 * Proyectos de Protege
+	 */
+	private Project commonProject, CBRProject, taxonomyProject;
+
 	/**
 	 * Ruta de archivos de ontologías
 	 */
@@ -96,9 +107,7 @@ public class OracleIDSystem {
 	private OracleIDSystem() {		
 		Collection<String> errors = new ArrayList<String>();
     	
-		Project project  = new Project(COMMON_PROJECT_FILE_NAME, errors);
-        
-    	commonKb = project.getKnowledgeBase();
+		commonProject  = new Project(COMMON_PROJECT_FILE_NAME, errors);       
         
         if (errors.size() != 0) {
         	Iterator<String> i = errors.iterator();
@@ -109,9 +118,9 @@ public class OracleIDSystem {
             System.exit(0);
         }
         
-        project  = new Project(TAXONOMY_PROJECT_FILE_NAME, errors);
+    	commonKb = commonProject.getKnowledgeBase();
         
-    	taxonomyKb = project.getKnowledgeBase();
+        taxonomyProject  = new Project(TAXONOMY_PROJECT_FILE_NAME, errors);        
         
         if (errors.size() != 0) {
         	Iterator<String> i = errors.iterator();
@@ -121,12 +130,12 @@ public class OracleIDSystem {
             
             System.exit(0);
         }
+        
+    	taxonomyKb = taxonomyProject.getKnowledgeBase();
         
         taxonomyKbBeanFactory = new TaxonomyKbBeanFactory(taxonomyKb);
         
-        project  = new Project(CBR_PROJECT_FILE_NAME, errors);
-        
-    	cbrKb = project.getKnowledgeBase();
+        CBRProject  = new Project(CBR_PROJECT_FILE_NAME, errors);       
         
         if (errors.size() != 0) {
         	Iterator<String> i = errors.iterator();
@@ -136,6 +145,9 @@ public class OracleIDSystem {
             
             System.exit(0);
         }
+        
+    	cbrKb = CBRProject.getKnowledgeBase();
+    	cbrKbBeanFactory = new CBRKbBeanFactory(cbrKb);
         
         hintsBase = new HintsBase();
 		if (!this.loadHintsBase()) System.exit(0);
@@ -241,13 +253,44 @@ public class OracleIDSystem {
 	public KnowledgeBase getCbrKb() {
 		return cbrKb;
 	}
+	
+	public Project getCommonProject() {
+		return commonProject;
+	}
+
+	public Project getCBRProject() {
+		return CBRProject;
+	}
+
+	public Project getTaxonomyProject() {
+		return taxonomyProject;
+	}
 
 	/**
 	 * THIS IS THE METHOD TO BE USED IN ORDER TO READ THE CASE MEMORY
 	 * DATA FROM DISK, AND ASSEMBLING IT IN MEMORY
 	 * @see "Método loadCaseMemory del protocolo preparing en SUKIA SmallTalk"
 	 */
+	@SuppressWarnings("unchecked")
 	private boolean loadCaseMemory() {
+		Cls cls = (Cls) cbrKb.getCls("Case");
+        
+        Iterator i = cls.getDirectInstances().iterator();
+        while (i.hasNext()) {
+        	Instance instance = (Instance) i.next();
+        	
+        	Case aCase;
+			try {
+				aCase = cbrKbBeanFactory.getCase(instance.getName());
+			} catch (CBRKbBeanFactoryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return false;
+			}
+			
+        	this.getCaseMemory().add(aCase);		                    
+        }
+        
 		return true;
 	}
 	
@@ -463,40 +506,60 @@ public class OracleIDSystem {
 	 */
 	public static void main(String[] args) throws TaxonomyKbBeanFactoryException {		
 		jade.core.Runtime rt = jade.core.Runtime.instance();
+		String institutions[] = {"INBio", "FishBase", "EnciclopedyOfLife", "Species2000", "TDWG"};
+		String institution;
 		
 		// Create a container to host the agents
 		Profile p = new ProfileImpl();
-		p.setParameter(Profile.CONTAINER_NAME, "Species-ID");
+		institution = (String) JOptionPane.showInputDialog(OracleIDSystem.getInstance().getSystemGui(), 
+				"\n¿Qué institución hospedará el sistema local?\n",
+				"OracleID",
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				institutions, "INBio");
 		
-		ContainerController cc = rt.createMainContainer(p);
-		OracleIDSystem.getInstance().setMainContainer(cc);
+		ContainerController cc = null;
+		
+		if (institution != null) {
+			if (institution.equals("INBio")) {
+				//p.setParameter(Profile.CONTAINER_NAME, "Species-ID");
+			
+				cc = rt.createMainContainer(p);
+				OracleIDSystem.getInstance().setMainContainer(cc);
+			} else {
+				p.setParameter(Profile.MAIN_HOST, "HARDPC");			
+				cc = rt.createAgentContainer(p);
+			}
+		} else {
+			System.exit(0);
+		}
 		
 		if (cc != null) {
 			// Create the agents and start them
 			try {
-				OracleIDSystem.getInstance().setInterfaceAgentController(cc.createNewAgent("Interface", 
-						"system.InterfaceAgent", null));
+				OracleIDSystem.getInstance().setInterfaceAgentController(cc.createNewAgent(institution +
+						".Interface", "system.InterfaceAgent", null));
 				OracleIDSystem.getInstance().getInterfaceAgentController().start();
 				
-				OracleIDSystem.getInstance().setReasonerAgentController(cc.createNewAgent("Reasoner", 
-						"system.ReasonerAgent", null));
+				OracleIDSystem.getInstance().setReasonerAgentController(cc.createNewAgent(institution +
+						".Reasoner", "system.ReasonerAgent", null));
 				OracleIDSystem.getInstance().getReasonerAgentController().start();
 				
 				
-				OracleIDSystem.getInstance().setRetrieverAgentController(cc.createNewAgent("Retriever", 
-						"system.RetrieverAgent", null));
+				OracleIDSystem.getInstance().setRetrieverAgentController(cc.createNewAgent(institution +
+						".Retriever", "system.RetrieverAgent", null));
 				OracleIDSystem.getInstance().getRetrieverAgentController().start();
 				
-				OracleIDSystem.getInstance().setLearnerAgentController(cc.createNewAgent("Learner", 
-						"system.LearnerAgent", null));
+				OracleIDSystem.getInstance().setLearnerAgentController(cc.createNewAgent(institution +
+						".Learner", "system.LearnerAgent", null));
 				OracleIDSystem.getInstance().getLearnerAgentController().start();
 				
-				OracleIDSystem.getInstance().setEvaluatorAgentController(cc.createNewAgent("Evaluator", 
-						"system.EvaluatorAgent", null));
+				OracleIDSystem.getInstance().setEvaluatorAgentController(cc.createNewAgent(institution +
+						".Evaluator", "system.EvaluatorAgent", null));
 				OracleIDSystem.getInstance().getEvaluatorAgentController().start();
 				
-				OracleIDSystem.getInstance().setSelectorAgentController(cc.createNewAgent("Selector", 
-						"system.SelectorAgent", null));
+				OracleIDSystem.getInstance().setSelectorAgentController(cc.createNewAgent(institution +
+						".Selector", "system.SelectorAgent", null));
 				OracleIDSystem.getInstance().getSelectorAgentController().start();
 			}
 			catch (Exception e) {

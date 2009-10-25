@@ -37,6 +37,7 @@ import javax.swing.JTextField;
 import ontology.CBR.Case;
 import ontology.CBR.Problem;
 import ontology.CBR.ProposedSolution;
+import ontology.CBR.Solution;
 import ontology.common.Descriptor;
 import ontology.common.SSCharacterDescriptor;
 import ontology.common.SSHeuristicDescriptor;
@@ -1212,6 +1213,7 @@ public class OracleIDGui extends JFrame {
 		if (jrbContradictions == null) {
 			jrbContradictions = new JRadioButton();
 			jrbContradictions.setText("Contradicciones");
+			jrbContradictions.setVisible(false);
 			jrbContradictions.addChangeListener(new javax.swing.event.ChangeListener() {
 				public void stateChanged(javax.swing.event.ChangeEvent e) {
 					if (jrbContradictions.isSelected()) {
@@ -1350,6 +1352,29 @@ public class OracleIDGui extends JFrame {
 		if (jbAccept == null) {
 			jbAccept = new JButton();
 			jbAccept.setText("Aceptar propuesta");
+			jbAccept.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					if (getProposedSolutions().size() > 0) {
+						Case aNewCase = new Case();
+						
+						//Agregar descripción del problema del caso
+						aNewCase.setProblem(problem);
+						aNewCase.getProblem().setGoalRank(OracleIDSystem.getInstance().getIdentGoal());
+						aNewCase.getProblem().setLeastSimilarityDegree(OracleIDSystem.getInstance().getMinSimilarityDegree());
+						aNewCase.getProblem().getDescription().addAllToConcreteDescription(((ProposedSolution)getProposedSolutions()
+								.get(proposedSolution)).getSolution().getConfirmedDescription());
+						//Agregar descripción de la solución del caso
+						aNewCase.setSolution(new Solution(jtfRank.getText(), jtfName.getText()));
+						//Agregar estado de la solución del caso en la realidad
+						aNewCase.setState(jcbState.isSelected());
+						
+						myAgent.learnCase(aNewCase);												
+					} else {
+						JOptionPane.showMessageDialog(null, "No hay soluciones propuestas.",
+								"OracleID", JOptionPane.INFORMATION_MESSAGE);
+					}					
+				}
+			});
 		}
 		return jbAccept;
 	}

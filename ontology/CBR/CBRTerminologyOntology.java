@@ -60,9 +60,9 @@ public class CBRTerminologyOntology extends jade.content.onto.Ontology  {
     public static final String PROBLEM_GOALRANK="goalRank";
     public static final String PROBLEM_DESCRIPTION="description";
     public static final String PROBLEM="Problem";
-    public static final String SOLUTION_NAME="name";
+    public static final String SOLUTION_NAME="taxonName";
     public static final String SOLUTION_JUSTIFICATION="justification";
-    public static final String SOLUTION_RANK="rank";
+    public static final String SOLUTION_RANK="taxonLevel";
     public static final String SOLUTION="Solution";
     public static final String POSSIBLESOLUTION_CONTRADICTIONS="contradictions";
     public static final String POSSIBLESOLUTION_DOUBTFULDESCRIPTION="doubtfulDescription";
@@ -157,7 +157,7 @@ public class CBRTerminologyOntology extends jade.content.onto.Ontology  {
     possibleSolutionSchema.add(POSSIBLESOLUTION_DOUBTFULDESCRIPTION, (ConceptSchema) getSchema(CommonTerminologyOntology.DESCRIPTION), ObjectSchema.OPTIONAL);
     possibleSolutionSchema.add(POSSIBLESOLUTION_CONTRADICTIONS, (ConceptSchema) getSchema(CommonTerminologyOntology.DESCRIPTION), ObjectSchema.OPTIONAL);
     solutionSchema.add(SOLUTION_RANK, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
-    solutionSchema.add(SOLUTION_JUSTIFICATION, (ConceptSchema) getSchema(CommonTerminologyOntology.DESCRIPTION), ObjectSchema.MANDATORY);
+    solutionSchema.add(SOLUTION_JUSTIFICATION, (ConceptSchema) getSchema(CommonTerminologyOntology.DESCRIPTION), ObjectSchema.OPTIONAL);
     solutionSchema.add(SOLUTION_NAME, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
     problemSchema.add(PROBLEM_DESCRIPTION, (ConceptSchema) getSchema(CommonTerminologyOntology.DESCRIPTION), ObjectSchema.MANDATORY);
     problemSchema.add(PROBLEM_GOALRANK, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);

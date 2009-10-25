@@ -23,19 +23,33 @@ Boston, MA  02111-1307, USA.
 
 package system;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+
+import edu.stanford.smi.protege.model.Cls;
+import edu.stanford.smi.protege.model.Instance;
+import edu.stanford.smi.protege.model.KnowledgeBase;
 import jade.core.Agent;
 import jade.core.behaviours.*;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.content.onto.*;
+import jade.content.onto.basic.Action;
 import jade.content.lang.*;
 import jade.content.ContentElement;
 import jade.content.lang.Codec.CodecException;
 import jade.content.lang.sl.*;
 
 import ontology.CBR.CBRTerminologyOntology;
-import ontology.CBR.IsNegative;
-import ontology.CBR.IsPositive;
+import ontology.CBR.Case;
+import ontology.CBR.Retain;
+import ontology.common.Descriptor;
+import ontology.common.SSCharacterDescriptor;
+import ontology.common.SSHeuristicDescriptor;
+import ontology.common.SVCharacterDescriptor;
+import ontology.common.SVHeuristicDescriptor;
+import ontology.common.SingleValue;
 
 @SuppressWarnings("serial")
 public class LearnerAgent extends Agent {
@@ -67,7 +81,8 @@ public class LearnerAgent extends Agent {
 	   La clase interna IdentificationRequestsServer.
 	 */
 	private class LearnigRequestsServer extends CyclicBehaviour {
-	  public void action() {
+	  @SuppressWarnings("unchecked")
+	public void action() {
 
 		// Preparar plantilla para recibir el mensaje
         MessageTemplate mt = MessageTemplate.and(MessageTemplate.and(
@@ -79,12 +94,97 @@ public class LearnerAgent extends Agent {
 
         if (msg != null) {
             try {
-                if (msg.getPerformative() == ACLMessage.REQUEST) {
+                if (msg.getPerformative() == ACLMessage.REQUEST) {                	
                     ContentElement ce = null;
                     // Convertir la cadena a objetos Java
                     ce = getContentManager().extractContent(msg);
-                    if (ce instanceof IsPositive || ce instanceof IsNegative) {
+                    if (ce instanceof Action) {
+                    	Retain ret = (Retain) ((Action) ce).getAction();
+                    	
+                    	Case aCase = ret.getCase();
 
+                    	KnowledgeBase kb = OracleIDSystem.getInstance().getCbrKb();
+                    	                    	
+                    	Instance caseInst = kb.createInstance(null, kb.getCls("Case"));
+                    	                    	
+                    	Instance problemInst = kb.createInstance(null, kb.getCls("Problem"));
+                    	                  
+                    	Instance descriptionInst = kb.createInstance(null, kb.getCls("Description"));
+                    	
+                    	java.util.List descriptors = new ArrayList<Descriptor>();
+                    	
+                    	Iterator i = aCase.getProblem().getDescription().getAllDescriptors();
+                		
+                		while (i.hasNext()) {
+                			Descriptor d = (Descriptor) i.next();
+                			Instance descriptorInst=null;
+                			if (d instanceof SSCharacterDescriptor) {
+                				descriptorInst = kb.createInstance(null, kb.getCls("SSCharacterDescriptor"));
+                				descriptorInst.setOwnSlotValue(kb.getSlot("structure"), getStructureInstance(d.getStructure()));
+                				descriptorInst.setOwnSlotValue(kb.getSlot("attribute"), getAttributeInstance(d.getAttribute()));
+                				descriptorInst.setOwnSlotValue(kb.getSlot("score"), getStateInstance((String)d.getValue()));                				
+                			}
+                			if (d instanceof SSHeuristicDescriptor) {
+                				descriptorInst = kb.createInstance(null, kb.getCls("SSHeuristicDescriptor"));
+                				descriptorInst.setOwnSlotValue(kb.getSlot("structure"), getStructureInstance(d.getStructure()));
+                				descriptorInst.setOwnSlotValue(kb.getSlot("attribute"), getAttributeInstance(d.getAttribute()));
+                				descriptorInst.setOwnSlotValue(kb.getSlot("score"), getStateInstance((String)d.getValue()));                				
+                			}
+                			
+                			if (d instanceof SVHeuristicDescriptor) {
+                				descriptorInst = kb.createInstance(null, kb.getCls("SVHeuristicDescriptor"));
+                				descriptorInst.setOwnSlotValue(kb.getSlot("structure"), getStructureInstance(d.getStructure()));
+                				descriptorInst.setOwnSlotValue(kb.getSlot("attribute"), getAttributeInstance(d.getAttribute()));
+                				
+                				Instance singleValueInst = kb.createInstance(null, kb.getCls("SingleValue"));
+                				singleValueInst.setOwnSlotValue(kb.getSlot("value"), ((SingleValue)d.getValue()).getValue());
+                				singleValueInst.setOwnSlotValue(kb.getSlot("measuringUnit"), ((SingleValue)d.getValue()).getMeasuringUnit());
+                				
+                				descriptorInst.setOwnSlotValue(kb.getSlot("score"), singleValueInst);                				
+                			}
+                			
+                			if (d instanceof SVCharacterDescriptor) {
+                				descriptorInst = kb.createInstance(null, kb.getCls("SVCharacterDescriptor"));
+                				descriptorInst.setOwnSlotValue(kb.getSlot("structure"), getStructureInstance(d.getStructure()));
+                				descriptorInst.setOwnSlotValue(kb.getSlot("attribute"), getAttributeInstance(d.getAttribute()));
+                				
+                				Instance singleValueInst = kb.createInstance(null, kb.getCls("SingleValue"));
+                				singleValueInst.setOwnSlotValue(kb.getSlot("value"), ((SingleValue)d.getValue()).getValue());
+                				singleValueInst.setOwnSlotValue(kb.getSlot("measuringUnit"), ((SingleValue)d.getValue()).getMeasuringUnit());
+                				
+                				descriptorInst.setOwnSlotValue(kb.getSlot("score"), singleValueInst);                				
+                			}
+
+                			descriptors.add(descriptorInst);
+                		}
+                    	
+                    	descriptionInst.setOwnSlotValues(kb.getSlot("descriptors"), descriptors);
+                    	
+                    	problemInst.setOwnSlotValue(kb.getSlot("description"), descriptionInst);
+                    	problemInst.setOwnSlotValue(kb.getSlot("goalRank"), aCase.getProblem().getGoalRank());
+                    	problemInst.setOwnSlotValue(kb.getSlot("leastSimilarityDegree"), aCase.getProblem().getLeastSimilarityDegree());
+                    	
+                    	caseInst.setOwnSlotValue(kb.getSlot("problem"), problemInst);
+                    	
+                    	Instance solutionInst = kb.createInstance(null, kb.getCls("Solution"));
+                    	solutionInst.setOwnSlotValue(kb.getSlot("rank"), aCase.getSolution().getTaxonLevel());                    	                    	
+                    	solutionInst.setOwnSlotValue(kb.getSlot("name"), aCase.getSolution().getTaxonName());
+                    	
+                    	caseInst.setOwnSlotValue(kb.getSlot("solution"), solutionInst);
+                    	
+                    	caseInst.setOwnSlotValue(kb.getSlot("state"), aCase.getState());
+                    	
+                    	Collection errors = new ArrayList();
+                        OracleIDSystem.getInstance().getCBRProject().save(errors);
+                        
+                        if (errors.size() != 0) {
+                        	Iterator<String> j = errors.iterator();
+                            while (j.hasNext()) {
+                            	System.out.println("Error: " + j.next());
+                            }
+                        } else {
+                        	System.out.println(getAID().getName()+" ha retenido el caso en la base de conocimiento.");
+                        }
                     }
                 }
             }
@@ -99,5 +199,58 @@ public class LearnerAgent extends Agent {
 		}
         }
 	  } // Fin de la clase interna LearningRequestsServer
-
+	
+	@SuppressWarnings("unchecked")
+	Instance getStructureInstance(String structure) {
+		KnowledgeBase kb = OracleIDSystem.getInstance().getCbrKb();
+		Cls cls = kb.getCls("Structure");
+		
+		Iterator i = cls.getDirectInstances().iterator();
+        while (i.hasNext()) {
+        	Instance instance = (Instance) i.next();
+        	if (((String)instance.getDirectOwnSlotValue(kb.getSlot("term"))).equals(structure))
+        		return instance;		                    
+        }
+        
+        cls = kb.getCls("EnvironmentalCategory");
+		
+		Iterator j = cls.getDirectInstances().iterator();
+        while (j.hasNext()) {
+        	Instance instance = (Instance) j.next();
+        	if (((String)instance.getDirectOwnSlotValue(kb.getSlot("term"))).equals(structure))
+        		return instance;		                    
+        }
+        
+        return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	Instance getAttributeInstance(String attribute) {
+		KnowledgeBase kb = OracleIDSystem.getInstance().getCbrKb();
+		Cls cls = kb.getCls("Attribute");
+		
+		Iterator i = cls.getDirectInstances().iterator();
+        while (i.hasNext()) {
+        	Instance instance = (Instance) i.next();
+        	if (((String)instance.getDirectOwnSlotValue(kb.getSlot("term"))).equals(attribute))
+        		return instance;		                    
+        }
+                
+        return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	Instance getStateInstance(String state) {
+		KnowledgeBase kb = OracleIDSystem.getInstance().getCbrKb();
+		Cls cls = kb.getCls("State");
+		
+		Iterator i = cls.getDirectInstances().iterator();
+        while (i.hasNext()) {
+        	Instance instance = (Instance) i.next();
+        	if (((String)instance.getDirectOwnSlotValue(kb.getSlot("term"))).equals(state))
+        		return instance;		                    
+        }
+                
+        return null;
+	}
 }

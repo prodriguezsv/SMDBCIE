@@ -33,6 +33,8 @@ import jade.lang.acl.MessageTemplate;
 import jade.content.ContentElement;
 import jade.content.onto.*;
 import jade.content.onto.basic.Action;
+import jade.content.abs.AbsAgentAction;
+import jade.content.abs.AbsConcept;
 import jade.content.lang.*;
 import jade.content.lang.Codec.CodecException;
 import jade.content.lang.sl.*;
@@ -41,8 +43,11 @@ import ontology.CBR.Adapt;
 import ontology.CBR.AreReasonableSolutionsTo;
 import ontology.CBR.AreSimilarTo;
 import ontology.CBR.CBRTerminologyOntology;
+import ontology.CBR.Case;
 import ontology.CBR.Problem;
+
 import ontology.CBR.Retrieve;
+import ontology.common.CommonTerminologyOntology;
 
 import oracleIDGui.OracleIDGui;
 
@@ -52,6 +57,7 @@ public class InterfaceAgent extends Agent {
   private OracleIDGui myGui;
 
   private Problem currentProblem = null; // El caso actual que se está resolviendo
+  private Case aNewCase = null;
 
   //Se registra el lenguaje de contenido y la ontología
   private Codec codec = new SLCodec();
@@ -268,6 +274,64 @@ public class InterfaceAgent extends Agent {
 		  return (step == 3);
 	  }
 	}  // Fin de la clase interna IdentificationPerformer
+	
+  /**
+   * Invocado por el GUI cuando el usuario acepta una solucion propuesta
+   */
+  public void learnCase(Case aNewCase) {
+	setANewCase(aNewCase);
+	
+    addBehaviour(new OneShotBehaviour() {
+      public void action() {
+          System.out.println(getAID().getName()+" iniciando proceso de aprendizaje...");
+            
+       // Enviar el mensaje al agente aprendíz
+	    ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
+        msg.addReceiver(OracleIDSystem.getInstance().getLearnerAID());
+	    
+        try {
+          msg.setLanguage(codec.getName());
+          msg.setOntology(ontology.getName());
+          msg.setConversationId("species-id"+System.currentTimeMillis());
+          msg.setReplyWith(getAID().getName()+System.currentTimeMillis()); // Valor único
+          
+          AbsAgentAction aaa = new AbsAgentAction(CBRTerminologyOntology.RETAIN);
+          AbsConcept ac = new AbsConcept(CBRTerminologyOntology.CASE);
+          ac.set(CBRTerminologyOntology.CASE_PROBLEM, ontology.fromObject(getANewCase().getProblem()));
+          
+          AbsConcept sac = new AbsConcept(CBRTerminologyOntology.SOLUTION);
+          AbsConcept jac = new AbsConcept(CommonTerminologyOntology.DESCRIPTION);
+          jac.set(CommonTerminologyOntology.DESCRIPTION_DESCRIPTORS, ontology.fromObject(getANewCase()
+        		  .getSolution().getJustification().getDescriptors()));
+          sac.set(CBRTerminologyOntology.SOLUTION_JUSTIFICATION, jac);
+          sac.set(CBRTerminologyOntology.SOLUTION_NAME, ontology.fromObject(getANewCase()
+        		  .getSolution().getTaxonName()));
+          sac.set(CBRTerminologyOntology.SOLUTION_RANK, ontology.fromObject(getANewCase()
+        		  .getSolution().getTaxonLevel()));
+          
+          ac.set(CBRTerminologyOntology.CASE_SOLUTION, ontology.fromObject(sac));
+          ac.set(CBRTerminologyOntology.CASE_STATE, ontology.fromObject(getANewCase().getState()));
+          
+          aaa.set(CBRTerminologyOntology.CASE, ac);
+          
+          Action action = new Action();
+          action.setAction(aaa);
+          action.setActor(OracleIDSystem.getInstance().getLearnerAID());
+          
+          // Convertir objetos Java a cadena
+          getContentManager().fillContent(msg, action);
+          send(msg);
+          System.out.println(getAID().getName()+" ha informado al agente aprendíz del caso... ");
+        }
+        catch (CodecException ce) {
+          ce.printStackTrace();
+        }
+        catch (OntologyException oe) {
+          oe.printStackTrace();
+        }
+      }
+    });
+  }
 
 	public Problem getCurrentProblem() {
 		return currentProblem;
@@ -275,5 +339,13 @@ public class InterfaceAgent extends Agent {
 
 	public void setCurrentProblem(Problem currentProblem) {
 		this.currentProblem = currentProblem;
+	}
+
+	public void setANewCase(Case aNewCase) {
+		this.aNewCase = aNewCase;
+	}
+
+	public Case getANewCase() {
+		return aNewCase;
 	}
 }
