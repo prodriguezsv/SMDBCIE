@@ -30,8 +30,6 @@ import jade.lang.acl.MessageTemplate;
 import jade.util.leap.ArrayList;
 import jade.util.leap.Iterator;
 import jade.util.leap.List;
-import jade.util.leap.Set;
-import jade.util.leap.SortedSetImpl;
 import jade.content.onto.*;
 import jade.content.onto.basic.Action;
 import jade.content.abs.AbsPredicate;
@@ -573,17 +571,17 @@ public class SelectorAgent extends Agent {
 	}
 	
 	private void sortProposedSolutions(List proposedSolutions) {
-		Set proposedSolutionsSet = new SortedSetImpl();
+		java.util.List<ProposedSolution> proposedSolutionsTemp = new java.util.ArrayList<ProposedSolution>();
 		
 		Iterator i = proposedSolutions.iterator();
 		
 		while (i.hasNext()) {
-			proposedSolutionsSet.add(i.next());
+			proposedSolutionsTemp.add((ProposedSolution)i.next());
 		}
 		
 		proposedSolutions.clear();
 		
-		Iterator j = proposedSolutionsSet.iterator();
+		java.util.Iterator<ProposedSolution> j = proposedSolutionsTemp.iterator();
 		
 		while (j.hasNext()) {
 			proposedSolutions.add(j.next());

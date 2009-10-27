@@ -6,8 +6,6 @@ package ontology.CBR;
 import jade.util.leap.ArrayList;
 import jade.util.leap.Iterator;
 import jade.util.leap.List;
-import jade.util.leap.Set;
-import jade.util.leap.SortedSetImpl;
 
 import ontology.common.Description;
 import ontology.common.Descriptor;
@@ -189,17 +187,17 @@ public class Hypothesis implements jade.content.Concept {
 	 * @param possibleSolutions
 	 */
 	private void sortPossibleSolutions(List possibleSolutions) {
-		Set possibleSolutionsSet = new SortedSetImpl();
+		java.util.List<PossibleSolution> possibleSolutionsTemp = new java.util.ArrayList<PossibleSolution>();
 		
 		Iterator i = possibleSolutions.iterator();
 		
 		while (i.hasNext()) {
-			possibleSolutionsSet.add(i.next());
+			possibleSolutionsTemp.add((PossibleSolution)i.next());
 		}
 		
 		possibleSolutions.clear();
 		
-		Iterator j = possibleSolutionsSet.iterator();
+		java.util.Iterator<PossibleSolution> j = possibleSolutionsTemp.iterator();
 		
 		while (j.hasNext()) {
 			possibleSolutions.add(j.next());

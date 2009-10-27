@@ -26,6 +26,7 @@ import edu.stanford.smi.protege.model.*;
 
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -128,7 +129,7 @@ public class OracleIDGui extends JFrame {
 	private InterfaceAgent myAgent;
 	private KnowledgeBase kb = null;
 	private Map<String, String> structuresScope = null;  //  @jve:decl-index=0:
-	private Map<String, String> attributesScope = null;
+	private Map<String, String> attributesScope = null;  //  @jve:decl-index=0:
 	private Map<String, String> valuesScope = null;  //  @jve:decl-index=0:
 	private List<String> measuringUnit = null;  //  @jve:decl-index=0:
 	private Problem problem = null;
@@ -203,6 +204,11 @@ public class OracleIDGui extends JFrame {
 		if (jmiExpectations == null) {
 			jmiExpectations = new JMenuItem();
 			jmiExpectations.setText("Expectativas...");
+			jmiExpectations.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					new UserExpectationDialog(OracleIDSystem.getInstance().getSystemGui());
+				}
+			});
 		}
 		return jmiExpectations;
 	}
@@ -260,6 +266,7 @@ public class OracleIDGui extends JFrame {
 			jlStructures = new JList();
 			jlStructures.setName("jlStructures");
 			jlStructures.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			jlStructures.setVisibleRowCount(12);
 			jlStructures.setToolTipText("Seleccione el nombre de una estructura");
 			jlStructures
 					.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
@@ -281,7 +288,9 @@ public class OracleIDGui extends JFrame {
 							    }
 							}
 							
-				            jlAttributes.setListData(attributesScope.keySet().toArray());
+							String tempArray[] =  attributesScope.keySet().toArray(new String[0]);
+				            Arrays.sort(tempArray);
+				            jlAttributes.setListData(tempArray);
 				            jlValues.setListData(new ArrayList().toArray());
 				            jtfValue.setText("");
 						}
@@ -306,7 +315,9 @@ public class OracleIDGui extends JFrame {
             	structuresScope.put((String)instance.getOwnSlotValue(kb.getSlot("term")), instance.getName());		                    
             }                               
             
-            jlStructures.setListData(structuresScope.keySet().toArray());
+            String tempArray[] =  structuresScope.keySet().toArray(new String[0]);
+            Arrays.sort(tempArray);
+            jlStructures.setListData(tempArray);
 		}
 		return jlStructures;
 	}
@@ -355,7 +366,9 @@ public class OracleIDGui extends JFrame {
 							    }
 							}
 							
-				            jlValues.setListData(valuesScope.keySet().toArray());
+							String tempArray[] =  valuesScope.keySet().toArray(new String[0]);
+				            Arrays.sort(tempArray);
+				            jlValues.setListData(tempArray);
 				            jtfValue.setText("");
 						}
 					});
@@ -724,6 +737,7 @@ public class OracleIDGui extends JFrame {
 		if (jlValues == null) {
 			jlValues = new JList();
 			jlValues.setToolTipText("Seleccione un valor para la estructura y atributo seleccionado");
+			jlValues.setVisibleRowCount(11);
 			jlValues
 					.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
 						public void valueChanged(javax.swing.event.ListSelectionEvent e) {
