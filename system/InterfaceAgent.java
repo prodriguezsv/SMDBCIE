@@ -26,18 +26,26 @@ package system;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.*;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import jade.util.leap.ArrayList;
+import jade.util.leap.List;
 import jade.content.ContentElement;
 import jade.content.onto.*;
 import jade.content.onto.basic.Action;
 import jade.content.abs.AbsAgentAction;
 import jade.content.abs.AbsConcept;
+import jade.content.abs.AbsPredicate;
 import jade.content.lang.*;
 import jade.content.lang.Codec.CodecException;
 import jade.content.lang.sl.*;
+import jade.domain.DFService;
+import jade.domain.FIPAException;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
 
 import ontology.CBR.Adapt;
 import ontology.CBR.AreReasonableSolutionsTo;
@@ -57,7 +65,11 @@ public class InterfaceAgent extends Agent {
   private OracleIDGui myGui;
 
   private Problem currentProblem = null; // El caso actual que se está resolviendo
-  private Case aNewCase = null;
+  private Case aNewCase = null; // Representa un nuevo caso por retenerse
+  private AID requester = null; // El agente que solicita colaboración
+  private AID[] identifierAgents; //Lista de agentes identificadores encontrados
+  private List successfulConflictSet;
+  private List failureConflictSet;
 
   //Se registra el lenguaje de contenido y la ontología
   private Codec codec = new SLCodec();
@@ -72,15 +84,42 @@ public class InterfaceAgent extends Agent {
 	getContentManager().registerLanguage(codec);
     getContentManager().registerOntology(ontology);
     
+    this.setSuccessfulConflictSet(new ArrayList());
+    this.setFailureConflictSet(new ArrayList());
+    
     // Crea y muestra el GUI
     myGui = new OracleIDGui(this);
     
     OracleIDSystem.getInstance().setSystemGui(myGui);
+    
+    // Registra el servicio de identificación en el directorio de páginas amarillas
+    DFAgentDescription dfd = new DFAgentDescription();
+    dfd.setName(getAID());
+    ServiceDescription sd = new ServiceDescription();
+    sd.setType("species-ID");
+    sd.setName("My-species-ID");
+    dfd.addServices(sd);
+    try {
+      DFService.register(this, dfd);
+    }
+    catch (FIPAException fe) {
+      fe.printStackTrace();
+    }
+    
+    // Agrega el comportamiento de servir solicitudes de identificación
+    addBehaviour(new IdentificationRequestsServer());
   }
 
   // Operaciones de limpieza del agente
     @Override
   protected void takeDown() {
+    // Revocar suscripciÃ³n al directorio de pÃ¡ginas amarillas
+    try {
+      DFService.deregister(this);
+    }
+    catch (FIPAException fe) {
+      fe.printStackTrace();
+    }
   	// Cierra la GUI
   	//myGui.dispose();
     // Imprimir un mensaje de despedida
@@ -98,7 +137,33 @@ public class InterfaceAgent extends Agent {
 	
     addBehaviour(new OneShotBehaviour() {
       public void action() {
-          System.out.println(getAID().getName()+" Iniciando proceso de identificación...");
+          System.out.println(getAID().getName()+" Iniciando proceso de identificación...");                   
+
+          System.out.println(getAID().getName()+" buscando agentes para solicitarles servicio de identificacion...");
+          // Actualizar la lista de agentes identificadores
+          DFAgentDescription template = new DFAgentDescription();
+          ServiceDescription sd = new ServiceDescription();
+          sd.setType("species-ID");
+          template.addServices(sd);
+          try {
+            DFAgentDescription[] result = DFService.search(myAgent, template);
+            identifierAgents = new AID[result.length - 1];
+            if (result.length != 1) {
+                System.out.println(getAID().getName()+" encontró los siguientes agentes: ");
+                
+                int j = 0;
+                for (int i = 0; i < result.length; ++i) {
+                    if (!result[i].getName().equals(getAID())) {
+                        identifierAgents[j] = result[i].getName();
+                        System.out.println(identifierAgents[j++].getName());
+                    }
+                }                
+            } else
+                System.out.println(getAID().getName()+" no encontró agentes remotos identificadores...");
+          }
+          catch (FIPAException fe) {
+            fe.printStackTrace();
+          }
             
           myAgent.addBehaviour(new IdentificationPerformer());
       }
@@ -111,6 +176,7 @@ public class InterfaceAgent extends Agent {
 	private class IdentificationPerformer extends Behaviour {
 	  private MessageTemplate mt; // La plantilla para recibir respuestas
 	  private int step = 0; // Guarda el estado de la conversación
+	  private int repliesCnt = 0; // El contador de respuestas de agentes remotos
 	  
 	  public void action() {
 	    switch (step) {
@@ -118,6 +184,11 @@ public class InterfaceAgent extends Agent {
 		    // Enviar el mensaje al agente recuperador de posibles soluciones
 		    ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
 	        msg.addReceiver(OracleIDSystem.getInstance().getRetrieverAID());
+	        for (int i = 0; i < identifierAgents.length; ++i)
+		    	msg.addReceiver(identifierAgents[i]);
+	        
+	        getSuccessfulConflictSet().clear();
+	        getFailureConflictSet().clear();
 		    
 	        try {
 	          msg.setLanguage(codec.getName());
@@ -144,9 +215,9 @@ public class InterfaceAgent extends Agent {
 	          oe.printStackTrace();
 	        }
 	      
-	        step = 1;
-	        
-	        break;
+	        step = 1;	        
+	        break;		    
+		    
 	    case 1:
 	    	// Preparar plantilla para recibir el mensaje
 	    	mt = MessageTemplate.and(MessageTemplate.and(
@@ -167,10 +238,27 @@ public class InterfaceAgent extends Agent {
 		    		if (ce instanceof AreSimilarTo) {
 		    			AreSimilarTo areSimilarTo = (AreSimilarTo) ce;
 	            	  
-				        System.out.println(getAID().getName()+" ha recibido las hipótesis de soluciones posibles...");
-				          
-				        if (!areSimilarTo.getSuccessfulConflictSet().isEmpty() 
-				        		|| !areSimilarTo.getFailureConflictSet().isEmpty()) {
+		    			if (reply.getSender().equals(OracleIDSystem.getInstance().getRetrieverAID()))
+		    				System.out.println(getAID().getName()+" ha recibido las hipótesis de soluciones posibles del agente local...");
+		    			else 
+		    				System.out.println(getAID().getName()+" ha recibido las hipótesis de soluciones posibles de un agente remoto...");
+		    			
+				        if (!areSimilarTo.getSuccessfulConflictSet().isEmpty()) {
+				        	for (int i = 0; i < areSimilarTo.getSuccessfulConflictSet().size(); ++i)
+				        		getSuccessfulConflictSet().add(areSimilarTo.getSuccessfulConflictSet().get(i));
+				        }
+				        
+				        if (!areSimilarTo.getFailureConflictSet().isEmpty()) {
+				        	for (int i = 0; i < areSimilarTo.getFailureConflictSet().size(); ++i)
+				        		getFailureConflictSet().add(areSimilarTo.getFailureConflictSet().get(i));
+				        }
+		    		}
+		    		
+		    		//Se toma en cuenta la respuesta del agente local
+		    		repliesCnt++;
+			        if (repliesCnt > identifierAgents.length) {
+			        	if (!getSuccessfulConflictSet().isEmpty() 
+				        		|| !getFailureConflictSet().isEmpty()) {
 					        // Enviar el mensaje a agente razonador para evaluar las posibles soluciones
 						    msg = new ACLMessage(ACLMessage.REQUEST);
 					        msg.addReceiver(OracleIDSystem.getInstance().getReasonerAID());
@@ -181,8 +269,8 @@ public class InterfaceAgent extends Agent {
 					        msg.setReplyWith(getAID().getName()+System.currentTimeMillis()); // Valor único
 					
 					        Adapt adapt = new Adapt();
-					        adapt.setFailureConflictSet(areSimilarTo.getFailureConflictSet());
-					        adapt.setSuccessfulConflictSet(areSimilarTo.getSuccessfulConflictSet());
+					        adapt.setFailureConflictSet(getFailureConflictSet());
+					        adapt.setSuccessfulConflictSet(getSuccessfulConflictSet());
 					        adapt.setTo(getCurrentProblem());
 					        
 					        Action action = new Action();
@@ -193,13 +281,19 @@ public class InterfaceAgent extends Agent {
 					        getContentManager().fillContent(msg, action);
 					        send(msg);
 					        System.out.println(getAID().getName()+" solicitando la adaptación de las hipotesis al problema...");
-					        step = 2;
+					        
+					        // Se han recibido todas las respuestas
+				        	step = 2;
+				        	repliesCnt = 0;
 				        } else {
 				        	JOptionPane.showMessageDialog(null, "No se han encontrado hipotesis de soluciones posibles...\n\n" +
 				        			"Intente especificar más su descripción", "OracleID", JOptionPane.INFORMATION_MESSAGE);
 				        	step = 3;
+				        	repliesCnt = 0;
 				        }
-		    		}
+			        	
+			        	
+			        }
 	    		}
 	    		catch (CodecException ce) {
 			          ce.printStackTrace();
@@ -207,6 +301,8 @@ public class InterfaceAgent extends Agent {
 		        catch (OntologyException oe) {
 		          oe.printStackTrace();
 		        }
+		        
+		        
 	          } else {
 	        	  block();
 	          }
@@ -332,6 +428,160 @@ public class InterfaceAgent extends Agent {
       }
     });
   }
+  
+  /**
+   * La clase interna IdentificationRequestsServer.
+   */
+	private class IdentificationRequestsServer extends CyclicBehaviour {
+	 public void action() {
+	
+		// Preparar plantilla para recibir el mensaje
+	   MessageTemplate mt = MessageTemplate.and(MessageTemplate.and(
+	       MessageTemplate.MatchLanguage(codec.getName()),
+	       MessageTemplate.MatchOntology(ontology.getName())),
+	       MessageTemplate.MatchPerformative(ACLMessage.REQUEST));
+	
+	   ACLMessage msg = receive(mt);
+	
+	   if (msg != null) {
+	       try {
+	    	   if (msg.getPerformative() == ACLMessage.REQUEST) {
+                   ContentElement ce = null;
+                   // Convertir la cadena a objetos Java
+                   ce = getContentManager().extractContent(msg);
+                   if (ce instanceof Action) {
+                	   Retrieve ret = (Retrieve) ((Action) ce).getAction();
+	                   
+	                   setCurrentProblem(ret.getSimilarTo());
+	                   setRequester(msg.getSender());
+	                   
+	                   myAgent.addBehaviour(new RetrievingRequestsPerformer());
+                   }
+	           }
+	       }
+	       catch (CodecException ce) {
+	           ce.printStackTrace();
+	       }
+	       catch (OntologyException oe) {
+	           oe.printStackTrace();
+	       }
+	   } else {
+		    block();
+		}
+	  }
+	 } // Fin de la clase interna IdentificationRequestsServer
+	
+	
+	/**
+	 * Este es el comportamiento usado por el agente interfaz para realizar un proceso de identificación
+	 */
+	private class RetrievingRequestsPerformer extends Behaviour {
+	  private MessageTemplate mt; // La plantilla para recibir respuestas
+	  private int step = 0; // Guarda el estado de la conversación
+	  
+	  public void action() {
+	    switch (step) {
+	    case 0:
+	    	//Desactivar la interacción con el usuario
+	    	OracleIDSystem.getInstance().setInteractive(false);
+		    // Enviar el mensaje al agente recuperador de posibles soluciones
+		    ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
+	        msg.addReceiver(OracleIDSystem.getInstance().getRetrieverAID());
+		    
+	        try {
+	          msg.setLanguage(codec.getName());
+	          msg.setOntology(ontology.getName());
+	          msg.setConversationId("species-id"+System.currentTimeMillis());
+	          msg.setReplyWith(getAID().getName()+System.currentTimeMillis()); // Valor único
+	
+	          Retrieve ret = new Retrieve();
+	          ret.setSimilarTo(getCurrentProblem());
+	          
+	          Action action = new Action();
+	          action.setAction(ret);
+	          action.setActor(OracleIDSystem.getInstance().getRetrieverAID());
+	          
+	          // Convertir objetos Java a cadena
+	          getContentManager().fillContent(msg, action);
+	          send(msg);
+	          System.out.println(getAID().getName()+" procesando solicitud de casos similares... ");
+	        }
+	        catch (CodecException ce) {
+	          ce.printStackTrace();
+	        }
+	        catch (OntologyException oe) {
+	          oe.printStackTrace();
+	        }
+	      
+	        step = 1;
+	        
+	        break;
+	    case 1:
+	    	// Preparar plantilla para recibir el mensaje
+	    	mt = MessageTemplate.and(MessageTemplate.and(
+			MessageTemplate.MatchLanguage(codec.getName()),
+			MessageTemplate.MatchOntology(ontology.getName())),
+			MessageTemplate.MatchPerformative(ACLMessage.INFORM));
+
+	    	// Recibir todas las aceptaciones de servicio
+	    	ACLMessage reply = myAgent.blockingReceive(mt);
+	    	if (reply != null) {
+	    		try {
+		    		// Respuesta recibida
+		    		ContentElement ce = null;
+	              
+		    		// Convertir la cadena a objetos Java
+		    		ce = getContentManager().extractContent(reply);
+	
+		    		if (ce instanceof AreSimilarTo) {
+		    			AreSimilarTo areSimilarTo = (AreSimilarTo) ce;
+	            	  
+				        System.out.println(getAID().getName()+" ha recibido las hipótesis de soluciones posibles...");
+				          
+				        // Enviar el mensaje a agente que solicitó las posibles soluciones
+					    msg = new ACLMessage(ACLMessage.INFORM);
+				        msg.addReceiver(getRequester());
+					    
+				        msg.setLanguage(codec.getName());
+				        msg.setOntology(ontology.getName());
+				        msg.setConversationId("species-id"+System.currentTimeMillis());
+				        msg.setReplyWith(getAID().getName()+System.currentTimeMillis()); // Valor único
+				          
+				        AbsPredicate ap = new AbsPredicate(CBRTerminologyOntology.ARESIMILARTO);
+                        
+                        ap.set(CBRTerminologyOntology.ARESIMILARTO_FAILURECONFLICTSET, ontology.fromObject(areSimilarTo.getFailureConflictSet()));
+                        ap.set(CBRTerminologyOntology.ARESIMILARTO_SUCCESSFULCONFLICTSET, ontology.fromObject(areSimilarTo.getSuccessfulConflictSet()));
+                        ap.set(CBRTerminologyOntology.ARESIMILARTO_PROBLEM, ontology.fromObject(areSimilarTo.getProblem()));
+                        
+                        // Convertir objetos Java a cadena
+          	          	getContentManager().fillContent(msg, ap);
+				        send(msg);
+				        System.out.println(getAID().getName()+" enviando la información solicitada al agente remoto...");
+				        step = 2;
+		    		}
+	    		}
+	    		catch (CodecException ce) {
+			          ce.printStackTrace();
+		        }
+		        catch (OntologyException oe) {
+		          oe.printStackTrace();
+		        }
+	          } else {
+	        	  block();
+	          }
+	    }
+	  }
+
+	  public boolean done() {
+		  if (step == 2) {
+			  System.out.println(getAID().getName()+" ha terminado de procesar solicitud de casos...");
+			//Activar la interacción con el usuario
+		    OracleIDSystem.getInstance().setInteractive(true);
+		  }
+		  
+		  return (step == 2);
+	  }
+	}  // Fin de la clase interna RetrievingRequestsPerformer
 
 	public Problem getCurrentProblem() {
 		return currentProblem;
@@ -347,5 +597,45 @@ public class InterfaceAgent extends Agent {
 
 	public Case getANewCase() {
 		return aNewCase;
+	}
+
+	public AID getRequester() {
+		return requester;
+	}
+
+	public void setRequester(AID requester) {
+		this.requester = requester;
+	}
+
+	/**
+	 * @see "Método failStructConflictSet del protocolo accessing en SUKIA SmallTalk"
+	 * @return
+	 */
+	private List getFailureConflictSet() {
+		return failureConflictSet;
+	}
+	
+	/**
+	 * @see "Método succStructConflictSet del protocolo accessing en SUKIA SmallTalk"
+	 * @return
+	 */
+	private List getSuccessfulConflictSet() {
+		return successfulConflictSet;
+	}
+	
+	/**
+	 * Método de instancia agregado
+	 * @param succStructConflictSet
+	 */
+	private void setSuccessfulConflictSet(List succStructConflictSet) {
+		this.successfulConflictSet = succStructConflictSet;
+	}
+	
+	/**
+	 * Método de instancia agregado
+	 * @param failStructConflictSet
+	 */
+	private void setFailureConflictSet(List failStructConflictSet) {
+		this.failureConflictSet = failStructConflictSet;
 	}
 }

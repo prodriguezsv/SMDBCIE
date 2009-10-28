@@ -183,6 +183,13 @@ public class LearnerAgent extends Agent {
                             	System.out.println("Error: " + j.next());
                             }
                         } else {
+                        	Case tempCase = new Case(caseInst.getName());
+                        	tempCase.setProblem(aCase.getProblem());
+                        	tempCase.setSolution(aCase.getSolution());
+                        	tempCase.setState(aCase.getState());
+                        	
+                        	OracleIDSystem.getInstance().getCaseMemory().add(tempCase);
+                        	
                         	System.out.println(getAID().getName()+" ha retenido el caso en la base de conocimiento.");
                         }
                     }

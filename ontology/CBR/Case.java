@@ -63,6 +63,7 @@ public class Case implements jade.content.Concept {
 		problem = new Problem(description);
 		solution = new Solution();
 		state = false;
+		this._internalInstanceName = "";
 	}
 	
 	/**

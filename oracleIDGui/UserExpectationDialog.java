@@ -59,6 +59,7 @@ public class UserExpectationDialog extends JDialog {
 	 */
 	private void initialize() {
 		this.setSize(520, 205);
+		this.setTitle("OracleID");
 		this.setModal(true);		
 		this.setContentPane(getJContentPane());
 		setLocation();
@@ -151,7 +152,7 @@ public class UserExpectationDialog extends JDialog {
 	private JPanel getJpExpectations() {
 		if (jpExpectations == null) {
 			jLabelMinSimilarityDegree = new JLabel();
-			jLabelMinSimilarityDegree.setText("Mínimo grado de similaridad:");
+			jLabelMinSimilarityDegree.setText("Mínimo grado de similitud:");
 			jLabelMaxProposedSolutions = new JLabel();
 			jLabelMaxProposedSolutions.setText("Número máximo de soluciones propuestas:");
 			jLabelMaxProposedSolutions.setName("");

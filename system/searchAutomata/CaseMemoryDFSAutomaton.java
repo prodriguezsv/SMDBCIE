@@ -349,7 +349,8 @@ public class CaseMemoryDFSAutomaton {
             this.setStatus(SearchStatus.FAIL);
         }
         
-        indexDialog();
+        if (OracleIDSystem.getInstance().isInteractive())
+        	indexDialog();
     }
     
     /**
@@ -1308,7 +1309,10 @@ public class CaseMemoryDFSAutomaton {
 			
 			while(ps.isEmpty() != true)
                 addToPossibleSolutions(ps.remove(0));        
-        } else indexDialog();
+        } else {
+        	if (OracleIDSystem.getInstance().isInteractive())
+        		indexDialog();
+        }
     }
     
     /**

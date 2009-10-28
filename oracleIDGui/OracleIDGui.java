@@ -604,6 +604,7 @@ public class OracleIDGui extends JFrame {
 		
 		jlDescriptions.setListData(((ProposedSolution)getProposedSolutions()
 				.get(proposedSolution)).getSolution().getSolutionDescription().getDescriptors().toArray());
+		//Presentar la ficha de la solución
 		jtpCase.setSelectedIndex(1);		
 	}
 	
@@ -611,6 +612,7 @@ public class OracleIDGui extends JFrame {
 		jLabelProposals.setText("Propuesta 0 de 0");
 		jtfName.setText("");
 		jtfRank.setText("");
+		jbSeeSolution.setText("Ver solución");
 		jtfCertaintyDegree.setText("");
 		jcbState.setSelected(false);
 		jlDescriptions.setListData((new ArrayList<String>()).toArray());						
@@ -1303,6 +1305,22 @@ public class OracleIDGui extends JFrame {
 		if (jbSeeSolution == null) {
 			jbSeeSolution = new JButton();
 			jbSeeSolution.setText("Ver solución");
+			jbSeeSolution.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					if (!getProposedSolutions().isEmpty()) {
+						Object solution = ((ProposedSolution)getProposedSolutions()
+								.get(proposedSolution)).getSolution().getSolution();
+						
+						if (solution instanceof Taxon) {
+							Taxon tempTaxon = OracleIDSystem.getInstance().getTaxonomy().getTaxonFromLevelIndex(((Taxon) solution).getName());
+							
+							OracleIDSystem.getInstance().getTaxonomyProject().show(tempTaxon.toString());								
+						} else {
+							OracleIDSystem.getInstance().getCBRProject().show(((Case)solution).toString());
+						}
+					}
+				}
+			});
 		}
 		return jbSeeSolution;
 	}

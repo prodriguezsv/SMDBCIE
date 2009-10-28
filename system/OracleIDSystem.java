@@ -13,8 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import javax.swing.JOptionPane;
-
+import oracleIDGui.ConfigurationDialog;
 import oracleIDGui.OracleIDGui;
 
 import edu.stanford.smi.protege.model.Cls;
@@ -59,6 +58,9 @@ public class OracleIDSystem {
 	private int maxNumberSolutions;
 	private String minSimilarityDegree;
 	private boolean presentFailedSolutions;
+	
+	private boolean isInteractive;
+
 	/**
 	 * Controladores de agentes locales
 	 */
@@ -71,7 +73,7 @@ public class OracleIDSystem {
 	/**
 	 * Contenedor principal de la plataforma jade
 	 */
-	private ContainerController mainContainer;
+	private ContainerController container;
 	private OracleIDGui systemGui;
 	/**
 	 * Proyectos de Protege
@@ -166,11 +168,13 @@ public class OracleIDSystem {
 
 		/* USER EXPECTATION: Show failed cases, in case no successful ones are available
 		 Default: true (i.e., show them)*/
-		setPresentFailedSolutions(true);
+		setPresentFailedSolutions(true);		
 
 		/* USER EXPECTATION: Minimal similarity degree used in comparisons. 
 		 Default: moderately similar to equal*/
 		this.setMinSimilarityDegree(SimilarityDegree.MEDIANAMENTESIMILAR.getSimilarityDegree());
+		
+		setInteractive(true);
 
 		interfaceAgentController = null;
 		reasonerAgentController = null;
@@ -485,12 +489,12 @@ public class OracleIDSystem {
 		this.selectorAgentController = selectorAgentController;
 	}
 
-	private ContainerController getMainContainer() {
-		return mainContainer;
+	private ContainerController getContainer() {
+		return container;
 	}
 
-	private void setMainContainer(ContainerController mainContainer) {
-		this.mainContainer = mainContainer;
+	private void setContainer(ContainerController mainContainer) {
+		this.container = mainContainer;
 	}
 
 	public OracleIDGui getSystemGui() {
@@ -501,34 +505,49 @@ public class OracleIDSystem {
 		this.systemGui = systemGui;
 	}
 
+	public boolean isInteractive() {
+		return isInteractive;
+	}
+
+	public void setInteractive(boolean isThereInteraction) {
+		this.isInteractive = isThereInteraction;
+	}
+	
+	private String institution = null;	
+	public String getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(String institution) {
+		this.institution = institution;
+	}
+
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) throws TaxonomyKbBeanFactoryException {		
 		jade.core.Runtime rt = jade.core.Runtime.instance();
-		String institutions[] = {"INBio", "FishBase", "EnciclopedyOfLife", "Species2000", "TDWG"};
 		String institution;
 		
-		// Create a container to host the agents
-		Profile p = new ProfileImpl();
-		institution = (String) JOptionPane.showInputDialog(OracleIDSystem.getInstance().getSystemGui(), 
-				"\n¿Qué institución hospedará el sistema local?\n",
-				"OracleID",
-				JOptionPane.QUESTION_MESSAGE,
-				null,
-				institutions, "INBio");
+		ConfigurationDialog config = new ConfigurationDialog(null);
 		
 		ContainerController cc = null;
+		OracleIDSystem.getInstance().setInstitution(config.getName());
+		institution = config.getName();
 		
-		if (institution != null) {
+		if (institution != null || config.getHost() != null) {
+			// Create a container to host the agents
+			Profile p = new ProfileImpl();
+			
 			if (institution.equals("INBio")) {
 				//p.setParameter(Profile.CONTAINER_NAME, "Species-ID");
 			
 				cc = rt.createMainContainer(p);
-				OracleIDSystem.getInstance().setMainContainer(cc);
+				OracleIDSystem.getInstance().setContainer(cc);
 			} else {
-				p.setParameter(Profile.MAIN_HOST, "HARDPC");			
+				p.setParameter(Profile.MAIN_HOST, config.getHost());			
 				cc = rt.createAgentContainer(p);
+				OracleIDSystem.getInstance().setContainer(cc);
 			}
 		} else {
 			System.exit(0);
@@ -576,7 +595,9 @@ public class OracleIDSystem {
 			OracleIDSystem.getInstance().getLearnerAgentController().kill();
 			OracleIDSystem.getInstance().getEvaluatorAgentController().kill();
 			OracleIDSystem.getInstance().getSelectorAgentController().kill();
-			OracleIDSystem.getInstance().getMainContainer().kill();
+			
+			OracleIDSystem.getInstance().getContainer().kill();				
+			
 			jade.core.Runtime.instance().shutDown();
 		}
 		catch (Exception e) {

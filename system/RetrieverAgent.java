@@ -112,13 +112,7 @@ public class RetrieverAgent extends Agent {
                     	initialize();
                     	setProblem(ret.getSimilarTo());
                     	
-                    	retrieveHypothesis();
-                    	
-                    	//AreSimilarTo areSimilarTo = new AreSimilarTo();
-                    	
-                    	//areSimilarTo.setSuccessfulConflictSet(getSuccessfulConflictSet());
-                    	//areSimilarTo.setFailureConflictSet(getFailureConflictSet());
-                    	//areSimilarTo.setProblem(getProblem());                    	                    	
+                    	retrieveHypothesis();                                      	                    
                     	
                         ACLMessage reply = msg.createReply();
                         reply.setPerformative(ACLMessage.INFORM);
@@ -158,8 +152,9 @@ public class RetrieverAgent extends Agent {
 		if (!(OracleIDSystem.getInstance().getCaseMemory().getRoot().getNets().isEmpty())) {
 			this.useCaseMemory();
 		} else {
-			// Second choice: use the taxonomic hierarchy as primary search data structure
-			this.useTaxonomicHierarchy();
+			if (OracleIDSystem.getInstance().isInteractive())
+				// Second choice: use the taxonomic hierarchy as primary search data structure
+				this.useTaxonomicHierarchy();
 		}
 	}
 	
@@ -323,7 +318,8 @@ public class RetrieverAgent extends Agent {
 		if (!(hypothesis1.getPossibleSolutions().isEmpty())) {
 			if (TaxonomicRank.getIndex(TaxonomicRank.valueOf(((PossibleSolution)hypothesis1
 					.getPossibleSolutions().get(0)).getLevel().toUpperCase())) <
-					TaxonomicRank.getIndex(TaxonomicRank.valueOf(OracleIDSystem.getInstance().getIdentGoal().toUpperCase()))) {
+					TaxonomicRank.getIndex(TaxonomicRank.valueOf(OracleIDSystem.getInstance().getIdentGoal().toUpperCase()))
+					&& OracleIDSystem.getInstance().isInteractive()) {
 				dialog = new GoalApproachingHandler(OracleIDSystem.getInstance().getIdentGoal(), hypothesis1 //OJO
 						,OracleIDSystem.getInstance().getTaxonomy(), OracleIDSystem.getInstance().getMinSimilarityDegree());
 				dialog.chat();
@@ -340,8 +336,8 @@ public class RetrieverAgent extends Agent {
 			if (!(hypothesis2.getPossibleSolutions().isEmpty())) {
 				if (TaxonomicRank.getIndex(TaxonomicRank.valueOf(((PossibleSolution)hypothesis2
 						.getPossibleSolutions().get(0)).getLevel().toUpperCase())) <
-						TaxonomicRank.getIndex(TaxonomicRank.valueOf(OracleIDSystem.getInstance()
-								.getIdentGoal().toUpperCase()))) {
+						TaxonomicRank.getIndex(TaxonomicRank.valueOf(OracleIDSystem.getInstance().getIdentGoal().toUpperCase()))
+						&& OracleIDSystem.getInstance().isInteractive()) {
 					dialog = new GoalApproachingHandler(OracleIDSystem.getInstance().getIdentGoal(), hypothesis2 //OJO
 							,OracleIDSystem.getInstance().getTaxonomy(), OracleIDSystem.getInstance().getMinSimilarityDegree());
 					dialog.chat();
@@ -473,8 +469,9 @@ public class RetrieverAgent extends Agent {
 			/* At this point, either: a) no net root was found, or b) the status of the net search was unsuccessful 
 			 (i.e., status = #fail). Try doing a taxonomic search*/
 	
-			if (searchInTaxonomyByStructure(structureName, hypothesis1) == false)
-				return false;
+			if (OracleIDSystem.getInstance().isInteractive())
+				if (searchInTaxonomyByStructure(structureName, hypothesis1) == false)
+					return false;
 		}
 	
 		return true;
