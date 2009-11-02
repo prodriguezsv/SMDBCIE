@@ -549,6 +549,7 @@ public class InterfaceAgent extends Agent {
 				          
 				        AbsPredicate ap = new AbsPredicate(CBRTerminologyOntology.ARESIMILARTO);
                         
+				        //OJO: hay que filtrar los taxones
                         ap.set(CBRTerminologyOntology.ARESIMILARTO_FAILURECONFLICTSET, ontology.fromObject(areSimilarTo.getFailureConflictSet()));
                         ap.set(CBRTerminologyOntology.ARESIMILARTO_SUCCESSFULCONFLICTSET, ontology.fromObject(areSimilarTo.getSuccessfulConflictSet()));
                         ap.set(CBRTerminologyOntology.ARESIMILARTO_PROBLEM, ontology.fromObject(areSimilarTo.getProblem()));
