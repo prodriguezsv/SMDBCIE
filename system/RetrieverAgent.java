@@ -152,9 +152,8 @@ public class RetrieverAgent extends Agent {
 		if (!(OracleIDSystem.getInstance().getCaseMemory().getRoot().getNets().isEmpty())) {
 			this.useCaseMemory();
 		} else {
-			if (OracleIDSystem.getInstance().isInteractive())
-				// Second choice: use the taxonomic hierarchy as primary search data structure
-				this.useTaxonomicHierarchy();
+			// Second choice: use the taxonomic hierarchy as primary search data structure
+			this.useTaxonomicHierarchy();
 		}
 	}
 	
@@ -469,9 +468,8 @@ public class RetrieverAgent extends Agent {
 			/* At this point, either: a) no net root was found, or b) the status of the net search was unsuccessful 
 			 (i.e., status = #fail). Try doing a taxonomic search*/
 	
-			if (OracleIDSystem.getInstance().isInteractive())
-				if (searchInTaxonomyByStructure(structureName, hypothesis1) == false)
-					return false;
+			if (searchInTaxonomyByStructure(structureName, hypothesis1) == false)
+				return false;
 		}
 	
 		return true;
@@ -541,7 +539,8 @@ public class RetrieverAgent extends Agent {
 			if (((PossibleSolution)hypothesis.getPossibleSolutions().get(0)).getStatus() == true) {
 				if (TaxonomicRank.getIndex(TaxonomicRank.valueOf(((PossibleSolution)hypothesis
 						.getPossibleSolutions().get(0)).getLevel().toUpperCase())) <
-						TaxonomicRank.getIndex(TaxonomicRank.valueOf(OracleIDSystem.getInstance().getIdentGoal().toUpperCase()))) {
+						TaxonomicRank.getIndex(TaxonomicRank.valueOf(OracleIDSystem.getInstance().getIdentGoal().toUpperCase()))
+						&& OracleIDSystem.getInstance().isInteractive()) {
 					dialog = new GoalApproachingHandler(OracleIDSystem.getInstance().getIdentGoal(), hypothesis
 							, OracleIDSystem.getInstance().getTaxonomy(), OracleIDSystem.getInstance().getMinSimilarityDegree());
 					dialog.chat();
