@@ -1806,7 +1806,7 @@ public class CBRKbBeanFactory {
             Object referredBean = getJadeInstanceFor(tempInstanceValue);
 
             if (referredBean != null) {
-              javaInst.setProblema( (Problem) referredBean);
+              javaInst.setProblem( (Problem) referredBean);
             }
           } catch (CBRKbBeanFactoryException e) {
             e.printStackTrace();

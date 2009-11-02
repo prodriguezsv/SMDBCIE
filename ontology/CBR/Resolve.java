@@ -28,12 +28,12 @@ public class Resolve implements jade.content.AgentAction, Serializable {
    /**
    * Protege name: problema
    */
-   private Problem problema;
-   public void setProblema(Problem value) { 
-    this.problema=value;
+   private Problem problem;
+   public void setProblem(Problem value) { 
+    this.problem=value;
    }
-   public Problem getProblema() {
-     return this.problema;
+   public Problem getProblem() {
+     return this.problem;
    }
 
 }
