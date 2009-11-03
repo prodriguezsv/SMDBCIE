@@ -3,6 +3,15 @@
  */
 package ontology.common;
 
+import jade.content.abs.AbsConcept;
+import jade.content.abs.AbsObject;
+import jade.content.abs.AbsPrimitive;
+import jade.content.abs.AbsTerm;
+import jade.content.onto.BasicOntology;
+import jade.content.onto.Ontology;
+import jade.content.onto.OntologyException;
+import jade.content.onto.UngroundedException;
+
 
 /**
  * @author Armando
@@ -147,4 +156,30 @@ public class RangeValue extends Value {
 		return  Double.toString(this.getLowerBound())+ "-" + this.getUpperBound() 
 			+ " " + this.getMeasuringUnit();
 	}
+	
+	public void externalise(AbsObject absObj, Ontology onto) throws OntologyException, jade.content.onto.OntologyException {
+        try {
+            AbsConcept abs = (AbsConcept) absObj;
+            abs.set(CommonTerminologyOntology.VALUE_MEASURINGUNIT, (AbsTerm) onto.fromObject(getMeasuringUnit()));
+            AbsPrimitive aPrimitive = new AbsPrimitive(BasicOntology.FLOAT);
+            AbsPrimitive aPrimitive2 = new AbsPrimitive(BasicOntology.FLOAT);
+            aPrimitive.set(getLowerBound());
+            aPrimitive2.set(getUpperBound());
+            abs.set(CommonTerminologyOntology.RANGEVALUE_LOWERBOUND, aPrimitive);
+            abs.set(CommonTerminologyOntology.RANGEVALUE_UPPERBOUND, aPrimitive2);
+        } catch (ClassCastException cce) {
+            throw new OntologyException("Error externalising Value");
+        }
+    }
+
+    public void internalise(AbsObject absObj, Ontology onto) throws UngroundedException, OntologyException, jade.content.onto.OntologyException {
+        try {
+            AbsConcept abs = (AbsConcept) absObj;
+            setMeasuringUnit((String)onto.toObject(abs.getAbsObject(CommonTerminologyOntology.VALUE_MEASURINGUNIT)));
+            setLowerBound(Double.parseDouble((String)onto.toObject(abs.getAbsObject(CommonTerminologyOntology.RANGEVALUE_LOWERBOUND))));
+            setUpperBound(Double.parseDouble((String)onto.toObject(abs.getAbsObject(CommonTerminologyOntology.RANGEVALUE_UPPERBOUND))));
+        } catch (ClassCastException cce) {
+            throw new OntologyException("Error internalising Value");
+        }
+    }
 }

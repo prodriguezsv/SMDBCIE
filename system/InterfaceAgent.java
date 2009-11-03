@@ -45,12 +45,17 @@ import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.util.leap.ArrayList;
 import jade.util.leap.List;
+import jade.content.AgentAction;
 import jade.content.ContentElement;
 import jade.content.onto.*;
 import jade.content.onto.basic.Action;
+import jade.content.schema.ConceptSchema;
+import jade.content.schema.ObjectSchema;
+import jade.content.schema.TermSchema;
 import jade.content.abs.AbsAgentAction;
 import jade.content.abs.AbsAggregate;
 import jade.content.abs.AbsConcept;
+import jade.content.abs.AbsContentElement;
 import jade.content.abs.AbsIRE;
 import jade.content.abs.AbsPredicate;
 import jade.content.abs.AbsPrimitive;
@@ -464,13 +469,15 @@ public class InterfaceAgent extends Agent {
 
 	          Retrieve ret = new Retrieve();
 	          ret.setSimilarTo(getCurrentProblem());
-
-	          Action action = new Action();
-	          action.setAction(ret);
-	          action.setActor(OracleIDSystem.getInstance().getRetrieverAID());
+	          	          
+	          Action a = new Action();
+	          a.setAction(ret);
+	          a.setActor(OracleIDSystem.getInstance().getRetrieverAID());
+	          
+	          AbsContentElement aaa = (AbsContentElement)ontology.fromObject(a);	          
 
 	          // Convertir objetos Java a cadena
-	          getContentManager().fillContent(msg, action);
+	          getContentManager().fillContent(msg, aaa);
 	          send(msg);
 	          System.out.println(getAID().getName()+" solicitando casos similares o soluciones posibles... ");
 	        }
@@ -610,7 +617,7 @@ public class InterfaceAgent extends Agent {
 		    		if (ce instanceof AreReasonableSolutionsTo) {
 		    			AreReasonableSolutionsTo areReasonableSolutionsTo = (AreReasonableSolutionsTo) ce;
 
-				        System.out.println(getAID().getName()+"ha recibido las soluciones propuestas...");
+				        System.out.println(getAID().getName()+" ha recibido las soluciones propuestas...");
 
                         // Enviar respuestas!
                         msg = new ACLMessage(ACLMessage.INFORM);
@@ -730,21 +737,29 @@ public class InterfaceAgent extends Agent {
 	   if (msg != null) {
 	       try {
 	    	   if (msg.getPerformative() == ACLMessage.REQUEST) {
-                   ContentElement ce = null;
+                   AbsContentElement ace = null;
                    // Convertir la cadena a objetos Java
-                   ce = getContentManager().extractContent(msg);
+                   ConceptSchema singleValueSchema = (ConceptSchema)ontology.getSchema(CommonTerminologyOntology.SINGLEVALUE);
+     	           singleValueSchema.add(CommonTerminologyOntology.SINGLEVALUE_VALUE, 
+     	          			(TermSchema)ontology.getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
+                   ace = getContentManager().extractAbsContent(msg);
 
-                   if (ce instanceof Action) {
+                   if (ace.getTypeName().equals(BasicOntology.ACTION)) {
                        setRequester(msg.getSender());
-                       if (((Action) ce).getAction() instanceof Retrieve){
-                    	   Retrieve ret = (Retrieve) ((Action) ce).getAction();
+                       AbsAgentAction aaa = (AbsAgentAction)ace.getAbsObject(BasicOntology.ACTION_ACTION);
+                       AgentAction aa = (AgentAction) ontology.toObject(aaa);
+                       if (aa instanceof Retrieve){
+                    	   Retrieve ret = (Retrieve) aa;
                     	   setCurrentProblem(ret.getSimilarTo());
                     	   myAgent.addBehaviour(new RetrievingRequestsPerformer());
-                       }else if (((Action) ce).getAction() instanceof Resolve){
-                           Resolve resolve = (Resolve) ((Action) ce).getAction();
+                       }else if (aa instanceof Resolve){
+                           Resolve resolve = (Resolve) aa;
                            mobileIdentifySpecimen(resolve.getProblem());
                        }
                    }
+                   
+     	           singleValueSchema.add(CommonTerminologyOntology.SINGLEVALUE_VALUE, 
+     	          			(TermSchema)ontology.getSchema(BasicOntology.FLOAT), ObjectSchema.MANDATORY);
 	           }
 	       }
 	       catch (CodecException ce) {
@@ -951,7 +966,7 @@ public class InterfaceAgent extends Agent {
 
                             String strt = ((AbsVariable)absPredicate.getAbsTerm(CommonTerminologyOntology.OWNS_ATTRIBUTE)).getName();
 
-                            System.out.println("Estructura recibida: "+strt);
+                            //System.out.println("Estructura recibida: "+strt);
 
                             Instance structureInstance = kb.getInstance(strt);
                             if (structureInstance != null) {
@@ -972,7 +987,7 @@ public class InterfaceAgent extends Agent {
                         } else if (absPredicate.getTypeName().equals("DescribedBy")){
                             String attr = ((AbsVariable)absPredicate.getAbsTerm(CommonTerminologyOntology.DESCRIBEDBY_ATTRIBUTE)).getName();
 
-                            System.out.println("Atributo recibida: "+attr);
+                            //System.out.println("Atributo recibida: "+attr);
 
                             Instance attributeInstance = kb.getInstance(attr);
 
@@ -1002,7 +1017,7 @@ public class InterfaceAgent extends Agent {
 
                         send(reply);
 
-                        System.out.println(getAID().getName()+" ha enviado al movil.");
+                        System.out.println(getAID().getName()+" ha enviado la información solicitada al agente remoto del móvil...");
                     }
                 }
             } catch (CodecException ce) {

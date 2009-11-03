@@ -3,6 +3,8 @@
  */
 package ontology.common;
 
+import jade.content.onto.Introspectable;
+
 
 /**
  * Clase modificada
@@ -10,7 +12,7 @@ package ontology.common;
  * @author Armando
  */
 @SuppressWarnings("serial")
-public abstract class Value implements jade.content.Concept {
+public abstract class Value implements jade.content.Concept, Introspectable {
 	private String measuringUnit;
 		
 	private String _internalInstanceName = null;
