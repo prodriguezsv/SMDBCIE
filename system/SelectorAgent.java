@@ -579,6 +579,8 @@ public class SelectorAgent extends Agent {
 			proposedSolutionsTemp.add((ProposedSolution)i.next());
 		}
 		
+		java.util.Collections.sort(proposedSolutionsTemp);
+		
 		proposedSolutions.clear();
 		
 		java.util.Iterator<ProposedSolution> j = proposedSolutionsTemp.iterator();

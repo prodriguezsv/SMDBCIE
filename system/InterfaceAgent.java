@@ -113,11 +113,11 @@ public class InterfaceAgent extends Agent {
   // Operaciones de limpieza del agente
     @Override
   protected void takeDown() {
-    // Revocar suscripci√≥n al directorio de p√°ginas amarillas
+    // Revocar suscripciÛn al directorio de p·ginas amarillas
     try {
       DFService.deregister(this);
     }
-    catch (FIPAException fe) {
+    catch (FIPAException fe) {    	
       fe.printStackTrace();
     }
   	// Cierra la GUI
