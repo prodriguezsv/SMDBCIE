@@ -535,14 +535,15 @@ public class OracleIDSystem {
 		OracleIDSystem.getInstance().setInstitution(config.getName());
 		institution = config.getName();
 		
-		if (institution != null || config.getHost() != null) {
+		if (institution != null && config.getHost() != null) {
 			// Create a container to host the agents
 			Profile p = new ProfileImpl();
 			
-			if (institution.equals("INBio")) {
+			if (config.isMainContainer()) {
 				//p.setParameter(Profile.CONTAINER_NAME, "Species-ID");
 			
 				cc = rt.createMainContainer(p);
+								
 				OracleIDSystem.getInstance().setContainer(cc);
 			} else {
 				p.setParameter(Profile.MAIN_HOST, config.getHost());			
@@ -556,6 +557,12 @@ public class OracleIDSystem {
 		if (cc != null) {
 			// Create the agents and start them
 			try {
+				if (config.isOpenRMI()) {
+					cc.createNewAgent(institution + ".RMA", "jade.tools.rma.rma", null);
+					OracleIDSystem.getInstance().getContainer().getAgent(
+							OracleIDSystem.getInstance().getInstitution() + ".RMA").start();
+				}
+				
 				OracleIDSystem.getInstance().setInterfaceAgentController(cc.createNewAgent(institution +
 						".Interface", "system.InterfaceAgent", null));
 				OracleIDSystem.getInstance().getInterfaceAgentController().start();
@@ -587,7 +594,7 @@ public class OracleIDSystem {
 		}		
 	}
 	
-	public void cleanup() {
+	public void cleanup() {		
 		try {
 			OracleIDSystem.getInstance().getInterfaceAgentController().kill();
 			OracleIDSystem.getInstance().getReasonerAgentController().kill();
@@ -595,12 +602,12 @@ public class OracleIDSystem {
 			OracleIDSystem.getInstance().getLearnerAgentController().kill();
 			OracleIDSystem.getInstance().getEvaluatorAgentController().kill();
 			OracleIDSystem.getInstance().getSelectorAgentController().kill();
-			
-			OracleIDSystem.getInstance().getContainer().kill();				
+						
+			OracleIDSystem.getInstance().getContainer().kill();
 			
 			jade.core.Runtime.instance().shutDown();
 		}
-		catch (Exception e) {
+		catch (Exception e) {			
 			e.printStackTrace();
 		}
 	}

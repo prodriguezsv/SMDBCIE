@@ -470,14 +470,12 @@ public class InterfaceAgent extends Agent {
 	          Retrieve ret = new Retrieve();
 	          ret.setSimilarTo(getCurrentProblem());
 	          	          
-	          Action a = new Action();
-	          a.setAction(ret);
-	          a.setActor(OracleIDSystem.getInstance().getRetrieverAID());
-	          
-	          AbsContentElement aaa = (AbsContentElement)ontology.fromObject(a);	          
+	          Action action = new Action();
+	          action.setAction(ret);
+	          action.setActor(OracleIDSystem.getInstance().getRetrieverAID());	                  
 
 	          // Convertir objetos Java a cadena
-	          getContentManager().fillContent(msg, aaa);
+	          getContentManager().fillContent(msg, action);
 	          send(msg);
 	          System.out.println(getAID().getName()+" solicitando casos similares o soluciones posibles... ");
 	        }
@@ -742,6 +740,9 @@ public class InterfaceAgent extends Agent {
                    ConceptSchema singleValueSchema = (ConceptSchema)ontology.getSchema(CommonTerminologyOntology.SINGLEVALUE);
      	           singleValueSchema.add(CommonTerminologyOntology.SINGLEVALUE_VALUE, 
      	          			(TermSchema)ontology.getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
+     	           
+     	           // Se extrae el contenido en un descriptor abstracto aunque no es necesario que sea
+     	           // abstracto
                    ace = getContentManager().extractAbsContent(msg);
 
                    if (ace.getTypeName().equals(BasicOntology.ACTION)) {

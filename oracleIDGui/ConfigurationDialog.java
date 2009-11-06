@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
 import java.awt.BorderLayout;
+import javax.swing.JCheckBox;
 
 /**
  * @author Armando
@@ -31,11 +32,16 @@ public class ConfigurationDialog extends JDialog {
 	private JComboBox jcbMainContainerHost = null;
 	private JPanel jpButtons = null;
 	private JButton jbAccept = null;
-	private JButton jbCancel = null;
+	private JButton jbCancel = null;	
+	
+	private JCheckBox jcbRMA = null;
+	private JCheckBox jcbIsMainContainer = null;
 	
 	private String name = null;
 	private String host = null;
-
+	private boolean isMainContainer = true;
+	private boolean openRMI = false;
+	
 	/**
 	 * @param owner
 	 */
@@ -66,6 +72,22 @@ public class ConfigurationDialog extends JDialog {
 		return host;
 	}
 
+	public boolean isMainContainer() {
+		return isMainContainer;
+	}
+
+	public void setMainContainer(boolean isMainContainer) {
+		this.isMainContainer = isMainContainer;
+	}
+
+	public boolean isOpenRMI() {
+		return openRMI;
+	}
+
+	public void setOpenRMI(boolean openRMI) {
+		this.openRMI = openRMI;
+	}
+
 	/**
 	 * This method initializes jContentPane
 	 * 
@@ -89,11 +111,11 @@ public class ConfigurationDialog extends JDialog {
 	private JPanel getJpParameters() {
 		if (jpParameters == null) {
 			jLabelMainContainerHost = new JLabel();
-			jLabelMainContainerHost.setText("Host de contenedor principal:");
+			jLabelMainContainerHost.setText("Host del contenedor principal:");
 			jLabelIdentSystem = new JLabel();
-			jLabelIdentSystem.setText("Nombre de sistema de identificación:");
+			jLabelIdentSystem.setText("Nombre del sistema de identificación:");
 			GridLayout gridLayout1 = new GridLayout();
-			gridLayout1.setRows(2);
+			gridLayout1.setRows(3);
 			gridLayout1.setColumns(2);
 			jpParameters = new JPanel();
 			jpParameters.setName("jpParameters");
@@ -102,6 +124,8 @@ public class ConfigurationDialog extends JDialog {
 			jpParameters.add(getJcbIdentSystem(), null);
 			jpParameters.add(jLabelMainContainerHost, null);
 			jpParameters.add(getJcbMainContainerHost(), null);
+			jpParameters.add(getJcbIsMainContainer(), null);
+			jpParameters.add(getJcbRMA(), null);
 		}
 		return jpParameters;
 	}
@@ -117,6 +141,7 @@ public class ConfigurationDialog extends JDialog {
 		if (jcbIdentSystem == null) {
 			jcbIdentSystem = new JComboBox();
 			jcbIdentSystem.setSelectedItem("INBio");
+			jcbIdentSystem.setEditable(true);
 		}
 		
 		for (String r:institutions) {
@@ -134,11 +159,11 @@ public class ConfigurationDialog extends JDialog {
 	private JComboBox getJcbMainContainerHost() {
 		if (jcbMainContainerHost == null) {
 			jcbMainContainerHost = new JComboBox();
-			jcbMainContainerHost.setSelectedItem("HARDPC");
+			jcbMainContainerHost.setSelectedItem("LOCALHOST");
 			jcbMainContainerHost.setEditable(true);
 		}
 		
-		jcbMainContainerHost.addItem("HARDPC");
+		jcbMainContainerHost.addItem("LOCALHOST");
 		
 		return jcbMainContainerHost;
 	}
@@ -178,6 +203,8 @@ public class ConfigurationDialog extends JDialog {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					name = (String) jcbIdentSystem.getSelectedItem();
 					host = (String) jcbMainContainerHost.getSelectedItem();
+					isMainContainer = jcbIsMainContainer.isSelected();
+					openRMI = jcbRMA.isSelected();
 					setVisible(false);
 				}
 			});
@@ -213,6 +240,38 @@ public class ConfigurationDialog extends JDialog {
 		int centerY = (int)screenSize.getHeight() / 2;
 				
 		setLocation(centerX - getWidth() / 2, centerY - getHeight() / 2);
+	}
+
+	/**
+	 * This method initializes jcbRMI	
+	 * 	
+	 * @return javax.swing.JCheckBox	
+	 */
+	private JCheckBox getJcbRMA() {
+		if (jcbRMA == null) {
+			jcbRMA = new JCheckBox();
+			jcbRMA.setText("¿Abrir RMA?");
+			jcbRMA.addChangeListener(new javax.swing.event.ChangeListener() {
+				public void stateChanged(javax.swing.event.ChangeEvent e) {
+					setOpenRMI(jcbRMA.isSelected());
+				}
+			});
+		}
+		return jcbRMA;
+	}
+
+	/**
+	 * This method initializes jcbIsMainContainer	
+	 * 	
+	 * @return javax.swing.JCheckBox	
+	 */
+	private JCheckBox getJcbIsMainContainer() {
+		if (jcbIsMainContainer == null) {
+			jcbIsMainContainer = new JCheckBox();
+			jcbIsMainContainer.setText("¿Es contenedor principal?");
+			jcbIsMainContainer.setSelected(true);
+		}
+		return jcbIsMainContainer;
 	}	
 
 }  //  @jve:decl-index=0:visual-constraint="10,10"
