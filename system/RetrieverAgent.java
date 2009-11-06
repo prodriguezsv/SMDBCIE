@@ -467,7 +467,6 @@ public class RetrieverAgent extends Agent {
 		
 			/* At this point, either: a) no net root was found, or b) the status of the net search was unsuccessful 
 			 (i.e., status = #fail). Try doing a taxonomic search*/
-				
 			if (searchInTaxonomyByStructure(structureName, hypothesis1) == false)
 				return false;
 		}
