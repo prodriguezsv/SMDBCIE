@@ -23,12 +23,8 @@ Boston, MA  02111-1307, USA.
 
 package system;
 
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.CharacterCodingException;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.CharsetEncoder;
 import java.util.Iterator;
 
 import javax.swing.JOptionPane;
@@ -83,22 +79,22 @@ import oracleIDGui.OracleIDGui;
 
 @SuppressWarnings("serial")
 public class InterfaceAgent extends Agent {
-  // El GUI por medio del cual el usuario introduce la descripción de un espécimen
+  // El GUI por medio del cual el usuario introduce la descripciï¿½n de un espï¿½cimen
   private OracleIDGui myGui;
   private KnowledgeBase kb = null;
 
-  private Problem currentProblem = null; // El caso actual que se está resolviendo
+  private Problem currentProblem = null; // El caso actual que se estï¿½ resolviendo
   private Case aNewCase = null; // Representa un nuevo caso por retenerse
-  private AID requester = null; // El agente que solicita colaboración
+  private AID requester = null; // El agente que solicita colaboraciï¿½n
   private AID[] identifierAgents; //Lista de agentes identificadores encontrados
   private List successfulConflictSet;
   private List failureConflictSet;
 
-  //Se registra el lenguaje de contenido y la ontología
+  //Se registra el lenguaje de contenido y la ontologï¿½a
   private Codec codec = new SLCodec();
   private Ontology ontology = CBRTerminologyOntology.getInstance();
 
-  // Inicialización del agente
+  // Inicializaciï¿½n del agente
 	@Override
   protected void setup() {
     // Imprimir un mensaje de bienvenida
@@ -116,7 +112,7 @@ public class InterfaceAgent extends Agent {
     OracleIDSystem.getInstance().setSystemGui(myGui);
     kb = OracleIDSystem.getInstance().getCommonKb();
     
-    // Registra el servicio de identificación en el directorio de páginas amarillas
+    // Registra el servicio de identificaciï¿½n en el directorio de pï¿½ginas amarillas
     DFAgentDescription dfd = new DFAgentDescription();
     dfd.setName(getAID());
     ServiceDescription sd = new ServiceDescription();
@@ -130,7 +126,7 @@ public class InterfaceAgent extends Agent {
       fe.printStackTrace();
     }
     
-    // Agrega comportamientos de servir solicitudes de identificación
+    // Agrega comportamientos de servir solicitudes de identificaciï¿½n
     addBehaviour(new IdentificationRequestsServer());
     addBehaviour(new MobileRequestsServer());
   }
@@ -138,7 +134,7 @@ public class InterfaceAgent extends Agent {
   // Operaciones de limpieza del agente
     @Override
   protected void takeDown() {
-    // Revocar suscripción al directorio de páginas amarillas
+    // Revocar suscripciï¿½n al directorio de pï¿½ginas amarillas
     try {
       DFService.deregister(this);
     }
@@ -152,7 +148,7 @@ public class InterfaceAgent extends Agent {
   }
 
   /**
-   * Invocado por el GUI cuando el usuario urge identificar el espécimen
+   * Invocado por el GUI cuando el usuario urge identificar el espï¿½cimen
    */
   public void identifySpecimen(Problem problem) {
 	setCurrentProblem(problem);
@@ -162,9 +158,9 @@ public class InterfaceAgent extends Agent {
 	
     addBehaviour(new OneShotBehaviour() {
       public void action() {
-          System.out.println(getAID().getName()+" Iniciando proceso de identificación...");                   
+          System.out.println(getAID().getName()+" iniciando proceso de identificación...");                   
 
-          System.out.println(getAID().getName()+" buscando agentes para solicitarles servicio de identificacion...");
+          System.out.println(getAID().getName()+" buscando agentes para solicitarles servicio de identificación...");
           // Actualizar la lista de agentes identificadores
           DFAgentDescription template = new DFAgentDescription();
           ServiceDescription sd = new ServiceDescription();
@@ -196,7 +192,7 @@ public class InterfaceAgent extends Agent {
   }
   
   /**
-   * Invocado cuando un agente remoto urge identificar un espécimen
+   * Invocado cuando un agente remoto urge identificar un espï¿½cimen
    */
   public void mobileIdentifySpecimen(Problem problem) {
 	setCurrentProblem(problem);
@@ -207,7 +203,7 @@ public class InterfaceAgent extends Agent {
       public void action() {
           System.out.println(getAID().getName()+" Iniciando proceso de identificación...");
 
-          System.out.println(getAID().getName()+" buscando agentes para solicitarles servicio de identificacion...");
+          System.out.println(getAID().getName()+" buscando agentes para solicitarles servicio de identificación...");
           // Actualizar la lista de agentes identificadores
           DFAgentDescription template = new DFAgentDescription();
           ServiceDescription sd = new ServiceDescription();
@@ -243,7 +239,7 @@ public class InterfaceAgent extends Agent {
 	 */
 	private class IdentificationPerformer extends Behaviour {
 	  private MessageTemplate mt; // La plantilla para recibir respuestas
-	  private int step = 0; // Guarda el estado de la conversación
+	  private int step = 0; // Guarda el estado de la conversaciï¿½n
 	  private int repliesCnt = 0; // El contador de respuestas de agentes remotos
 	  
 	  public void action() {
@@ -262,7 +258,8 @@ public class InterfaceAgent extends Agent {
 	          msg.setLanguage(codec.getName());
 	          msg.setOntology(ontology.getName());
 	          msg.setConversationId("species-id"+System.currentTimeMillis());
-	          msg.setReplyWith(getAID().getName()+System.currentTimeMillis()); // Valor único
+	          msg.setReplyWith(getAID().getName()+System.currentTimeMillis()); // Valor ï¿½nico
+	          msg.setEncoding(Charset.defaultCharset().name());
 	
 	          Retrieve ret = new Retrieve();
 	          ret.setSimilarTo(getCurrentProblem());
@@ -273,6 +270,7 @@ public class InterfaceAgent extends Agent {
 	          
 	          // Convertir objetos Java a cadena
 	          getContentManager().fillContent(msg, action);
+	          //msg.setEncoding("ISO-8859-1");
 	          send(msg);
 	          System.out.println(getAID().getName()+" solicitando casos similares o soluciones posibles... ");
 	        }
@@ -334,7 +332,7 @@ public class InterfaceAgent extends Agent {
 					        msg.setLanguage(codec.getName());
 					        msg.setOntology(ontology.getName());
 					        msg.setConversationId("species-id"+System.currentTimeMillis());
-					        msg.setReplyWith(getAID().getName()+System.currentTimeMillis()); // Valor único
+					        msg.setReplyWith(getAID().getName()+System.currentTimeMillis()); // Valor ï¿½nico
 					
 					        Adapt adapt = new Adapt();
 					        adapt.setFailureConflictSet(getFailureConflictSet());
@@ -347,8 +345,9 @@ public class InterfaceAgent extends Agent {
 					          
 					        // Convertir objetos Java a cadena
 					        getContentManager().fillContent(msg, action);
+					        //msg.setEncoding("ISO-8859-1");
 					        send(msg);
-					        System.out.println(getAID().getName()+" solicitando la adaptación de las hipotesis al problema...");
+					        System.out.println(getAID().getName()+" solicitando la adaptación de las hipótesis al problema...");
 					        
 					        // Se han recibido todas las respuestas
 				        	step = 2;
@@ -381,7 +380,7 @@ public class InterfaceAgent extends Agent {
 	    	mt = MessageTemplate.and(MessageTemplate.and(
 	    	MessageTemplate.MatchLanguage(codec.getName()),
 	    	MessageTemplate.MatchOntology(ontology.getName())),
-	    	MessageTemplate.MatchPerformative(ACLMessage.INFORM));
+			MessageTemplate.MatchPerformative(ACLMessage.INFORM));
 
 	    	// Recibir todos los casos devueltos
 	    	reply = myAgent.blockingReceive(mt);
@@ -440,11 +439,11 @@ public class InterfaceAgent extends Agent {
 	}  // Fin de la clase interna IdentificationPerformer
 	
 	/**
-	 * Usado para realizar un proceso de identificación solicitado por un agente remoto
+	 * Usado para realizar un proceso de identificaciï¿½n solicitado por un agente remoto
 	 */
 	private class MobileIdentificationPerformer extends Behaviour {
 	  private MessageTemplate mt; // La plantilla para recibir respuestas
-	  private int step = 0; // Guarda el estado de la conversación
+	  private int step = 0; // Guarda el estado de la conversaciï¿½n
 	  private int repliesCnt = 0; // El contador de respuestas de agentes remotos
 
 	  public void action() {
@@ -465,7 +464,8 @@ public class InterfaceAgent extends Agent {
 	          msg.setLanguage(codec.getName());
 	          msg.setOntology(ontology.getName());
 	          msg.setConversationId("species-id"+System.currentTimeMillis());
-	          msg.setReplyWith(getAID().getName()+System.currentTimeMillis()); // Valor único
+	          msg.setReplyWith(getAID().getName()+System.currentTimeMillis()); // Valor ï¿½nico
+	          msg.setEncoding(Charset.defaultCharset().name());
 
 	          Retrieve ret = new Retrieve();
 	          ret.setSimilarTo(getCurrentProblem());
@@ -476,6 +476,7 @@ public class InterfaceAgent extends Agent {
 
 	          // Convertir objetos Java a cadena
 	          getContentManager().fillContent(msg, action);
+	          //msg.setEncoding("ISO-8859-1");
 	          send(msg);
 	          System.out.println(getAID().getName()+" solicitando casos similares o soluciones posibles... ");
 	        }
@@ -537,7 +538,7 @@ public class InterfaceAgent extends Agent {
 					        msg.setLanguage(codec.getName());
 					        msg.setOntology(ontology.getName());
 					        msg.setConversationId("species-id"+System.currentTimeMillis());
-					        msg.setReplyWith(getAID().getName()+System.currentTimeMillis()); // Valor único
+					        msg.setReplyWith(getAID().getName()+System.currentTimeMillis()); // Valor ï¿½nico
 
 					        Adapt adapt = new Adapt();
 					        adapt.setFailureConflictSet(getFailureConflictSet());
@@ -550,8 +551,9 @@ public class InterfaceAgent extends Agent {
 
 					        // Convertir objetos Java a cadena
 					        getContentManager().fillContent(msg, action);
+					        //msg.setEncoding("ISO-8859-1");
 					        send(msg);
-                                                OracleIDSystem.getInstance().setInteractive(true);
+                            OracleIDSystem.getInstance().setInteractive(true);
 
 					        System.out.println(getAID().getName()+" enviando soluciones propuestas...");
 
@@ -566,17 +568,18 @@ public class InterfaceAgent extends Agent {
                             myMsg.setLanguage(codec.getName());
                             myMsg.setOntology(ontology.getName());
                             myMsg.setConversationId("species-id"+System.currentTimeMillis());
-                            myMsg.setReplyWith(getAID().getName()+System.currentTimeMillis()); // Valor único
+                            myMsg.setReplyWith(getAID().getName()+System.currentTimeMillis()); // Valor ï¿½nico
 
                             AbsPredicate ap = new AbsPredicate(CBRTerminologyOntology.AREREASONABLESOLUTIONSTO);
 
-                            //Envia una lista de posibles soluciones vacía
+                            //Envia una lista de posibles soluciones vacï¿½a
                             ap.set(CBRTerminologyOntology.AREREASONABLESOLUTIONSTO_PROBLEM, ontology.fromObject(getCurrentProblem()));
                             ap.set(CBRTerminologyOntology.AREREASONABLESOLUTIONSTO_PROPOSEDSOLUTIONS, ontology.fromObject(new ArrayList()));
 
                             getContentManager().fillContent(myMsg, ap);
+                            //myMsg.setEncoding("ISO-8859-1");
                             send(myMsg);
-                            System.out.println(getAID().getName()+" enviando la información solicitada al agente movil...");
+                            System.out.println(getAID().getName()+" enviando la información solicitada al agente móvil...");
                             step = 3;
 				        	repliesCnt = 0;
 				        }
@@ -600,7 +603,7 @@ public class InterfaceAgent extends Agent {
 	    	mt = MessageTemplate.and(MessageTemplate.and(
 	    	MessageTemplate.MatchLanguage(codec.getName()),
 	    	MessageTemplate.MatchOntology(ontology.getName())),
-	    	MessageTemplate.MatchPerformative(ACLMessage.INFORM));
+			MessageTemplate.MatchPerformative(ACLMessage.INFORM));
 
 	    	// Recibir todos los casos devueltos
 	    	reply = myAgent.blockingReceive(mt);
@@ -624,7 +627,7 @@ public class InterfaceAgent extends Agent {
                         msg.setLanguage(codec.getName());
                         msg.setOntology(ontology.getName());
                         msg.setConversationId("species-id"+System.currentTimeMillis());
-                        msg.setReplyWith(getAID().getName()+System.currentTimeMillis()); // Valor único
+                        msg.setReplyWith(getAID().getName()+System.currentTimeMillis()); // Valor ï¿½nico
 
                         AbsPredicate ap = new AbsPredicate(CBRTerminologyOntology.AREREASONABLESOLUTIONSTO);
 
@@ -633,6 +636,7 @@ public class InterfaceAgent extends Agent {
 
                         // Convertir objetos Java a cadena
                         getContentManager().fillContent(msg, ap);
+                        //msg.setEncoding("ISO-8859-1");
                         send(msg);
                         System.out.println(getAID().getName()+" enviando la información solicitada al agente remoto del móvil...");
 				        step = 3;
@@ -670,7 +674,7 @@ public class InterfaceAgent extends Agent {
       public void action() {
           System.out.println(getAID().getName()+" iniciando proceso de aprendizaje...");
             
-       // Enviar el mensaje al agente aprendíz
+       // Enviar el mensaje al agente aprendï¿½z
 	    ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
         msg.addReceiver(OracleIDSystem.getInstance().getLearnerAID());
 	    
@@ -678,7 +682,7 @@ public class InterfaceAgent extends Agent {
           msg.setLanguage(codec.getName());
           msg.setOntology(ontology.getName());
           msg.setConversationId("species-id"+System.currentTimeMillis());
-          msg.setReplyWith(getAID().getName()+System.currentTimeMillis()); // Valor único
+          msg.setReplyWith(getAID().getName()+System.currentTimeMillis()); // Valor ï¿½nico
           
           AbsAgentAction aaa = new AbsAgentAction(CBRTerminologyOntology.RETAIN);
           AbsConcept ac = new AbsConcept(CBRTerminologyOntology.CASE);
@@ -705,8 +709,9 @@ public class InterfaceAgent extends Agent {
           
           // Convertir objetos Java a cadena
           getContentManager().fillContent(msg, action);
+          //msg.setEncoding("ISO-8859-1");
           send(msg);
-          System.out.println(getAID().getName()+" ha informado al agente aprendíz del caso... ");
+          System.out.println(getAID().getName()+" ha informado al agente aprendiz del caso... ");
         }
         catch (CodecException ce) {
           ce.printStackTrace();
@@ -732,8 +737,10 @@ public class InterfaceAgent extends Agent {
 	
 	   ACLMessage msg = receive(mt);
 	
-	   if (msg != null) {
+	   if (msg != null) {		   
 	       try {
+	    	   //msg.setContent(new String(msg.getContent().getBytes(), Charset.defaultCharset()));
+	    	   
 	    	   if (msg.getPerformative() == ACLMessage.REQUEST) {
                    AbsContentElement ace = null;
                    // Convertir la cadena a objetos Java
@@ -777,16 +784,16 @@ public class InterfaceAgent extends Agent {
 	
 	
 	/**
-	 * Este es el comportamiento usado por el agente interfaz para realizar un proceso de identificación
+	 * Este es el comportamiento usado por el agente interfaz para realizar un proceso de identificaciï¿½n
 	 */
 	private class RetrievingRequestsPerformer extends Behaviour {
 	  private MessageTemplate mt; // La plantilla para recibir respuestas
-	  private int step = 0; // Guarda el estado de la conversación
+	  private int step = 0; // Guarda el estado de la conversaciï¿½n
 	  
 	  public void action() {
 	    switch (step) {
 	    case 0:
-	    	//Desactivar la interacción con el usuario
+	    	//Desactivar la interacciï¿½n con el usuario
 	    	OracleIDSystem.getInstance().setInteractive(false);
 		    // Enviar el mensaje al agente recuperador de posibles soluciones
 		    ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
@@ -796,7 +803,7 @@ public class InterfaceAgent extends Agent {
 	          msg.setLanguage(codec.getName());
 	          msg.setOntology(ontology.getName());
 	          msg.setConversationId("species-id"+System.currentTimeMillis());
-	          msg.setReplyWith(getAID().getName()+System.currentTimeMillis()); // Valor único
+	          msg.setReplyWith(getAID().getName()+System.currentTimeMillis()); // Valor ï¿½nico
 	
 	          Retrieve ret = new Retrieve();
 	          ret.setSimilarTo(getCurrentProblem());
@@ -807,6 +814,7 @@ public class InterfaceAgent extends Agent {
 	          
 	          // Convertir objetos Java a cadena
 	          getContentManager().fillContent(msg, action);
+	          //msg.setEncoding("ISO-8859-1");
 	          send(msg);
 	          System.out.println(getAID().getName()+" procesando solicitud de casos similares... ");
 	        }
@@ -842,14 +850,14 @@ public class InterfaceAgent extends Agent {
 	            	  
 				        System.out.println(getAID().getName()+" ha recibido las hipótesis de soluciones posibles...");
 				          
-				        // Enviar el mensaje a agente que solicitó las posibles soluciones
+				        // Enviar el mensaje a agente que solicitï¿½ las posibles soluciones
 					    msg = new ACLMessage(ACLMessage.INFORM);
 				        msg.addReceiver(getRequester());
 					    
 				        msg.setLanguage(codec.getName());
 				        msg.setOntology(ontology.getName());
 				        msg.setConversationId("species-id"+System.currentTimeMillis());
-				        msg.setReplyWith(getAID().getName()+System.currentTimeMillis()); // Valor único
+				        msg.setReplyWith(getAID().getName()+System.currentTimeMillis()); // Valor ï¿½nico
 				          
 				        AbsPredicate ap = new AbsPredicate(CBRTerminologyOntology.ARESIMILARTO);
 				        
@@ -860,6 +868,7 @@ public class InterfaceAgent extends Agent {
                         
                         // Convertir objetos Java a cadena
           	          	getContentManager().fillContent(msg, ap);
+          	          	//msg.setEncoding("ISO-8859-1");
 				        send(msg);
 				        System.out.println(getAID().getName()+" enviando la información solicitada al agente remoto...");
 				        step = 2;
@@ -880,7 +889,7 @@ public class InterfaceAgent extends Agent {
 	  public boolean done() {
 		  if (step == 2) {
 			  System.out.println(getAID().getName()+" ha terminado de procesar solicitud de casos...");
-			//Activar la interacción con el usuario
+			//Activar la interacciï¿½n con el usuario
 		    OracleIDSystem.getInstance().setInteractive(true);
 		  }
 		  
@@ -889,27 +898,8 @@ public class InterfaceAgent extends Agent {
 	}  // Fin de la clase interna RetrievingRequestsPerformer
 	
 //--------------------- MOBILE -------------------------------------------------
-    public String toUTF8(String myString){
-        // Create the encoder and decoder for ISO-8859-1
-        Charset charset = Charset.forName("UTF-8");
-        CharsetDecoder decoder = charset.newDecoder();
-        CharsetEncoder encoder = charset.newEncoder();
-        String s = null;
-        try {
-            // Convert a string to ISO-LATIN-1 bytes in a ByteBuffer
-            // The new ByteBuffer is ready to be read.
-            ByteBuffer bbuf = encoder.encode(CharBuffer.wrap(myString));
-
-            // Convert ISO-LATIN-1 bytes in a ByteBuffer to a character ByteBuffer and then to a string.
-            // The new ByteBuffer is ready to be read.
-            CharBuffer cbuf = decoder.decode(bbuf);
-            s = cbuf.toString();
-        } catch (CharacterCodingException e) {
-        }
-        return s;
-    }
-    
-    //Se encarga de pasar la información de estructuras, atributos y estados al agente remoto del móvil
+	
+    //Se encarga de pasar la informaciï¿½n de estructuras, atributos y estados al agente remoto del mï¿½vil
     private class MobileRequestsServer extends CyclicBehaviour {
         @SuppressWarnings("unchecked")
 		@Override
@@ -933,41 +923,43 @@ public class InterfaceAgent extends Agent {
                         AbsPredicate absPredicate =  (AbsPredicate) ace.getProposition();
 
                         ACLMessage reply = msg.createReply();
-                        reply.setPerformative(ACLMessage.INFORM_REF);
+                        reply.setPerformative(ACLMessage.INFORM_REF);                    
+            	          
                         AbsPredicate equals = new AbsPredicate(SLVocabulary.EQUALS);
                         equals.set(SLVocabulary.EQUALS_LEFT, ace);
 
-                        AbsAggregate myList = new AbsAggregate (BasicOntology.SEQUENCE);
+                        List myList = new ArrayList();
                         if (absPredicate.getTypeName().equals("IsDescriptiveElement")){
                             Cls cls = (Cls) kb.getCls("Structure");
                             Iterator j =     cls.getDirectInstances().iterator();
                             while (j.hasNext()) {
                                 Instance instance = (Instance) j.next();
                                 AbsPrimitive absPrimitive = new AbsPrimitive(BasicOntology.STRING);
-                                absPrimitive.set(toUTF8((String)instance.getOwnSlotValue(kb.getSlot("term"))));
-                                myList.add(absPrimitive);
+                                absPrimitive.set(new String(((String)instance.getOwnSlotValue(kb.getSlot("term")))
+                                		.getBytes("UTF-8"), Charset.defaultCharset()));
+                                
+                                AbsPrimitive absPrimitive2 = new AbsPrimitive(BasicOntology.STRING);
+                                absPrimitive2.set(new String((instance.getName()).getBytes("UTF-8"), Charset.defaultCharset()));
 
-                                absPrimitive = new AbsPrimitive(BasicOntology.STRING);
-                                absPrimitive.set(toUTF8(instance.getName()));
-                                myList.add(absPrimitive);
+                                addSorted(myList,absPrimitive,absPrimitive2);
                             }
                             cls = (Cls) kb.getCls("EnvironmentalCategory");
                             j = cls.getDirectInstances().iterator();
                             while (j.hasNext()) {
                                 Instance instance = (Instance) j.next();
-                                AbsPrimitive absPrimitive = new AbsPrimitive(BasicOntology.STRING);
-                                absPrimitive.set(toUTF8((String)instance.getOwnSlotValue(kb.getSlot("term"))));
-                                myList.add(absPrimitive);
+                                AbsPrimitive absPrimitive = new AbsPrimitive(BasicOntology.STRING);                               
+                                absPrimitive.set(new String((((String)instance.getOwnSlotValue(kb.getSlot("term")))
+                                		.getBytes("UTF-8")), Charset.defaultCharset()));
 
-                                absPrimitive = new AbsPrimitive(BasicOntology.STRING);
-                                absPrimitive.set(toUTF8(instance.getName()));
-                                myList.add(absPrimitive);
+                                AbsPrimitive absPrimitive2 = new AbsPrimitive(BasicOntology.STRING);
+                                absPrimitive2.set(new String(((String)instance.getName()).getBytes("UTF-8")
+                                		, Charset.defaultCharset()));
+                                
+                                addSorted(myList,absPrimitive,absPrimitive2);
                             }
                         } else if (absPredicate.getTypeName().equals("Owns")){
 
                             String strt = ((AbsVariable)absPredicate.getAbsTerm(CommonTerminologyOntology.OWNS_ATTRIBUTE)).getName();
-
-                            //System.out.println("Estructura recibida: "+strt);
 
                             Instance structureInstance = kb.getInstance(strt);
                             if (structureInstance != null) {
@@ -975,20 +967,20 @@ public class InterfaceAgent extends Agent {
                                 new java.util.ArrayList<Instance>(structureInstance.getOwnSlotValues(kb.getSlot( "owns" )));
                                 if (tempInstanceValues != null) {
                                     for (Instance instValue : tempInstanceValues) {
-                                        AbsPrimitive absPrimitive = new AbsPrimitive(BasicOntology.STRING);
-                                        absPrimitive.set(toUTF8((String)instValue.getOwnSlotValue(kb.getSlot("term"))));
-                                        myList.add(absPrimitive);
+                                        AbsPrimitive absPrimitive = new AbsPrimitive(BasicOntology.STRING);                                     
+                                        absPrimitive.set(new String(((String)instValue.getOwnSlotValue(kb.getSlot("term")))
+                                        		.getBytes("UTF-8"), Charset.defaultCharset()));
+                                        
+                                        AbsPrimitive absPrimitive2 = new AbsPrimitive(BasicOntology.STRING);
+                                        absPrimitive2.set(new String(((String)instValue.getName()).getBytes("UTF-8")
+                                        		, Charset.defaultCharset()));
 
-                                        absPrimitive = new AbsPrimitive(BasicOntology.STRING);
-                                        absPrimitive.set(toUTF8(instValue.getName()));
-                                        myList.add(absPrimitive);
+                                        addSorted(myList,absPrimitive,absPrimitive2);
                                     }
                                 }
                             }
                         } else if (absPredicate.getTypeName().equals("DescribedBy")){
                             String attr = ((AbsVariable)absPredicate.getAbsTerm(CommonTerminologyOntology.DESCRIBEDBY_ATTRIBUTE)).getName();
-
-                            //System.out.println("Atributo recibida: "+attr);
 
                             Instance attributeInstance = kb.getInstance(attr);
 
@@ -1000,37 +992,63 @@ public class InterfaceAgent extends Agent {
                                     for (Instance instValue : tempInstanceValues) {
                                         if (instValue.hasType(kb.getCls("State") )) {
                                             AbsPrimitive absPrimitive = new AbsPrimitive(BasicOntology.STRING);
-                                            absPrimitive.set(toUTF8((String)instValue.getOwnSlotValue(kb.getSlot("term"))));
-                                            myList.add(absPrimitive);
+                                            absPrimitive.set(new String((((String)instValue.getOwnSlotValue(kb.getSlot("term")))
+                                            		.getBytes("UTF-8")), Charset.defaultCharset()));
 
-                                            absPrimitive = new AbsPrimitive(BasicOntology.STRING);
-                                            absPrimitive.set(toUTF8(instValue.getName()));
-                                            myList.add(absPrimitive);
+                                            AbsPrimitive absPrimitive2 = new AbsPrimitive(BasicOntology.STRING);                                            
+                                            absPrimitive2.set(new String(((String)instValue.getName()).getBytes("UTF-8")
+                                            		, Charset.defaultCharset()));
+
+                                            addSorted(myList,absPrimitive,absPrimitive2);
                                         }
                                     }
                                 }
                             }
                         }
 
-                        equals.set(SLVocabulary.EQUALS_RIGHT, myList);
+                        equals.set(SLVocabulary.EQUALS_RIGHT, listToAbsAggregate(myList));
 
                         getContentManager().fillContent(reply, equals);
 
+                        //reply.setEncoding("UTF-8");
                         send(reply);
 
                         System.out.println(getAID().getName()+" ha enviado la información solicitada al agente remoto del móvil...");
                     }
                 }
             } catch (CodecException ce) {
-            ce.printStackTrace();
+            	ce.printStackTrace();
             } catch (OntologyException oe) {
-            oe.printStackTrace();
-            }
+            	oe.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         } else {
         	block();
         }
        }
     } // Fin de la clase interna MobileRequestsServer
+    
+    public void addSorted(List aList,AbsPrimitive value1,AbsPrimitive value2){
+        int i = 0;
+        for (i=0;i<aList.size();i=i+2){
+            AbsPrimitive aValue = (AbsPrimitive)aList.get(i);
+            if (aValue.getString().compareTo(value1.getString())>0){
+                break;
+            }
+        }
+        aList.add(i,value2);
+        aList.add(i,value1);
+    }
+    public AbsAggregate listToAbsAggregate(List aList){
+        AbsAggregate aAbsAggregate = new AbsAggregate (BasicOntology.SEQUENCE);
+        for (int i=0;i<aList.size();i++){
+            aAbsAggregate.add((AbsPrimitive)aList.get(i));
+        }
+        return aAbsAggregate;
+    }
+
 //--------------------- END MOBILE ---------------------------------------------
 
 	public Problem getCurrentProblem() {
@@ -1058,7 +1076,7 @@ public class InterfaceAgent extends Agent {
 	}
 
 	/**
-	 * @see "Método failStructConflictSet del protocolo accessing en SUKIA SmallTalk"
+	 * @see "Mï¿½todo failStructConflictSet del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
 	private List getFailureConflictSet() {
@@ -1066,7 +1084,7 @@ public class InterfaceAgent extends Agent {
 	}
 	
 	/**
-	 * @see "Método succStructConflictSet del protocolo accessing en SUKIA SmallTalk"
+	 * @see "Mï¿½todo succStructConflictSet del protocolo accessing en SUKIA SmallTalk"
 	 * @return
 	 */
 	private List getSuccessfulConflictSet() {
@@ -1074,7 +1092,7 @@ public class InterfaceAgent extends Agent {
 	}
 	
 	/**
-	 * Método de instancia agregado
+	 * Mï¿½todo de instancia agregado
 	 * @param succStructConflictSet
 	 */
 	private void setSuccessfulConflictSet(List succStructConflictSet) {
@@ -1082,7 +1100,7 @@ public class InterfaceAgent extends Agent {
 	}
 	
 	/**
-	 * Método de instancia agregado
+	 * Mï¿½todo de instancia agregado
 	 * @param failStructConflictSet
 	 */
 	private void setFailureConflictSet(List failStructConflictSet) {

@@ -83,12 +83,9 @@ public class OracleIDSystem {
 	/**
 	 * Ruta de archivos de ontologías
 	 */
-	private final String COMMON_PROJECT_FILE_NAME = "c:\\eclipse\\Projects\\Tests\\OracleID\\rsc\\" +
-			"ProtegeOntologies\\commonOntology.pprj";
-	private final String TAXONOMY_PROJECT_FILE_NAME = "c:\\eclipse\\Projects\\Tests\\OracleID\\rsc\\" +
-			"ProtegeOntologies\\TaxonomyOntology.pprj";
-	private final String CBR_PROJECT_FILE_NAME = "c:\\eclipse\\Projects\\Tests\\OracleID\\rsc\\" +
-			"ProtegeOntologies\\CBROntology.pprj";	
+	private final String COMMON_PROJECT_FILE_NAME = "./rsc/ProtegeOntologies/commonOntology.pprj";
+	private final String TAXONOMY_PROJECT_FILE_NAME = "./rsc/ProtegeOntologies/taxonomyOntology.pprj";
+	private final String CBR_PROJECT_FILE_NAME = "./rsc/ProtegeOntologies/CBROntology.pprj";	
   	/**
   	 * The singleton instance of this system
   	 */
@@ -540,10 +537,7 @@ public class OracleIDSystem {
 			Profile p = new ProfileImpl();
 			
 			if (config.isMainContainer()) {
-				//p.setParameter(Profile.CONTAINER_NAME, "Species-ID");
-			
-				cc = rt.createMainContainer(p);
-								
+				cc = rt.createMainContainer(p);								
 				OracleIDSystem.getInstance().setContainer(cc);
 			} else {
 				p.setParameter(Profile.MAIN_HOST, config.getHost());			
