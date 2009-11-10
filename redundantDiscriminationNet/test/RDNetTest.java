@@ -162,11 +162,13 @@ public class RDNetTest extends RDNet {
 		d1.addDescriptors(new SSCharacterDescriptor("Cuerpo", "Forma", "Alargado"));
 		d2.clearAllDescriptors();
 		d3 = new Description();
+		//Se copia la referencia
 		d3.setDescriptors(d1.getDescriptors());
+		//Las referencias de d3 y d1 se borran
 		assertTrue(this.moveDescElements(d1, d2));
 		
 		System.out.println("Verificar que en efecto movió los elementos");
-		assertEquals(d2, d3);
+		assertTrue(d2.getDescriptors().size() == 2);
 	}
 
 	/**

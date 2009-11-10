@@ -6,9 +6,11 @@ package redundantDiscriminationNet.auxiliary.test;
 import static org.junit.Assert.*;
 
 import ontology.CBR.Case;
+import ontology.CBR.SimilarityDegree;
 import ontology.common.SSCharacterDescriptor;
 import ontology.common.SVCharacterDescriptor;
 import ontology.common.SingleValue;
+import ontology.taxonomy.TaxonomicRank;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -67,6 +69,11 @@ public class ProblemSolutionsTest {
 		
 		System.out.println("Iniciando pruebas para el método AddSolutionCase()");
 		asc = new Case();
+		asc.getProblem().setGoalRank(TaxonomicRank.FAMILY.getRank());
+		asc.getProblem().setLeastSimilarityDegree(SimilarityDegree.ALTAMENTESIMILAR.getSimilarityDegree());
+		
+		asc.getSolution().setTaxonLevel(TaxonomicRank.FAMILY.getRank());
+		asc.getSolution().setTaxonName("Chromorididae");
 		
 		System.out.println("Verificar que no se agregue una solución con contradicciones con el caso problema");
 		asc.addToDescription(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(1)));

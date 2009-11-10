@@ -201,4 +201,20 @@ public class Case implements jade.content.Concept {
 	public final Description getDescription(String aStructureName) {
 		return this.getProblem().getDescription().getDescription(aStructureName);
 	}
+	
+	/**
+	 * Determina la igualdad entre dos descriptores
+	 * @param aDescriptor
+	 * @return
+	 */
+	public boolean equals(Object aCase) {
+		if (aCase == null) return false;
+		if (!(aCase instanceof Case)) return false;
+		
+		if (this.getProblem().equals(((Case)aCase).getProblem())
+				&& this.getSolution().equals(((Case)aCase).getSolution())
+				&& (this.getState() == ((Case)aCase).getState()))
+			return true;
+		else return false;
+	}
 }

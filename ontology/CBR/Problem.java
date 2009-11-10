@@ -121,4 +121,19 @@ public class Problem implements jade.content.Concept {
 		return leastSimilarityDegree;
 	}
 	
+	/**
+	 * Determina la igualdad entre dos descriptores
+	 * @param aDescriptor
+	 * @return
+	 */
+	public boolean equals(Object aProblem) {
+		if (aProblem == null) return false;
+		if (!(aProblem instanceof Problem)) return false;
+		
+		if (this.getDescription().equals(((Problem)aProblem).getDescription())
+				&& this.getGoalRank().equals(((Problem)aProblem).getGoalRank())
+				&& this.getLeastSimilarityDegree().equals(((Problem)aProblem).getLeastSimilarityDegree()))
+			return true;
+		else return false;
+	}
 }

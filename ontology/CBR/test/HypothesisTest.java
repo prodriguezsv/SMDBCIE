@@ -94,7 +94,7 @@ public class HypothesisTest {
          * Must be sorted (OJO)
          */
 
-        assertSame("01acuerpo",((Descriptor)instance.getUnmatchedDescription().getDescriptors().get(0)).getStructure());
+        assertSame("00acuerpo",((Descriptor)instance.getUnmatchedDescription().getDescriptors().get(0)).getStructure());
     }
 
     /**

@@ -907,7 +907,8 @@ public class CaseMemoryDFSAutomaton {
             //Dejar las normas más útiles
             while (alternativeNorms.isEmpty() != true){
             	Node n = alternativeNorms.remove(0);
-                if (!isUseless(alternativeNorms.remove(0))) newList.add(n);
+            	//Estaba isUseless(alternativeNorms.remove(0))
+                if (!isUseless(n)) newList.add(n);
             }
             
             if (newList.isEmpty() != true){
@@ -959,7 +960,7 @@ public class CaseMemoryDFSAutomaton {
     				value[0] = "" + ((SingleValue)n.getDescriptor().getValue()).getValue();    			    		
     			    			
         		// Prepare the inquiry to be presented to the user
-        		message = "¿\nPresenta la característica \"" + n.getDescriptor().getAttribute() 
+        		message = "¿Presenta la característica \"" + n.getDescriptor().getAttribute() 
         			+ "\" de la estructura \"" + n.getDescriptor().getStructure() +         					
         					"\" el siguiente valor?";
         		

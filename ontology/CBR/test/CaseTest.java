@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import ontology.CBR.Case;
+import ontology.common.Description;
 import ontology.common.Descriptor;
 import ontology.common.SSCharacterDescriptor;
 import ontology.common.SVCharacterDescriptor;
@@ -137,12 +138,12 @@ public class CaseTest {
 	 */
 	@Test
 	public final void testGetDescription() {
-		jade.util.leap.List dl = new jade.util.leap.ArrayList();
+		Description dl = new Description();
 		
 		System.out.println("Iniciando pruebas para el método GetDescription()");
 		
 		System.out.println("Verificar que se obtenga una descripción asociada a una estructura");
-		dl.add(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
-		assertEquals(dl, aCase.getDescription("Cuerpo").getDescriptors());
+		dl.addToConcreteDescription(new SVCharacterDescriptor("Cuerpo", "Longitud", new SingleValue(0.3)));
+		assertEquals(dl, aCase.getDescription("Cuerpo"));
 	}
 }

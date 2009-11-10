@@ -35,6 +35,7 @@ import java.util.Map;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import ontology.CBR.CBRKbBeanFactoryException;
 import ontology.CBR.Case;
 import ontology.CBR.Problem;
 import ontology.CBR.ProposedSolution;
@@ -613,6 +614,7 @@ public class OracleIDGui extends JFrame {
 		jtfName.setText("");
 		jtfRank.setText("");
 		jbSeeSolution.setText("Ver solución");
+		jbAccept.setEnabled(true);
 		jtfCertaintyDegree.setText("");
 		jcbState.setSelected(false);
 		jlDescriptions.setListData((new ArrayList<String>()).toArray());						
@@ -1312,11 +1314,15 @@ public class OracleIDGui extends JFrame {
 								.get(proposedSolution)).getSolution().getSolution();
 						
 						if (solution instanceof Taxon) {
-							Taxon tempTaxon = OracleIDSystem.getInstance().getTaxonomy().getTaxonFromLevelIndex(((Taxon) solution).getName());
+							Taxon tempTaxon = OracleIDSystem.getInstance().getTaxonomy()
+								.getTaxonFromLevelIndex(((Taxon) solution).getName());
 							
 							OracleIDSystem.getInstance().getTaxonomyProject().show(tempTaxon.toString());								
 						} else {
-							OracleIDSystem.getInstance().getCBRProject().show(((Case)solution).toString());
+							Taxon tempTaxon = OracleIDSystem.getInstance().getTaxonomy()
+								.getTaxonFromLevelIndex(((Case)solution).getSolution().getTaxonName());
+							
+							OracleIDSystem.getInstance().getCBRProject().show(tempTaxon.toString());
 						}
 					}
 				}
@@ -1390,17 +1396,29 @@ public class OracleIDGui extends JFrame {
 						Case aNewCase = new Case();
 						
 						//Agregar descripción del problema del caso
-						aNewCase.setProblem(problem);
-						aNewCase.getProblem().setGoalRank(OracleIDSystem.getInstance().getIdentGoal());
-						aNewCase.getProblem().setLeastSimilarityDegree(OracleIDSystem.getInstance().getMinSimilarityDegree());
+						aNewCase.getProblem().getDescription().addAllToConcreteDescription(((ProposedSolution)getProposedSolutions()
+								.get(proposedSolution)).getSolution().getSolutionDescription());
 						aNewCase.getProblem().getDescription().addAllToConcreteDescription(((ProposedSolution)getProposedSolutions()
 								.get(proposedSolution)).getSolution().getConfirmedDescription());
+						aNewCase.getProblem().setGoalRank(OracleIDSystem.getInstance().getIdentGoal());
+						aNewCase.getProblem().setLeastSimilarityDegree(OracleIDSystem.getInstance().getMinSimilarityDegree());
+						
 						//Agregar descripción de la solución del caso
 						aNewCase.setSolution(new Solution(jtfRank.getText(), jtfName.getText()));
 						//Agregar estado de la solución del caso en la realidad
 						aNewCase.setState(jcbState.isSelected());
 						
-						myAgent.learnCase(aNewCase);												
+						if (!exists(aNewCase)) {
+							myAgent.learnCase(aNewCase);
+							
+							JOptionPane.showMessageDialog(null, "El caso se ha preparado para su almacenamiento",
+									"OracleID", JOptionPane.INFORMATION_MESSAGE);
+						} else {
+							JOptionPane.showMessageDialog(null, "El caso ya existe en la base de conocimiento",
+									"OracleID", JOptionPane.INFORMATION_MESSAGE);
+						}	
+						
+						jbAccept.setEnabled(false);
 					} else {
 						JOptionPane.showMessageDialog(null, "No hay soluciones propuestas.",
 								"OracleID", JOptionPane.INFORMATION_MESSAGE);
@@ -1425,6 +1443,35 @@ public class OracleIDGui extends JFrame {
 		else width = (int)getWidth();
 		
 		setLocation(centerX - width / 2, centerY - height / 2);
-	}	
+	}
+	
+	/**
+	 * Verifica si un caso ya existe en la base de conocimiento
+	 * @param state
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	boolean exists(Case aCase) {
+		KnowledgeBase kb = OracleIDSystem.getInstance().getCbrKb();
+		Cls cls = kb.getCls("Case");
+				
+		Iterator i = cls.getDirectInstances().iterator();
+        while (i.hasNext()) {
+        	Instance instance = (Instance) i.next();
+        	
+        	Case otherCase = null;
+			try {
+				otherCase = OracleIDSystem.getInstance().getCbrKbBeanFactory().getCase(instance.getName());
+			} catch (CBRKbBeanFactoryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        	
+        	if (aCase.equals(otherCase))
+        		return true;		                    
+        }
+                
+        return false;
+	}
 
 }  //  @jve:decl-index=0:visual-constraint="23,43"

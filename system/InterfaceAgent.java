@@ -553,7 +553,7 @@ public class InterfaceAgent extends Agent {
 					        getContentManager().fillContent(msg, action);
 					        //msg.setEncoding("ISO-8859-1");
 					        send(msg);
-                            OracleIDSystem.getInstance().setInteractive(true);
+                            //OracleIDSystem.getInstance().setInteractive(true);
 
 					        System.out.println(getAID().getName()+" enviando soluciones propuestas...");
 
@@ -674,7 +674,7 @@ public class InterfaceAgent extends Agent {
       public void action() {
           System.out.println(getAID().getName()+" iniciando proceso de aprendizaje...");
             
-       // Enviar el mensaje al agente aprendï¿½z
+       // Enviar el mensaje al agente aprendiz
 	    ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
         msg.addReceiver(OracleIDSystem.getInstance().getLearnerAID());
 	    
@@ -682,7 +682,7 @@ public class InterfaceAgent extends Agent {
           msg.setLanguage(codec.getName());
           msg.setOntology(ontology.getName());
           msg.setConversationId("species-id"+System.currentTimeMillis());
-          msg.setReplyWith(getAID().getName()+System.currentTimeMillis()); // Valor ï¿½nico
+          msg.setReplyWith(getAID().getName()+System.currentTimeMillis()); // Valor único
           
           AbsAgentAction aaa = new AbsAgentAction(CBRTerminologyOntology.RETAIN);
           AbsConcept ac = new AbsConcept(CBRTerminologyOntology.CASE);

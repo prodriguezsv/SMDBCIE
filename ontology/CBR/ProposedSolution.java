@@ -90,6 +90,7 @@ public class ProposedSolution implements jade.content.Concept, Comparable<Propos
 	 * Método de instancia agregado
 	 */
 	public int compareTo(ProposedSolution aProposedSolution) {
-		return (aProposedSolution.getCertaintyDegree().compareTo(this.getCertaintyDegree()));
+		return (this.getCertaintyDegree().compareTo(aProposedSolution.getCertaintyDegree())
+				+((int)(aProposedSolution.getSolution().getPoints()-this.getSolution().getPoints())) );
 	}
 }

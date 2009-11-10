@@ -130,10 +130,10 @@ public class WeightedPatternsbyStructureListTest {
 		
 		assertEquals(d1, patterns.sortByMeanWeightCriteria(d1));
 		d2 = new Description();
-		assertEquals(d2.getDescriptors(), patterns.sortByMeanWeightCriteria(d2).getDescriptors());
+		assertEquals(d2, patterns.sortByMeanWeightCriteria(d2));
 		
 		d2.addToConcreteDescription(new SVCharacterDescriptor("Branquias", "Número de hojas branquiales", new SingleValue(6)));
-		assertEquals(d2.getDescriptors(), patterns.sortByMeanWeightCriteria(d1).getDescriptors());
+		assertEquals(d2, patterns.sortByMeanWeightCriteria(d1));
 		
 		d1.addToConcreteDescription(new SSCharacterDescriptor("Branquias", "Posición durante desplazamiento", "Hacia atras"));
 		d1.addToConcreteDescription(new SSCharacterDescriptor("Branquias", "Posición del ano con respecto a la branquia",
@@ -142,7 +142,7 @@ public class WeightedPatternsbyStructureListTest {
 		d2.addToConcreteDescription(new SSCharacterDescriptor("Branquias", "Posición del ano con respecto a la branquia",
 		"En el centro"));
 		d2.addToConcreteDescription(new SSCharacterDescriptor("Branquias", "Posición durante desplazamiento", "Hacia atras"));
-		assertEquals(d2.getDescriptors(), patterns.sortByMeanWeightCriteria(d1).getDescriptors());
+		assertEquals(d2, patterns.sortByMeanWeightCriteria(d1));
 		
 		d1 = new Description();
 		d1.addToConcreteDescription(new SSCharacterDescriptor("Manto", "Textura del borde", "Lisa"));
@@ -151,7 +151,7 @@ public class WeightedPatternsbyStructureListTest {
 		d2 = new Description();
 		d2.addToConcreteDescription(new SSCharacterDescriptor("Manto", "Forma del borde", "Ondulado"));
 		d2.addToConcreteDescription(new SSCharacterDescriptor("Manto", "Textura del borde", "Lisa"));
-		assertEquals(d2.getDescriptors(), patterns.sortByMeanWeightCriteria(d1).getDescriptors());
+		assertEquals(d2, patterns.sortByMeanWeightCriteria(d1));
 	}
 
 	/**

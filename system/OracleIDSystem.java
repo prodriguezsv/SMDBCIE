@@ -518,6 +518,10 @@ public class OracleIDSystem {
 	public void setInstitution(String institution) {
 		this.institution = institution;
 	}
+	
+	public CBRKbBeanFactory getCbrKbBeanFactory() {
+		return cbrKbBeanFactory;
+	}
 
 	/**
 	 * @param args

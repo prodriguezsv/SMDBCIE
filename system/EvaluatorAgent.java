@@ -43,7 +43,6 @@ import ontology.CBR.Evaluate;
 import ontology.CBR.Hypothesis;
 import ontology.CBR.PossibleSolution;
 import ontology.CBR.Problem;
-import ontology.common.HeuristicDescriptor;
 import ontology.taxonomy.Taxon;
 
 @SuppressWarnings("serial")
@@ -173,22 +172,7 @@ public class EvaluatorAgent extends Agent {
 	private List getSuccessfulConflictSet() {
 		return successfulConflictSet;
 	}
-	
-	/**
-	 * @see "M&ecute;todo losePoints del protocolo de clase point-accummulatind scheme en SUKIA SmallTalk"
-	 * @return
-	 */
-	private static String losePoints() {
-		return "-";
-	}
-	
-	/**
-	 * @see "M&ecute;todo winPoints del protocolo de clase point-accummulatind scheme en SUKIA SmallTalk"
-	 * @return
-	 */
-	private static String winPoints() {
-		return "+";
-	}
+
 	
 	/**
 	 * Conflict set evaluation process
@@ -196,11 +180,11 @@ public class EvaluatorAgent extends Agent {
 	 */
 	public void evaluate() {
 		// Step 1: Evaluate each conflict set individually
-		this.evaluate(getSuccessfulConflictSet(), winPoints());
-		this.evaluate(getFailureConflictSet(), winPoints());
+		this.evaluate(getSuccessfulConflictSet());
+		this.evaluate(getFailureConflictSet());
 
 		// Step 2: Evaluate every conflict set against other conflict sets
-		this.evaluate(getSuccessfulConflictSet(), getFailureConflictSet(), losePoints());
+		this.evaluate(getSuccessfulConflictSet(), getFailureConflictSet());
 	}
 	
 	/**
@@ -235,7 +219,7 @@ public class EvaluatorAgent extends Agent {
 	 * @param aCompConflictSet
 	 * @param aPointAccumulatingScheme
 	 */
-	public void evaluate(List aConflictSet, List aCompConflictSet, String aPointAccumulatingScheme) {
+	public void evaluate(List aConflictSet, List aCompConflictSet) {
 		Taxon evalPossibleSolutionTaxon, compPossibleSolutionTaxon;
 
         //do nothing in case that one of them is empty
@@ -298,45 +282,16 @@ public class EvaluatorAgent extends Agent {
                         
                         // Check if the possible solutions are the same object
                         if (evalPossibleSolutionTaxon.equals(compPossibleSolutionTaxon)) {
-                        	//OJO: verificar este discernimiento
-                        	if (evalHypothesis.getDescription().getDescriptors().get(0) instanceof HeuristicDescriptor) {
-                        		aPointAccumulatingScheme = losePoints();
-                        	} else {
-                        		if (compHypothesis.getDescription().getDescriptors().get(0) instanceof HeuristicDescriptor)
-                        			aPointAccumulatingScheme = winPoints();
-                        		else aPointAccumulatingScheme = losePoints();
-                        	}
-                        		
-                            if (aPointAccumulatingScheme.equals(winPoints())) {
-                                // Inherit the compare solution's descriptions and remove it from the hypothesis-to-compare possibleSolutions list
-                                this.inheritPossibleSolutionDescriptionsFrom(compPossibleSolution, evalPossibleSolution);
-                                evalPossibleSolution.incrementPoints();
-                            } else {
-                                // AQUI SE DEBE PONER LAS DESCRIPCIONES EN LA JUSTIFICACION, NO HEREDARLAS
-                                evalPossibleSolution.incrementPointsBy(-1);
-                            }
+                            // AQUI SE DEBE PONER LAS DESCRIPCIONES EN LA JUSTIFICACION, NO HEREDARLAS
+                            evalPossibleSolution.incrementPointsBy(-1);
                             
                             compHypothesis.getPossibleSolutions().remove(compPossibleSolution);
                         } else {
                             // At this point, evalPossibleSolutionTaxon and compPossibleSolutionTaxon are different objects
                             // Determine if the possibleSolution-to-evaluate is a successor taxon of the possibleSolution-to-compare
-                            if (evalPossibleSolutionTaxon.isSuccessorOf(compPossibleSolutionTaxon)) {
-                            	//OJO: verificar este discernimiento
-                            	if (evalHypothesis.getDescription().getDescriptors().get(0) instanceof HeuristicDescriptor) {
-                            		aPointAccumulatingScheme = losePoints();
-                            	} else {
-                            		if (compHypothesis.getDescription().getDescriptors().get(0) instanceof HeuristicDescriptor)
-                            			aPointAccumulatingScheme = winPoints();
-                            		else aPointAccumulatingScheme = losePoints();
-                            	}
-                            	
-                                if (aPointAccumulatingScheme.equals(winPoints())) {
-                                    this.inheritPossibleSolutionDescriptionsFrom(compPossibleSolution, evalPossibleSolution);
-                                    evalPossibleSolution.incrementPoints();
-                                } else {
-                                    // AQUI SE DEBE PONER LAS DESCRIPCIONES EN LA JUSTIFICACION, NO HEREDARLAS
-                                    evalPossibleSolution.incrementPointsBy(-1);
-                                }
+                            if (evalPossibleSolutionTaxon.isSuccessorOf(compPossibleSolutionTaxon)) {                            	
+                            	// AQUI SE DEBE PONER LAS DESCRIPCIONES EN LA JUSTIFICACION, NO HEREDARLAS
+                            	evalPossibleSolution.incrementPointsBy(-1);
                             }
                         }
                     }
@@ -374,7 +329,7 @@ public class EvaluatorAgent extends Agent {
 	 * @param aConflictSet
 	 * @param aPointAccumulatingScheme
 	 */
-	public void evaluate(List aConflictSet, String aPointAccumulatingScheme) {
+	public void evaluate(List aConflictSet) {
 		Taxon evalPossibleSolutionTaxon, compPossibleSolutionTaxon;
 		List tempList;
 
@@ -395,7 +350,8 @@ public class EvaluatorAgent extends Agent {
 			while (i.hasNext()) {
 				PossibleSolution evalPossibleSolution = (PossibleSolution) i.next();
 
-                evalPossibleSolutionTaxon = OracleIDSystem.getInstance().getTaxonomy().getTaxonFromLevelIndex(evalPossibleSolution.getName(), evalPossibleSolution.getLevel());                    
+                evalPossibleSolutionTaxon = OracleIDSystem.getInstance().getTaxonomy()
+                	.getTaxonFromLevelIndex(evalPossibleSolution.getName(), evalPossibleSolution.getLevel());                    
 
                 if (evalPossibleSolutionTaxon == null) return;           
                 
@@ -429,30 +385,18 @@ public class EvaluatorAgent extends Agent {
 
                         if (compPossibleSolutionTaxon == null) return;
                         // Check if the possible solutions are the same object
-                        if (evalPossibleSolutionTaxon.equals(compPossibleSolutionTaxon)) {
-                        	
-                            if (aPointAccumulatingScheme.equals(winPoints())) {
-                                // Inherit the compare solution's descriptions and remove it from the hypothesis-to-compare possibleSolutions list
-                                this.inheritPossibleSolutionDescriptionsFrom(compPossibleSolution, evalPossibleSolution);
-                                evalPossibleSolution.incrementPoints();
-                            } else {
-                                // AQUI SE DEBE PONER LAS DESCRIPCIONES EN LA JUSTIFICACION, NO HEREDARLAS
-                                evalPossibleSolution.incrementPointsBy(-1);
-                            }
-                            
+                        if (evalPossibleSolutionTaxon.equals(compPossibleSolutionTaxon)) {                        	
+                            // Inherit the compare solution's descriptions and remove it from the hypothesis-to-compare possibleSolutions list
+                            this.inheritPossibleSolutionDescriptionsFrom(compPossibleSolution, evalPossibleSolution);
+                            evalPossibleSolution.incrementPoints();
+                                
                             compHypothesis.getPossibleSolutions().remove(compPossibleSolution);
                         } else {
                             // At this point, evalPossibleSolutionTaxon and compPossibleSolutionTaxon are different objects
                             // Determine if the possibleSolution-to-evaluate is a successor taxon of the possibleSolution-to-compare
-                            if (evalPossibleSolutionTaxon.isSuccessorOf(compPossibleSolutionTaxon)) {
-                            	
-                                if (aPointAccumulatingScheme.equals(winPoints())) {
-                                    this.inheritPossibleSolutionDescriptionsFrom(compPossibleSolution, evalPossibleSolution);
-                                    evalPossibleSolution.incrementPoints();
-                                } else {
-                                    // AQUI SE DEBE PONER LAS DESCRIPCIONES EN LA JUSTIFICACION, NO HEREDARLAS
-                                    evalPossibleSolution.incrementPointsBy(-1);
-                                }
+                            if (evalPossibleSolutionTaxon.isSuccessorOf(compPossibleSolutionTaxon)) {                            	
+                                this.inheritPossibleSolutionDescriptionsFrom(compPossibleSolution, evalPossibleSolution);
+                                evalPossibleSolution.incrementPoints();
                             }
                         }
                     }

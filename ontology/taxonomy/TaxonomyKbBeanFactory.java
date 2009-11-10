@@ -60,14 +60,16 @@ public class TaxonomyKbBeanFactory {
       throw new CommonKbBeanFactoryException("Invalid Protege instance name: " + instanceName + ". No Jade instance was created.");
     }
 
-    String javaInst = new String();
+    String javaInst = null;
 
-    beanInstances.put(instanceName, javaInst);
+    //javaInst set all properties
 
     tempStringValue = getStringValue( protegeInst, kb.getSlot( "term" ) );
     if (tempStringValue != null) {
       javaInst = tempStringValue;
     }
+    
+    beanInstances.put(instanceName, javaInst);
 
     return javaInst;
   }

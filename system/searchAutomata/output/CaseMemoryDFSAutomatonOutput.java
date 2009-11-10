@@ -70,16 +70,16 @@ public class CaseMemoryDFSAutomatonOutput extends SearchAutomatonOutput {
     		while (i <= processList.size()) {
     			// Get the next possible solution to compare against
     			compSolution = processList.get(i-1);
+    			
+    			// At this point, ps and compSolution are different cases
+				compSolutionTaxon = this.getTaxonomy().getTaxonFromLevelIndex(compSolution.getName(), compSolution.getLevel());
 
     			// Check if the proposed solutions are the same object
-    			if (ps.getSolution().equals(compSolution.getSolution())) {
+    			if (psTaxon.equals(compSolutionTaxon)) {
     				// Inherit the compare solution's descriptions and remove it from aPossibleSolutionsList
     				this.inheritPossibleSolutionDescriptionsFrom(compSolution, ps);
     				processList.remove(i-1);
     			} else {
-    				// At this point, ps and compSolution are different cases
-					compSolutionTaxon = this.getTaxonomy().getTaxonFromLevelIndex(compSolution.getName(), compSolution.getLevel());
-
 					if (psTaxon.isSuccessorOf(compSolutionTaxon))
 						this.inheritPossibleSolutionDescriptionsFrom(compSolution, ps);
 

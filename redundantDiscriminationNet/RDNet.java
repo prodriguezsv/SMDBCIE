@@ -692,7 +692,8 @@ public class RDNet {
 		Description aDescriptionListCopy;
 		
 		aDescriptionListCopy = new Description();
-		aDescriptionListCopy.setDescriptors(aDescriptionListCopy.getDescriptors());
+		
+		aDescriptionListCopy.addAllToConcreteDescription(aDescriptionList);
 		
 		Iterator i = aDescriptionListCopy.getAllDescriptors();
 		
@@ -921,14 +922,14 @@ public class RDNet {
 
 		// Ojo verificar esta parte
 		if (this.getRoot().getDescriptor() instanceof CharacterDescriptor) {
-			if (this.getRoot().getDescriptor() instanceof SVCharacterDescriptor)
+			if (this.getRoot().getDescriptor().getValue() instanceof SingleValue)
 				desc = new SVCharacterDescriptor();
-			else if (this.getRoot().getDescriptor() instanceof SSCharacterDescriptor)
+			else if (this.getRoot().getDescriptor().getValue() instanceof String)
 				desc = new SSCharacterDescriptor();
 		} else {
-			if (this.getRoot().getDescriptor() instanceof SVHeuristicDescriptor)
+			if (this.getRoot().getDescriptor().getValue() instanceof SingleValue)
 				desc = new SVHeuristicDescriptor();
-			else if (this.getRoot().getDescriptor() instanceof SSHeuristicDescriptor)
+			else if (this.getRoot().getDescriptor().getValue() instanceof String)
 				desc = new SSHeuristicDescriptor();
 		}
 

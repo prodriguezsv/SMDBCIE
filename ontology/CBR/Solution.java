@@ -112,4 +112,20 @@ public class Solution implements jade.content.Concept {
 	public void setTaxonName(String taxonName) {
 		this.taxonName = taxonName;
 	}
+	
+	/**
+	 * Determina la igualdad entre dos descriptores
+	 * @param aDescriptor
+	 * @return
+	 */
+	public boolean equals(Object aSolution) {
+		if (aSolution == null) return false;
+		if (!(aSolution instanceof Solution)) return false;
+		
+		//OJO: considerar si justificación debe formar parte de la igualdad
+		if (this.getTaxonLevel().equals(((Solution)aSolution).getTaxonLevel())
+				&& this.getTaxonName().equals(((Solution)aSolution).getTaxonName()))
+			return true;
+		else return false;
+	}
 }

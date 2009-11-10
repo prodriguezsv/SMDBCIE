@@ -138,7 +138,7 @@ public class Description implements jade.content.Concept {
 			// Determine if the structure name in Deescriptor has already been included in structureList
 			if (d.getStructure().equals(aStructureName)) {
 				description.addDescriptors(d);
-			} else continue;
+			}
 		}
 		
 		return description;
@@ -361,5 +361,28 @@ public class Description implements jade.content.Concept {
 		while (j.hasNext()) {
 			this.getDescriptors().add(j.next());
 		}
+	}
+	
+	/**
+	 * Determina la igualdad entre dos descriptores
+	 * @param aDescription
+	 * @return
+	 */
+	public boolean equals(Object aDescription) {
+		if (aDescription == null) return false;
+		if (!(aDescription instanceof Description)) return false;
+		
+		if (this.getDescriptors().isEmpty()
+				&& ((Description)aDescription).getDescriptors().isEmpty())
+			return true;
+		
+		if (this.getDescriptors().size() == ((Description)aDescription).getDescriptors().size()) {
+			for (int i = 0; i < this.getDescriptors().size(); i++)
+				if (this.getDescriptors().contains(((Description)aDescription).getDescriptors().get(i)))
+					continue;
+				else return false;
+		} else return false;
+		
+		return true;
 	}
 }

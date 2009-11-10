@@ -130,10 +130,10 @@ public class SpecificPatternsbyStructureListTest {
 		
 		assertEquals(d1.getDescriptors(), patterns.sortBySuccessCriteria(d1).getDescriptors());
 		d2 = new Description();
-		assertEquals(d2.getDescriptors(), patterns.sortBySuccessCriteria(d2).getDescriptors());
+		assertEquals(d2, patterns.sortBySuccessCriteria(d2));
 		
 		d2.addToConcreteDescription(new SVCharacterDescriptor("Branquias", "Número de hojas branquiales", new SingleValue(6)));
-		assertEquals(d2.getDescriptors(), patterns.sortBySuccessCriteria(d1).getDescriptors());
+		assertEquals(d2, patterns.sortBySuccessCriteria(d1));
 		
 		d1.addToConcreteDescription(new SSCharacterDescriptor("Branquias", "Posición durante desplazamiento", "Hacia atras"));
 		d1.addToConcreteDescription(new SSCharacterDescriptor("Branquias", "Posición del ano con respecto a la branquia",
@@ -142,7 +142,7 @@ public class SpecificPatternsbyStructureListTest {
 		d2.addToConcreteDescription(new SSCharacterDescriptor("Branquias", "Posición del ano con respecto a la branquia",
 		"En el centro"));
 		d2.addToConcreteDescription(new SSCharacterDescriptor("Branquias", "Posición durante desplazamiento", "Hacia atras"));
-		assertEquals(d2.getDescriptors(), patterns.sortBySuccessCriteria(d1).getDescriptors());
+		assertEquals(d2, patterns.sortBySuccessCriteria(d1));
 		
 		d1 = new Description();
 		d1.addToConcreteDescription(new SSCharacterDescriptor("Manto", "Textura del borde", "Lisa"));
@@ -151,7 +151,7 @@ public class SpecificPatternsbyStructureListTest {
 		d2 = new Description();
 		d2.addToConcreteDescription(new SSCharacterDescriptor("Manto", "Forma del borde", "Ondulado"));
 		d2.addToConcreteDescription(new SSCharacterDescriptor("Manto", "Textura del borde", "Lisa"));
-		assertEquals(d2.getDescriptors(), patterns.sortBySuccessCriteria(d1).getDescriptors());
+		assertEquals(d2, patterns.sortBySuccessCriteria(d1));
 	}
 
 	/**
