@@ -450,7 +450,7 @@ public class InterfaceAgent extends Agent {
 	    switch (step) {
 	    case 0:
 		    // Enviar el mensaje al agente recuperador de posibles soluciones
-                OracleIDSystem.getInstance().setInteractive(false);
+            OracleIDSystem.getInstance().setInteractive(false);
 
 		    ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
 	        msg.addReceiver(OracleIDSystem.getInstance().getRetrieverAID());
@@ -460,7 +460,7 @@ public class InterfaceAgent extends Agent {
 	        getSuccessfulConflictSet().clear();
 	        getFailureConflictSet().clear();
 
-	        try {
+	        try {  	          
 	          msg.setLanguage(codec.getName());
 	          msg.setOntology(ontology.getName());
 	          msg.setConversationId("species-id"+System.currentTimeMillis());
@@ -741,7 +741,7 @@ public class InterfaceAgent extends Agent {
 	       try {
 	    	   //msg.setContent(new String(msg.getContent().getBytes(), Charset.defaultCharset()));
 	    	   
-	    	   if (msg.getPerformative() == ACLMessage.REQUEST) {
+	    	   if (msg.getConversationId().equals("species-id-Mobile")) {
                    AbsContentElement ace = null;
                    // Convertir la cadena a objetos Java
                    ConceptSchema singleValueSchema = (ConceptSchema)ontology.getSchema(CommonTerminologyOntology.SINGLEVALUE);
@@ -756,19 +756,32 @@ public class InterfaceAgent extends Agent {
                        setRequester(msg.getSender());
                        AbsAgentAction aaa = (AbsAgentAction)ace.getAbsObject(BasicOntology.ACTION_ACTION);
                        AgentAction aa = (AgentAction) ontology.toObject(aaa);
+                       if (aa instanceof Resolve){
+                           Resolve resolve = (Resolve) aa;
+                           mobileIdentifySpecimen(resolve.getProblem());
+                       }
+                   } 
+                   
+                   singleValueSchema.add(CommonTerminologyOntology.SINGLEVALUE_VALUE, 
+          			(TermSchema)ontology.getSchema(BasicOntology.FLOAT), ObjectSchema.MANDATORY);
+	           } else {
+            	   AbsContentElement ace = null;                   
+     	           
+     	           // Se extrae el contenido en un descriptor abstracto aunque no es necesario que sea
+     	           // abstracto
+                   ace = getContentManager().extractAbsContent(msg);
+
+                   if (ace.getTypeName().equals(BasicOntology.ACTION)) {
+                       setRequester(msg.getSender());
+                       AbsAgentAction aaa = (AbsAgentAction)ace.getAbsObject(BasicOntology.ACTION_ACTION);
+                       AgentAction aa = (AgentAction) ontology.toObject(aaa);
                        if (aa instanceof Retrieve){
                     	   Retrieve ret = (Retrieve) aa;
                     	   setCurrentProblem(ret.getSimilarTo());
                     	   myAgent.addBehaviour(new RetrievingRequestsPerformer());
-                       }else if (aa instanceof Resolve){
-                           Resolve resolve = (Resolve) aa;
-                           mobileIdentifySpecimen(resolve.getProblem());
                        }
                    }
-                   
-     	           singleValueSchema.add(CommonTerminologyOntology.SINGLEVALUE_VALUE, 
-     	          			(TermSchema)ontology.getSchema(BasicOntology.FLOAT), ObjectSchema.MANDATORY);
-	           }
+               }
 	       }
 	       catch (CodecException ce) {
 	           ce.printStackTrace();

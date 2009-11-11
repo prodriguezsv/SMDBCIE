@@ -817,7 +817,7 @@ public class OracleIDGui extends JFrame {
 		this.setResizable(true);
 		this.setJMenuBar(getJJMenuBar());
 		this.setContentPane(getJContentPane());
-		this.setTitle("OracleID");
+		this.setTitle(OracleIDSystem.getInstance().getInstitution() + "-OracleID");
 		this.setLocation();
 		this.setVisible(true);
 		this.addWindowListener(new java.awt.event.WindowAdapter() {

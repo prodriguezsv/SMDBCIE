@@ -480,17 +480,19 @@ public class CaseMemoryDFSAutomaton {
             //If the descriptor did not match any index, take it out of the problem description and
             //place it in the temporary list
             if (idx == null){
-                //The descriptor may have an inaccurate value. Try to establish a dialog with the user.
-            	SearchStatus result = searchPossibleSolutionsDialog(d);
-            	
-                if (result.equals(SearchStatus.CANCEL))
-                	return;
-                
-                if (result.equals(SearchStatus.FAIL) || result.equals(SearchStatus.IDXNOTFOUND))
-                	tempList.add(d);
-                
-                if (result.equals(SearchStatus.SUCCESS))
-                	addToUnmatchedDescription(d);
+            	if (OracleIDSystem.getInstance().isInteractive()) {
+	                //The descriptor may have an inaccurate value. Try to establish a dialog with the user.
+	            	SearchStatus result = searchPossibleSolutionsDialog(d);
+	            	
+	                if (result.equals(SearchStatus.CANCEL))
+	                	return;
+	                
+	                if (result.equals(SearchStatus.FAIL) || result.equals(SearchStatus.IDXNOTFOUND))
+	                	tempList.add(d);
+	                
+	                if (result.equals(SearchStatus.SUCCESS))
+	                	addToUnmatchedDescription(d);
+            	}
             } else{
                 //Index found. get the IndexValue successor
                 Node succ = idx.getSuccessor(d);
@@ -540,8 +542,8 @@ public class CaseMemoryDFSAutomaton {
         	return;
         }
 
-        if ((currentNorm == netRoot) && (this.getPossibleSolutions().isEmpty()) 
-        		&& (!this.getSolutionDescription().getDescriptors().isEmpty())) {
+        if (!((currentNorm == netRoot) && this.getPossibleSolutions().isEmpty() 
+        		&& this.getSolutionDescription().getDescriptors().isEmpty())) {
         	this.setStatus(SearchStatus.ERROR);
         	return;
         }
@@ -567,9 +569,11 @@ public class CaseMemoryDFSAutomaton {
                 //However, the descriptor may have an inaccurate value. Try to establish a dialog with the user
                 //using a partial match.
 
-                SearchStatus result = searchPossibleSolutionsDialog(d);
-                if (result.equals(SearchStatus.CANCEL))
-                	return;
+                if (OracleIDSystem.getInstance().isInteractive()) {
+	                SearchStatus result = searchPossibleSolutionsDialog(d);
+	                if (result.equals(SearchStatus.CANCEL))
+	                	return;
+                }
             } else {
                 //Index found. get the IndexValue successor
                 Node succ = idx.getSuccessor(d);
