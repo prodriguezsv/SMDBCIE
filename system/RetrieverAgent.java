@@ -317,10 +317,10 @@ public class RetrieverAgent extends Agent {
 		if (!(hypothesis1.getPossibleSolutions().isEmpty())) {
 			if (TaxonomicRank.getIndex(TaxonomicRank.valueOf(((PossibleSolution)hypothesis1
 					.getPossibleSolutions().get(0)).getLevel().toUpperCase())) <
-					TaxonomicRank.getIndex(TaxonomicRank.valueOf(OracleIDSystem.getInstance().getIdentGoal().toUpperCase()))
+					TaxonomicRank.getIndex(TaxonomicRank.valueOf(getProblem().getGoalRank().toUpperCase()))
 					&& OracleIDSystem.getInstance().isInteractive()) {
-				dialog = new GoalApproachingHandler(OracleIDSystem.getInstance().getIdentGoal(), hypothesis1 //OJO
-						,OracleIDSystem.getInstance().getTaxonomy(), OracleIDSystem.getInstance().getMinSimilarityDegree());
+				dialog = new GoalApproachingHandler(getProblem().getGoalRank(), hypothesis1 //OJO
+						,OracleIDSystem.getInstance().getTaxonomy(), getProblem().getLeastSimilarityDegree());
 				dialog.chat();
 				status = dialog.getStatus();
 				if (status == SearchStatus.ERROR || status == SearchStatus.CANCEL)
@@ -335,10 +335,10 @@ public class RetrieverAgent extends Agent {
 			if (!(hypothesis2.getPossibleSolutions().isEmpty())) {
 				if (TaxonomicRank.getIndex(TaxonomicRank.valueOf(((PossibleSolution)hypothesis2
 						.getPossibleSolutions().get(0)).getLevel().toUpperCase())) <
-						TaxonomicRank.getIndex(TaxonomicRank.valueOf(OracleIDSystem.getInstance().getIdentGoal().toUpperCase()))
+						TaxonomicRank.getIndex(TaxonomicRank.valueOf(getProblem().getGoalRank().toUpperCase()))
 						&& OracleIDSystem.getInstance().isInteractive()) {
-					dialog = new GoalApproachingHandler(OracleIDSystem.getInstance().getIdentGoal(), hypothesis2 //OJO
-							,OracleIDSystem.getInstance().getTaxonomy(), OracleIDSystem.getInstance().getMinSimilarityDegree());
+					dialog = new GoalApproachingHandler(getProblem().getGoalRank(), hypothesis2 //OJO
+							,OracleIDSystem.getInstance().getTaxonomy(), getProblem().getLeastSimilarityDegree());
 					dialog.chat();
 					status = dialog.getStatus();
 					if (status == SearchStatus.ERROR || status == SearchStatus.CANCEL)
@@ -514,7 +514,7 @@ public class RetrieverAgent extends Agent {
 		
 		// Perform a taxonomic search
 		searchAutomaton = new TaxonomySearchAutomaton(OracleIDSystem.getInstance().getTaxonomy(), 
-				OracleIDSystem.getInstance().getMinSimilarityDegree());
+				getProblem().getLeastSimilarityDegree());
 		searchAutomaton.beginSearch(problemDescription);
 		status = searchAutomaton.getStatus();
 
@@ -538,10 +538,10 @@ public class RetrieverAgent extends Agent {
 			if (((PossibleSolution)hypothesis.getPossibleSolutions().get(0)).getStatus() == true) {
 				if (TaxonomicRank.getIndex(TaxonomicRank.valueOf(((PossibleSolution)hypothesis
 						.getPossibleSolutions().get(0)).getLevel().toUpperCase())) <
-						TaxonomicRank.getIndex(TaxonomicRank.valueOf(OracleIDSystem.getInstance().getIdentGoal().toUpperCase()))
+						TaxonomicRank.getIndex(TaxonomicRank.valueOf(getProblem().getGoalRank().toUpperCase()))
 						&& OracleIDSystem.getInstance().isInteractive()) {
-					dialog = new GoalApproachingHandler(OracleIDSystem.getInstance().getIdentGoal(), hypothesis
-							, OracleIDSystem.getInstance().getTaxonomy(), OracleIDSystem.getInstance().getMinSimilarityDegree());
+					dialog = new GoalApproachingHandler(getProblem().getGoalRank(), hypothesis
+							, OracleIDSystem.getInstance().getTaxonomy(), getProblem().getLeastSimilarityDegree());
 					dialog.chat();
 					status = dialog.getStatus();
 					if (status == SearchStatus.ERROR || status == SearchStatus.CANCEL)

@@ -160,8 +160,8 @@ public class CBRTerminologyOntology extends jade.content.onto.Ontology  {
     solutionSchema.add(SOLUTION_JUSTIFICATION, (ConceptSchema) getSchema(CommonTerminologyOntology.DESCRIPTION), ObjectSchema.OPTIONAL);
     solutionSchema.add(SOLUTION_NAME, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
     problemSchema.add(PROBLEM_DESCRIPTION, (ConceptSchema) getSchema(CommonTerminologyOntology.DESCRIPTION), ObjectSchema.MANDATORY);
-    problemSchema.add(PROBLEM_GOALRANK, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.OPTIONAL);
-    problemSchema.add(PROBLEM_LEASTSIMILARITYDEGREE, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.OPTIONAL);
+    problemSchema.add(PROBLEM_GOALRANK, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
+    problemSchema.add(PROBLEM_LEASTSIMILARITYDEGREE, (TermSchema)getSchema(BasicOntology.STRING), ObjectSchema.MANDATORY);
     caseSchema.add(CASE_SOLUTION, solutionSchema, ObjectSchema.MANDATORY);
     caseSchema.add(CASE_PROBLEM, problemSchema, ObjectSchema.MANDATORY);
     caseSchema.add(CASE_STATE, (TermSchema)getSchema(BasicOntology.BOOLEAN), ObjectSchema.MANDATORY);

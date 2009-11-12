@@ -1400,6 +1400,7 @@ public class OracleIDGui extends JFrame {
 								.get(proposedSolution)).getSolution().getSolutionDescription());
 						aNewCase.getProblem().getDescription().addAllToConcreteDescription(((ProposedSolution)getProposedSolutions()
 								.get(proposedSolution)).getSolution().getConfirmedDescription());
+						//OJO: verificar si esto es redundante con la especificación del problema
 						aNewCase.getProblem().setGoalRank(OracleIDSystem.getInstance().getIdentGoal());
 						aNewCase.getProblem().setLeastSimilarityDegree(OracleIDSystem.getInstance().getMinSimilarityDegree());
 						

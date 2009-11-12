@@ -197,8 +197,7 @@ public class InterfaceAgent extends Agent {
   public void mobileIdentifySpecimen(Problem problem) {
 	setCurrentProblem(problem);
 
-	getCurrentProblem().setGoalRank(OracleIDSystem.getInstance().getIdentGoal());
-	getCurrentProblem().setLeastSimilarityDegree(OracleIDSystem.getInstance().getMinSimilarityDegree());
+	//El problema ya especifica las expectativas de desempeño
     addBehaviour(new OneShotBehaviour() {
       public void action() {
           System.out.println(getAID().getName()+" Iniciando proceso de identificación...");
