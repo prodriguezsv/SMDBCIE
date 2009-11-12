@@ -245,7 +245,7 @@ public class GoalApproachingHandler {
             	//Before placing the possible solution in the process list, find its corresponding taxon in
             	//the associated taxonomy
                 if (ps.getSolution() instanceof Taxon)
-                    processList.add(ps);
+                	this.addProcessList(ps);
                 else {
                     //If the case's status is positive, continue processing it. Else, ignore it
                     if (((Case)ps.getSolution()).getState()){
@@ -330,7 +330,7 @@ public class GoalApproachingHandler {
                                     else if (descriptor != null) {                            
          	                           ps.setSolution(t); 
          	                           ps.addToConfirmedDescription(descriptor);
-         	                           OKList.add(ps);
+         	                           this.addOKList(ps);
          	                            
          	                           return doDialog();
                                     }
@@ -361,7 +361,7 @@ public class GoalApproachingHandler {
                            else if (descriptor != null) {                            
 	                           ps.setSolution(t); 
 	                           ps.addToConfirmedDescription(descriptor);
-	                           OKList.add(ps);
+	                           this.addOKList(ps);
 	                            
 	                           return doDialog();
                            }
@@ -588,6 +588,7 @@ public class GoalApproachingHandler {
 	 * @see "M&eacute;todo thereAreContradictions: del protocolo testing en SUKIA SmallTalk"
 	 * @return
 	 */
+    //OJO: este método podría mejorarse considerando otra clase de contradiciones
 	protected boolean areThereContradictions(Descriptor aDescriptor) {
         Iterator i = hypothesis.getPossibleSolutions().iterator();
 		

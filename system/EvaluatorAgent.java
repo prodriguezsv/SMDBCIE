@@ -23,11 +23,13 @@ Boston, MA  02111-1307, USA.
 
 package system;
 
+import java.util.Collections;
+import java.util.HashMap;
+
 import jade.core.Agent;
 import jade.core.behaviours.*;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
-import jade.util.leap.ArrayList;
 import jade.util.leap.Iterator;
 import jade.util.leap.List;
 import jade.content.onto.*;
@@ -221,84 +223,85 @@ public class EvaluatorAgent extends Agent {
 	 */
 	public void evaluate(List aConflictSet, List aCompConflictSet) {
 		Taxon evalPossibleSolutionTaxon, compPossibleSolutionTaxon;
+		java.util.List<PossibleSolution> psEvalList, psCompList;
+		java.util.Map<PossibleSolution, Hypothesis> hToPs;
 
         //do nothing in case that one of them is empty
-        if (aConflictSet.isEmpty() || aCompConflictSet.isEmpty()) return;        
-
-        //Pendiente evaluar si un ordenamiento en la lista de hipotesis mejoraría el proceso
-        List aConflictSetCopy = new ArrayList();
+        if (aConflictSet.isEmpty() || aCompConflictSet.isEmpty()) return;
         
-        Iterator iterator = aConflictSet.iterator();
+        hToPs = new HashMap<PossibleSolution, Hypothesis>();
+        //Lista de posibles soluciones exitosas
+        psEvalList = new java.util.ArrayList<PossibleSolution>();
+        Iterator h = aConflictSet.iterator();
 		
-		while (iterator.hasNext()) {
-			aConflictSetCopy.add((Hypothesis) iterator.next());
+		while (h.hasNext()) {
+			Hypothesis hyp = (Hypothesis)h.next();
+			Iterator ps = hyp.getPossibleSolutions().iterator();
+			
+			while (ps.hasNext()) {
+				PossibleSolution psol = (PossibleSolution)ps.next();
+				psEvalList.add(psol);
+				hToPs.put(psol, hyp);
+			}
 		}
 		
-		while (!aConflictSetCopy.isEmpty()) {
-			Hypothesis evalHypothesis = (Hypothesis) aConflictSetCopy.remove(0); 
-        
-            // Scan the entire list of possible solutions belonging to the current hypothesis-to-evaluate			
-			List evalPossibleSolutionsCopy = new ArrayList();
-            
-            iterator = evalHypothesis.getPossibleSolutions().iterator();
+		Collections.sort(psEvalList);
+		
+		//Lista de posibles soluciones fallidas
+		psCompList = new java.util.ArrayList<PossibleSolution>();
+        h = aCompConflictSet.iterator();
+		
+		while (h.hasNext()) {
+			Hypothesis hyp = (Hypothesis)h.next();
+			Iterator ps = hyp.getPossibleSolutions().iterator();
 			
-			while (iterator.hasNext()) {
-				evalPossibleSolutionsCopy.add((PossibleSolution) iterator.next());
+			while (ps.hasNext()) {
+				PossibleSolution psol = (PossibleSolution)ps.next();
+				psCompList.add(psol);
+				hToPs.put(psol, hyp);
 			}
-			
-			while (!evalPossibleSolutionsCopy.isEmpty()) {
-				PossibleSolution evalPossibleSolution = (PossibleSolution) evalPossibleSolutionsCopy.remove(0);
+		}
+		
+		Collections.sort(psCompList);
 
-                // Get the corresponding taxon of the possibleSolution-to-evaluate, if applicable
-                evalPossibleSolutionTaxon = OracleIDSystem.getInstance().getTaxonomy().getTaxonFromLevelIndex(evalPossibleSolution.getName(), evalPossibleSolution.getLevel());
+		 //Pendiente evaluar si un ordenamiento en la lista de hipotesis mejoraría el proceso
+        while (!psEvalList.isEmpty()) {
+        	PossibleSolution evalPossibleSolution = psEvalList.remove(0);
+        	
+        	evalPossibleSolutionTaxon = OracleIDSystem.getInstance().getTaxonomy()
+        		.getTaxonFromLevelIndex(evalPossibleSolution.getName(), evalPossibleSolution.getLevel());
 
-                if (evalPossibleSolutionTaxon == null) return;
+        	if (evalPossibleSolutionTaxon == null) return;
+        	
+			int i = 0;
+			while (i < psCompList.size()) {
+				PossibleSolution compPossibleSolution = psCompList.get(i);
 
-                List aCompConflictSetCopy = new ArrayList();
+                compPossibleSolutionTaxon = OracleIDSystem.getInstance().getTaxonomy()
+                	.getTaxonFromLevelIndex(compPossibleSolution.getName(), compPossibleSolution.getLevel());
+
+                if (compPossibleSolutionTaxon == null) return;
                 
-                iterator = aCompConflictSet.iterator();
-    			
-    			while (iterator.hasNext()) {
-    				aCompConflictSetCopy.add((Hypothesis) iterator.next());
-    			}
-    			
-    			while (!aCompConflictSetCopy.isEmpty()) {
-    				Hypothesis compHypothesis = (Hypothesis) aCompConflictSetCopy.remove(0);
-
-                	List aPossibleSolutionsCopy = new ArrayList();
-                	
-                    iterator = compHypothesis.getPossibleSolutions().iterator();
-        			
-        			while (iterator.hasNext()) {
-        				aPossibleSolutionsCopy.add((PossibleSolution) iterator.next());
-        			}                
-        			
-        			while (!aPossibleSolutionsCopy.isEmpty()) {
-        				PossibleSolution compPossibleSolution = (PossibleSolution) aPossibleSolutionsCopy.remove(0);
-
-                        compPossibleSolutionTaxon = OracleIDSystem.getInstance().getTaxonomy().getTaxonFromLevelIndex(compPossibleSolution.getName(), compPossibleSolution.getLevel());
-
-                        if (compPossibleSolutionTaxon == null) return;
-                        
-                        // Check if the possible solutions are the same object
-                        if (evalPossibleSolutionTaxon.equals(compPossibleSolutionTaxon)) {
-                            // AQUI SE DEBE PONER LAS DESCRIPCIONES EN LA JUSTIFICACION, NO HEREDARLAS
-                            evalPossibleSolution.incrementPointsBy(-1);
-                            
-                            compHypothesis.getPossibleSolutions().remove(compPossibleSolution);
-                        } else {
-                            // At this point, evalPossibleSolutionTaxon and compPossibleSolutionTaxon are different objects
-                            // Determine if the possibleSolution-to-evaluate is a successor taxon of the possibleSolution-to-compare
-                            if (evalPossibleSolutionTaxon.isSuccessorOf(compPossibleSolutionTaxon)) {                            	
-                            	// AQUI SE DEBE PONER LAS DESCRIPCIONES EN LA JUSTIFICACION, NO HEREDARLAS
-                            	evalPossibleSolution.incrementPointsBy(-1);
-                            }
-                        }
-                    }
+                // Check if the possible solutions are the same object
+                if (evalPossibleSolutionTaxon.equals(compPossibleSolutionTaxon)) {
+                    // AQUI SE DEBE PONER LAS DESCRIPCIONES EN LA JUSTIFICACION, NO HEREDARLAS
+                    evalPossibleSolution.incrementPointsBy(-1);
                     
-                    if (compHypothesis.getPossibleSolutions().isEmpty())
-                    	aCompConflictSet.remove(compHypothesis);
+                    hToPs.get(compPossibleSolution).getPossibleSolutions().remove(compPossibleSolution);
+                    psCompList.remove(i);
+                } else {
+                    // At this point, evalPossibleSolutionTaxon and compPossibleSolutionTaxon are different objects
+                    // Determine if the possibleSolution-to-evaluate is a successor taxon of the possibleSolution-to-compare
+                    if (evalPossibleSolutionTaxon.isSuccessorOf(compPossibleSolutionTaxon)) {                            	
+                    	// AQUI SE DEBE PONER LAS DESCRIPCIONES EN LA JUSTIFICACION, NO HEREDARLAS
+                    	evalPossibleSolution.incrementPointsBy(-1);
+                    }
                 }
+                
+                if (hToPs.get(compPossibleSolution).getPossibleSolutions().isEmpty())
+                	aCompConflictSet.remove(hToPs.get(compPossibleSolution));
+                
+                i++;
             }
         }
 	}
@@ -331,86 +334,70 @@ public class EvaluatorAgent extends Agent {
 	 */
 	public void evaluate(List aConflictSet) {
 		Taxon evalPossibleSolutionTaxon, compPossibleSolutionTaxon;
-		List tempList;
+		java.util.List<PossibleSolution> psList;
+		java.util.Map<PossibleSolution, Hypothesis> hToPs;
 
         //do nothing in case that one of them is empty
         if (aConflictSet.isEmpty()) return;
         
         if (aConflictSet.size() < 2) return;
-
-        tempList = new ArrayList();
+        
+        hToPs = new HashMap<PossibleSolution, Hypothesis>();
+        psList = new java.util.ArrayList<PossibleSolution>();
+        Iterator h = aConflictSet.iterator();
+		
+		while (h.hasNext()) {
+			Hypothesis hyp = (Hypothesis)h.next();
+			Iterator ps = hyp.getPossibleSolutions().iterator();
+						
+			while (ps.hasNext()) {
+				PossibleSolution psol = (PossibleSolution)ps.next();
+				psList.add(psol);
+				hToPs.put(psol, hyp);
+			}
+		}
+		
+		Collections.sort(psList);
         
         //Pendiente evaluar si un ordenamiento en la lista de hipotesis mejoraría el proceso
-        while (!aConflictSet.isEmpty()) {
-        	Hypothesis evalHypothesis = (Hypothesis) aConflictSet.remove(0);
+        while (!psList.isEmpty()) {
+        	PossibleSolution evalPossibleSolution = psList.remove(0);
+        	
+        	evalPossibleSolutionTaxon = OracleIDSystem.getInstance().getTaxonomy()
+        		.getTaxonFromLevelIndex(evalPossibleSolution.getName(), evalPossibleSolution.getLevel());
 
-            // Scan the entire list of possible solutions belonging to the current hypothesis-to-evaluate
-        	Iterator i = evalHypothesis.getPossibleSolutions().iterator();
-			
-			while (i.hasNext()) {
-				PossibleSolution evalPossibleSolution = (PossibleSolution) i.next();
-
-                evalPossibleSolutionTaxon = OracleIDSystem.getInstance().getTaxonomy()
-                	.getTaxonFromLevelIndex(evalPossibleSolution.getName(), evalPossibleSolution.getLevel());                    
-
-                if (evalPossibleSolutionTaxon == null) return;           
-                
-                List aConflictSetCopy = new ArrayList();
-                
-                Iterator iterator = aConflictSet.iterator();
-    			
-    			while (iterator.hasNext()) {
-    				aConflictSetCopy.add((Hypothesis) iterator.next());
-    			}
-                
-    			Iterator k = aConflictSetCopy.iterator();
-    			
-    			while (k.hasNext()) {
-    				Hypothesis compHypothesis = (Hypothesis) k.next();
-
-                	List aPossibleSolutionsCopy = new ArrayList();
-                	
-                	iterator = compHypothesis.getPossibleSolutions().iterator();
-        			
-        			while (iterator.hasNext()) {
-        				aPossibleSolutionsCopy.add((PossibleSolution) iterator.next());
-        			}
-                	
-        			Iterator l = aPossibleSolutionsCopy.iterator();
-        			
-        			while (l.hasNext()) {
-        				PossibleSolution compPossibleSolution = (PossibleSolution) l.next();
+        	if (evalPossibleSolutionTaxon == null) return;
+        	
+			int i = 0;
+			while (i < psList.size()) {
+				PossibleSolution compPossibleSolution = psList.get(i);
                     
-                        compPossibleSolutionTaxon = OracleIDSystem.getInstance().getTaxonomy().getTaxonFromLevelIndex(compPossibleSolution.getName(), compPossibleSolution.getLevel());
+                compPossibleSolutionTaxon = OracleIDSystem.getInstance().getTaxonomy().getTaxonFromLevelIndex(compPossibleSolution.getName(), compPossibleSolution.getLevel());
 
-                        if (compPossibleSolutionTaxon == null) return;
-                        // Check if the possible solutions are the same object
-                        if (evalPossibleSolutionTaxon.equals(compPossibleSolutionTaxon)) {                        	
-                            // Inherit the compare solution's descriptions and remove it from the hypothesis-to-compare possibleSolutions list
-                            this.inheritPossibleSolutionDescriptionsFrom(compPossibleSolution, evalPossibleSolution);
-                            evalPossibleSolution.incrementPoints();
-                                
-                            compHypothesis.getPossibleSolutions().remove(compPossibleSolution);
-                        } else {
-                            // At this point, evalPossibleSolutionTaxon and compPossibleSolutionTaxon are different objects
-                            // Determine if the possibleSolution-to-evaluate is a successor taxon of the possibleSolution-to-compare
-                            if (evalPossibleSolutionTaxon.isSuccessorOf(compPossibleSolutionTaxon)) {                            	
-                                this.inheritPossibleSolutionDescriptionsFrom(compPossibleSolution, evalPossibleSolution);
-                                evalPossibleSolution.incrementPoints();
-                            }
-                        }
+                if (compPossibleSolutionTaxon == null) return;
+                
+                // Check if the possible solutions are the same object
+                if (evalPossibleSolutionTaxon.equals(compPossibleSolutionTaxon)) {                        	
+                    // Inherit the compare solution's descriptions and remove it from the hypothesis-to-compare possibleSolutions list
+                    this.inheritPossibleSolutionDescriptionsFrom(compPossibleSolution, evalPossibleSolution);
+                    evalPossibleSolution.incrementPoints();
+                        
+                    hToPs.get(compPossibleSolution).getPossibleSolutions().remove(compPossibleSolution);
+                    psList.remove(i);
+                } else {
+                    // At this point, evalPossibleSolutionTaxon and compPossibleSolutionTaxon are different objects
+                    // Determine if the possibleSolution-to-evaluate is a successor taxon of the possibleSolution-to-compare
+                    if (evalPossibleSolutionTaxon.isSuccessorOf(compPossibleSolutionTaxon)) {                            	
+                        this.inheritPossibleSolutionDescriptionsFrom(compPossibleSolution, evalPossibleSolution);
+                        evalPossibleSolution.incrementPoints();
                     }
-                    
-                    if (compHypothesis.getPossibleSolutions().isEmpty())
-                    	aConflictSet.remove(compHypothesis);
+                    i++;
                 }
+                
+                if (hToPs.get(compPossibleSolution).getPossibleSolutions().isEmpty())
+                	aConflictSet.remove(hToPs.get(compPossibleSolution));
             }
-            
-            tempList.add(evalHypothesis);
         }
-        
-        while (!tempList.isEmpty())
-        	aConflictSet.add(tempList.remove(0));
 	}
 	
 	/**

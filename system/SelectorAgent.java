@@ -39,6 +39,7 @@ import jade.content.lang.Codec.CodecException;
 import jade.content.lang.sl.*;
 
 import ontology.CBR.CBRTerminologyOntology;
+import ontology.CBR.Case;
 import ontology.CBR.CertaintyDegree;
 import ontology.CBR.Hypothesis;
 import ontology.CBR.PossibleSolution;
@@ -552,12 +553,9 @@ public class SelectorAgent extends Agent {
 		
 		java.util.Collections.sort(anotherPSolutions,
 				new java.util.Comparator<PossibleSolution>() {
-					public int compare(PossibleSolution elem1, PossibleSolution elem2) {
-						if ((elem2.getPoints()	- elem1.getPoints()) > 0)
-							return 1;
-						else if ((elem2.getPoints() - elem1.getPoints()) < 0)
-							return -1;
-						else return 0;
+					public int compare(PossibleSolution elem1, PossibleSolution elem2) {						
+						return (((int)(elem2.getPoints()-elem1.getPoints()))
+						+((elem2.getSolution() instanceof Case)?1:0));
 					}
 				}); //OJO buscar alternativa de ordenamiento
 		

@@ -7,6 +7,7 @@ import static org.junit.Assert.*;
 
 import ontology.CBR.Case;
 import ontology.CBR.PossibleSolution;
+import ontology.CBR.Solution;
 import ontology.common.Descriptor;
 import ontology.common.SSCharacterDescriptor;
 import ontology.common.SVCharacterDescriptor;
@@ -270,12 +271,28 @@ public class PossibleSolutionTest {
 		
 		System.out.println("Verificar que la posible solución es distinta con otra según el criterio" +
 				"de comparación");
+		Case aCase = new Case();
+		aCase.setSolution(new Solution(TaxonomicRank.GENUS.getRank(), "Chromodoris"));
+		ps.setSolution(aCase);
+		assertTrue(aPossibleSolution.compareTo(ps) > 0);
+		
 		taxon = new Taxon(TaxonomicRank.FAMILY.getRank(), "Chromodorididae");;
 		ps.setSolution(taxon);
 		assertTrue(aPossibleSolution.compareTo(ps) < 0);
+		
 		taxon = new Taxon(TaxonomicRank.SPECIES.getRank(), "Cadlina sparsa");;
 		ps.setSolution(taxon);
 		assertTrue(aPossibleSolution.compareTo(ps) > 0);
+		
+		aCase = new Case();
+		aCase.setSolution(new Solution(TaxonomicRank.GENUS.getRank(), "Chromodoris"));
+		aPossibleSolution.setSolution(aCase);
+		
+		taxon = new Taxon(TaxonomicRank.GENUS.getRank(), "Chromodoris");;
+		ps.setSolution(taxon);
+		assertTrue(aPossibleSolution.compareTo(ps) == 0);
+		
+		
 	}
 
 }

@@ -360,6 +360,6 @@ public class PossibleSolution implements jade.content.Concept, Comparable<Possib
 	public int compareTo(PossibleSolution aPossibleSolution) {
 		return ((TaxonomicRank.getIndex(TaxonomicRank.valueOf(aPossibleSolution.getLevel().toUpperCase())) - 
 				TaxonomicRank.getIndex(TaxonomicRank.valueOf(getLevel().toUpperCase())))
-				+(this.getSolution() instanceof Case?1:0));
+				+((aPossibleSolution.getSolution() instanceof Case)?1:0));
 	}
 }

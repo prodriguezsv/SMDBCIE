@@ -511,9 +511,8 @@ public class CaseMemoryDFSAutomaton {
                     aCaseList.add((SheetCase)succ);
                     List<PossibleSolution> pSolutionList = associateCasesToPossibleSolutions(aCaseList);
                     this.addToPossibleSolutions(pSolutionList.remove(0));
-                    
-                    //OJO
-                    this.getSolutionDescription().getDescriptors().remove(getSolutionDescription().getDescriptors().size()-1);
+
+                    this.getSolutionDescription().getDescriptors().remove(d);
                 }
             }
         }
@@ -589,9 +588,8 @@ public class CaseMemoryDFSAutomaton {
                     aCaseList.add((SheetCase)succ);
                     List<PossibleSolution> pSolutionList = associateCasesToPossibleSolutions(aCaseList);
                     this.addToPossibleSolutions(pSolutionList.remove(0));
-                    
-                    //OJO
-                    getSolutionDescription().getDescriptors().remove(getSolutionDescription().getDescriptors().size()-1);
+
+                    getSolutionDescription().getDescriptors().remove(d);
 
                 }
             }
@@ -690,12 +688,12 @@ public class CaseMemoryDFSAutomaton {
         // and confirmed descriptions MUST be set back to their original state (i.e., before doing the root-search). So, remove
         // all the matching items in the temporary lists from the unmatched and unconfirmed descriptions and place them back
         // in the corresponding solution and confirmed ones
-        while (tempMovedSolution.getDescriptors().isEmpty())
-        	getSolutionDescription().addDescriptors((Descriptor) tempMovedSolution.getDescriptors().remove(0));
         deleteDescriptors(tempMovedSolution, getUnmatchedDescription());
-        while (tempMovedConfirmed.getDescriptors().isEmpty())
-        	getSolutionDescription().addDescriptors((Descriptor) tempMovedConfirmed.getDescriptors().remove(0));
+        while (!tempMovedSolution.getDescriptors().isEmpty())
+        	getSolutionDescription().addDescriptors((Descriptor) tempMovedSolution.getDescriptors().remove(0));
         deleteDescriptors(tempMovedConfirmed,getUnconfirmedDescription());
+        while (!tempMovedConfirmed.getDescriptors().isEmpty())
+        	getSolutionDescription().addDescriptors((Descriptor) tempMovedConfirmed.getDescriptors().remove(0));        
 
         //Upon return from the root search, the following situations may occur:
         //	a) the possible solutions list is empty.
@@ -992,8 +990,7 @@ public class CaseMemoryDFSAutomaton {
         				caseList.add((SheetCase)n);
         				List<PossibleSolution> ps = associateCasesToPossibleSolutions(caseList);
         				
-        				//OJO: las descripciones se ordenan automaticamente al insertar un descriptor
-        				this.getConfirmedDescription().getDescriptors().remove(getConfirmedDescription().getDescriptors().size()-1);
+        				this.getConfirmedDescription().getDescriptors().remove(n.getDescriptor());
         				
         				while(ps.isEmpty() != true)
                             addToPossibleSolutions(ps.remove(0));
@@ -1143,7 +1140,7 @@ public class CaseMemoryDFSAutomaton {
         List<PossibleSolution> pSolutionList = associateCasesToPossibleSolutions(aCaseList);
         this.addToPossibleSolutions(pSolutionList.remove(0));
         
-        this.getConfirmedDescription().getDescriptors().remove(getConfirmedDescription().getDescriptors().size()-1);
+        this.getConfirmedDescription().getDescriptors().remove(sc.getDescriptor());
         
         return (status = SearchStatus.SUCCESS);
     }

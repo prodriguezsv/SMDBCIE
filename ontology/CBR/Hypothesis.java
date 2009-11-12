@@ -3,6 +3,8 @@
  */
 package ontology.CBR;
 
+import java.util.Collections;
+
 import jade.util.leap.ArrayList;
 import jade.util.leap.Iterator;
 import jade.util.leap.List;
@@ -194,6 +196,8 @@ public class Hypothesis implements jade.content.Concept {
 		while (i.hasNext()) {
 			possibleSolutionsTemp.add((PossibleSolution)i.next());
 		}
+		
+		Collections.sort(possibleSolutionsTemp);
 		
 		possibleSolutions.clear();
 		

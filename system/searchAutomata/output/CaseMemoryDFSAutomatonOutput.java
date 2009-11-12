@@ -12,6 +12,7 @@ import java.util.List;
 import ontology.CBR.PossibleSolution;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.Taxonomy;
+import system.OracleIDSystem;
 
 
 /**
@@ -22,7 +23,7 @@ public class CaseMemoryDFSAutomatonOutput extends SearchAutomatonOutput {
     private Taxonomy taxonomy;
    
     public CaseMemoryDFSAutomatonOutput(){
-        taxonomy = null;
+        taxonomy = OracleIDSystem.getInstance().getTaxonomy();
     }
     
 	/**
