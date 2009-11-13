@@ -855,6 +855,7 @@ public class CaseMemoryDFSAutomaton {
         confirmedDescription = new Description();
         unmatchedDescription = new Description();
         justification = new Description();
+        possibleSolutions = new ArrayList<PossibleSolution>();
         newOutput();
         status = SearchStatus.FAIL;
         
