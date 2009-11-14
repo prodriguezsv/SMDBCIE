@@ -377,8 +377,11 @@ public class TaxonomySearchAutomaton {
             }
             
             //Place the current possible solution in a temporary list
-            while (inheritedDescription.isEmpty() != true)
+            while (inheritedDescription.isEmpty() != true) {
                 ps.getSolutionDescription().addToConcreteDescription(inheritedDescription.remove(0));
+                //Evaluar por número de descriptores en la misma estructura
+                ps.incrementPoints();
+            }
                         
             tempList.add(ps);
         }

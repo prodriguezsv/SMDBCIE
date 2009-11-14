@@ -296,8 +296,11 @@ public class RetrieverAgent extends Agent {
 			to add it to the second hypothesis. If unsuccessful again, return an error value. At the 
 			end of this loop, the following assertion will always hold: hypothesis1 will never be empty
 			(it will always have at least ONE element), and hypothesis2 may be empty*/
-			if (hypothesis1.addPossibleSolution(ps) == false)
-				if (hypothesis2.addPossibleSolution(ps) == false) return false;
+			//hypothesis1 una contiene soluciones exitosas y hypothesis2 casos fallidos
+			if (ps.getStatus() == true)
+				hypothesis1.addPossibleSolution(ps);
+			else 
+				hypothesis2.addPossibleSolution(ps);
 		}
 		
 		// Once all possible solutions have been loaded, copy the search automaton's unmatched description

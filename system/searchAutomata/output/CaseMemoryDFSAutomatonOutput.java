@@ -5,11 +5,14 @@
 
 package system.searchAutomata.output;
 
+import jade.util.leap.Iterator;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import ontology.CBR.PossibleSolution;
+import ontology.common.Descriptor;
 import ontology.taxonomy.Taxon;
 import ontology.taxonomy.Taxonomy;
 import system.OracleIDSystem;
@@ -78,11 +81,29 @@ public class CaseMemoryDFSAutomatonOutput extends SearchAutomatonOutput {
     			// Check if the proposed solutions are the same object
     			if (psTaxon.equals(compSolutionTaxon)) {
     				// Inherit the compare solution's descriptions and remove it from aPossibleSolutionsList
-    				this.inheritPossibleSolutionDescriptionsFrom(compSolution, ps);
-    				processList.remove(i-1);
+    				if ((ps.getStatus() == false) && compSolution.getStatus() == false) {
+    					this.inheritPossibleSolutionDescriptionsFrom(compSolution, ps);
+    					processList.remove(i-1);
+    				} else if ((ps.getStatus() == false) && compSolution.getStatus() == true)
+    					i = i + 1;
+    				else if ((ps.getStatus() == true) && compSolution.getStatus() == true) {
+    					this.inheritPossibleSolutionDescriptionsFrom(compSolution, ps);
+    					processList.remove(i-1);
+    				} else if ((ps.getStatus() == true) && compSolution.getStatus() == false)
+    					i = i + 1;    				
     			} else {
-					if (psTaxon.isSuccessorOf(compSolutionTaxon))
-						this.inheritPossibleSolutionDescriptionsFrom(compSolution, ps);
+					if (psTaxon.isSuccessorOf(compSolutionTaxon)) {
+						if ((ps.getStatus() == false) && compSolution.getStatus() == false) {
+	    					this.inheritPossibleSolutionDescriptionsFrom(compSolution, ps);
+	    					processList.remove(i-1);
+	    				} else if ((ps.getStatus() == false) && compSolution.getStatus() == true)
+	    					i = i + 1;
+	    				else if ((ps.getStatus() == true) && compSolution.getStatus() == true) {
+	    					this.inheritPossibleSolutionDescriptionsFrom(compSolution, ps);
+	    					processList.remove(i-1);
+	    				} else if ((ps.getStatus() == true) && compSolution.getStatus() == false)
+	    					i = i + 1;
+					}
 
 					i = i + 1;
     			}
@@ -100,7 +121,16 @@ public class CaseMemoryDFSAutomatonOutput extends SearchAutomatonOutput {
     
     private void inheritPossibleSolutionDescriptionsFrom(PossibleSolution anOldPossibleSolution,
     		PossibleSolution aNewPossibleSolution){
-        aNewPossibleSolution.addAllToSolutionDescription(anOldPossibleSolution.getSolutionDescription());
+    	
+    	Iterator i = anOldPossibleSolution.getSolutionDescription().getAllDescriptors();		
+		while (i.hasNext()) {
+			Descriptor d = (Descriptor) i.next();
+			if (!aNewPossibleSolution.getSolutionDescription().getDescriptors().contains(d)) {
+				aNewPossibleSolution.addToSolutionDescription(d);
+				aNewPossibleSolution.incrementPoints();
+			}
+		}
+        
         aNewPossibleSolution.addAllToConfirmedDescription(anOldPossibleSolution.getConfirmedDescription());
         aNewPossibleSolution.addAllToUnconfirmedDescription(anOldPossibleSolution.getUnconfirmedDescription());
         aNewPossibleSolution.addAllToDoubtfulDescription(anOldPossibleSolution.getDoubtfulDescription());

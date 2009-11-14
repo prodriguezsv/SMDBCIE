@@ -45,6 +45,7 @@ import ontology.CBR.Evaluate;
 import ontology.CBR.Hypothesis;
 import ontology.CBR.PossibleSolution;
 import ontology.CBR.Problem;
+import ontology.common.Descriptor;
 import ontology.taxonomy.Taxon;
 
 @SuppressWarnings("serial")
@@ -285,7 +286,8 @@ public class EvaluatorAgent extends Agent {
                 // Check if the possible solutions are the same object
                 if (evalPossibleSolutionTaxon.equals(compPossibleSolutionTaxon)) {
                     // AQUI SE DEBE PONER LAS DESCRIPCIONES EN LA JUSTIFICACION, NO HEREDARLAS
-                    evalPossibleSolution.incrementPointsBy(-1);
+                	// Toma en cuenta el número de descriptores de la solución fallida para asignar puntaje
+                    evalPossibleSolution.incrementPointsBy(-compPossibleSolution.getPoints());
                     
                     hToPs.get(compPossibleSolution).getPossibleSolutions().remove(compPossibleSolution);
                     psCompList.remove(i);
@@ -294,7 +296,8 @@ public class EvaluatorAgent extends Agent {
                     // Determine if the possibleSolution-to-evaluate is a successor taxon of the possibleSolution-to-compare
                     if (evalPossibleSolutionTaxon.isSuccessorOf(compPossibleSolutionTaxon)) {                            	
                     	// AQUI SE DEBE PONER LAS DESCRIPCIONES EN LA JUSTIFICACION, NO HEREDARLAS
-                    	evalPossibleSolution.incrementPointsBy(-1);
+                    	// Toma en cuenta el número de descriptores de la solución fallida para asignar puntaje
+                    	evalPossibleSolution.incrementPointsBy(-compPossibleSolution.getPoints());
                     }
                 }
                 
@@ -378,19 +381,18 @@ public class EvaluatorAgent extends Agent {
                 
                 // Check if the possible solutions are the same object
                 if (evalPossibleSolutionTaxon.equals(compPossibleSolutionTaxon)) {                        	
-                    // Inherit the compare solution's descriptions and remove it from the hypothesis-to-compare possibleSolutions list
-                    this.inheritPossibleSolutionDescriptionsFrom(compPossibleSolution, evalPossibleSolution);
-                    evalPossibleSolution.incrementPoints();
+                    // Inherit the compare solution's descriptions and remove it from the hypothesis-to-compare
+                	// possibleSolutions list. El puntaje se asigna en este método
+                    this.inheritPossibleSolutionDescriptionsFrom(compPossibleSolution, evalPossibleSolution);                     
                         
                     hToPs.get(compPossibleSolution).getPossibleSolutions().remove(compPossibleSolution);
                     psList.remove(i);
                 } else {
                     // At this point, evalPossibleSolutionTaxon and compPossibleSolutionTaxon are different objects
                     // Determine if the possibleSolution-to-evaluate is a successor taxon of the possibleSolution-to-compare
-                    if (evalPossibleSolutionTaxon.isSuccessorOf(compPossibleSolutionTaxon)) {                            	
+                    if (evalPossibleSolutionTaxon.isSuccessorOf(compPossibleSolutionTaxon))         	
                         this.inheritPossibleSolutionDescriptionsFrom(compPossibleSolution, evalPossibleSolution);
-                        evalPossibleSolution.incrementPoints();
-                    }
+                    
                     i++;
                 }
                 
@@ -405,8 +407,18 @@ public class EvaluatorAgent extends Agent {
 	 * @param anOldPossibleSolution
 	 * @param aNewPossibleSolution
 	 */
-	private void inheritPossibleSolutionDescriptionsFrom(PossibleSolution anOldPossibleSolution, PossibleSolution aNewPossibleSolution) {
-		aNewPossibleSolution.addAllToSolutionDescription(anOldPossibleSolution.getSolutionDescription());
+	private void inheritPossibleSolutionDescriptionsFrom(PossibleSolution anOldPossibleSolution
+			, PossibleSolution aNewPossibleSolution) {
+				
+		Iterator i = anOldPossibleSolution.getSolutionDescription().getAllDescriptors();		
+		while (i.hasNext()) {
+			Descriptor d = (Descriptor) i.next();
+			if (!aNewPossibleSolution.getSolutionDescription().getDescriptors().contains(d)) {
+				aNewPossibleSolution.addToSolutionDescription(d);
+				aNewPossibleSolution.incrementPoints();
+			}
+		}
+		
 		aNewPossibleSolution.addAllToConfirmedDescription(anOldPossibleSolution.getConfirmedDescription());
 		aNewPossibleSolution.addAllToUnconfirmedDescription(anOldPossibleSolution.getUnconfirmedDescription());
 		aNewPossibleSolution.addAllToDoubtfulDescription(anOldPossibleSolution.getDoubtfulDescription());

@@ -378,7 +378,7 @@ public class SelectorAgent extends Agent {
 	 */
 	public boolean distribute(List aSortedPossibleSolutionsList) {
 		ProposedSolution ps;
-		int max, goalLevel, i, psLevel;
+		int max, goalLevel, psLevel;
 		
 		// Check the precondition
 		if (aSortedPossibleSolutionsList.isEmpty())
@@ -392,8 +392,8 @@ public class SelectorAgent extends Agent {
 		// Get the identification goal as number
 		goalLevel = TaxonomicRank.getIndex(TaxonomicRank.valueOf(this.getIdentificationGoal().toUpperCase()));
 
-		i = 1;
-		while (i <= max) {
+		//Toma en cuenta el rango taxonómico meta ordenando todas las soluciones encontradas 
+		while (!aSortedPossibleSolutionsList.isEmpty()) {
 			ps = new ProposedSolution();
 			ps.setState(this.isStatus());
 			ps.setSolution((PossibleSolution)aSortedPossibleSolutionsList.remove(0));
@@ -405,26 +405,24 @@ public class SelectorAgent extends Agent {
 			psLevel = TaxonomicRank.getIndex(TaxonomicRank.valueOf(ps.getSolution().getLevel().toUpperCase()));
 
 			// If applicable, insert the new proposed solution to the general solutions list
-			if ((psLevel < goalLevel) && (this.getGeneralSolutions().size() < this.getMaxNumberSolutions()))
+			if ((psLevel < goalLevel) && (this.getGeneralSolutions().size() < max))
 				this.addGeneralSolution(ps);
 
 			// If applicable, insert the new proposed solution to the goal solutions list
-			if ((psLevel == goalLevel) && (this.getGoalSolutions().size() < this.getMaxNumberSolutions()))
+			if ((psLevel == goalLevel) && (this.getGoalSolutions().size() < max))
 				this.addGoalSolution(ps);
 			
 			// If applicable, insert the new proposed solution to the specific solutions list
-			if ((psLevel > goalLevel) && (this.getSpecificSolutions().size() < this.getMaxNumberSolutions()))
+			if ((psLevel > goalLevel) && (this.getSpecificSolutions().size() < max))
 				this.addSpecificSolution(ps);
-
-			i = i + 1;
 		}
 
 		/* Condition to stop the process: either the number of elements in either the specific or goal 
 		 solutions lists is equal to maximum expected by the user, OR the sum of both lists satisfies
 		 this user expectation*/
-		if ((this.getGoalSolutions().size() == this.getMaxNumberSolutions()) ||
-	            (this.getSpecificSolutions().size() == this.getMaxNumberSolutions()) ||
-	            ((this.getGoalSolutions().size() + this.getSpecificSolutions().size()) >= this.getMaxNumberSolutions()))
+		if ((this.getGoalSolutions().size() == max) ||
+	            (this.getSpecificSolutions().size() == max) ||
+	            ((this.getGoalSolutions().size() + this.getSpecificSolutions().size()) >= max))
 			return true;
 
 		// Try to load some more PossibleSolutions to the solutions lists
